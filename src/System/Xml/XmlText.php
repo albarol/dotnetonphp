@@ -63,7 +63,7 @@ namespace System\Xml {
          * @return string The qualified name of the node. The name returned is dependent on the System.Xml.XmlNode.NodeType of the node
          */
         public function name() {
-
+            return "";
         }
 
         /**
@@ -72,7 +72,7 @@ namespace System\Xml {
          * @return \System\Xml\XmlNodeType One of the System.Xml.XmlNodeType values.
          */
         public function nodeType() { 
-            return XmlNodeType::Element;
+            return XmlNodeType::Text;
         }
 
         /**

@@ -76,6 +76,17 @@ namespace System\Xml {
             return $this->node->hasAttributes();
         }
 
+        /**
+         * Gets the first child element with the specified Name.
+         * @access public
+         * @param string $name The qualified name of the element to retrieve. 
+         * @return \System\Xml\XmlElement The first XmlElement that matches the specified name.
+        */
+        public function item($name) {
+            $elements = $this->element->getElementsByTagName($name);
+            return ($elements->length) ? new XmlElement($elements->item(0)) : null;
+        }
+
        
         /**
          *  Overridden. Gets the local name of the current node.
@@ -83,7 +94,7 @@ namespace System\Xml {
          * @return string The name of the node with the prefix removed. For example, LocalName is book for the element 
          */
         public function localName() {
-
+            return $this->node->localName;
         }
 
         /**
@@ -92,7 +103,16 @@ namespace System\Xml {
          * @return string The qualified name of the node. The name returned is dependent on the System.Xml.XmlNode.NodeType of the node
          */
         public function name() {
+            return $this->node->nodeName;
+        }
 
+        /**
+         * Gets the node immediately following this node.
+         * @access public
+         * @return \System\Xml\XmlNode The next XmlNode. If there is no next node, null is returned.
+         */
+        public function nextSibling() {
+            return new XmlElement($this->node->nextSibling);
         }
 
         /**
@@ -105,9 +125,19 @@ namespace System\Xml {
         }
 
         /**
+         * Gets the node immediately preceding this node.
+         * @access public
+         * @return XmlNode The preceding XmlNode. If there is no preceding node, null is returned.
+         */
+        public function previousSibling() {  
+            return new XmlElement($this->node->previousSibling);
+        }
+
+
+        /**
          * Overridden. Saves all the child nodes of the node to the specified System.Xml.XmlWriter.
          * @access public
-         * @param XmlWriter $w The XmlWriter to which you want to save. 
+         * @param \System\Xml\XmlWriter $w The XmlWriter to which you want to save.
          * @return void
          */
         public function writeContentTo(XmlWriter $w) { }
@@ -115,7 +145,7 @@ namespace System\Xml {
         /**
          * Overridden. Saves the current node to the specified System.Xml.XmlWriter.
          * @access public
-         * @param XmlWriter $w The XmlWriter to which you want to save.
+         * @param \System\Xml\XmlWriter $w The XmlWriter to which you want to save.
          * @return void
          */
         public function writeTo(XmlWriter $w) { }

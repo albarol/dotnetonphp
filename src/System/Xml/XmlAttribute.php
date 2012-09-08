@@ -3,6 +3,7 @@
 namespace System\Xml { 
 
     use \System\Xml\XmlNode as XmlNode;
+    use \System\Xml\XmlNodeType as XmlNodeType;
 
 
     /**
@@ -68,9 +69,17 @@ namespace System\Xml {
          * @access public
          * @return XmlNodeType One of the System.Xml.XmlNodeType values.
          */
-        public function nodeType()
-        {
-            // TODO: Implement nodeType() method.
+        public function nodeType() {
+            return XmlNodeType::Attribute;
+        }
+
+        /**
+         * Gets the node immediately following this node.
+         * @access public
+         * @return \System\Xml\XmlNode The next XmlNode. If there is no next node, null is returned.
+         */
+        public function nextSibling() {
+            return new XmlAttribute($this->node->nextSibling);
         }
 
         /**
