@@ -3,47 +3,40 @@
 namespace System\Xml {
 
 
-    use \System\Xml\XmlLinkedNode as XmlLinkedNode;
-    use \System\Xml\XmlDocument as XmlDocument;
+    use \System\Xml\XmlLinkedNode as XmlCharacterData;
     use \System\Xml\XmlNodeType as XmlNodeType;
 
     /**
-     * Represents an element.
+     * Represents the text content of an element or attribute. 
      * @access public
-     * @name XmlElement
+     * @name XmlText
      * @package System
      * @subpackage Xml
      */
-    class XmlElement extends XmlLinkedNode {
+    class XmlText extends XmlCharacterData {
 
-        private $element;
+
+    	private $text;
 
         /**
         * This constructor supports the .NET Framework infrastructure and is not intended to be used directly from your code. 
         * @access private
         */
-        public function __construct(\DOMElement $element) {
-            parent::__construct($element);
-            $this->element = $element;
+        public function __construct(\DOMText $text) {
+            parent::__construct($text);
+            $this->text = $text;
         }
 
 
-        /**
-         * Creates a new object that is a copy of the current instance.
+    	/**
+         * Overridden. Creates a duplicate of the node.
          * @access public
-         * @return Object A new object that is a copy of this instance.
+         * @throws InvalidOperationException
+         * @param $deep true to recursively clone the subtree under the specified node; false to clone only the node itself.
+         * @return XmlNode The cloned node.
          */
-        public function cloneObject() {
-            return clone $this;
-        }
-
-        /**
-         * Returns an enumerator that iterates through a collection.
-         * @access public
-         * @return IEnumerator An System.Collections.IEnumerator object that can be used to iterate through the collection.
-         */
-        public function getEnumerator() {
-            // TODO: Implement getEnumerator() method.
+        public function cloneNode($deep) {
+            // TODO: Implement cloneNode() method.
         }
 
         /**
@@ -55,29 +48,7 @@ namespace System\Xml {
             // TODO: Implement createNavigator() method.
         }
 
-        /**
-         * Overridden. Creates a duplicate of the node.
-         * @access public
-         * @throws InvalidOperationException
-         * @param $deep true to recursively clone the subtree under the specified node; false to clone only the node itself.
-         * @return XmlNode The cloned node.
-         */
-        public function cloneNode($deep) {
-            // TODO: Implement cloneNode() method.
-        }
-
-
-        /**
-         * Gets a boolean value indicating whether the current node has any attributes.
-         * @access public
-         * @return bool true if the current node has attributes; otherwise, false. 
-        */
-        public function hasAttributes() {
-            return $this->node->hasAttributes();
-        }
-
-       
-        /**
+    	/**
          *  Overridden. Gets the local name of the current node.
          * @access public
          * @return string The name of the node with the prefix removed. For example, LocalName is book for the element 
@@ -119,5 +90,6 @@ namespace System\Xml {
          * @return void
          */
         public function writeTo(XmlWriter $w) { }
+
     }
 }
