@@ -4,6 +4,8 @@ namespace System\Xml {
 
 
     use \System\ICloneable as ICloneable;
+    use \System\InvalidOperationException as InvalidOperationException;
+    use \System\ArgumentException as ArgumentException;
     
     use \System\Collections\IEnumerable as IEnumerable;
     
@@ -65,7 +67,14 @@ namespace System\Xml {
          * @return void
          */
         public function appendChild(XmlNode $newChild) {
-            //$this->node->appendChild()
+            if ($this->nodeType() != XmlNodeType::Element && $this->nodeType() != XmlNodeType::Document) {
+                throw new InvalidOperationException("This node is of a type that does not allow child nodes of the type of the newChild node. -or- The newChild is an ancestor of this node.");
+            }
+
+            $doc = new \DOMDocument();
+            $doc->loadXML($newChild->outerXml());
+            $newNode = $this->node->ownerDocument->importNode($doc->documentElement, TRUE);
+            $this->node->appendChild($newNode);
         }
 
         /**
@@ -100,7 +109,6 @@ namespace System\Xml {
             return clone $this;
         }
 
-
         /**
          * Gets the first child of the node.
          * @access public
@@ -111,17 +119,19 @@ namespace System\Xml {
             return $childNodes->item(0);
         }
 
+
         /**
-         * Gets the first child element with the specified System.Xml.XmlNode.Name.
-         * @param $name The qualified name of the element to retrieve.
-         * @return \System\Xml\XmlElement The first System.Xml.XmlElement that matches the specified name.
-         */
-        public function get($name) {
-            
+         * Gets the first child element with the specified Name.
+         * @access public
+         * @param string $name The qualified name of the element to retrieve. 
+         * @return \System\Xml\XmlElement The first XmlElement that matches the specified name.
+        */
+        public function item($name) {
+            $elements = $this->node->getElementsByTagName($name);
+            return ($elements->length > 0) ? new XmlElement($elements->item(0)) : null;
         }
 
-
-         /**
+        /**
          * Returns an enumerator that iterates through a collection.
          * @access public
          * @return \System\Collections\IEnumerator An System.Collections.IEnumerator object that can be used to iterate through the collection.
@@ -262,7 +272,8 @@ namespace System\Xml {
          * @return \System\Xml\XmlNode The next XmlNode. If there is no next node, null is returned.
          */
         public function nextSibling() { 
-            return null;
+            echo var_dump($this->node->nextSibling);
+            return new XmlElement($this->node->nextSibling);
         }
 
         /**
@@ -354,7 +365,7 @@ namespace System\Xml {
          * @return \System\Xml\XmlNode The preceding XmlNode. If there is no preceding node, null is returned.
          */
         public function previousSibling() {  
-            return null;
+            return new XmlElement($this->node->previousSibling);
         }
 
         /**
@@ -377,12 +388,27 @@ namespace System\Xml {
         /**
          * Removes specified child node.
          * @access public
-         * @throws ArgumentException
+         * @throws \System\ArgumentException The oldChild is not a child of this node. Or this node is read-only. 
          * @param \System\Xml\XmlNode $oldChild The node being removed. 
          * @return \System\Xml\XmlNode The node removed.
          */
         public function removeChild(XmlNode $oldChild) {
-            
+            $elements = $this->node->ownerDocument->getElementsByTagName($oldChild->name());
+            $current = null;
+
+            foreach($elements as $element):
+                if($element->parentNode == $this->node):
+                    $current = $element;
+                endif;
+            endforeach;
+
+            if(is_null($current)):
+                throw new ArgumentException("The oldChild is not a child of this node. Or this node is read-only. ");
+            endif;
+
+            $this->node->removeChild($current);
+            $this->childNodes = null;
+            return $oldChild;
         }
 
         /**

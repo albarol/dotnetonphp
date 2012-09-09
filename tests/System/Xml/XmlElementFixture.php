@@ -39,17 +39,21 @@ class XmlElementFixture extends PHPUnit_Framework_TestCase {
     	$this->assertEquals("Jack HerringtonPHP HacksO'Reilly", $element->value());
     }
 
-
     public function test_AppendChild_ThrowsExceptionWhenNewChildIsAncestor() {
         $this->markTestIncomplete('NotImplemented');
     }
 
-    public function test_AppendChild_ThrowsExceptionWhenNodeIsReadOnly() {
-        $this->markTestIncomplete('NotImplemented');
-    }
-
     public function test_AppendChild_CanAppendChild() {
-        $this->markTestIncomplete('NotImplemented');
+        # Arrange:
+        $first_element = new XmlElement($this->dom->getElementsByTagName('book')->item(0));
+        $second_element = new XmlElement($this->dom->getElementsByTagName('book')->item(1));
+        
+        # Act:
+        $first_element->appendChild($second_element);
+
+
+        # Assert:
+        $this->assertEquals(4, $first_element->childNodes()->count());
     }
 
     public function test_Attributes_CanCountAttributesFromElement() {
@@ -98,7 +102,7 @@ class XmlElementFixture extends PHPUnit_Framework_TestCase {
     	$this->assertEquals(3, $element->childNodes()->count());	
     }
 
-    public function test_ChildNodes_CanGetSpecifNode() {
+    public function test_ChildNodes_CanGetSpecificNode() {
     	# Arrange:
     	$first_book = $this->dom->getElementsByTagName('book')->item(0);
     	$element = new XmlElement($first_book);
@@ -108,6 +112,28 @@ class XmlElementFixture extends PHPUnit_Framework_TestCase {
 
     	# Assert:
     	$this->assertEquals('Jack Herrington', $node->value());
+    }
+
+    public function test_CloneNode_CloneWithoutDeep() { 
+        $first_book = $this->dom->getElementsByTagName('book')->item(0);
+        $element = new XmlElement($first_book);
+                
+        # Act:
+        $node = $element->cloneNode(false);
+
+        # Assert:
+        $this->assertEquals(0, $node->childNodes()->count());
+    }
+
+    public function test_CloneNode_CloneWithDeep() { 
+        $first_book = $this->dom->getElementsByTagName('book')->item(0);
+        $element = new XmlElement($first_book);
+                
+        # Act:
+        $node = $element->cloneNode(true);
+
+        # Assert:
+        $this->assertEquals(3, $node->childNodes()->count());
     }
 
     public function test_FirstChild_CanGetFirstChild() {
@@ -340,9 +366,25 @@ class XmlElementFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals($expected, $previous_sibling->innerXml());
     }
 
+    public function test_RemoveChild_CanRemoveChildFromNode() {
+        # Arrange:
+        $first_book = $this->dom->getElementsByTagName('book')->item(1);
+        $element = new XmlElement($first_book);
+        $first_child = $element->firstChild();
+                        
+        # Act:
+        $removed = $element->removeChild($first_child);
+
+        # Assert:
+        $this->assertEquals('Jack Herrington', $removed->value());
+        $this->assertEquals(2, $element->childNodes()->count());
+    }
+
     public function test_SchemaInfo_CanGetSchemaInfo() {
         $this->markTestIncomplete('Need implement XmlDocument');
     }
+
+
 
 
 

@@ -21,24 +21,5 @@ namespace System\Xml {
         protected function __construct(\DOMNode $node) {
             parent::__construct($node);
         }
-
-        /**
-         * Gets the node immediately following this node.
-         * @access public
-         * @return XmlNode The System.Xml.XmlNode immediately following this node or null if one does not exist.
-         */
-        public function nextSibling() {
-            
-        }
-
-        /**
-         * Gets the node immediately preceding this node.
-         * @access public
-         * @return XmlNode The preceding System.Xml.XmlNode or null if one does not exist.
-         */
-        public function previousSibling() {
-
-        }
-
     }
 }

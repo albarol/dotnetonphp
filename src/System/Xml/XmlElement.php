@@ -58,12 +58,13 @@ namespace System\Xml {
         /**
          * Overridden. Creates a duplicate of the node.
          * @access public
-         * @throws InvalidOperationException
+         * @throws \System\InvalidOperationException Calling this method on a node type that cannot be cloned.
          * @param $deep true to recursively clone the subtree under the specified node; false to clone only the node itself.
          * @return XmlNode The cloned node.
          */
         public function cloneNode($deep) {
-            // TODO: Implement cloneNode() method.
+            $cloned = $this->element->cloneNode($deep);
+            return new XmlElement($cloned);
         }
 
 
@@ -76,18 +77,6 @@ namespace System\Xml {
             return $this->node->hasAttributes();
         }
 
-        /**
-         * Gets the first child element with the specified Name.
-         * @access public
-         * @param string $name The qualified name of the element to retrieve. 
-         * @return \System\Xml\XmlElement The first XmlElement that matches the specified name.
-        */
-        public function item($name) {
-            $elements = $this->element->getElementsByTagName($name);
-            return ($elements->length) ? new XmlElement($elements->item(0)) : null;
-        }
-
-       
         /**
          *  Overridden. Gets the local name of the current node.
          * @access public
@@ -107,15 +96,6 @@ namespace System\Xml {
         }
 
         /**
-         * Gets the node immediately following this node.
-         * @access public
-         * @return \System\Xml\XmlNode The next XmlNode. If there is no next node, null is returned.
-         */
-        public function nextSibling() {
-            return new XmlElement($this->node->nextSibling);
-        }
-
-        /**
          * Overridden. Gets the type of the current node.
          * @access public
          * @return \System\Xml\XmlNodeType One of the System.Xml.XmlNodeType values.
@@ -123,16 +103,6 @@ namespace System\Xml {
         public function nodeType() { 
             return XmlNodeType::Element;
         }
-
-        /**
-         * Gets the node immediately preceding this node.
-         * @access public
-         * @return XmlNode The preceding XmlNode. If there is no preceding node, null is returned.
-         */
-        public function previousSibling() {  
-            return new XmlElement($this->node->previousSibling);
-        }
-
 
         /**
          * Overridden. Saves all the child nodes of the node to the specified System.Xml.XmlWriter.
