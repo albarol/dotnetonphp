@@ -59,9 +59,8 @@ namespace System\Xml {
          * @access public
          * @return string The qualified name of the node. The name returned is dependent on the System.Xml.XmlNode.NodeType of the node
          */
-        public function name()
-        {
-            // TODO: Implement name() method.
+        public function name() {
+            return $this->node->nodeName;
         }
 
         /**

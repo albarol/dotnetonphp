@@ -191,7 +191,8 @@ namespace System\Xml {
             $document->appendChild($document->importNode($this->node, TRUE));
             $xml = trim($document->saveHTML());
             $tag = $this->name();
-            return preg_replace('@^<' . $tag . '[^>]*>|</' . $tag . '>$@', '', $xml);
+            $innerXml = preg_replace('@^<' . $tag . '[^>]*>|</' . $tag . '>$@', '', $xml);
+            return preg_replace('/>\s+</', '><', $innerXml);
         }
 
         /**
@@ -338,7 +339,7 @@ namespace System\Xml {
             $document = new \DOMDocument();
             $document->appendChild($document->importNode($this->node, TRUE));
             $xml = trim($document->saveHTML());
-            return $xml;
+            return preg_replace('/>\s+</', '><', $xml);
         }
 
         /**
@@ -385,13 +386,13 @@ namespace System\Xml {
         /**
          * Adds the specified node to the beginning of the list of child nodes for this node.
          * @access public
-         * @throws \System\InvalidOperationException
-         * @throws \System\ArgumentException
+         * @throws \System\InvalidOperationException This node is of a type that does not allow child nodes of the type of the newChild node. -or- The newChild is an ancestor of this node.
+         * @throws \System\ArgumentException The newChild was created from a different document than the one that created this node. -or- This node is read-only.
          * @param \System\Xml\XmlNode $newChild The node to add. All the contents of the node to be added are moved into the specified location.
          * @return \System\Xml\XmlNode The node added.
          */
         public function prependChild(XmlNode $newChild) {
-            
+            $this->insertBefore($newChild, $this->firstChild());
         }
 
         /**
@@ -417,7 +418,11 @@ namespace System\Xml {
          * @return void
          */
         public function removeAll() {
-
+            $size = $this->childNodes()->count();
+            for($i = 0; $i < $size; $i++):
+                $node = $this->childNodes()->item(0);
+                $this->removeChild($node);
+            endfor;
         }
 
         /**

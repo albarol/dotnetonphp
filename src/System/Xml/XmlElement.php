@@ -104,6 +104,47 @@ namespace System\Xml {
             return XmlNodeType::Element;
         }
 
+
+        /**
+         * Removes all specified attributes from the element. Default attributes are not removed.
+         * @access public
+         * @return void
+        */
+        public function removeAllAttributes() {
+            $size = $this->attributes()->count();
+            for($i = 0; $i < $size; $i++):
+                $attr = $this->attributes()->item(0);
+                $this->removeAttribute($attr->name());
+            endfor;
+        }
+
+        /**
+         * Removes an attribute by name.
+         * @throws \System\ArgumentException The node is read-only.
+         * @param string $name The name of the attribute to remove.This is a qualified name.It is matched against the Name property of the matching node.
+         * @return void
+        */
+        public function removeAttribute($name) {
+            $this->node->removeAttribute($name);
+            $this->namedNodeMap = null;
+        }
+
+        /**
+         * Removes the attribute node with the specified index from the element.(If the removed attribute has a default value, it is immediately replaced).
+         * @param $int i The index of the node to remove.The first node has index 0.
+         * @return \System\Xml\XmlNode The attribute node removed or null if there is no node at the given index.
+        */
+        public function removeAttributeAt($i) {
+            $node = $this->attributes()->item($i);
+            if(!isset($node)) {
+                return null;
+            }
+
+            $this->node->removeAttribute($node->name());
+            $this->namedNodeMap = null;
+            return $node;
+        }        
+
         /**
          * Overridden. Saves all the child nodes of the node to the specified System.Xml.XmlWriter.
          * @access public

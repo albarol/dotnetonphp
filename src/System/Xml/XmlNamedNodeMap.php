@@ -2,6 +2,8 @@
 
 namespace System\Xml {
 
+	use \System\Xml\XmlAttribute as XmlAttribute;
+
 	use \System\Collections\IEnumerable as IEnumerable;
 
 
@@ -56,7 +58,9 @@ namespace System\Xml {
 		 * @param int $index The index position of the node to retrieve from the XmlNamedNodeMap. The index is zero-based; therefore, the index of the first node is 0 and the index of the last node is Count -1. 
 		 * @return \System\Xml\XmlNode The XmlNode at the specified index. If index is less than 0 or greater than or equal to the Count property, a null reference is returned. 
 		*/
-		public function item($index) { }
+		public function item($index) { 
+			return new XmlAttribute($this->namedNodeMap->item($index));
+		}
 
 
 		/**

@@ -6,25 +6,21 @@ use \System\Xml\XmlDocument as XmlDocument;
 use \System\Xml\XmlElement as XmlElement;
 
 
+//TODO: Implement exceptions when node belongs to another XmlDocument
+
 class XmlElementFixture extends PHPUnit_Framework_TestCase {
 
 	private $dom;
 
 	public function setUp() {
-		$this->dom = new \DOMDocument();
+		$xml = "<books xmlns:b='http://www.books.com'>"
+               . "<b:book id='1'><author>Jack Herrington</author><title>PHP Hacks</title><publisher>O'Reilly</publisher></b:book>"
+               . "<b:book id='2'><author>Jack Herrington</author><title>Podcasting Hacks</title><publisher>O'Reilly</publisher></b:book>"
+               . "</books>";
+
+        $this->dom = new \DOMDocument();
 		$this->dom->preserveWhiteSpace = false;
-		$this->dom->loadXml("<books xmlns:b='http://www.books.com'>
-					  <b:book id='1'>
-						  <author>Jack Herrington</author>
-						  <title>PHP Hacks</title>
-						  <publisher>O'Reilly</publisher>
-					  </b:book>
-					  <b:book id='2'>
-						  <author>Jack Herrington</author>
-						  <title>Podcasting Hacks</title>
-						  <publisher>O'Reilly</publisher>
-					  </b:book>
-					  </books>");
+		$this->dom->loadXml($xml);
 	}
 
     
@@ -391,6 +387,19 @@ class XmlElementFixture extends PHPUnit_Framework_TestCase {
        $this->markTestIncomplete('need implement XmlDocument to use OwnerDocument');
     }
 
+    public function test_PrependChild_CanInsertInTopOfChildNodes() {
+         # Arrange:
+        $first_book  = $this->dom->getElementsByTagName('book')->item(0);
+        $internal_element = new XmlElement($this->dom->getElementsByTagName('book')->item(1)->childNodes->item(1));
+        $element = new XmlElement($first_book);
+                
+        # Act:
+        $element->prependChild($internal_element);
+
+        # Assert:
+        $this->assertEquals($internal_element->value(), $element->firstChild()->value());
+    }
+
     public function test_ParentNode_GetParentNodeWhenIsElement() {
         # Arrange:
         $first_book = $this->dom->getElementsByTagName('book')->item(0);
@@ -439,6 +448,55 @@ class XmlElementFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals($expected, $previous_sibling->innerXml());
     }
 
+    public function test_RemoveAttribute_CanRemoveAttributeByName() {
+        # Arrange:
+        $first_book = $this->dom->getElementsByTagName('book')->item(1);
+        $element = new XmlElement($first_book);
+                        
+        # Act:
+        $element->removeAttribute('id');
+
+        # Assert:
+        $this->assertEquals(0, $element->attributes()->count());
+    }
+
+    public function test_RemoveAttributeAt_CanRemoveAttributeByIndex() {
+        # Arrange:
+        $first_book = $this->dom->getElementsByTagName('book')->item(1);
+        $element = new XmlElement($first_book);
+                        
+        # Act:
+        $element->removeAllAttributes();
+
+        # Assert:
+        $this->assertEquals(0, $element->attributes()->count());
+    }
+
+    public function test_RemoveAttribute_CanRemoveAttributes() {
+        # Arrange:
+        $first_book = $this->dom->getElementsByTagName('book')->item(1);
+        $element = new XmlElement($first_book);
+                        
+        # Act:
+        $element->removeAttributeAt(0);
+
+        # Assert:
+        $this->assertEquals(0, $element->attributes()->count());
+    }
+
+
+    public function test_RemoveAll_CanRemoveAllChilds() {
+        # Arrange:
+        $first_book = $this->dom->getElementsByTagName('book')->item(1);
+        $element = new XmlElement($first_book);
+                        
+        # Act:
+        $removed = $element->removeAll();
+
+        # Assert:
+        $this->assertEquals(0, $element->childNodes()->count());
+    }
+
     public function test_RemoveChild_CanRemoveChildFromNode() {
         # Arrange:
         $first_book = $this->dom->getElementsByTagName('book')->item(1);
@@ -456,9 +514,4 @@ class XmlElementFixture extends PHPUnit_Framework_TestCase {
     public function test_SchemaInfo_CanGetSchemaInfo() {
         $this->markTestIncomplete('Need implement XmlDocument');
     }
-
-
-
-
-
 }
