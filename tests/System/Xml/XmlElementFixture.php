@@ -148,6 +148,30 @@ class XmlElementFixture extends PHPUnit_Framework_TestCase {
     	$this->assertEquals('Jack Herrington', $node->value());	
     }
 
+    public function test_GetNamespaceOfPrefix_CanGetNamespace() {
+        # Arrange:
+        $first_book = $this->dom->getElementsByTagName('book')->item(0);
+        $element = new XmlElement($first_book);
+                
+        # Act:
+        $namespaceURI = $element->getNamespaceOfPrefix('b');
+
+        # Assert:
+        $this->assertEquals('http://www.books.com', $namespaceURI);     
+    }
+
+    public function test_GetPrefixOfNamespace_CanGetPrefix() {
+        # Arrange:
+        $first_book = $this->dom->getElementsByTagName('book')->item(0);
+        $element = new XmlElement($first_book);
+                
+        # Act:
+        $namespaceURI = $element->getPrefixOfNamespace('http://www.books.com');
+
+        # Assert:
+        $this->assertEquals('b', $namespaceURI);     
+    }
+
     public function test_HasAttributes_ShouldHaveAttributes() {
     	# Arrange:
     	$first_book = $this->dom->getElementsByTagName('book')->item(0);
@@ -204,6 +228,56 @@ class XmlElementFixture extends PHPUnit_Framework_TestCase {
 
     	# Assert:
     	$this->assertEquals("Jack HerringtonPHP HacksO'Reilly", $element->innerText());
+    }
+
+    public function test_InserAfter_ThrowsExceptionWhenRefChildDontBelongsToParentNode() {
+        $this->setExpectedException('\\System\\ArgumentException');
+
+        # Arrange:
+        $first_book  = $this->dom->getElementsByTagName('book')->item(0);
+        $internal_element = new XmlElement($this->dom->getElementsByTagName('book')->item(1)->childNodes->item(1));
+        $element = new XmlElement($first_book);
+                
+        # Act:
+        $internal_element->insertAfter($internal_element, $element->firstChild());
+    }
+
+    public function test_InserAfter_CanInsertAfterInXmlNode() {
+        # Arrange:
+        $first_book  = $this->dom->getElementsByTagName('book')->item(0);
+        $internal_element = new XmlElement($this->dom->getElementsByTagName('book')->item(1)->childNodes->item(1));
+        $element = new XmlElement($first_book);
+                
+        # Act:
+        $element->insertAfter($internal_element, $element->firstChild());
+
+        # Assert:
+        $this->assertEquals($internal_element->value(), $element->firstChild()->nextSibling()->value());
+    }
+
+    public function test_InsertBefore_ThrowsExceptionWhenRefChildDontBelongsToParentNode() {
+        $this->setExpectedException('\\System\\ArgumentException');
+
+        # Arrange:
+        $first_book  = $this->dom->getElementsByTagName('book')->item(0);
+        $internal_element = new XmlElement($this->dom->getElementsByTagName('book')->item(1)->childNodes->item(1));
+        $element = new XmlElement($first_book);
+                
+        # Act:
+        $internal_element->insertBefore($internal_element, $element->firstChild());
+    }
+
+    public function test_InsertBefore_CanInsertBeforeInXmlNode() {
+        # Arrange:
+        $first_book  = $this->dom->getElementsByTagName('book')->item(0);
+        $internal_element = new XmlElement($this->dom->getElementsByTagName('book')->item(1)->childNodes->item(1));
+        $element = new XmlElement($first_book);
+                
+        # Act:
+        $element->insertBefore($internal_element, $element->firstChild());
+
+        # Assert:
+        $this->assertEquals($internal_element->value(), $element->firstChild()->value());
     }
 
     public function test_InnerXml_CanGetInnerXml() {
@@ -288,7 +362,6 @@ class XmlElementFixture extends PHPUnit_Framework_TestCase {
         # Assert:
         $this->assertEquals($expected, $next_sibling->innerXml());
     }
-
 
     public function test_NodeType_CanGetNodeType() {
         # Arrange:

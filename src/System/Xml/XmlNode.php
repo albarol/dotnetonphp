@@ -148,7 +148,7 @@ namespace System\Xml {
          * @return string The namespace URI of the specified prefix.
          */
         public function getNamespaceOfPrefix($prefix) {
-            
+            return $this->node->ownerDocument->lookupnamespaceURI($prefix);
         }
 
         /**
@@ -158,7 +158,7 @@ namespace System\Xml {
          * @return string The prefix for the specified namespace URI.
          */
         public function getPrefixOfNamespace($namespaceUri) {
-            
+            return $this->node->ownerDocument->lookupPrefix($namespaceUri);
         }
 
         /**
@@ -197,25 +197,61 @@ namespace System\Xml {
         /**
          * Inserts the specified node immediately after the specified reference node.
          * @access public
-         * @throws InvalidOperationException|ArgumentException
+         * @throws \System\InvalidOperationException This node is of a type that does not allow child nodes of the type of the newChild node. -or- The newChild is an ancestor of this node. 
+         * @throws \System\ArgumentException The newChild was created from a different document than the one that created this node. -or- The refChild is not a child of this node. -or- This node is read-only. 
          * @param \System\Xml\XmlNode $newChild The XmlNode to insert.
          * @param \System\Xml\XmlNode $refChild The XmlNode that is the reference node. The newNode is placed after the refNode.
          * @return \System\Xml\XmlNode The node being inserted.
          */
         public function insertAfter(XmlNode $newChild, XmlNode $refChild) {
-            
+            $this->getAndValidateRefChild($refChild);
+
+            $sibling = $refChild->nextSibling();
+
+            if($sibling) {
+                $refChild->parentNode()->insertBefore($newChild, $sibling);
+            } else {
+                $refChild->parentNode()->appendChild($newChild);
+            }   
+            return $newChild;
         }
 
         /**
          * Inserts the specified node immediately before the specified reference node.
          * @access public
-         * @throws InvalidOperationException|ArgumentException
+         * @throws \System\InvalidOperationException This node is of a type that does not allow child nodes of the type of the newChild node. -or- The newChild is an ancestor of this node. 
+         * @throws \System\ArgumentException The newChild was created from a different document than the one that created this node. -or- The refChild is not a child of this node. -or- This node is read-only. 
          * @param \System\Xml\XmlNode $newChild The XmlNode to insert.
          * @param \System\Xml\XmlNode $refChild The XmlNode that is the reference node.  The newChild is placed before this node.
          * @return \System\Xml\XmlNode The node being inserted.
          */
-        public function insertBefore(XmlNode $newChild, XmlNode$refChild) {
+        public function insertBefore(XmlNode $newChild, XmlNode $refChild) {
+            $current = $this->getAndValidateRefChild($refChild);
 
+            $doc = new \DOMDocument();
+            $doc->loadXML($newChild->outerXml());
+            $newNode = $current->ownerDocument->importNode($doc->documentElement, TRUE);
+
+            $this->node->insertBefore($newNode, $current);
+            $this->childNodes = null;
+            return $newChild;
+        }
+
+        private function getAndValidateRefChild(XmlNode $refChild) {
+            $elements = $this->node->ownerDocument->getElementsByTagName($refChild->name());
+            $current = null;
+
+            foreach($elements as $element):
+                if($element->parentNode->isSameNode($this->node)):
+                    $current = $element;
+                endif;
+            endforeach;
+
+            if(is_null($current)):
+                throw new ArgumentException("The refChild is not a child of this node. Or this node is read-only. ");
+            endif;
+
+            return $current;
         }
 
         /**
@@ -272,7 +308,6 @@ namespace System\Xml {
          * @return \System\Xml\XmlNode The next XmlNode. If there is no next node, null is returned.
          */
         public function nextSibling() { 
-            echo var_dump($this->node->nextSibling);
             return new XmlElement($this->node->nextSibling);
         }
 
@@ -291,7 +326,7 @@ namespace System\Xml {
          * @return void
          */
         public function normalize() {
-
+            $this->node->normalize();
         }
 
         /**
@@ -307,9 +342,9 @@ namespace System\Xml {
         }
 
         /**
-         * Gets the System.Xml.XmlDocument to which this node belongs.
+         * Gets the XmlDocument to which this node belongs.
          * @access public
-         * @return \System\Xml\XmlDocument The System.Xml.XmlDocument to which this node belongs.  If the node is an System.Xml.XmlDocument (NodeType equals XmlNodeType.Document), this property returns null.
+         * @return \System\Xml\XmlDocument The XmlDocument to which this node belongs.  If the node is an System.Xml.XmlDocument (NodeType equals XmlNodeType.Document), this property returns null.
          */
         public function ownerDocument() {
 
@@ -341,7 +376,7 @@ namespace System\Xml {
          */
         public function prefix($value=null) { 
             if(!is_null($value)) {
-
+                $this->node->prefix = $value;
             }
             return $this->node->prefix;
         }
