@@ -20,7 +20,7 @@ namespace System\Xml {
         /**
          * Returns an enumerator that iterates through a collection.
          * @access public
-         * @return IEnumerator An System.Collections.IEnumerator object that can be used to iterate through the collection.
+         * @return \System\Collections\IEnumerator An System.Collections.IEnumerator object that can be used to iterate through the collection.
          */
         public function getEnumerator() {
             // TODO: Implement getEnumerator() method.
@@ -29,7 +29,7 @@ namespace System\Xml {
         /**
          * Retrieves a node at the given index.
          * @param $index Zero-based index into the list of nodes.
-         * @return XmlNode The XmlNode in the collection.If index is greater than or equal to the number of nodes in the list, this returns null.
+         * @return \System\Xml\XmlNode The XmlNode in the collection.If index is greater than or equal to the number of nodes in the list, this returns null.
          */
         public function item($index) {
             $item = $this->nodeList->item($index);

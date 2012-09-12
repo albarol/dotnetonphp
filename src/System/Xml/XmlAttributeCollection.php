@@ -61,6 +61,8 @@ namespace System\Xml {
 			return new XmlAttribute($this->namedNodeMap->item($index));
 		}
 
-		private function nameItemOf($name) { }
+		private function nameItemOf($name) { 
+			return new XmlAttribute($this->namedNodeMap->getNamedItem($name));
+		}
 	} 
 }

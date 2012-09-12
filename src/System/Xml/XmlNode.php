@@ -238,22 +238,7 @@ namespace System\Xml {
             return $newChild;
         }
 
-        private function getAndValidateRefChild(XmlNode $refChild) {
-            $elements = $this->node->ownerDocument->getElementsByTagName($refChild->name());
-            $current = null;
-
-            foreach($elements as $element):
-                if($element->parentNode->isSameNode($this->node)):
-                    $current = $element;
-                endif;
-            endforeach;
-
-            if(is_null($current)):
-                throw new ArgumentException("The refChild is not a child of this node. Or this node is read-only. ");
-            endif;
-
-            return $current;
-        }
+        
 
         /**
          * Gets a value indicating whether the node is read-only.
@@ -454,13 +439,22 @@ namespace System\Xml {
         /**
          * Replaces the child node oldChild with newChild node.
          * @access public
-         * @throws InvalidOperationException|ArgumentException
+         * @throws \System\InvalidOperationException This node is of a type that does not allow child nodes of the type of the newChild node. -or- The newChild is an ancestor of this node.
+         * @throws \System\ArgumentException The newChild was created from a different document than the one that created this node. -or- This node is read-only. -or- The oldChild is not a child of this node.
          * @param \System\Xml\XmlNode $newChild The new node to put in the child list.
          * @param \System\Xml\XmlNode $oldChild The node being replaced in the list.
          * @return \System\Xml\XmlNode The node replaced.
          */
         public function replaceChild(XmlNode $newChild, XmlNode $oldChild) {
-            
+            $refChild = $this->getAndValidateRefChild($oldChild);
+
+            $doc = new \DOMDocument();
+            $doc->loadXML($newChild->outerXml());
+            $newNode = $refChild->ownerDocument->importNode($doc->documentElement, TRUE);
+
+            $this->node->replaceChild($newNode, $refChild);
+            $this->childNodes = null;
+            return $newChild;
         }
 
         /**
@@ -468,11 +462,12 @@ namespace System\Xml {
          * @access public
          * @throws \System\Xml\XPath\XPathException
          * @param string $xpath The XPath expression. 
-         * @param \System\Xml\XmlNamespaceManager $nsmgr An System.Xml.XmlNamespaceManager to use for resolving namespaces for prefixes in the XPath expression.
          * @return \System\Xml\XmlNodeList An System.Xml.XmlNodeList containing a collection of nodes matching the XPath query. The XmlNodeList should not be expected to be connected "live" to the XML document. That is, changes that appear in the XML document may not appear in the XmlNodeList, and vice versa.
          */
-        public function selectNodes($xpath, $nsmgr=null) {
-            
+        public function selectNodes($xpath) {
+            $domXPath = new \DOMXPath($this->node->ownerDocument);
+            $elements = $domXPath->query($this->node->getNodePath().$xpath);
+            return ($elements->length > 0) ? new XmlChildNodes($elements) : null;
         }
 
         /**
@@ -480,11 +475,18 @@ namespace System\Xml {
          * @access public
          * @throws \System\Xml\XPath\XPathException
          * @param $xpath The XPath expression.
-         * @param null $nsmgr An System.Xml.XmlNamespaceManager to use for resolving namespaces for prefixes in the XPath expression.
          * @return XmlNode The first XmlNode that matches the XPath query or null if no matching node is found. The XmlNode should not be expected to be connected "live" to the XML document. That is, changes that appear in the XML document may not appear in the XmlNode, and vice versa.
          */
-        public function selectSingleNode($xpath, $nsmgr=null) {
+        public function selectSingleNode($xpath) {
+            $domXPath = new \DOMXPath($this->node->ownerDocument);
+            $elements = $domXPath->query($this->node->getNodePath().$xpath);
             
+            if ($elements->length <= 0) {
+                return null;
+            } 
+
+            $childNodes = new XmlChildNodes($elements);
+            return $childNodes->item(0);
         }
 
         /**
@@ -495,7 +497,7 @@ namespace System\Xml {
          * @return bool true if the feature is implemented in the specified version; otherwise, false. The following table describes the combinations that return true.
          */
         public function supports($feature, $version) {
-
+            return $this->node->isSupported($feature, $version);
         }
 
 
@@ -531,5 +533,28 @@ namespace System\Xml {
          * @return void
          */
         public abstract function writeTo(XmlWriter $w);
+
+
+        // private methods
+        private function getAndValidateRefChild(XmlNode $refChild) {
+            $elements = $this->node->ownerDocument->getElementsByTagName($refChild->name());
+            $current = null;
+            $i = 0;
+
+            
+            while($current == null && $i < $elements->length):
+                $element = $elements->item($i);
+                if($element->parentNode->isSameNode($this->node)):
+                    $current = $element;
+                endif;
+                $i++;
+            endwhile;
+
+            if(is_null($current)):
+                throw new ArgumentException("The refChild is not a child of this node. Or this node is read-only. ");
+            endif;
+
+            return $current;
+        }
     }
 }

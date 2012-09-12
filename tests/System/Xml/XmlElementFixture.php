@@ -4,6 +4,7 @@ require_once(dirname(__FILE__) . '/../../../src/Autoloader.php');
 
 use \System\Xml\XmlDocument as XmlDocument;
 use \System\Xml\XmlElement as XmlElement;
+use \System\Xml\XmlAttribute as XmlAttribute;
 
 
 //TODO: Implement exceptions when node belongs to another XmlDocument
@@ -13,10 +14,18 @@ class XmlElementFixture extends PHPUnit_Framework_TestCase {
 	private $dom;
 
 	public function setUp() {
-		$xml = "<books xmlns:b='http://www.books.com'>"
-               . "<b:book id='1'><author>Jack Herrington</author><title>PHP Hacks</title><publisher>O'Reilly</publisher></b:book>"
-               . "<b:book id='2'><author>Jack Herrington</author><title>Podcasting Hacks</title><publisher>O'Reilly</publisher></b:book>"
-               . "</books>";
+		$xml = "<books xmlns:b='http://www.books.com'>
+                    <b:book id='1'>
+                        <author>Jack Herrington</author>
+                        <title>PHP Hacks</title>
+                        <publisher>O'Reilly</publisher>
+                    </b:book>
+                    <b:book id='2'>
+                        <author>Jack Herrington</author>
+                        <title>Podcasting Hacks</title>
+                        <publisher>O'Reilly</publisher>
+                    </b:book>
+                </books>";
 
         $this->dom = new \DOMDocument();
 		$this->dom->preserveWhiteSpace = false;
@@ -142,6 +151,18 @@ class XmlElementFixture extends PHPUnit_Framework_TestCase {
 
     	# Assert:
     	$this->assertEquals('Jack Herrington', $node->value());	
+    }
+
+    public function test_GetElementsByTagName_CanGetChildElementsByName() {
+        # Arrange:
+        $first_book = $this->dom->getElementsByTagName('book')->item(0);
+        $element = new XmlElement($first_book);
+                
+        # Act:
+        $nodes = $element->getElementsByTagName('author');
+
+        # Assert:
+        $this->assertEquals(1, $nodes->count());
     }
 
     public function test_GetNamespaceOfPrefix_CanGetNamespace() {
@@ -484,6 +505,19 @@ class XmlElementFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(0, $element->attributes()->count());
     }
 
+    public function test_RemoveAttributeNode_CanRemoveAttributeFromNode() {
+        # Arrange:
+        $first_book = $this->dom->getElementsByTagName('book')->item(1);
+        $element = new XmlElement($first_book);
+        $oldAttr = $element->attributes()->item(0);
+                        
+        # Act:
+        $attr = $element->removeAttributeNode($oldAttr);
+
+        # Assert:
+        $this->assertEquals(0, $element->attributes()->count());
+    }
+
 
     public function test_RemoveAll_CanRemoveAllChilds() {
         # Arrange:
@@ -511,7 +545,103 @@ class XmlElementFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(2, $element->childNodes()->count());
     }
 
+    public function test_ReplaceChild_CanReplaceChild() {
+        # Arrange:
+        $first_book = $this->dom->getElementsByTagName('book')->item(0);
+        $second_book = $this->dom->getElementsByTagName('book')->item(1);
+        $element = new XmlElement($first_book);
+        $second_element = new XmlElement($second_book);
+                        
+        # Act:
+        $replaced = $element->replaceChild($second_element->item('title'), $element->item('title'));
+
+        # Assert:
+        $this->assertEquals('Podcasting Hacks', $element->item('title')->value());
+        $this->assertEquals(3, $element->childNodes()->count());
+    }
+
     public function test_SchemaInfo_CanGetSchemaInfo() {
         $this->markTestIncomplete('Need implement XmlDocument');
+    }
+
+    public function test_SelectNodes_CanRetrieveAllNodesByXPath() {
+        # Arrange:
+        $first_book = $this->dom->getElementsByTagName('book')->item(0);
+        $element = new XmlElement($first_book);
+                        
+        # Act:
+        $nodes = $element->selectNodes('/title');
+
+        # Assert:
+        $this->assertEquals('PHP Hacks', $nodes->item(0)->value());
+        $this->assertEquals(1, $nodes->count());
+    }
+
+    public function test_SelectSingleNode_CanRetrieveSingleNodeByXPath() {
+        # Arrange:
+        $first_book = $this->dom->getElementsByTagName('book')->item(0);
+        $element = new XmlElement($first_book);
+                        
+        # Act:
+        $node = $element->selectSingleNode('/title');
+
+        # Assert:
+        $this->assertEquals('PHP Hacks', $node->value());
+    }
+
+    public function test_SetAttribute_ShouldAddAttributeInNode() {
+        # Arrange:
+        $first_book = $this->dom->getElementsByTagName('book')->item(0);
+        $element = new XmlElement($first_book);
+                        
+        # Act:
+        $element->setAttribute('new', 'false');
+
+        # Assert:
+        $this->assertEquals(2, $element->attributes()->count());
+    }
+
+    public function test_SetAttribute_ShouldReplaceAttributeValue() {
+        # Arrange:
+        $first_book = $this->dom->getElementsByTagName('book')->item(0);
+        $element = new XmlElement($first_book);
+                        
+        # Act:
+        $element->setAttribute('id', '3');
+        $attr = $element->attributes();
+
+        # Assert:
+        $this->assertEquals('3', $attr->item(0)->value());
+    }
+
+    public function test_SetAttributeNode_ShouldAddAttributeInNode() {
+        # Arrange:
+        $first_book = $this->dom->getElementsByTagName('book')->item(0);
+        $second_book = $this->dom->getElementsByTagName('book')->item(1);
+        $element = new XmlElement($first_book);
+        $second_element = new XmlElement($second_book);
+
+                        
+        # Act:
+        $second_element->setAttribute('new', 'false');
+        $element->setAttributeNode($second_element->attributes()->item(1));
+
+        # Assert:
+        $this->assertEquals(2, $element->attributes()->count());
+    }
+
+    public function test_SetAttributeNode_ShouldReplaceAttributeInNode() {
+        # Arrange:
+        $first_book = $this->dom->getElementsByTagName('book')->item(0);
+        $second_book = $this->dom->getElementsByTagName('book')->item(1);
+        $element = new XmlElement($first_book);
+        $second_element = new XmlElement($second_book);
+
+                        
+        # Act:
+        $element->setAttributeNode($second_element->attributes()->item(0));
+
+        # Assert:
+        $this->assertEquals('2', $element->attributes()->item(0)->value());
     }
 }

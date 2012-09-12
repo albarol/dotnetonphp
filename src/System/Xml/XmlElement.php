@@ -3,9 +3,11 @@
 namespace System\Xml {
 
 
-    use \System\Xml\XmlLinkedNode as XmlLinkedNode;
+    use \System\Xml\XmlChildNodes as XmlChildNodes;
     use \System\Xml\XmlDocument as XmlDocument;
+    use \System\Xml\XmlLinkedNode as XmlLinkedNode;
     use \System\Xml\XmlNodeType as XmlNodeType;
+
 
     /**
      * Represents an element.
@@ -44,6 +46,17 @@ namespace System\Xml {
          */
         public function getEnumerator() {
             // TODO: Implement getEnumerator() method.
+        }
+
+        /**
+         * Returns an XmlNodeList containing a list of all descendant elements that match the specified Name.
+         * @access public
+         * @param string $name The name tag to match.This is a qualified name.It is matched against the Name property of the matching node.The asterisk (*) is a special value that matches all tags.
+         * @return \System\Xml\XmlNodeList An XmlNodeList containing a list of all matching nodes.
+        */
+        public function getElementsByTagName($name) {
+            $elements = $this->element->getelementsByTagName($name);
+            return ($elements->length > 0) ? new XmlChildNodes($elements) : null;
         }
 
         /**
@@ -120,6 +133,7 @@ namespace System\Xml {
 
         /**
          * Removes an attribute by name.
+         * @access public
          * @throws \System\ArgumentException The node is read-only.
          * @param string $name The name of the attribute to remove.This is a qualified name.It is matched against the Name property of the matching node.
          * @return void
@@ -131,6 +145,7 @@ namespace System\Xml {
 
         /**
          * Removes the attribute node with the specified index from the element.(If the removed attribute has a default value, it is immediately replaced).
+         * @access public
          * @param $int i The index of the node to remove.The first node has index 0.
          * @return \System\Xml\XmlNode The attribute node removed or null if there is no node at the given index.
         */
@@ -143,7 +158,42 @@ namespace System\Xml {
             $this->node->removeAttribute($node->name());
             $this->namedNodeMap = null;
             return $node;
-        }        
+        }
+
+        /**
+         * Removes the specified XmlAttribute.
+         * @access public
+         * @param \System\Xml\XmlAttribute The XmlAttribute node to remove.If the removed attribute has a default value, it is immediately replaced.
+         * @return \System\Xml\XmlAttribute The removed XmlAttribute or null if oldAttr is not an attribute node of the XmlElement.
+        */
+        public function removeAttributeNode(XmlAttribute $oldAttr) {
+            $this->removeAttribute($oldAttr->name());
+            return $oldAttr;
+        }
+
+        /**
+         * Sets the value of the attribute with the specified name.
+         * @access public
+         * @param string $name The name of the attribute to create or alter.This is a qualified name.If the name contains a colon it is parsed into prefix and local name components.
+         * @param string $value The value to set for the attribute. 
+         * @return void
+        */
+        public function setAttribute($name, $value) {
+            $this->node->setAttribute($name, $value);
+            $this->namedNodeMap = null;
+        }
+
+        /**
+         * Adds the specified XmlAttribute.
+         * @access public
+         * @param \System\Xml\XmlAttribute $newAttr The XmlAttribute node to add to the attribute collection for this element. 
+         * @return \System\Xml\XmlAttribute If the attribute replaces an existing attribute with the same name, the old XmlAttribute is returned; otherwise, null is returned.
+        */
+        public function setAttributeNode(XmlAttribute $newAttr) {
+            $this->setAttribute($newAttr->name(), $newAttr->value());
+            $oldAttr = $this->node->getAttributeNode($newAttr->name());
+            return is_null($oldAttr) ? null : new XmlAttribute($oldAttr);
+        }
 
         /**
          * Overridden. Saves all the child nodes of the node to the specified System.Xml.XmlWriter.
@@ -151,7 +201,9 @@ namespace System\Xml {
          * @param \System\Xml\XmlWriter $w The XmlWriter to which you want to save.
          * @return void
          */
-        public function writeContentTo(XmlWriter $w) { }
+        public function writeContentTo(XmlWriter $w) { 
+            // TODO: Implement writeContentTo() method.
+        }
 
         /**
          * Overridden. Saves the current node to the specified System.Xml.XmlWriter.
@@ -159,6 +211,8 @@ namespace System\Xml {
          * @param \System\Xml\XmlWriter $w The XmlWriter to which you want to save.
          * @return void
          */
-        public function writeTo(XmlWriter $w) { }
+        public function writeTo(XmlWriter $w) { 
+            // TODO: Implement writeTo() method.
+        }
     }
 }

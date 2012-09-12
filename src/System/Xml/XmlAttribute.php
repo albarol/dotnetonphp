@@ -19,7 +19,7 @@ namespace System\Xml {
         * This constructor supports the .NET Framework infrastructure and is not intended to be used directly from your code. 
         * @access private
         */
-        public function __construct(\DOMNode $node) {
+        public function __construct(\DOMAttr $node) {
             parent::__construct($node);
         }
 
