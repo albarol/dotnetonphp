@@ -1,48 +1,53 @@
 <?php
 
-/**
- * Specifies how white space is handled.
- * @access public
- * @name WhitespaceHandling
- * @package System
- * @subpackage Xml
- */
-class WhitespaceHandling extends Enum {
+namespace System\Xml {
 
-    private function __construct($name, $value) {
-        $this->Name = $name;
-        $this->Value = $value;
-    }
+    use \System\Enum as Enum;
+
 
     /**
-     * Return Whitespace and SignificantWhitespace nodes. This is the default.
+     * Specifies how white space is handled.
      * @access public
-     * @static
-     * @return WhitespaceHandling
+     * @name WhitespaceHandling
+     * @package System
+     * @subpackage Xml
      */
-    public static function all() {
-        return new WhitespaceHandling("ALL", 0);
-    }
+    class WhitespaceHandling extends Enum {
 
-    /**
-     * Return no Whitespace and no SignificantWhitespace nodes.
-     * @access public
-     * @static
-     * @return WhitespaceHandling
-     */
-    public static function none() {
-        return new WhitespaceHandling("NONE", 1);
-    }
+        private function __construct($name, $value) {
+            $this->name = $name;
+            $this->value = $value;
+        }
 
-    /**
-     * Return no Whitespace and no SignificantWhitespace nodes.
-     * @access public
-     * @static
-     * @return WhitespaceHandling
-     */
-    public static function significant() {
-        return new WhitespaceHandling("SIGNIFICANT", 2);
-    }
+        /**
+         * Return Whitespace and SignificantWhitespace nodes. This is the default.
+         * @access public
+         * @static
+         * @return WhitespaceHandling
+         */
+        public static function all() {
+            return new WhitespaceHandling("ALL", 0);
+        }
 
+        /**
+         * Return no Whitespace and no SignificantWhitespace nodes.
+         * @access public
+         * @static
+         * @return WhitespaceHandling
+         */
+        public static function none() {
+            return new WhitespaceHandling("NONE", 1);
+        }
+
+        /**
+         * Return no Whitespace and no SignificantWhitespace nodes.
+         * @access public
+         * @static
+         * @return WhitespaceHandling
+         */
+        public static function significant() {
+            return new WhitespaceHandling("SIGNIFICANT", 2);
+        }
+
+    }
 }
-?>

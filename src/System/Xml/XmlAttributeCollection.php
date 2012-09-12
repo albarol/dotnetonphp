@@ -10,8 +10,6 @@ namespace System\Xml {
 	use \System\Collections\IEnumerable as IEnumerable;
 
 
-
-
 	/**
      * Represents a collection of attributes that can be accessed by name or index. 
      * @access public

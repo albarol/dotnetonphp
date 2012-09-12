@@ -4,41 +4,51 @@ require_once(dirname(__FILE__) . '/../../../src/Autoloader.php');
 
 
 use \System\Xml\XmlDocument as XmlDocument;
+use \System\Xml\XmlException as XmlException;
+
+use \System\IO\FileStream as FileStream;
 
 
 class XmlDocumentFixture extends PHPUnit_Framework_TestCase {
 
     private $xml = array(
-        'well-formed' => '<?xml version="1.0"?><books xmlns:html="http://www.w3.org/1999/xhtml"><book ISBN="1-861001-57-5"><title>Pride And Prejudice</title><price>19</price></book></books>',
+        'well-formed' => '<?xml version="1.0"?><books xmlns:b="http://www.books.com"><book ISBN="1-861001-57-5"><title>Pride And Prejudice</title><price>19</price></book></books>',
         'bad-formed'  => "<?xml version='1.0'?><books><book></books><book>"
     );
 
-    private function read($node) {
-        #echo var_dump($node);
-        if($node->count() == 0)
-            return;
+    public function test_CreateElement_CanCreateElementByPrefix() {
+        # Arrange:
+        $doc = new XmlDocument;
+        $expected = '<b:book xmlns:b="http://www.books.com"></b:book>';
 
-        foreach($node->children() as $innerNode) {
-            $this->read($innerNode);
-        }
+        # Act:
+        $element = $doc->createElement('book', 'http://www.books.com', 'b');
 
+        $this->assertEquals($expected, $element->outerXml());
+    }
+
+    public function test_CreateElement_CanCreateElementByName() {
+        # Arrange:
+        $doc = new XmlDocument;
+        $expected = '<book></book>';
+
+        # Act:
+        $element = $doc->createElement('book');
+
+        $this->assertEquals($expected, $element->outerXml());
     }
 
 
 
     /*public function test_Load_FromStreamThrowsExceptionWhenXmlWasNotWellFormed() {
-        $xml = simplexml_load_file($this->xml['well-formed']);
-        #echo var_dump($xml);
-        
-
-        $this->setExpectedException("System\\Xml\\XmlException");
+        $this->setExpectedException("\\System\\Xml\\XmlException");
         $stream = new FileStream($this->paths['bad-formed']);
         $xml = new XmlDocument;
         $xml->load($stream);
     }
 
     public function test_Load_FromStreamCanLoadXml() {
-        $stream = new \System\IO\FileStream($this->paths['well-formed']);
+        $stream = new FileStream($this->paths['well-formed']);
         $xml = new XmlDocument;
         $xml->load($stream);
         $this->assertEquals(1, $xml->childNodes()->count());
@@ -84,22 +94,26 @@ class XmlDocumentFixture extends PHPUnit_Framework_TestCase {
         $xml = new XmlDocument;
         $xml->load($reader);
         $this->assertEquals(1, $xml->childNodes()->count());
-    }
+    }*/
 
 
     public function test_LoadXml_ThrowsExceptionWhenXmlWasNotWellFormed() {
+        # Arrange:
         $this->setExpectedException("\\System\\Xml\\XmlException");
         $xml = new XmlDocument();
+        
+        # Act:
         $xml->loadXml($this->xml['bad-formed']);
-    }*/
-
-    public function test_LoadXml_CanLoadXmlFromString() {
-        $doc = new XmlDocument();
-        $doc->loadXml($this->xml['well-formed']);
-        $this->assertEquals(1, 0);
     }
 
-    
-
+    public function test_LoadXml_CanLoadXmlFromString() {
+        # Arrange:
+        $doc = new XmlDocument();
+        
+        # Act:
+        $doc->loadXml($this->xml['well-formed']);
+        
+        # Assert:
+        $this->assertEquals(1, $doc->childNodes()->count());
+    }
 }
-?>

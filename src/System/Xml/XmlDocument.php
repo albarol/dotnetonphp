@@ -15,24 +15,11 @@ namespace System\Xml {
     class XmlDocument extends XmlNode {
 
         private $document;
-        private $childNodes;
 
-        public function __construct() { }
-
-        /**
-         * Gets all the child nodes of the node.
-         * @access public
-         * @return XmlNodeList
-         */
-        public function childNodes() {
-            if($this->node->hasChildNodes()) {
-                $this->childNodes = new XmlChildNodes($this->node->childNodes);
-            } else {
-                $this->childNodes = new XmlChildNodes(new \DOMNodeList());
-            }
-            return $this->childNodes;
+        public function __construct() { 
+            $this->document = new \DOMDocument();
+            parent::__construct($this->document);
         }
-
 
         /**
          * Creates a new object that is a copy of the current instance.
@@ -48,9 +35,25 @@ namespace System\Xml {
          * @access public
          * @return IEnumerator An System.Collections.IEnumerator object that can be used to iterate through the collection.
          */
-        function getEnumerator()
-        {
+        public function getEnumerator() {
             // TODO: Implement getEnumerator() method.
+        }
+
+        /**
+         * Creates an element with the specified name, namespaceURI and prefix
+         * @access public
+         * @param string $name The local name of the new element. -or- The qualified name of the element.
+         * @param string $namespaceURI The namespace URI of the new element (if any). String.Empty and null are equivalent.
+         * @param string $prefix The prefix of the new element (if any). String.Empty and null are equivalent.
+        */
+        public function createElement($name, $namespaceURI=null, $prefix=null) {
+            $element = null;
+            if (is_null($namespaceURI) && is_null($prefix)) {
+                $element = $this->document->createElement($name);
+            } else {
+                $element = $this->document->createElementNS($namespaceURI, $prefix.':'.$name);
+            }
+            return new XmlElement($element);
         }
 
         /**
@@ -99,7 +102,7 @@ namespace System\Xml {
         }
 
         private function createFromTextReader(TextReader $reader) {
-            $this->LoadXml($reader->readToEnd());
+            $this->loadXml($reader->readToEnd());
         }
 
         private function createFromStream(Stream $stream) {
@@ -110,7 +113,7 @@ namespace System\Xml {
         }
 
         private function createFromString($fileName) {
-            $this->LoadXml(file_get_contents($fileName));
+            $this->loadXml(file_get_contents($fileName));
         }
 
 
@@ -122,22 +125,14 @@ namespace System\Xml {
         /**
          * Loads the XML document from the specified string.
          * @access public
-         * @throws XmlException There is a load or parse error in the XML. In this case, the document remains empty.
+         * @throws \Ssytem\Xml\XmlException There is a load or parse error in the XML. In this case, the document remains empty.
          * @param string $xml String containing the XML document to load.
          * @return void
          */
         public function loadXml($xml) {
             try {
-                $dom = new \DOMDocument();
-                $dom->loadXml($xml);
-
-                #XmlElement $parent = 
-
-
-                echo var_dump($dom->getElementsByTagName("book")->item(0)->nodeValue);
-                #$this->createNodes($document);
+                $this->document->loadXml($xml);
             } catch(\Exception $e) {
-                echo var_dump($e->getMessage());
                 throw new XmlException("There is a load or parse error in the XML. In this case, the document remains empty.");
             }
         }

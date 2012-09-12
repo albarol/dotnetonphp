@@ -72,7 +72,7 @@ namespace System\Xml {
          * @return \System\Xml\XmlNodeType One of the System.Xml.XmlNodeType values.
          */
         public function nodeType() { 
-            return XmlNodeType::Text;
+            return XmlNodeType::text();
         }
 
         /**

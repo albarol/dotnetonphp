@@ -2,11 +2,11 @@
 
 namespace System\Xml {
 
-	use \System\Xml\XmlAttribute as XmlAttribute;
-
 	use \System\Collections\IEnumerable as IEnumerable;
 
+	use \System\Xml\XmlAttribute as XmlAttribute;
 
+	
 	/**
 	 * Represents a collection of nodes that can be accessed by name or index.
      * @access public

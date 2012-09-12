@@ -34,9 +34,9 @@ namespace System\Xml {
         public function item($index) {
             $item = $this->nodeList->item($index);
             switch ($item->nodeType) {
-                case XmlNodeType::Element;
+                case XmlNodeType::element()->value();
                     return new XmlElement($item);
-                case XmlNodeType::Text;
+                case XmlNodeType::text()->value();
                     return new XmlText($item);
                 default:
                     return null;

@@ -114,7 +114,7 @@ namespace System\Xml {
          * @return \System\Xml\XmlNodeType One of the System.Xml.XmlNodeType values.
          */
         public function nodeType() { 
-            return XmlNodeType::Element;
+            return XmlNodeType::element();
         }
 
 

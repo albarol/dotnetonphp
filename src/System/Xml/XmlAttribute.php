@@ -2,6 +2,8 @@
 
 namespace System\Xml { 
 
+    use \System\InvalidOperationException as InvalidOperationException;
+
     use \System\Xml\XmlNode as XmlNode;
     use \System\Xml\XmlNodeType as XmlNodeType;
 
@@ -23,16 +25,37 @@ namespace System\Xml {
             parent::__construct($node);
         }
 
+
         /**
-         * When overridden in a derived class, creates a duplicate of the node.
+         * Adds the specified node to the end of the list of child nodes, of this node.
          * @access public
-         * @throws InvalidOperationException
-         * @param bool $deep true to recursively clone the subtree under the specified node; false to clone only the node itself.
-         * @return XmlNode The cloned node.
+         * @throws \System\InvalidOperationException This node is of a type that does not allow child nodes of the type of the newChild node. -or- The newChild is an ancestor of this node. 
+         * @throws \System\ArgumentException The newChild was created from a different document than the one that created this node. -or- This node is read-only. 
+         * @param \System\Xml\XmlNode $newChild The node to add. All the contents of the node to be added are moved into the specified location.
+         * @return void
          */
-        public function cloneNode($deep)
-        {
-            // TODO: Implement cloneNode() method.
+        public function appendChild(XmlNode $newChild) {
+            if ($newChild->nodeType() != XmlNodeType::text()) {
+                throw new InvalidOperationException("This node is of a type that does not allow child nodes of the type of the newChild node. -or- The newChild is an ancestor of this node.");
+            }
+
+            $doc = new \DOMDocument();
+            $doc->loadXML($newChild->outerXml());
+            $newNode = $this->node->ownerDocument->importNode($doc->documentElement, TRUE);
+            $this->node->appendChild($newNode);
+        }
+
+
+
+        /**
+         * Overridden. Creates a duplicate of the node.
+         * @access public
+         * @throws \System\InvalidOperationException This node is of a type that does not allow child nodes of the type of the newChild node.
+         * @param bool $deep true to recursively clone the subtree under the specified node; false to clone only the node itself.
+         * @return \System\Xml\XmlNode The cloned node.
+         */
+        public function cloneNode($deep) {
+            
         }
 
         /**
@@ -49,9 +72,8 @@ namespace System\Xml {
          * @access public
          * @return string The name of the node with the prefix removed. For example, LocalName is book for the element
          */
-        public function localName()
-        {
-            // TODO: Implement localName() method.
+        public function localName() {
+            return $this->node->localName;
         }
 
         /**
@@ -87,8 +109,7 @@ namespace System\Xml {
          * @param XmlWriter $w The XmlWriter to which you want to save.
          * @return void
          */
-        public function writeContentTo(XmlWriter $w)
-        {
+        public function writeContentTo(XmlWriter $w) {
             // TODO: Implement writeContentTo() method.
         }
 
@@ -98,8 +119,7 @@ namespace System\Xml {
          * @param XmlWriter $w The XmlWriter to which you want to save.
          * @return void
          */
-        public function writeTo(XmlWriter $w)
-        {
+        public function writeTo(XmlWriter $w) {
             // TODO: Implement writeTo() method.
         }
     }

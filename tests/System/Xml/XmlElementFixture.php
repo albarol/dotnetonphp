@@ -5,6 +5,7 @@ require_once(dirname(__FILE__) . '/../../../src/Autoloader.php');
 use \System\Xml\XmlDocument as XmlDocument;
 use \System\Xml\XmlElement as XmlElement;
 use \System\Xml\XmlAttribute as XmlAttribute;
+use \System\Xml\XmlNodeType as XmlNodeType;
 
 
 //TODO: Implement exceptions when node belongs to another XmlDocument
@@ -388,7 +389,7 @@ class XmlElementFixture extends PHPUnit_Framework_TestCase {
         $element = new XmlElement($first_book);
 
         # Assert:
-        $this->assertEquals(XML_ELEMENT_NODE, $element->nodeType());
+        $this->assertEquals(XmlNodeType::element(), $element->nodeType());
     }
 
     public function test_OuterXml_CanGetOuterXml() {

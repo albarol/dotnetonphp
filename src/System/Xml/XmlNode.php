@@ -67,7 +67,7 @@ namespace System\Xml {
          * @return void
          */
         public function appendChild(XmlNode $newChild) {
-            if ($this->nodeType() != XmlNodeType::Element && $this->nodeType() != XmlNodeType::Document) {
+            if ($this->nodeType() != XmlNodeType::element() && $this->nodeType() != XmlNodeType::document()) {
                 throw new InvalidOperationException("This node is of a type that does not allow child nodes of the type of the newChild node. -or- The newChild is an ancestor of this node.");
             }
 
@@ -344,7 +344,7 @@ namespace System\Xml {
         public function parentNode() { 
             $nodeType = $this->node->parentNode->nodeType;
             switch ($nodeType) {
-                case XmlNodeType::Document:
+                case XmlNodeType::document()->value():
                     return $this->ownerDocument();
                 default:
                     return new XmlElement($this->node->parentNode);
