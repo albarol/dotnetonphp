@@ -91,7 +91,16 @@ namespace System\Xml {
          * @return XmlNodeType One of the System.Xml.XmlNodeType values.
          */
         public function nodeType() {
-            return XmlNodeType::Attribute;
+            return XmlNodeType::attribute();
+        }
+
+        /**
+         * Gets the markup representing this node and all its child nodes.
+         * @access public
+         * @return string The markup containing this node and all its child nodes. Note:OuterXml does not return default attributes.
+         */
+        public function outerXml() {
+            return $this->name()."=".$this->value();
         }
 
         /**

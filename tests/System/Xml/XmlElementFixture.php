@@ -12,10 +12,10 @@ use \System\Xml\XmlNodeType as XmlNodeType;
 
 class XmlElementFixture extends PHPUnit_Framework_TestCase {
 
-	private $dom;
+    private $dom;
 
-	public function setUp() {
-		$xml = "<books xmlns:b='http://www.books.com'>
+    public function setUp() {
+    	$xml = "<books xmlns:b='http://www.books.com'>
                     <b:book id='1'>
                         <author>Jack Herrington</author>
                         <title>PHP Hacks</title>
@@ -29,11 +29,11 @@ class XmlElementFixture extends PHPUnit_Framework_TestCase {
                 </books>";
 
         $this->dom = new \DOMDocument();
-		$this->dom->preserveWhiteSpace = false;
-		$this->dom->loadXml($xml);
-	}
+    	$this->dom->preserveWhiteSpace = false;
+    	$this->dom->loadXml($xml);
+    }
 
-    
+
     public function test_Construct_CanConstructElement() {
     	# Arrange:
     	$first_book = $this->dom->getElementsByTagName('book')->item(0);

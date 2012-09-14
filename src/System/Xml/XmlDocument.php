@@ -2,23 +2,51 @@
 
 namespace System\Xml {
 
-   
-    use \System\Xml\XmlNode as XmlNode;
+    use \System\Xml\XmlAttribute as XmlAttribute;
+    use \System\Xml\XmlCDataSection as XmlCDataSection;
     use \System\Xml\XmlChildNodes as XmlChildNodes;
-    use \System\Xml\XmlReader as XmlReader;
+    use \System\Xml\XmlComment as XmlComment;
     use \System\Xml\XmlException as XmlException;
-
+    use \System\Xml\XmlNode as XmlNode;
+    use \System\Xml\XmlNodeType as XmlNodeType;
+    use \System\Xml\XmlReader as XmlReader;
+    
     use \System\IO\TextReader as TextReader;
     use \System\IO\Stream as Stream;
 
-
+    /**
+     * Represents an XML document.
+     * @access public
+     * @name XmlDocument
+     * @package System
+     * @subpackage Xml
+     */
     class XmlDocument extends XmlNode {
 
         private $document;
 
+        /**
+         * Initializes a new instance of the XmlDocument class.
+         * @access public
+        */
         public function __construct() { 
             $this->document = new \DOMDocument();
             parent::__construct($this->document);
+        }
+
+        /**
+         * Adds the specified node to the end of the list of child nodes, of this node.
+         * @access public
+         * @throws \System\InvalidOperationException This node is of a type that does not allow child nodes of the type of the newChild node. -or- The newChild is an ancestor of this node. 
+         * @throws \System\ArgumentException The newChild was created from a different document than the one that created this node. -or- This node is read-only. 
+         * @param \System\Xml\XmlNode $newChild The node to add. All the contents of the node to be added are moved into the specified location.
+         * @return void
+         */
+        public function appendChild(XmlNode $newChild) {
+            $doc = new \DOMDocument();
+            $doc->loadXML($newChild->outerXml());
+            $newNode = $this->node->importNode($doc->documentElement, TRUE);
+            $this->node->appendChild($newNode);
         }
 
         /**
@@ -33,18 +61,59 @@ namespace System\Xml {
         /**
          * Returns an enumerator that iterates through a collection.
          * @access public
-         * @return IEnumerator An System.Collections.IEnumerator object that can be used to iterate through the collection.
+         * @return \System\Collections\IEnumerator An System.Collections.IEnumerator object that can be used to iterate through the collection.
          */
         public function getEnumerator() {
             // TODO: Implement getEnumerator() method.
         }
 
         /**
-         * Creates an element with the specified name, namespaceURI and prefix
+         * Creates an XmlAttribute with the specified name, namespaceURI and prefix
+         * @access public
+         * @param string $name The local name of the new attribute. -or- The qualified name of the attribute.
+         * @param string $namespaceURI The namespace URI of the new attribute (if any). String.Empty and null are equivalent.
+         * @param string $prefix The prefix of the new attribute (if any). String.Empty and null are equivalent.
+         * @return \System\Xml\XmlAttribute The new XmlAttribute.
+        */
+        public function createAttribute($name, $namespaceURI=null, $prefix=null) {
+            $attr = null;
+            if (is_null($namespaceURI) && is_null($prefix)) {
+                $attr = $this->document->createAttribute($name);
+            } else {
+                $attr = $this->document->createAttributeNS($namespaceURI, $prefix.':'.$name);
+            }
+            return new XmlAttribute($attr);
+        }
+
+        /**
+         * Creates an XmlCDataSection containing the specified data.
+         * @access public
+         * @param string $data The content of the new XmlCDataSection.
+         * @return \System\Xml\XmlCDataSection The new XmlCDataSection.
+         */
+        public function createCDataSection($data) {
+            $cdata = $this->document->createCDATASection($data);
+            return new XmlCDataSection($cdata);
+        }
+
+        /**
+        * Creates an XmlComment containing the specified data.
+        * @access public
+        * @param string $data The content of the new XmlComment.
+        * @return \System\Xml\XmlComment The new XmlComment.
+        */
+        public function createComment($data) {
+            $comment = $this->document->createComment($data);
+            return new XmlComment($comment);
+        }
+
+        /**
+         * Creates an XmlElement with the specified name, namespaceURI and prefix
          * @access public
          * @param string $name The local name of the new element. -or- The qualified name of the element.
          * @param string $namespaceURI The namespace URI of the new element (if any). String.Empty and null are equivalent.
          * @param string $prefix The prefix of the new element (if any). String.Empty and null are equivalent.
+         * @return \System\Xml\XmlElement The new XmlAttribute.
         */
         public function createElement($name, $namespaceURI=null, $prefix=null) {
             $element = null;
@@ -169,11 +238,10 @@ namespace System\Xml {
         /**
          * When overridden in a derived class, gets the type of the current node.
          * @access public
-         * @return XmlNodeType One of the System.Xml.XmlNodeType values.
+         * @return \System\Xml\XmlNodeType One of the System.Xml.XmlNodeType values.
          */
-        public function nodeType()
-        {
-            // TODO: Implement nodeType() method.
+        public function nodeType() {
+            return XmlNodeType::document();
         }
 
         /**

@@ -8,7 +8,6 @@ namespace System\Xml {
     use \System\Xml\XmlLinkedNode as XmlLinkedNode;
     use \System\Xml\XmlNodeType as XmlNodeType;
 
-
     /**
      * Represents an element.
      * @access public
@@ -28,7 +27,6 @@ namespace System\Xml {
             parent::__construct($element);
             $this->element = $element;
         }
-
 
         /**
          * Creates a new object that is a copy of the current instance.

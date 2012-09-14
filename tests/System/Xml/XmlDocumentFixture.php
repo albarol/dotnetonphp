@@ -3,6 +3,8 @@
 require_once(dirname(__FILE__) . '/../../../src/Autoloader.php');
 
 
+use \System\Xml\XmlCDataSection as XmlCDataSection;
+use \System\Xml\XmlComment as XmlComment;
 use \System\Xml\XmlDocument as XmlDocument;
 use \System\Xml\XmlException as XmlException;
 
@@ -12,14 +14,75 @@ use \System\IO\FileStream as FileStream;
 class XmlDocumentFixture extends PHPUnit_Framework_TestCase {
 
     private $xml = array(
-        'well-formed' => '<?xml version="1.0"?><books xmlns:b="http://www.books.com"><book ISBN="1-861001-57-5"><title>Pride And Prejudice</title><price>19</price></book></books>',
+        'well-formed' => '<?xml version="1.0"?><books xmlns:b="http://www.books.com"><book ISBN="1-861001-57-5"><title><![CDATA[Pride And Prejudice]]></title><price>19</price></book></books>',
         'bad-formed'  => "<?xml version='1.0'?><books><book></books><book>"
     );
+
+    public function test_CreateAttribute_CanCreateAttributeByPrefix() {
+        # Arrange:
+        $doc = new XmlDocument;
+        $expected = '<book b:id=""/>';
+
+        # Act:
+        $element = $doc->createElement('book');
+        $doc->appendChild($element);
+        $attr = $doc->createAttribute('id', 'http://www.books.com', 'b');
+        $element->setAttributeNode($attr);
+
+        # Assert:
+        $this->assertEquals($expected, $element->outerXml());
+    }
+
+    public function test_CreateAttribute_CanCreateAttributeByName() {
+        # Arrange:
+        $doc = new XmlDocument;
+        $expected = '<book id=""/>';
+
+        # Act:
+        $element = $doc->createElement('book');
+        $doc->appendChild($element);
+        $attr = $doc->createAttribute("id");
+        $element->setAttributeNode($attr);
+
+        # Assert:
+        $this->assertEquals($expected, $element->outerXml());
+    }
+
+    public function test_CreateCDataSection_CanCDataSection() {
+        # Arrange:
+        $doc = new XmlDocument;
+        $expected = '<book><![CDATA[text]]></book>';
+
+        # Act:
+        $element = $doc->createElement('book');
+        $doc->appendChild($element);
+        $cdata = $doc->createCDataSection('text');
+        $element->appendChild($cdata);
+
+        # Assert:
+        $this->assertEquals($expected, $element->outerXml());
+        $this->assertTrue($cdata instanceOf XmlCDataSection);
+    }
+
+    public function test_CreateElement_CanCreateComment() {
+        # Arrange:
+        $doc = new XmlDocument;
+        $expected = '<book><!--Any comment--></book>';
+
+        # Act:
+        $element = $doc->createElement('book');
+        $comment = $doc->createComment('Any comment');
+        $element->appendChild($comment);
+
+        # Assert:
+        $this->assertEquals($expected, $element->outerXml());
+        $this->assertTrue($comment instanceOf XmlComment);
+    }
 
     public function test_CreateElement_CanCreateElementByPrefix() {
         # Arrange:
         $doc = new XmlDocument;
-        $expected = '<b:book xmlns:b="http://www.books.com"></b:book>';
+        $expected = '<b:book xmlns:b="http://www.books.com"/>';
 
         # Act:
         $element = $doc->createElement('book', 'http://www.books.com', 'b');
@@ -30,14 +93,14 @@ class XmlDocumentFixture extends PHPUnit_Framework_TestCase {
     public function test_CreateElement_CanCreateElementByName() {
         # Arrange:
         $doc = new XmlDocument;
-        $expected = '<book></book>';
+        $expected = '<book/>';
 
         # Act:
         $element = $doc->createElement('book');
 
+        # Assert:
         $this->assertEquals($expected, $element->outerXml());
     }
-
 
 
     /*public function test_Load_FromStreamThrowsExceptionWhenXmlWasNotWellFormed() {

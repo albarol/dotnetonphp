@@ -71,9 +71,25 @@ namespace System\Xml {
                 throw new InvalidOperationException("This node is of a type that does not allow child nodes of the type of the newChild node. -or- The newChild is an ancestor of this node.");
             }
 
-            $doc = new \DOMDocument();
-            $doc->loadXML($newChild->outerXml());
-            $newNode = $this->node->ownerDocument->importNode($doc->documentElement, TRUE);
+            if ($newChild instanceof XmlCDataSection):
+                $this->appendCDataChild($newChild);
+            elseif ($newChild instanceof XmlComment):
+                $this->appendComment($newChild);
+            else:
+                $doc = new \DOMDocument();
+                $doc->loadXML($newChild->outerXml());
+                $newNode = $this->node->ownerDocument->importNode($doc->documentElement, TRUE);
+                $this->node->appendChild($newNode);
+            endif;
+        }
+
+        private function appendCDataChild(XmlCDataSection $cdata) {
+            $newNode = $this->node->ownerDocument->createCDATASection($cdata->data());
+            $this->node->appendChild($newNode);
+        }
+
+        private function appendComment(XmlComment $cdata) {
+            $newNode = $this->node->ownerDocument->createComment($cdata->data());
             $this->node->appendChild($newNode);
         }
 
@@ -321,10 +337,12 @@ namespace System\Xml {
          * @return string The markup containing this node and all its child nodes. Note:OuterXml does not return default attributes.
          */
         public function outerXml() {
+            $xmlHeader = '<?xml version="1.0"?>';
             $document = new \DOMDocument();
             $document->appendChild($document->importNode($this->node, TRUE));
-            $xml = trim($document->saveHTML());
-            return preg_replace('/>\s+</', '><', $xml);
+            $xml = trim($document->saveXML());
+            $xml = preg_replace('/>\s+</', '><', $xml);
+            return str_replace($xmlHeader, '', $xml);
         }
 
         /**
