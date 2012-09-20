@@ -6,6 +6,7 @@ require_once(dirname(__FILE__) . '/../../../src/Autoloader.php');
 use \System\Xml\XmlCDataSection as XmlCDataSection;
 use \System\Xml\XmlComment as XmlComment;
 use \System\Xml\XmlDocument as XmlDocument;
+use \System\Xml\XmlDocumentFragment as XmlDocumentFragment;
 use \System\Xml\XmlException as XmlException;
 
 use \System\IO\FileStream as FileStream;
@@ -77,6 +78,41 @@ class XmlDocumentFixture extends PHPUnit_Framework_TestCase {
         # Assert:
         $this->assertEquals($expected, $element->outerXml());
         $this->assertTrue($comment instanceOf XmlComment);
+    }
+
+    public function test_CreateDocumentFragment_CanCreateDocumentFragment() {
+        # Arrange:
+        $doc = new XmlDocument;
+        $expected = '<book/>';
+
+        # Act:
+        $frag = $doc->createDocumentFragment();
+        $frag->appendChild($doc->createElement('book'));
+        $doc->appendChild($frag);
+
+        # Assert:
+        $this->assertEquals($expected, $doc->outerXml());
+        $this->assertTrue($frag instanceOf XmlDocumentFragment);
+    }
+
+    public function test_CreateDocumentType_CanCreateDocumentType() {
+        $this->markTestIncomplete('php not support this operation');
+    }
+
+    public function test_CreateEntityReference_CanCreateEntityReference() {
+        # Arrange:
+        $doc = new XmlDocument;
+        $expected = '<book/>';
+
+        # Act:
+        $entity = $doc->createEntityReference('a');
+        echo $entity->outerXml();
+        /*$frag->appendChild($doc->createElement('book'));
+        $doc->appendChild($frag);
+
+        # Assert:
+        $this->assertEquals($expected, $doc->outerXml());
+        $this->assertTrue($frag instanceOf XmlDocumentFragment);*/
     }
 
     public function test_CreateElement_CanCreateElementByPrefix() {

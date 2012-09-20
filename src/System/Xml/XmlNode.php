@@ -10,7 +10,10 @@ namespace System\Xml {
     use \System\Collections\IEnumerable as IEnumerable;
     
     use \System\Xml\XmlAttributeCollection as XmlAttributeCollection;
+    use \System\Xml\XmlCDataSection as XmlCDataSection;
+    use \System\Xml\XmlComment as XmlComment;
     use \System\Xml\XmlChildNodes as XmlChildNodes;
+    use \System\Xml\XmlDocumentFragment as XmlDocumentFragment;
     use \System\Xml\XmlNodeList as XmlNodeList;
     use \System\Xml\XmlNodeType as XmlNodeType;
     use \System\Xml\XPath\IXPathNavigable as IXPathNavigable;
@@ -35,6 +38,11 @@ namespace System\Xml {
         */
         protected function __construct(\DomNode $node) {
             $this->node = $node;
+            if ($node instanceof \DOMDocument):
+                $this->ownerDocument = $node;
+            else:
+                $this->ownerDocument = $node->ownerDocument;
+            endif;
         }
 
         /**
@@ -67,29 +75,34 @@ namespace System\Xml {
          * @return void
          */
         public function appendChild(XmlNode $newChild) {
-            if ($this->nodeType() != XmlNodeType::element() && $this->nodeType() != XmlNodeType::document()) {
-                throw new InvalidOperationException("This node is of a type that does not allow child nodes of the type of the newChild node. -or- The newChild is an ancestor of this node.");
-            }
-
             if ($newChild instanceof XmlCDataSection):
                 $this->appendCDataChild($newChild);
             elseif ($newChild instanceof XmlComment):
                 $this->appendComment($newChild);
+            elseif ($newChild instanceof XmlDocumentFragment):
+                $this->appendDocumentFragment($newChild);
             else:
                 $doc = new \DOMDocument();
                 $doc->loadXML($newChild->outerXml());
-                $newNode = $this->node->ownerDocument->importNode($doc->documentElement, TRUE);
+                $newNode = $this->ownerDocument->importNode($doc->documentElement, TRUE);
                 $this->node->appendChild($newNode);
             endif;
         }
 
-        private function appendCDataChild(XmlCDataSection $cdata) {
-            $newNode = $this->node->ownerDocument->createCDATASection($cdata->data());
+        protected function appendCDataChild(XmlCDataSection $cdata) {
+            $newNode = $this->ownerDocument->createCDATASection($cdata->data());
             $this->node->appendChild($newNode);
         }
 
-        private function appendComment(XmlComment $cdata) {
-            $newNode = $this->node->ownerDocument->createComment($cdata->data());
+        protected function appendComment(XmlComment $cdata) {
+            $newNode = $this->ownerDocument->createComment($cdata->data());
+            $this->node->appendChild($newNode);
+        }
+
+        protected function appendDocumentFragment(XmlDocumentFragment $frag) {
+            $doc = new \DOMDocument();
+            $doc->loadXML($frag->innerXml());
+            $newNode = $this->ownerDocument->importNode($doc->documentElement, TRUE);
             $this->node->appendChild($newNode);
         }
 
@@ -338,8 +351,13 @@ namespace System\Xml {
          */
         public function outerXml() {
             $xmlHeader = '<?xml version="1.0"?>';
-            $document = new \DOMDocument();
-            $document->appendChild($document->importNode($this->node, TRUE));
+            if ($this->nodeType() == XmlNodeType::document()):
+                $document = $this->node;
+            else:
+                $document = new \DOMDocument();
+                $document->appendChild($document->importNode($this->node, TRUE));
+            endif;
+            
             $xml = trim($document->saveXML());
             $xml = preg_replace('/>\s+</', '><', $xml);
             return str_replace($xmlHeader, '', $xml);
@@ -351,7 +369,7 @@ namespace System\Xml {
          * @return \System\Xml\XmlDocument The XmlDocument to which this node belongs.  If the node is an System.Xml.XmlDocument (NodeType equals XmlNodeType.Document), this property returns null.
          */
         public function ownerDocument() {
-
+            return $this->ownerDocument;
         }
 
         /**

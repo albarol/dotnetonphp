@@ -92,7 +92,7 @@ namespace System\Xml {
          *  Overridden. Gets the local name of the current node.
          * @access public
          * @return string The name of the node with the prefix removed. For example, LocalName is book for the element 
-         */
+        */
         public function localName() {
             return $this->node->localName;
         }
@@ -101,7 +101,7 @@ namespace System\Xml {
          * Overridden. Gets the qualified name of the node.
          * @access public
          * @return string The qualified name of the node. The name returned is dependent on the System.Xml.XmlNode.NodeType of the node
-         */
+        */
         public function name() {
             return $this->node->nodeName;
         }
@@ -110,7 +110,7 @@ namespace System\Xml {
          * Overridden. Gets the type of the current node.
          * @access public
          * @return \System\Xml\XmlNodeType One of the System.Xml.XmlNodeType values.
-         */
+        */
         public function nodeType() { 
             return XmlNodeType::element();
         }

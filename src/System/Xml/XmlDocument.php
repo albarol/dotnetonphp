@@ -35,21 +35,6 @@ namespace System\Xml {
         }
 
         /**
-         * Adds the specified node to the end of the list of child nodes, of this node.
-         * @access public
-         * @throws \System\InvalidOperationException This node is of a type that does not allow child nodes of the type of the newChild node. -or- The newChild is an ancestor of this node. 
-         * @throws \System\ArgumentException The newChild was created from a different document than the one that created this node. -or- This node is read-only. 
-         * @param \System\Xml\XmlNode $newChild The node to add. All the contents of the node to be added are moved into the specified location.
-         * @return void
-         */
-        public function appendChild(XmlNode $newChild) {
-            $doc = new \DOMDocument();
-            $doc->loadXML($newChild->outerXml());
-            $newNode = $this->node->importNode($doc->documentElement, TRUE);
-            $this->node->appendChild($newNode);
-        }
-
-        /**
          * Creates a new object that is a copy of the current instance.
          * @access public
          * @return Object A new object that is a copy of this instance.
@@ -108,6 +93,40 @@ namespace System\Xml {
         }
 
         /**
+        * Creates an XmlDocumentFragment.
+        * @access public
+        * @return \System\Xml\XmlDocumentFragment The new XmlDocumentFragment.
+        */
+        public function createDocumentFragment() {
+            $fragment = $this->document->createDocumentFragment();
+            return new XmlDocumentFragment($fragment);
+        }
+
+        /**
+        * Returns a new XmlDocumentType object. 
+        * @access public
+        * @param string $name Name of the document type. 
+        * @param string $publicId The public identifier of the document type or a null reference (Nothing in Visual Basic). You can specify a public URI and also a system identifier to identify the location of the external DTD subset.
+        * @param string $systemId The system identifier of the document type or a null reference (Nothing in Visual Basic). Specifies the URL of the file location for the external DTD subset.
+        * @param string $internalSubset The DTD internal subset of the document type or a null reference (Nothing in Visual Basic). 
+        * @return \System\Xml\XmlDocumentType The new XmlDocumentType.
+        */
+        public function createDocumentType($name, $publicId, $systemId, $internalSubset) {
+            
+        }
+
+        /**
+        * Creates an XmlEntityReference with the specified name. 
+        * @access public
+        * @param string $name The name of the entity reference.
+        * @return \System\Xml\XmlEntityReference The new XmlEntityReference.
+        */
+        public function createEntityReference($name) {
+            $entity = $this->document->createEntityReference($name);
+            return new XmlEntityReference($entity);
+        }
+
+        /**
          * Creates an XmlElement with the specified name, namespaceURI and prefix
          * @access public
          * @param string $name The local name of the new element. -or- The qualified name of the element.
@@ -150,7 +169,7 @@ namespace System\Xml {
         /**
          * Loads the XML document from the specified resource.
          * @access public
-         * @throws XmlException
+         * @throws \System\Xml\XmlException
          * @param $value The resource containing the XML document to load.
          * @return void
          */
@@ -205,41 +224,30 @@ namespace System\Xml {
                 throw new XmlException("There is a load or parse error in the XML. In this case, the document remains empty.");
             }
         }
-
-
-        private function createNodes($parent, $node) {
-            if($node->count() == 0) return;
-            if($node instanceof \SimpleXMLElement) {
-                
-            }
-        }
-
         
         /**
-         * When overridden in a derived class, gets the local name of the node.
+         *  Overridden. Gets the local name of the current node.
          * @access public
-         * @return string The name of the node with the prefix removed. For example, LocalName is book for the element
-         */
-        public function localName()
-        {
-            // TODO: Implement localName() method.
+         * @return string The name of the node with the prefix removed. For example, LocalName is book for the element 
+        */
+        public function localName() {
+            return $this->node->localName;
         }
 
         /**
-         * When overridden in a derived class, gets the qualified name of the node.
+         * Overridden. Gets the qualified name of the node.
          * @access public
          * @return string The qualified name of the node. The name returned is dependent on the System.Xml.XmlNode.NodeType of the node
-         */
-        public function name()
-        {
-            // TODO: Implement name() method.
+        */
+        public function name() {
+            return $this->node->nodeName;
         }
 
         /**
-         * When overridden in a derived class, gets the type of the current node.
+         * Overridden. Gets the type of the current node.
          * @access public
          * @return \System\Xml\XmlNodeType One of the System.Xml.XmlNodeType values.
-         */
+        */
         public function nodeType() {
             return XmlNodeType::document();
         }
