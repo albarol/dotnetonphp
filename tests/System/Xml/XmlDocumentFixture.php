@@ -7,6 +7,7 @@ use \System\Xml\XmlCDataSection as XmlCDataSection;
 use \System\Xml\XmlComment as XmlComment;
 use \System\Xml\XmlDocument as XmlDocument;
 use \System\Xml\XmlDocumentFragment as XmlDocumentFragment;
+use \System\Xml\XmlEntityReference as XmlEntityReference;
 use \System\Xml\XmlException as XmlException;
 
 use \System\IO\FileStream as FileStream;
@@ -102,17 +103,16 @@ class XmlDocumentFixture extends PHPUnit_Framework_TestCase {
     public function test_CreateEntityReference_CanCreateEntityReference() {
         # Arrange:
         $doc = new XmlDocument;
-        $expected = '<book/>';
+        $doc->loadXml('<!DOCTYPE book [<!ENTITY h "hardcover">]><book genre="novel" ISBN="1-861001-57-5"><title>Pride And Prejudice</title><misc/></book>');
+        $expected = '<!DOCTYPE book [<!ENTITY h "hardcover">]><book genre="novel" ISBN="1-861001-57-5"><title>Pride And Prejudice</title><misc>&h;</misc></book>';
 
         # Act:
-        $entity = $doc->createEntityReference('a');
-        echo $entity->outerXml();
-        /*$frag->appendChild($doc->createElement('book'));
-        $doc->appendChild($frag);
+        $entity = $doc->createEntityReference('h');
+        $documentElement = $doc->documentElement()->lastChild()->appendChild($entity);
 
         # Assert:
         $this->assertEquals($expected, $doc->outerXml());
-        $this->assertTrue($frag instanceOf XmlDocumentFragment);*/
+        $this->assertTrue($entity instanceOf XmlEntityReference);
     }
 
     public function test_CreateElement_CanCreateElementByPrefix() {
@@ -136,6 +136,18 @@ class XmlDocumentFixture extends PHPUnit_Framework_TestCase {
 
         # Assert:
         $this->assertEquals($expected, $element->outerXml());
+    }
+
+    public function test_CreateProcessingInstruction_CanCreateProcessingInstruction() {
+        # Arrange:
+        $doc = new XmlDocument;
+        $expected = "type='text/xsl' href='book.xsl'";
+
+        # Act:
+        $instruction = $doc->createProcessingInstruction('xml-stylesheet', "type='text/xsl' href='book.xsl'");
+
+        # Assert:
+        $this->assertEquals($expected, $instruction->value());
     }
 
 

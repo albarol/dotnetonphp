@@ -9,6 +9,7 @@ namespace System\Xml {
     use \System\Xml\XmlException as XmlException;
     use \System\Xml\XmlNode as XmlNode;
     use \System\Xml\XmlNodeType as XmlNodeType;
+    use \System\Xml\XmlProcessingInstruction as XmlProcessingInstruction;
     use \System\Xml\XmlReader as XmlReader;
     
     use \System\IO\TextReader as TextReader;
@@ -127,6 +128,18 @@ namespace System\Xml {
         }
 
         /**
+        * Creates an XmlProcessingInstruction with the specified name and data.
+        * @access public
+        * @param string $target The name of the processing instruction.
+        * @param string $data The data for the processing instruction.
+        * @return \System\Xml\XmlProcessingInstruction The new XmlProcessingInstruction.
+        */
+        public function createProcessingInstruction($target, $data) {
+            $instruction = $this->document->createProcessingInstruction($target, $data);
+            return new XmlProcessingInstruction($instruction);
+        }
+
+        /**
          * Creates an XmlElement with the specified name, namespaceURI and prefix
          * @access public
          * @param string $name The local name of the new element. -or- The qualified name of the element.
@@ -163,6 +176,15 @@ namespace System\Xml {
          */
         public function cloneNode($deep) {
             // TODO: Implement cloneNode() method.
+        }
+
+        /**
+         * Gets the root XmlElement for the document.
+         * @access public
+         * @return \System\Xml\XmlElement Gets the root XmlElement for the document.
+        */
+        public function documentElement() {
+            return is_null($this->document->documentElement) ? null : new XmlElement($this->document->documentElement);
         }
 
 

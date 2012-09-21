@@ -81,6 +81,8 @@ namespace System\Xml {
                 $this->appendComment($newChild);
             elseif ($newChild instanceof XmlDocumentFragment):
                 $this->appendDocumentFragment($newChild);
+            elseif ($newChild instanceof XmlEntityReference):
+                $this->appendEntityReference($newChild);
             else:
                 $doc = new \DOMDocument();
                 $doc->loadXML($newChild->outerXml());
@@ -103,6 +105,11 @@ namespace System\Xml {
             $doc = new \DOMDocument();
             $doc->loadXML($frag->innerXml());
             $newNode = $this->ownerDocument->importNode($doc->documentElement, TRUE);
+            $this->node->appendChild($newNode);
+        }
+
+        protected function appendEntityReference(XmlEntityReference $entity) {
+            $newNode = $this->ownerDocument->createEntityReference($entity->name());
             $this->node->appendChild($newNode);
         }
 
@@ -359,8 +366,15 @@ namespace System\Xml {
             endif;
             
             $xml = trim($document->saveXML());
+            
+            return str_replace($xmlHeader, '', $this->replaceWhitespace($xml));
+        }
+
+        private function replaceWhitespace($xml) {
+            $xml = preg_replace("/\[\s+</", "[<", $xml);  
+            $xml = preg_replace("/>\s+\]/", ">]", $xml);
             $xml = preg_replace('/>\s+</', '><', $xml);
-            return str_replace($xmlHeader, '', $xml);
+            return $xml;
         }
 
         /**
