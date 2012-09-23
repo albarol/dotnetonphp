@@ -7,8 +7,11 @@ use \System\Xml\XmlCDataSection as XmlCDataSection;
 use \System\Xml\XmlComment as XmlComment;
 use \System\Xml\XmlDocument as XmlDocument;
 use \System\Xml\XmlDocumentFragment as XmlDocumentFragment;
+use \System\Xml\XmlDeclaration as XmlDeclaration;
 use \System\Xml\XmlEntityReference as XmlEntityReference;
 use \System\Xml\XmlException as XmlException;
+use \System\Xml\XmlSignificantWhitespace as XmlSignificantWhitespace;
+use \System\Xml\XmlWhitespace as XmlWhitespace;
 
 use \System\IO\FileStream as FileStream;
 
@@ -84,7 +87,7 @@ class XmlDocumentFixture extends PHPUnit_Framework_TestCase {
     public function test_CreateDocumentFragment_CanCreateDocumentFragment() {
         # Arrange:
         $doc = new XmlDocument;
-        $expected = '<book/>';
+        $expected = '<?xml version="1.0"?><book/>';
 
         # Act:
         $frag = $doc->createDocumentFragment();
@@ -104,7 +107,7 @@ class XmlDocumentFixture extends PHPUnit_Framework_TestCase {
         # Arrange:
         $doc = new XmlDocument;
         $doc->loadXml('<!DOCTYPE book [<!ENTITY h "hardcover">]><book genre="novel" ISBN="1-861001-57-5"><title>Pride And Prejudice</title><misc/></book>');
-        $expected = '<!DOCTYPE book [<!ENTITY h "hardcover">]><book genre="novel" ISBN="1-861001-57-5"><title>Pride And Prejudice</title><misc>&h;</misc></book>';
+        $expected = '<?xml version="1.0"?><!DOCTYPE book [<!ENTITY h "hardcover">]><book genre="novel" ISBN="1-861001-57-5"><title>Pride And Prejudice</title><misc>&h;</misc></book>';
 
         # Act:
         $entity = $doc->createEntityReference('h');
@@ -141,15 +144,80 @@ class XmlDocumentFixture extends PHPUnit_Framework_TestCase {
     public function test_CreateProcessingInstruction_CanCreateProcessingInstruction() {
         # Arrange:
         $doc = new XmlDocument;
-        $expected = "type='text/xsl' href='book.xsl'";
+        $expected = '<?xml version="1.0"?><?xml-stylesheet type="text/xsl" href="book.xsl"?>';
 
         # Act:
-        $instruction = $doc->createProcessingInstruction('xml-stylesheet', "type='text/xsl' href='book.xsl'");
+        $instruction = $doc->createProcessingInstruction("xml-stylesheet", 'type="text/xsl" href="book.xsl"');
+        $doc->appendChild($instruction);
 
         # Assert:
-        $this->assertEquals($expected, $instruction->value());
+        $this->assertEquals($expected, $doc->outerXml());
     }
 
+    public function test_CreateSignificantWhitespace_ThrowsExceptionWhenDataNotContainsSpaceCharacters() {
+        # Arrange:
+        $this->setExpectedException('\System\ArgumentException');
+        $doc = new XmlDocument;
+
+        # Act:
+        $whitespace = $doc->createSignificantWhitespace("asdf");
+    }
+
+    public function test_CreateSignificantWhitespace_CanCreateSignificantWhitespace() {
+        # Arrange:
+        $doc = new XmlDocument;
+        $doc->preserveWhitespace(true);
+        $expected = "\t";
+
+        # Act:
+        $whitespace = $doc->createSignificantWhitespace("\t");
+        $doc->appendChild($whitespace);
+
+        # Assert:
+        $this->assertEquals($expected, $whitespace->value());
+        $this->assertTrue($whitespace instanceOf XmlSignificantWhitespace);
+    }
+
+    public function test_CreateTextNode_CanCreateTextNode() {
+        # Arrange:
+        $doc = new XmlDocument;
+        $expected = "asdf";
+
+        # Act:
+        $textNode = $doc->createTextNode("asdf");
+        $doc->appendChild($textNode);
+
+        # Assert:
+        $this->assertEquals($expected, $textNode->outerXml());
+    }
+
+    public function test_CreateWhitespace_CanCreateWhitespace() {
+        # Arrange:
+        $doc = new XmlDocument;
+        $expected = "\t";
+
+        # Act:
+        $whitespace = $doc->createWhitespace("\t");
+        $doc->appendChild($whitespace);
+
+        # Assert:
+        $this->assertEquals($expected, $whitespace->value());
+        $this->assertTrue($whitespace instanceOf XmlWhitespace);
+    }
+
+    public function test_CreateXmlDeclaration_CanCreateXmlDeclaration() {
+        # Arrange:
+        $doc = new XmlDocument;
+        $expected = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+
+        # Act:
+        $declaration = $doc->createXmlDeclaration("1.0", "UTF-8", "yes");
+        $doc->appendChild($declaration);
+
+        # Assert:
+        $this->assertEquals($expected, $doc->outerXml());
+        $this->assertTrue($declaration instanceOf XmlDeclaration);
+    }
 
     /*public function test_Load_FromStreamThrowsExceptionWhenXmlWasNotWellFormed() {
         $this->setExpectedException("\\System\\Xml\\XmlException");

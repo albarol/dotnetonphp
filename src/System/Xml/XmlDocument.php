@@ -2,14 +2,18 @@
 
 namespace System\Xml {
 
+    use \System\ArgumentException as ArgumentException;
+
     use \System\Xml\XmlAttribute as XmlAttribute;
     use \System\Xml\XmlCDataSection as XmlCDataSection;
     use \System\Xml\XmlChildNodes as XmlChildNodes;
     use \System\Xml\XmlComment as XmlComment;
+    use \System\Xml\XmlDeclaration as XmlDeclaration;
     use \System\Xml\XmlException as XmlException;
     use \System\Xml\XmlNode as XmlNode;
     use \System\Xml\XmlNodeType as XmlNodeType;
     use \System\Xml\XmlProcessingInstruction as XmlProcessingInstruction;
+    use \System\Xml\XmlSignificantWhitespace as XmlSignificantWhitespace;
     use \System\Xml\XmlReader as XmlReader;
     
     use \System\IO\TextReader as TextReader;
@@ -30,8 +34,13 @@ namespace System\Xml {
          * Initializes a new instance of the XmlDocument class.
          * @access public
         */
-        public function __construct() { 
-            $this->document = new \DOMDocument();
+        public function __construct(\DOMDocument $document=null) { 
+            if (is_null($document)):
+                $this->document = new \DOMDocument();
+            else:
+                $this->document = $document;
+            endif;
+            $this->preserveWhitespace(false);
             parent::__construct($this->document);
         }
 
@@ -117,6 +126,24 @@ namespace System\Xml {
         }
 
         /**
+         * Creates an XmlElement with the specified name, namespaceURI and prefix
+         * @access public
+         * @param string $name The local name of the new element. -or- The qualified name of the element.
+         * @param string $namespaceURI The namespace URI of the new element (if any). String.Empty and null are equivalent.
+         * @param string $prefix The prefix of the new element (if any). String.Empty and null are equivalent.
+         * @return \System\Xml\XmlElement The new XmlAttribute.
+        */
+        public function createElement($name, $namespaceURI=null, $prefix=null) {
+            $element = null;
+            if (is_null($namespaceURI) && is_null($prefix)) {
+                $element = $this->document->createElement($name);
+            } else {
+                $element = $this->document->createElementNS($namespaceURI, $prefix.':'.$name);
+            }
+            return new XmlElement($element);
+        }
+
+        /**
         * Creates an XmlEntityReference with the specified name. 
         * @access public
         * @param string $name The name of the entity reference.
@@ -140,21 +167,56 @@ namespace System\Xml {
         }
 
         /**
-         * Creates an XmlElement with the specified name, namespaceURI and prefix
-         * @access public
-         * @param string $name The local name of the new element. -or- The qualified name of the element.
-         * @param string $namespaceURI The namespace URI of the new element (if any). String.Empty and null are equivalent.
-         * @param string $prefix The prefix of the new element (if any). String.Empty and null are equivalent.
-         * @return \System\Xml\XmlElement The new XmlAttribute.
+        * Creates an XmlSignificantWhitespace node.
+        * @access public
+        * @throws \System\ArgumentException The text contains invalid characters. 
+        * @param string $text The string must contain only the following characters &#20; &#10; &#13; and &#9; 
+        * @return \System\Xml\XmlSignificantWhitespace A new XmlSignificantWhitespace node. 
         */
-        public function createElement($name, $namespaceURI=null, $prefix=null) {
-            $element = null;
-            if (is_null($namespaceURI) && is_null($prefix)) {
-                $element = $this->document->createElement($name);
-            } else {
-                $element = $this->document->createElementNS($namespaceURI, $prefix.':'.$name);
+        public function createSignificantWhitespace($text) {
+            if (strlen(trim($text)) > 0) {
+                throw new ArgumentException("The text contains invalid characters.");
             }
-            return new XmlElement($element);
+            $whitespace = $this->document->createTextNode($text);
+            return new XmlSignificantWhitespace($whitespace);
+        }
+
+        /**
+        * Creates an XmlText with the specified text.
+        * @access public
+        * @param string $text The text for the Text node.
+        * @return \System\Xml\XmlText The new XmlText node.
+        */
+        public function createTextNode($text) {
+            $textNode = $this->document->createTextNode($text);
+            return new XmlText($textNode);
+        }
+
+        /**
+        * Creates an XmlWhitespace node.
+        * @access public
+        * @param string $text The string must contain only the following characters &#20; &#10; &#13; and &#9; 
+        * @return \System\Xml\XmlWhitespace A new XmlWhitespace node. 
+        */
+        public function createWhitespace($text) {
+            if (strlen(trim($text)) > 0) {
+                throw new ArgumentException("The text contains invalid characters.");
+            }
+            $whitespace = $this->document->createTextNode($text);
+            return new XmlWhitespace($whitespace);
+        }
+
+        /**
+         * Creates an XmlDeclaration node with the specified values.
+         * @access public
+         * @throws \System\ArgumentException The values of version or standalone are something other than the ones specified above. 
+         * @param string $version The version must be "1.0".
+         * @param string $encoding he value of the encoding attribute. This is the encoding that is used when you save the XmlDocument to a file or a stream; therefore, it must be set to a string supported by the Encoding class, otherwise Save fails. If this is a null reference (Nothing in Visual Basic) or String.Empty, the Save method does not write an encoding attribute on the XML declaration and therefore the default encoding, UTF-8, is used.
+         * @param string The value must be either "yes" or "no". If this is a null reference (Nothing in Visual Basic) or String.Empty, the Save method does not write a standalone attribute on the XML declaration. 
+         * @return \System\Xml\XmlDeclaration The new XmlDeclaration node.
+        */
+        public function createXmlDeclaration($version, $encoding, $standalone) {
+            return new XmlDeclaration($version, $encoding, $standalone);
         }
 
         /**
@@ -272,6 +334,29 @@ namespace System\Xml {
         */
         public function nodeType() {
             return XmlNodeType::document();
+        }
+
+        /**
+         * Gets the markup representing this node and all its child nodes.
+         * @access public
+         * @return string The markup containing this node and all its child nodes. Note:OuterXml does not return default attributes.
+         */
+        public function outerXml() {
+            $xml = trim($this->node->saveXML());
+            return trim($this->replaceWhitespace($xml));
+        }
+
+        /**
+         * Gets or sets a value indicating whether to preserve white space in element content.
+         * @access public
+         * @param bool $value true to preserve white space; otherwise false. The default is false.
+         * @return bool true to preserve white space; otherwise false. The default is false. 
+        */
+        public function preserveWhitespace($value=null) {
+            if (!is_null($value)):
+                $this->document->preserveWhiteSpace = $value;
+            endif;
+            return $this->document->preserveWhiteSpace;
         }
 
         /**

@@ -3,23 +3,23 @@
 
 namespace System\Xml {
 
-    use \System\Xml\XmlLinkedNode as XmlLinkedNode;
+    use \System\Xml\XmlCharacterData as XmlCharacterData;
 
     /**
-     * Represents a processing instruction, which XML defines to keep processor-specific information in the text of the document.
+     * Represents white space between markup in a mixed content node or white space within an xml:space= 'preserve' scope. This is also referred to as significant white space.
      * @access public
-     * @name XmlProcessingInstruction 
+     * @name XmlSignificantWhitespace 
      * @package System
      * @subpackage Xml
      */
-    class XmlProcessingInstruction  extends XmlLinkedNode {
+    class XmlSignificantWhitespace  extends XmlCharacterData {
 
         /**
         * This constructor supports the .NET Framework infrastructure and is not intended to be used directly from your code. 
         * @access private
         */
-        public function __construct(\DOMProcessingInstruction $instruction) {
-            parent::__construct($instruction);
+        public function __construct(\DOMCharacterData $characterData) {
+            parent::__construct($characterData);
         }
 
 
@@ -41,19 +41,6 @@ namespace System\Xml {
          */
         public function createNavigator() {
             // TODO: Implement createNavigator() method.
-        }
-
-        /**
-         * Gets or sets the content of the processing instruction, excluding the target.
-         * @access public
-         * @param string $value The content of the processing instruction, excluding the target.
-         * @return string  The content of the processing instruction.
-        */        
-        public function data($value=null) {
-            if (!is_null($value)) {
-                $this->node->data = $value;
-            }
-            return $this->node->data;
         }
 
         /**
@@ -80,16 +67,7 @@ namespace System\Xml {
          * @return \System\Xml\XmlNodeType One of the System.Xml.XmlNodeType values.
          */
         public function nodeType() { 
-            return XmlNodeType::processingInstruction();
-        }
-
-        /**
-         * Gets the target of the processing instruction. 
-         * @access public
-         * @return string Gets the target of the processing instruction. 
-        */
-        public function target() {
-            return $this->node->target;
+            return XmlNodeType::text();
         }
 
         /**

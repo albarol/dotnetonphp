@@ -3,7 +3,7 @@
 namespace System\Xml {
 
 
-    use \System\Xml\XmlLinkedNode as XmlCharacterData;
+    use \System\Xml\XmlCharacterData as XmlCharacterData;
     use \System\Xml\XmlNodeType as XmlNodeType;
 
     /**

@@ -76,13 +76,23 @@ namespace System\Xml {
          */
         public function appendChild(XmlNode $newChild) {
             if ($newChild instanceof XmlCDataSection):
-                $this->appendCDataChild($newChild);
+                $this->appendCData($newChild);
             elseif ($newChild instanceof XmlComment):
                 $this->appendComment($newChild);
             elseif ($newChild instanceof XmlDocumentFragment):
                 $this->appendDocumentFragment($newChild);
             elseif ($newChild instanceof XmlEntityReference):
                 $this->appendEntityReference($newChild);
+            elseif ($newChild instanceof XmlProcessingInstruction):
+                $this->appendProcessingInstruction($newChild);
+            elseif ($newChild instanceof XmlSignificantWhitespace):
+                $this->appendText($newChild);
+            elseif ($newChild instanceof XmlText):
+                $this->appendText($newChild);
+            elseif ($newChild instanceof XmlWhitespace):
+                $this->appendText($newChild);
+            elseif ($newChild instanceof XmlDeclaration):
+                $this->appendDeclaration($newChild);
             else:
                 $doc = new \DOMDocument();
                 $doc->loadXML($newChild->outerXml());
@@ -91,7 +101,7 @@ namespace System\Xml {
             endif;
         }
 
-        protected function appendCDataChild(XmlCDataSection $cdata) {
+        protected function appendCData(XmlCDataSection $cdata) {
             $newNode = $this->ownerDocument->createCDATASection($cdata->data());
             $this->node->appendChild($newNode);
         }
@@ -111,6 +121,22 @@ namespace System\Xml {
         protected function appendEntityReference(XmlEntityReference $entity) {
             $newNode = $this->ownerDocument->createEntityReference($entity->name());
             $this->node->appendChild($newNode);
+        }
+
+        protected function appendProcessingInstruction(XmlProcessingInstruction $instruction) {
+            $newNode = $this->ownerDocument->createProcessingInstruction($instruction->target(), $instruction->data());
+            $this->node->appendChild($newNode);
+        }
+
+        protected function appendText(XmlCharacterData $data) {
+            $newNode = $this->ownerDocument->createTextNode($data->value());
+            $this->node->appendChild($newNode);
+        }
+
+        protected function appendDeclaration(XmlDeclaration $declaration) {
+            $this->ownerDocument->xmlStandalone = ($declaration->standalone() == "yes") ? true : false;
+            $this->ownerDocument->xmlVersion = $declaration->version();
+            $this->ownerDocument->encoding = $declaration->encoding();
         }
 
         /**
@@ -357,7 +383,6 @@ namespace System\Xml {
          * @return string The markup containing this node and all its child nodes. Note:OuterXml does not return default attributes.
          */
         public function outerXml() {
-            $xmlHeader = '<?xml version="1.0"?>';
             if ($this->nodeType() == XmlNodeType::document()):
                 $document = $this->node;
             else:
@@ -366,14 +391,16 @@ namespace System\Xml {
             endif;
             
             $xml = trim($document->saveXML());
-            
-            return str_replace($xmlHeader, '', $this->replaceWhitespace($xml));
+            return trim(preg_replace("/<\?(.*)\?>/", '', $this->replaceWhitespace($xml)));
         }
 
-        private function replaceWhitespace($xml) {
-            $xml = preg_replace("/\[\s+</", "[<", $xml);  
-            $xml = preg_replace("/>\s+\]/", ">]", $xml);
-            $xml = preg_replace('/>\s+</', '><', $xml);
+        protected function replaceWhitespace($xml) {
+            if (!$this->ownerDocument->preserveWhiteSpace):
+                $xml = preg_replace("/\?>\s+/", "?>", $xml);
+                $xml = preg_replace("/\[\s+</", "[<", $xml);
+                $xml = preg_replace("/>\s+\]/", ">]", $xml);
+                $xml = preg_replace('/>\s+</', '><', $xml);
+            endif;
             return $xml;
         }
 
@@ -383,7 +410,7 @@ namespace System\Xml {
          * @return \System\Xml\XmlDocument The XmlDocument to which this node belongs.  If the node is an System.Xml.XmlDocument (NodeType equals XmlNodeType.Document), this property returns null.
          */
         public function ownerDocument() {
-            return $this->ownerDocument;
+            return new XmlDocument($this->document);
         }
 
         /**
