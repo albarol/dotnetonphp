@@ -249,6 +249,43 @@ namespace System\Xml {
             return is_null($this->document->documentElement) ? null : new XmlElement($this->document->documentElement);
         }
 
+        /**
+         * Gets the XmlElement with the specified ID.
+         * @access public
+         * @param string $elementId The attribute ID to match.
+         * @return The XmlElement with the matching ID or a null reference if no matching element is found. 
+        */
+        public function getElementById($elementId) {
+            $xpath = new \DOMXPath($this->document);
+            $element = $xpath->query("//*[@id='$elementId']")->item(0);
+            return isset($element) ? new XmlElement($element) : null;
+        }
+
+        /**
+         * Returns an XmlNodeList containing a list of all descendant elements that match the specified Name.
+         * @access public
+         * @param string $name The qualified name to match. It is matched against the Name property of the matching node. The special value "*" matches all tags. 
+         * @return \System\Xml\XmlNodeList An XmlNodeList containing a list of all matching nodes.
+        */
+        public function getElementsByTagName($name) {
+            $elements = $this->document->getElementsByTagName($name);
+            return new XmlChildNodes($elements);
+        }
+
+        /**
+         * Imports a node from another document to the current document. 
+         * @access public
+         * @throws \System\InvalidOperationException Calling this method on a node type which cannot be imported.     
+         * @param \System\Xml\XmlNode $node The node being imported. 
+         * @param bool $deep true to perform a deep clone; otherwise, false.
+         * @return \System\Xml\XmlNode The imported XmlNode.
+        */
+        public function importNode(XmlNode $node, $deep) {
+            $newNode = $this->convertFrom($node, $deep);
+            $imported = $this->ownerDocument->importNode($newNode, $deep);
+            return $node;
+        }
+
 
         /**
          * Loads the XML document from the specified resource.
@@ -288,16 +325,10 @@ namespace System\Xml {
             $this->loadXml(file_get_contents($fileName));
         }
 
-
-        # Create XmlElement
-        # Create XmlChildNodes
-        # Create XmlAttributes
-        # Create XmlComments
-
         /**
          * Loads the XML document from the specified string.
          * @access public
-         * @throws \Ssytem\Xml\XmlException There is a load or parse error in the XML. In this case, the document remains empty.
+         * @throws \System\Xml\XmlException There is a load or parse error in the XML. In this case, the document remains empty.
          * @param string $xml String containing the XML document to load.
          * @return void
          */

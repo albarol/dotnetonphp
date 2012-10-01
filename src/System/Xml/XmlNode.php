@@ -75,69 +75,12 @@ namespace System\Xml {
          * @return void
          */
         public function appendChild(XmlNode $newChild) {
-            if ($newChild instanceof XmlCDataSection):
-                $this->appendCData($newChild);
-            elseif ($newChild instanceof XmlComment):
-                $this->appendComment($newChild);
-            elseif ($newChild instanceof XmlDocumentFragment):
-                $this->appendDocumentFragment($newChild);
-            elseif ($newChild instanceof XmlEntityReference):
-                $this->appendEntityReference($newChild);
-            elseif ($newChild instanceof XmlProcessingInstruction):
-                $this->appendProcessingInstruction($newChild);
-            elseif ($newChild instanceof XmlSignificantWhitespace):
-                $this->appendText($newChild);
-            elseif ($newChild instanceof XmlText):
-                $this->appendText($newChild);
-            elseif ($newChild instanceof XmlWhitespace):
-                $this->appendText($newChild);
-            elseif ($newChild instanceof XmlDeclaration):
-                $this->appendDeclaration($newChild);
-            else:
-                $doc = new \DOMDocument();
-                $doc->loadXML($newChild->outerXml());
-                $newNode = $this->ownerDocument->importNode($doc->documentElement, TRUE);
+            $newNode = $this->convertFrom($newChild);
+            if (!is_null($newNode)) {
                 $this->node->appendChild($newNode);
-            endif;
+            }
         }
 
-        protected function appendCData(XmlCDataSection $cdata) {
-            $newNode = $this->ownerDocument->createCDATASection($cdata->data());
-            $this->node->appendChild($newNode);
-        }
-
-        protected function appendComment(XmlComment $cdata) {
-            $newNode = $this->ownerDocument->createComment($cdata->data());
-            $this->node->appendChild($newNode);
-        }
-
-        protected function appendDocumentFragment(XmlDocumentFragment $frag) {
-            $doc = new \DOMDocument();
-            $doc->loadXML($frag->innerXml());
-            $newNode = $this->ownerDocument->importNode($doc->documentElement, TRUE);
-            $this->node->appendChild($newNode);
-        }
-
-        protected function appendEntityReference(XmlEntityReference $entity) {
-            $newNode = $this->ownerDocument->createEntityReference($entity->name());
-            $this->node->appendChild($newNode);
-        }
-
-        protected function appendProcessingInstruction(XmlProcessingInstruction $instruction) {
-            $newNode = $this->ownerDocument->createProcessingInstruction($instruction->target(), $instruction->data());
-            $this->node->appendChild($newNode);
-        }
-
-        protected function appendText(XmlCharacterData $data) {
-            $newNode = $this->ownerDocument->createTextNode($data->value());
-            $this->node->appendChild($newNode);
-        }
-
-        protected function appendDeclaration(XmlDeclaration $declaration) {
-            $this->ownerDocument->xmlStandalone = ($declaration->standalone() == "yes") ? true : false;
-            $this->ownerDocument->xmlVersion = $declaration->version();
-            $this->ownerDocument->encoding = $declaration->encoding();
-        }
 
         /**
          * Gets all the child nodes of the node.
@@ -552,7 +495,7 @@ namespace System\Xml {
          * @access public
          * @throws \System\Xml\XPath\XPathException
          * @param $xpath The XPath expression.
-         * @return XmlNode The first XmlNode that matches the XPath query or null if no matching node is found. The XmlNode should not be expected to be connected "live" to the XML document. That is, changes that appear in the XML document may not appear in the XmlNode, and vice versa.
+         * @return \System\Xml\XmlNode The first XmlNode that matches the XPath query or null if no matching node is found. The XmlNode should not be expected to be connected "live" to the XML document. That is, changes that appear in the XML document may not appear in the XmlNode, and vice versa.
          */
         public function selectSingleNode($xpath) {
             $domXPath = new \DOMXPath($this->node->ownerDocument);
@@ -612,7 +555,10 @@ namespace System\Xml {
         public abstract function writeTo(XmlWriter $w);
 
 
-        // private methods
+        /**
+         * Get and validate if refChild is part of document
+         * @access private
+        */ 
         private function getAndValidateRefChild(XmlNode $refChild) {
             $elements = $this->node->ownerDocument->getElementsByTagName($refChild->name());
             $current = null;
@@ -632,6 +578,95 @@ namespace System\Xml {
             endif;
 
             return $current;
+        }
+
+        /**
+         * Convert element from XmlNode to DOMNode
+         * @access protected
+        */
+        protected function convertFrom(XmlNode $newChild, $deep=true) {
+            $newNode = null;
+
+            if ($newChild instanceof XmlCDataSection):
+                $newNode = $this->getCDataNode($newChild);
+            elseif ($newChild instanceof XmlComment):
+                $newNode = $this->getCommentNode($newChild);
+            elseif ($newChild instanceof XmlDocumentFragment):
+                $newNode = $this->getDocumentFragmentNode($newChild);
+            elseif ($newChild instanceof XmlEntityReference):
+                $newNode = $this->getEntityReferenceNode($newChild);
+            elseif ($newChild instanceof XmlProcessingInstruction):
+                $newNode = $this->getProcessingInstructionNode($newChild);
+            elseif ($newChild instanceof XmlSignificantWhitespace):
+                $newNode = $this->getTextNode($newChild);
+            elseif ($newChild instanceof XmlText):
+                $newNode = $this->getTextNode($newChild);
+            elseif ($newChild instanceof XmlWhitespace):
+                $newNode = $this->getTextNode($newChild);
+            elseif ($newChild instanceof XmlDeclaration):
+                $newNode = $this->getDeclarationNode($newChild);
+            else:
+                $doc = new \DOMDocument();
+                $doc->loadXML($newChild->outerXml());
+                $newNode = $this->ownerDocument->importNode($doc->documentElement, $deep);
+            endif;
+            return $newNode;
+        }
+
+        /**
+         * Convert element from DOMNode to XmlNode
+         * @access protected
+        */
+        protected function convertTo(\DOMNode $newChild) {
+            if ($newChild instanceof \DOMCdataSection):
+                return new XmlCDataSection($newChild);
+            elseif ($newChild instanceof \DOMComment):
+                return new XmlComment($newChild);
+            elseif ($newChild instanceof \DOMDocumentFragment):
+                return new XmlDocumentFragment($newChild);
+            elseif ($newChild instanceof \DOMEntityReference):
+                return new XmlEntityReference($newChild);
+            elseif ($newChild instanceof \DOMProcessingInstruction):
+                return new XmlProcessingInstruction($newChild);
+            elseif ($newChild instanceof \DOMText):
+                return new XmlText($newChild);
+            else:
+                return new XmlElement($newChild);
+            endif;
+        }
+
+
+        protected function getCDataNode(XmlCDataSection $cdata) {
+            return $this->ownerDocument->createCDATASection($cdata->data());
+        }
+
+        protected function getCommentNode(XmlComment $cdata) {
+            return $this->ownerDocument->createComment($cdata->data());
+        }
+
+        protected function getDocumentFragmentNode(XmlDocumentFragment $frag) {
+            $doc = new \DOMDocument();
+            $doc->loadXML($frag->innerXml());
+            return $this->ownerDocument->importNode($doc->documentElement, TRUE);
+        }
+
+        protected function getEntityReferenceNode(XmlEntityReference $entity) {
+            return $this->ownerDocument->createEntityReference($entity->name());
+        }
+
+        protected function getProcessingInstructionNode(XmlProcessingInstruction $instruction) {
+            return $this->ownerDocument->createProcessingInstruction($instruction->target(), $instruction->data());
+        }
+
+        protected function getTextNode(XmlCharacterData $data) {
+            return $this->ownerDocument->createTextNode($data->value());
+        }
+
+        protected function getDeclarationNode(XmlDeclaration $declaration) {
+            $this->ownerDocument->xmlStandalone = ($declaration->standalone() == "yes") ? true : false;
+            $this->ownerDocument->xmlVersion = $declaration->version();
+            $this->ownerDocument->encoding = $declaration->encoding();
+            return null;
         }
     }
 }

@@ -219,7 +219,105 @@ class XmlDocumentFixture extends PHPUnit_Framework_TestCase {
         $this->assertTrue($declaration instanceOf XmlDeclaration);
     }
 
-    /*public function test_Load_FromStreamThrowsExceptionWhenXmlWasNotWellFormed() {
+
+    public function test_GetElementById_ReturnNullWhenIdDoesNotExists() {
+        # Arrange:
+        $doc = new XmlDocument;
+        $doc->loadXml($this->xml['well-formed']);
+
+        # Act:
+        $element = $doc->getElementById("new-book");
+
+        # Assert:
+        $this->assertEquals(null, $element);
+    }
+
+    public function test_GetElementById_CanGetElementById() {
+        # Arrange:
+        $doc = new XmlDocument;
+        $doc->loadXml('<?xml version="1.0"?><books><book id="new-book"/><book id="old-book"/></books>');
+        $expected = '<book id="new-book"/>';
+
+        # Act:
+        $element = $doc->getElementById("new-book");
+
+        # Assert:
+        $this->assertEquals($expected, $element->outerXml());
+    }
+
+    public function test_GetElementsByTagName_DontFindAnyTag() {
+        # Arrange:
+        $doc = new XmlDocument;
+        $doc->loadXml($this->xml['well-formed']);
+
+        # Act:
+        $elements = $doc->getElementsByTagName("lp");
+
+        # Assert:
+        $this->assertEquals(0, $elements->count());
+    }
+
+    public function test_GetElementsByTagName_CanAllElements() {
+        # Arrange:
+        $doc = new XmlDocument;
+        $doc->loadXml($this->xml['well-formed']);
+
+        # Act:
+        $elements = $doc->getElementsByTagName("*");
+
+        # Assert:
+        $this->assertEquals(4, $elements->count());
+    }
+
+    public function test_GetElementsByTagName_CanGetElementsByTagName() {
+        # Arrange:
+        $doc = new XmlDocument;
+        $doc->loadXml($this->xml['well-formed']);
+
+        # Act:
+        $elements = $doc->getElementsByTagName("book");
+
+        # Assert:
+        $this->assertEquals(1, $elements->count());
+    }
+
+    public function test_ImportNode_CanImportNodeInDeep() {
+        # Arrange:
+        $doc = new XmlDocument;
+        $doc->loadXml("<bookstore><book genre='novel' ISBN='1-861001-57-5'><title>Pride And Prejudice</title></book></bookstore>");
+
+        $doc2 = new XmlDocument;
+        $doc2->loadXml("<bookstore><book genre='thriller' ISBN='1-588142-33-7'><title>Black Tower</title></book></bookstore>");
+
+        $expected = '<?xml version="1.0"?><bookstore><book genre="novel" ISBN="1-861001-57-5"><title>Pride And Prejudice</title></book><book genre="thriller" ISBN="1-588142-33-7"><title>Black Tower</title></book></bookstore>';
+
+        # Act:
+        $newBook = $doc->importNode($doc2->documentElement()->lastChild(), true);
+        $doc->documentElement()->appendChild($newBook);
+
+        # Assert:
+        $this->assertEquals($expected, $doc->outerXml());
+    }
+
+    /*public function test_ImportNode_CanImportNodeWithoutDeep() {
+        # Arrange:
+        $doc = new XmlDocument;
+        $doc->loadXml("<bookstore><book genre='novel' ISBN='1-861001-57-5'><title>Pride And Prejudice</title></book></bookstore>");
+
+        $doc2 = new XmlDocument;
+        $doc2->loadXml("<bookstore><book genre='thriller' ISBN='1-588142-33-7'><title>Black Tower</title></book></bookstore>");
+
+        $expected = '<?xml version="1.0"?><bookstore><book genre="novel" ISBN="1-861001-57-5"><title>Pride And Prejudice</title></book><book genre="thriller" ISBN="1-588142-33-7"/></bookstore>';
+
+        # Act:
+        $newBook = $doc->importNode($doc2->documentElement()->lastChild(), false);
+        $doc->documentElement()->appendChild($newBook);
+
+        # Assert:
+        $this->assertEquals($expected, $doc->outerXml());
+    }
+
+    public function test_Load_FromStreamThrowsExceptionWhenXmlWasNotWellFormed() {
         $this->setExpectedException("\\System\\Xml\\XmlException");
         $stream = new FileStream($this->paths['bad-formed']);
         $xml = new XmlDocument;
