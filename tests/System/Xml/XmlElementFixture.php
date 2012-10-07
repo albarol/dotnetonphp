@@ -88,13 +88,13 @@ class XmlElementFixture extends PHPUnit_Framework_TestCase {
     public function test_BaseURI_CanGetBaseURI() {
     	# Arrange:
     	$first_book = $this->dom->getElementsByTagName('book')->item(0);
-    	$filename   = 'file:///'. str_replace('\\', '/', dirname(__FILE__)).'/';
+    	$filename   = '/dotnetonphp/tests/System/Xml/';
     	    	
     	# Act:
     	$element = new XmlElement($first_book);
 
     	# Assert:
-    	$this->assertEquals($filename, $element->baseURI());
+    	$this->assertTrue(strpos($element->baseURI(), $filename) > 0);
     }
 
     public function test_ChildNodes_CanCountChildNodes() {

@@ -62,6 +62,46 @@ namespace System\Xml {
         }
 
         /**
+         * Inserts the specified node immediately after the specified reference node.
+         * @access public
+         * @throws \System\InvalidOperationException This node is of a type that does not allow child nodes of the type of the newChild node. -or- The newChild is an ancestor of this node. 
+         * @throws \System\ArgumentException The newChild was created from a different document than the one that created this node. -or- The refChild is not a child of this node. -or- This node is read-only. 
+         * @param \System\Xml\XmlNode $newChild The XmlNode to insert.
+         * @param \System\Xml\XmlNode $refChild The XmlNode that is the reference node. The newNode is placed after the refNode.
+         * @return \System\Xml\XmlNode The node being inserted.
+         */
+        public function insertAfter(XmlNode $newChild, XmlNode $refChild) {
+            $this->getAndValidateRefChild($refChild);
+
+            $sibling = $refChild->nextSibling();
+
+            if($sibling) {
+                $refChild->insertBefore($newChild, $sibling);
+            } else {
+                $refChild->parentNode()->appendChild($newChild);
+            }   
+            return $newChild;
+        }
+
+        /**
+         * Inserts the specified node immediately before the specified reference node.
+         * @access public
+         * @throws \System\InvalidOperationException This node is of a type that does not allow child nodes of the type of the newChild node. -or- The newChild is an ancestor of this node. 
+         * @throws \System\ArgumentException The newChild was created from a different document than the one that created this node. -or- The refChild is not a child of this node. -or- This node is read-only. 
+         * @param \System\Xml\XmlNode $newChild The XmlNode to insert.
+         * @param \System\Xml\XmlNode $refChild The XmlNode that is the reference node.  The newChild is placed before this node.
+         * @return \System\Xml\XmlNode The node being inserted.
+         */
+        public function insertBefore(XmlNode $newChild, XmlNode $refChild) {
+            $current = $this->getAndValidateRefChild($refChild);
+
+            $newNode = $this->convertFrom($newChild);
+            $this->node->parentNode->insertBefore($newNode, $current);
+            $this->childNodes = null;
+            return $newChild;
+        }
+
+        /**
          * When overridden in a derived class, gets the local name of the node.
          * @access public
          * @return string The name of the node with the prefix removed. For example, LocalName is book for the element
@@ -80,6 +120,15 @@ namespace System\Xml {
         }
 
         /**
+         * Gets the node immediately following this node.
+         * @access public
+         * @return \System\Xml\XmlNode The next XmlNode. If there is no next node, null is returned.
+        */
+        public function nextSibling() {
+            return !is_null($this->node->nextSibling) ? new XmlAttribute($this->node->nextSibling) : null;
+        }
+
+        /**
          * When overridden in a derived class, gets the type of the current node.
          * @access public
          * @return XmlNodeType One of the System.Xml.XmlNodeType values.
@@ -89,21 +138,24 @@ namespace System\Xml {
         }
 
         /**
+         * Adds the specified node to the beginning of the list of child nodes for this node.
+         * @access public
+         * @throws \System\InvalidOperationException This node is of a type that does not allow child nodes of the type of the newChild node. -or- The newChild is an ancestor of this node.
+         * @throws \System\ArgumentException The newChild was created from a different document than the one that created this node. -or- This node is read-only.
+         * @param \System\Xml\XmlNode $newChild The node to add. All the contents of the node to be added are moved into the specified location.
+         * @return \System\Xml\XmlNode The node added.
+         */
+        public function prependChild(XmlNode $newChild) {
+            $this->insertBefore($newChild, $this->parentNode()->attributes()->itemOf(0));
+        }
+
+        /**
          * Gets the markup representing this node and all its child nodes.
          * @access public
          * @return string The markup containing this node and all its child nodes. Note:OuterXml does not return default attributes.
          */
         public function outerXml() {
             return $this->name()."=".$this->value();
-        }
-
-        /**
-         * Gets the node immediately following this node.
-         * @access public
-         * @return \System\Xml\XmlNode The next XmlNode. If there is no next node, null is returned.
-         */
-        public function nextSibling() {
-            return new XmlAttribute($this->node->nextSibling);
         }
 
         /**

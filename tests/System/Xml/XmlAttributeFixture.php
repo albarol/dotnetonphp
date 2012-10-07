@@ -11,6 +11,7 @@ use \System\Xml\XmlNodeType as XmlNodeType;
 class XmlAttributeFixture extends PHPUnit_Framework_TestCase {
 
 	private $element;
+    private $document;
 
 	public function setUp() {
 		$xml = "<books xmlns:b='http://www.books.com'>
@@ -26,10 +27,10 @@ class XmlAttributeFixture extends PHPUnit_Framework_TestCase {
                     </b:book>
                 </books>";
 
-        $document = new XmlDocument;
-        $document->preserveWhitespace(false);
-		$document->loadXml($xml);
-        $this->element = $document->documentElement()->firstChild();
+        $this->document = new XmlDocument;
+        $this->document->preserveWhitespace(false);
+		$this->document->loadXml($xml);
+        $this->element = $this->document->documentElement()->firstChild();
 	}
 
     
@@ -37,8 +38,7 @@ class XmlAttributeFixture extends PHPUnit_Framework_TestCase {
         # Arrange:
         $this->setExpectedException('\\System\\InvalidOperationException');
         $attr = $this->element->attributes()->itemOf(0);
-        $doc = new XmlDocument;
-        $element = $doc->createElement('newElement');
+        $element = $this->document->createElement('newElement');
         
         # Act:
         $attr->appendChild($element);
@@ -47,8 +47,7 @@ class XmlAttributeFixture extends PHPUnit_Framework_TestCase {
     public function test_AppendChild_ChangeAttributeValueWhenAppendTextNode() {
         # Arrange:
         $attr = $this->element->attributes()->itemOf(0);
-        $doc = new XmlDocument;
-        $text = $doc->createTextNode('2');
+        $text = $this->document->createTextNode('2');
         
         # Act:
         $attr->appendChild($text);
@@ -88,6 +87,42 @@ class XmlAttributeFixture extends PHPUnit_Framework_TestCase {
 
         # Assert:
         $this->assertEquals("id=1", $attr->outerXml());
+    }
+
+    public function test_InsertAfter_CanInsertNodeBefore() {
+        # Arrange:
+        $attr = $this->element->attributes()->itemOf(0);
+        $newAttr = $this->document->createAttribute('name');
+        
+        # Act:
+        $attr->insertAfter($newAttr, $attr);
+
+        # Assert:
+        $this->assertEquals(2, $attr->parentNode()->attributes()->count());
+    }
+
+    public function test_InsertBefore_CanInsertNodeBefore() {
+        # Arrange:
+        $attr = $this->element->attributes()->itemOf(0);
+        $newAttr = $this->document->createAttribute('name');
+        
+        # Act:
+        $attr->insertBefore($newAttr, $attr);
+
+        # Assert:
+        $this->assertEquals(2, $attr->parentNode()->attributes()->count());
+    }
+
+    public function test_PrependChild_CanInsertNodeOfBeginning() {
+        # Arrange:
+        $attr = $this->element->attributes()->itemOf(0);
+        $newAttr = $this->document->createAttribute('name');
+        
+        # Act:
+        $attr->prependChild($newAttr, $attr);
+
+        # Assert:
+        $this->assertEquals(2, $attr->parentNode()->attributes()->count());
     }
 
     /************

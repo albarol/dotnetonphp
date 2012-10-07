@@ -233,10 +233,7 @@ namespace System\Xml {
         public function insertBefore(XmlNode $newChild, XmlNode $refChild) {
             $current = $this->getAndValidateRefChild($refChild);
 
-            $doc = new \DOMDocument();
-            $doc->loadXML($newChild->outerXml());
-            $newNode = $current->ownerDocument->importNode($doc->documentElement, TRUE);
-
+            $newNode = $this->convertFrom($newChild);
             $this->node->insertBefore($newNode, $current);
             $this->childNodes = null;
             return $newChild;
@@ -558,11 +555,40 @@ namespace System\Xml {
          * Get and validate if refChild is part of document
          * @access private
         */ 
-        private function getAndValidateRefChild(XmlNode $refChild) {
-            $elements = $this->node->ownerDocument->getElementsByTagName($refChild->name());
+        protected function getAndValidateRefChild(XmlNode $refChild) {
+            if($refChild instanceof XmlAttribute):
+                return $this->validateXmlAttributeNode($refChild);
+            else:
+                return $this->validateXmlElementNode($refChild);
+            endif;
+        }
+
+        private function validateXmlAttributeNode(XmlAttribute $refChild) {
+            $domXPath = new \DOMXPath($this->node->ownerDocument);
+            $attrs = $domXPath->query("//*/@".$refChild->name());
+            
             $current = null;
             $i = 0;
 
+            while($current == null && $i < $attrs->length):
+                $attr = $attrs->item($i);
+                if($attr->isSameNode($this->node)):
+                    $current = $attr;
+                endif;
+                $i++;
+            endwhile;
+
+            if(is_null($current)):
+                throw new ArgumentException("The refChild is not a child of this node. Or this node is read-only. ");
+            endif;
+
+            return $current;
+        }
+
+        private function validateXmlElementNode(XmlElement $refChild) {
+            $elements = $this->node->ownerDocument->getElementsByTagName($refChild->name());
+            $current = null;
+            $i = 0;
             
             while($current == null && $i < $elements->length):
                 $element = $elements->item($i);
@@ -578,6 +604,7 @@ namespace System\Xml {
 
             return $current;
         }
+
 
         /**
          * Convert element from XmlNode to DOMNode
@@ -604,6 +631,8 @@ namespace System\Xml {
                 $newNode = $this->getTextNode($newChild);
             elseif ($newChild instanceof XmlDeclaration):
                 $newNode = $this->getDeclarationNode($newChild);
+            elseif ($newChild instanceof XmlAttribute):
+                $newNode = $this->getAttribute($newChild);
             else:
                 $doc = new \DOMDocument();
                 $doc->loadXML($newChild->outerXml());
@@ -634,6 +663,11 @@ namespace System\Xml {
             endif;
         }
 
+        protected function getAttribute(XmlAttribute $attr) {
+            $attribute = $this->ownerDocument->createAttribute($attr->name());
+            $attribute->value = $attr->value();
+            return $attribute;
+        }
 
         protected function getCDataNode(XmlCDataSection $cdata) {
             return $this->ownerDocument->createCDATASection($cdata->data());
