@@ -38,14 +38,8 @@ namespace System\Xml {
             if ($newChild->nodeType() != XmlNodeType::text()) {
                 throw new InvalidOperationException("This node is of a type that does not allow child nodes of the type of the newChild node. -or- The newChild is an ancestor of this node.");
             }
-
-            $doc = new \DOMDocument();
-            $doc->loadXML($newChild->outerXml());
-            $newNode = $this->node->ownerDocument->importNode($doc->documentElement, TRUE);
-            $this->node->appendChild($newNode);
+            parent::appendChild($newChild);
         }
-
-
 
         /**
          * Overridden. Creates a duplicate of the node.
@@ -55,7 +49,7 @@ namespace System\Xml {
          * @return \System\Xml\XmlNode The cloned node.
          */
         public function cloneNode($deep) {
-            
+            return $this->cloneObject();
         }
 
         /**

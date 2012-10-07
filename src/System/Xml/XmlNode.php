@@ -98,7 +98,6 @@ namespace System\Xml {
          * When overridden in a derived class, creates a duplicate of the node.
          * @access public
          * @abstract
-         * @throws \System\InvalidOperationException
          * @param bool $deep true to recursively clone the subtree under the specified node; false to clone only the node itself.
          * @return XmlNode The cloned node.
          */

@@ -378,4 +378,16 @@ class XmlDocumentFixture extends PHPUnit_Framework_TestCase {
         # Assert:
         $this->assertEquals(1, $doc->childNodes()->count());
     }
+
+    public function test_ReadNode_CanReadNodeFromXmlReader() {
+        $this->markTestIncomplete('Implement XmlReader');
+    }
+
+    public function test_WriteContentTo_CanWriteContent() {
+        $this->markTestIncomplete('Implement XmlWriter');
+    }
+
+    public function test_WriteTo_CanWriteContent() {
+        $this->markTestIncomplete('Implement XmlWriter');
+    }
 }
