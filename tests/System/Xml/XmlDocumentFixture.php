@@ -14,7 +14,7 @@ use \System\Xml\XmlSignificantWhitespace as XmlSignificantWhitespace;
 use \System\Xml\XmlWhitespace as XmlWhitespace;
 
 use \System\IO\FileStream as FileStream;
-
+use \System\IO\StreamReader as StreamReader;
 
 class XmlDocumentFixture extends PHPUnit_Framework_TestCase {
 
@@ -315,64 +315,49 @@ class XmlDocumentFixture extends PHPUnit_Framework_TestCase {
 
         # Assert:
         $this->assertEquals($expected, $doc->outerXml());
-    }
+    }*/
 
-    public function test_Load_FromStreamThrowsExceptionWhenXmlWasNotWellFormed() {
-        $this->setExpectedException("\\System\\Xml\\XmlException");
-        $stream = new FileStream($this->paths['bad-formed']);
+    public function test_Load_CanLoadXmlFromStream() {
+        # Arrange:
+        $fileName = dirname(__FILE__).'/../../resources/system.xml.document-well-formed.xml';
+        $stream = new FileStream($fileName);
         $xml = new XmlDocument;
+        
+        # Act:
         $xml->load($stream);
+
+        # Assert:
+        $this->assertEquals(5, $xml->documentElement()->childNodeS()->count());
     }
 
-    public function test_Load_FromStreamCanLoadXml() {
-        $stream = new FileStream($this->paths['well-formed']);
+    public function test_Load_CanLoadXmlFromString() {
+        # Arrange:
+        $url = "https://raw.github.com/fakeezz/dotnetonphp/xml/tests/resources/system.xml.document-well-formed.xml";
         $xml = new XmlDocument;
-        $xml->load($stream);
-        $this->assertEquals(1, $xml->childNodes()->count());
-    }
 
-    public function test_Load_FromStringThrowsExceptionWhenXmlWasNotWellFormed() {
-        $this->setExpectedException("System\\Xml\\XmlException");
-        $xml = new XmlDocument;
-        $xml->load($this->paths['bad-formed']);
-    }
-
-    public function test_Load_FromStringCanLoadXml() {
-        $xml = new XmlDocument;
-        $xml->load($this->paths['well-formed']);
-        $this->assertEquals(1, $xml->childNodes()->count());
-    }
-
-    public function test_Load_FromTextReaderThrowsExceptionWhenXmlWasNotWellFormed() {
-        $this->setExpectedException("System\\Xml\\XmlException");
-        $reader = new StreamReader($this->paths['bad-formed']);
-        $xml = new XmlDocument;
-        $xml->load($reader);
+        # Act:
+        $xml->load($url);
+        
+        # Assert:
+        $this->assertEquals(5, $xml->documentElement()->childNodeS()->count());
     }
 
     public function test_Load_FromTextReaderCanLoadXml() {
-        $reader = new StreamReader($this->paths['well-formed']);
+        # Arrange:
+        $fileName = dirname(__FILE__).'/../../resources/system.xml.document-well-formed.xml';
+        $reader = new StreamReader($fileName);
         $xml = new XmlDocument;
+        
+        # Act:
         $xml->load($reader);
-        $this->assertEquals(1, $xml->childNodes()->count());
-    }
-
-
-     public function test_Load_FromXmlReaderThrowsExceptionWhenXmlWasNotWellFormed() {
-        $this->setExpectedException("System\\Xml\\XmlException");
-        $reader = new XmlTextReader(new TextReader($this->paths['bad-formed']));
-        $xml = new XmlDocument;
-        $xml->load($reader);
+        
+        # Assert:
+        $this->assertEquals(5, $xml->documentElement()->childNodeS()->count());
     }
 
     public function test_Load_FromXmlReaderCanLoadXml() {
         $this->markTestIncomplete("Implement XmlReader");
-        $reader = new XmlTextReader(new TextReader($this->paths['well-formed']));
-        $xml = new XmlDocument;
-        $xml->load($reader);
-        $this->assertEquals(1, $xml->childNodes()->count());
-    }*/
-
+    }
 
     public function test_LoadXml_ThrowsExceptionWhenXmlWasNotWellFormed() {
         # Arrange:

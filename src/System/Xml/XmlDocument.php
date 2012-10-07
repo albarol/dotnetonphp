@@ -295,34 +295,34 @@ namespace System\Xml {
          * @return void
          */
         public function load($value) {
-            if($value instanceof XmlReader) {
-                $this->createFromXmlReader($value);
-            } else if($value instanceof TextReader) {
-                $this->createFromTextReader($value);
-            } else if($value instanceof Stream) {
-                $this->createFromStream($value);
-            } else {
-                $this->createFromString($value);
-            }
+            if($value instanceof XmlReader):
+                $this->loadFromXmlReader($value);
+            elseif($value instanceof TextReader):
+                $this->loadFromTextReader($value);
+            elseif($value instanceof Stream):
+                $this->loadFromStream($value);
+            else:
+                $this->loadFromString($value);
+            endif;
         }
 
-        private function createFromXmlReader(XmlReader $reader) {
+        private function loadFromXmlReader(XmlReader $reader) {
             $this->loadXml($reader->readOuterXml());
         }
 
-        private function createFromTextReader(TextReader $reader) {
+        private function loadFromTextReader(TextReader $reader) {
             $this->loadXml($reader->readToEnd());
         }
 
-        private function createFromStream(Stream $stream) {
+        private function loadFromStream(Stream $stream) {
             $content = array();
             for($i = 0; $i < $stream->length(); $i++)
                 array_push($content, $stream->readByte());
             $this->loadXml(implode($content));
         }
 
-        private function createFromString($fileName) {
-            $this->loadXml(file_get_contents($fileName));
+        private function loadFromString($string) {
+            $this->loadXml(file_get_contents($string));
         }
 
         /**
