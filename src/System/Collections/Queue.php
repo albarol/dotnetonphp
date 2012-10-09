@@ -5,7 +5,6 @@ namespace System\Collections {
     use System\ArgumentOutOfRangeException as ArgumentOutOfRangeException;
     use System\ArgumentNullException as ArgumentNullException;
     use System\ICloneable as ICloneable;
-    use System\Int32 as Int32;
     use System\InvalidOperationException as InvalidOperationException;
 
     use System\Collections\Generic\QueueEnumerator as QueueEnumerator;
@@ -26,30 +25,38 @@ namespace System\Collections {
 
         /**
          * Initializes a new instance of the System.Collections.Queue class that is empty, has the default initial capacity, and uses the default growth factor.
-         * @throws ArgumentNullException
-         * @param int $value
-         * @param float $growFactor
+         * @access public
+         * @throws \System\ArgumentNullException The ICollection to copy elements from. 
+         * @throws \System\ArgumentOutOfRangeException capacity is less than zero.
+         * @param object $value The ICollection to copy elements from. -or- The initial number of elements that the Queue can contain.
+         * @param float $growFactor The factor by which the capacity of the Queue is expanded.
          */
-        public function __construct($value=Int32::MaxValue, $growFactor=1.0) {
-            if(is_numeric($value)) {
+        public function __construct($value=2147483647, $growFactor=1.0) {
+            if(is_null($value)):
+                throw new ArgumentNullException("value is null.");
+            endif;
+
+            if(is_numeric($value)):
                 $this->createFromNumeric($value, $growFactor);
-            } else if($value instanceof ICollection) {
+            elseif($value instanceof ICollection):
                 $this->createFromCollection($value);
-            } else {
-                throw new \System\ArgumentNullException("value is null.");
-            }
+            endif;
         }
 
         private function createFromNumeric($value, $growFactor) {
-            if($value < 0) throw new ArgumentOutOfRangeException("capacity is less than zero.");
-            if($growFactor < 1.0 || $growFactor > 10.0) throw new ArgumentOutOfRangeException("growFactor is less than 1.0 or greater than 10.0.");
+            if($value < 0):
+                throw new ArgumentOutOfRangeException("capacity is less than zero.");
+            endif;
+            if($growFactor < 1.0 || $growFactor > 10.0):
+                throw new ArgumentOutOfRangeException("growFactor is less than 1.0 or greater than 10.0.");
+            endif;
             $this->size = $value;
             $this->growFactor = $growFactor;
             $this->queue = array();
         }
 
         private function createFromCollection(ICollection $collection) {
-            $this->size = Int32::MaxValue;
+            $this->size = 2147483647;
             $this->queue = array();
             $enumerator = $collection->getEnumerator();
             while($enumerator->moveNext()) {
@@ -93,9 +100,13 @@ namespace System\Collections {
             return $contains;
         }
 
-        public function copyTo(&$array, $index) {
-            if(is_null($array)) throw new ArgumentNullException("array is null.");
-            if($index < 0 || $index > $this->count()) throw new ArgumentOutOfRangeException("index is less than zero. -or- index greater than size of queue");
+        public function copyTo(array &$array, $index=0) {
+            if(is_null($array)):
+                throw new ArgumentNullException("array is null.");
+            endif;
+            if($index < 0 || $index > $this->count()):
+                throw new ArgumentOutOfRangeException("index is less than zero. -or- index greater than size of queue");
+            endif;
             for($i = $index; $i < $this->count(); $i++)
                 $array[] = $this->queue[$i];
         }
@@ -147,7 +158,9 @@ namespace System\Collections {
          * @return object The object that is removed from the beginning of the System.Collections.Queue.
          */
         public function dequeue() {
-            if($this->count() == 0) throw new InvalidOperationException("The System.Collections.Queue is empty.");
+            if($this->count() == 0):
+                throw new InvalidOperationException("The System.Collections.Queue is empty.");
+            endif;
             $current = $this->position['tail'];
             $result = $this->queue[$this->position['tail']++];
             unset($this->queue[$current]);
@@ -161,7 +174,9 @@ namespace System\Collections {
          * @return The object at the beginning of the System.Collections.Queue.
          */
         public function peek() {
-            if($this->count() == 0)  throw new InvalidOperationException("The System.Collections.Queue is empty.");
+            if($this->count() == 0):
+                throw new InvalidOperationException("The System.Collections.Queue is empty.");
+            endif;
             return $this->queue[$this->position['tail']];
         }
 

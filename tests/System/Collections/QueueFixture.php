@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../../system/collections/Queue.php';
+require_once(dirname(__FILE__) . '/../../../src/Autoloader.php');
 
 use \System\Collections\Queue as Queue;
 
@@ -74,13 +74,6 @@ class QueueFixture extends PHPUnit_Framework_TestCase {
         $this->assertFalse($queue->contains(1));
     }
 
-    public function test_CopyTo_ThrowsExceptionWhenArrayIsNull() {
-        $this->setExpectedException("\\System\\ArgumentNullException");
-        $queue = new Queue;
-        $array = null;
-        $queue->copyTo($array, 0);
-    }
-
     public function test_CopyTo_ThrowsExceptionWhenIndexIsLessThanZero() {
         $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
         $queue = new Queue;
@@ -112,6 +105,19 @@ class QueueFixture extends PHPUnit_Framework_TestCase {
         $array = array();
         $queue->copyTo($array, 1);
         $this->assertEquals(2, sizeof($array));
+    }
+
+    public function test_Count_CanCountNumberOfElements() {
+        # Arrange:
+        $queue = new Queue;
+        $queue->enqueue(1);
+        $queue->enqueue(2);
+
+        # Act:
+        $count = $queue->count();
+
+        # Assert:
+        $this->assertEquals(2, $count);
     }
 
     public function test_Dequeue_ThrowExceptionWhenQueueIsEmpty() {

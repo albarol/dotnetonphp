@@ -1,6 +1,6 @@
 <?php
 
-namespace System;
+namespace System {
 
     use \System\ArgumentNullException as ArgumentNullException;
     use \System\ArgumentException as ArgumentException;
@@ -37,8 +37,6 @@ namespace System;
             if($value > self::MaxValue || $value < self::MinValue) {
                 throw new OverflowException("represents a number less than System.Int32.MinValue or greater than System.Int32.MaxValue.");
             }
-
-            $this->value
         }
 
         /**
