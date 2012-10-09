@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../../system/collections/Stack.php';
+require_once(dirname(__FILE__) . '/../../../src/Autoloader.php');
 
 use \System\Collections\Stack as Stack;
 
@@ -13,7 +13,7 @@ class StackFixture extends PHPUnit_Framework_TestCase {
     }
 
     public function test_Construct_CanConstructWithDefaultCapacity() {
-        $stack = new Stack; //default capacity is ten
+        $stack = new Stack; 
         for($i = 0; $i < 10; $i++)
             $stack->push($i);
         $this->assertEquals(10, $stack->count());
@@ -53,13 +53,6 @@ class StackFixture extends PHPUnit_Framework_TestCase {
         $this->assertFalse($stack->contains('dotnetonphp'));
     }
 
-    public function test_CopyTo_ThrowsExceptionWhenArrayIsNull() {
-        $this->setExpectedException("\\System\\ArgumentNullException");
-        $stack = new Stack;
-        $array = null;
-        $stack->copyTo($array, 0);
-    }
-
     public function test_CopyTo_ThrowsExceptionWhenIndexIsLessThanZero() {
         $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
         $stack = new Stack;
@@ -91,6 +84,20 @@ class StackFixture extends PHPUnit_Framework_TestCase {
         $array = array();
         $stack->copyTo($array, 1);
         $this->assertEquals(2, sizeof($array));
+    }
+
+    public function test_Count_CanCountNumberOfElements() {
+        # Arrange:
+        $stack = new Stack;
+        $stack->push(1);
+        $stack->push(2);
+        $stack->push(3);
+
+        # Act:
+        $count = $stack->count();
+
+        # Assert:
+        $this->assertEquals(3, $count);
     }
 
     public function test_GetEnumerator_CanGetEnumerator() {

@@ -5,9 +5,9 @@ namespace System\Collections {
     use \System\ArgumentOutOfRangeException as ArgumentOutOfRangeException;
     use \System\ArgumentNullException as ArgumentNullException;
     use \System\ICloneable as ICloneable;
+    use \System\InvalidOperationException as InvalidOperationException;
 
     use \System\Collections\ICollection as ICollection;
-
     use \System\Collections\Generic\StackEnumerator as StackEnumerator;
 
     /**
@@ -30,16 +30,20 @@ namespace System\Collections {
          * @param object $value initialCapacity -or- ICollection
          */
         public function __construct($value=null) {
-            if(is_null($value)) $value = 10;
-            if(is_numeric($value)) {
+            if(is_null($value)):
+                $value = 10;
+            endif;
+            if(is_numeric($value)):
                 $this->constructFromNumber($value);
-            } else {
+            else:
                 $this->constructFromCollection($value);
-            }
+            endif;
         }
 
         private function constructFromNumber($initialCapacity) {
-            if($initialCapacity < 0) throw new ArgumentOutOfRangeException("initialCapacity is less than zero.");
+            if($initialCapacity < 0):
+                throw new ArgumentOutOfRangeException("initialCapacity is less than zero.");
+            endif;
             $this->capacity = $initialCapacity;
             $this->stack = array();
         }
@@ -90,19 +94,26 @@ namespace System\Collections {
 
 
         /**
-         * Copies the elements of the System.Collections.ICollection to an System.Array, starting at a particular System.Array index.
-         * @access public
-         * @throws ArgumentNullException|ArgumentOutOfRangeException|ArgumentException
-         * @param array $array The one-dimensional System.Array that is the destination of the elements copied from System.Collections.ICollection. The System.Array must have zero-based indexing.
-         * @param int $index The zero-based index in array at which copying begins.
-         * @return void
-         */
-        public function copyTo(&$array, $index)
+       * Copies the elements of the System.Collections.ICollection to an System.Array, starting at a particular System.Array index.
+       * @access public
+       * @throws \System\ArgumentNullException array is a null reference.
+       * @throws \System\ArgumentOutOfRangeException index is less than zero. 
+       * @throws \System\ArgumentException array is multidimensional. -or- index is equal to or greater than the length of array. -or- The number of elements in the source ICollection is greater than the available space from index to the end of the destination array. 
+       * @param array $array The one-dimensional Array that is the destination of the elements copied from ICollection. The System.Array must have zero-based indexing.
+       * @param int $index The zero-based index in array at which copying begins.
+       * @return void
+       */
+        public function copyTo(array &$array, $index=0)
         {
-            if(is_null($array)) throw new ArgumentNullException("array is null.");
-            if($index < 0 || $index > $this->count()) throw new ArgumentOutOfRangeException("index is less than zero. -or- index greater than size of queue");
-            for($i = $index; $i < $this->count(); $i++)
+            if(is_null($array)):
+                throw new ArgumentNullException("array is null.");
+            endif;
+            if($index < 0 || $index > $this->count()):
+                throw new ArgumentOutOfRangeException("index is less than zero. -or- index greater than size of queue");
+            endif;
+            for($i = $index; $i < $this->count(); $i++) {
                 $array[] = $this->stack[$i];
+            }
         }
 
         /**
@@ -130,7 +141,9 @@ namespace System\Collections {
          * @return object The System.Object at the top of the System.Collections.Stack.
          */
         public function peek() {
-            if($this->count() == 0) throw new InvalidOperationException("The System.Collections.Stack is empty.");
+            if($this->count() == 0):
+                throw new InvalidOperationException("The System.Collections.Stack is empty.");
+            endif;
             return $this->stack[$this->head];
         }
 
@@ -141,7 +154,9 @@ namespace System\Collections {
          * @return object The System.Object removed from the top of the System.Collections.Stack.
          */
         public function pop() {
-            if($this->count() == 0) throw new InvalidOperationException("The System.Collections.Stack is empty.");
+            if($this->count() == 0):
+                throw new InvalidOperationException("The System.Collections.Stack is empty.");
+            endif;
             $this->head--;
             return array_pop($this->stack);
         }
@@ -154,7 +169,7 @@ namespace System\Collections {
           * @return void
           */
         public function push($obj){
-            if($this->count() < $this->capacity){
+            if($this->count() < $this->capacity) {
                 array_push($this->stack, $obj);
                 $this->head++;
             }

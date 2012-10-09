@@ -66,6 +66,7 @@ namespace System\Collections {
 
         /**
          * Removes all objects from the System.Collections.Queue.
+         * @access public
          * @return void
          */
         public function clear() {
@@ -77,7 +78,7 @@ namespace System\Collections {
         /**
          * Creates a new object that is a copy of the current instance.
          * @access public
-         * @return Object A new object that is a copy of this instance.
+         * @return \System\Collections\Queue A new object that is a copy of this instance.
          */
         public function cloneObject() {
             return clone $this;
@@ -100,6 +101,16 @@ namespace System\Collections {
             return $contains;
         }
 
+        /**
+         * Copies the elements of the System.Collections.ICollection to an System.Array, starting at a particular System.Array index.
+         * @access public
+         * @throws \System\ArgumentNullException array is a null reference.
+         * @throws \System\ArgumentOutOfRangeException index is less than zero. 
+         * @throws \System\ArgumentException array is multidimensional. -or- index is equal to or greater than the length of array. -or- The number of elements in the source ICollection is greater than the available space from index to the end of the destination array. 
+         * @param array $array The one-dimensional Array that is the destination of the elements copied from ICollection. The System.Array must have zero-based indexing.
+         * @param int $index The zero-based index in array at which copying begins.
+         * @return void
+        */
         public function copyTo(array &$array, $index=0) {
             if(is_null($array)):
                 throw new ArgumentNullException("array is null.");
@@ -107,8 +118,9 @@ namespace System\Collections {
             if($index < 0 || $index > $this->count()):
                 throw new ArgumentOutOfRangeException("index is less than zero. -or- index greater than size of queue");
             endif;
-            for($i = $index; $i < $this->count(); $i++)
+            for($i = $index; $i < $this->count(); $i++) {
                 $array[] = $this->queue[$i];
+            }
         }
 
         /**
@@ -134,7 +146,7 @@ namespace System\Collections {
         }
 
         /**
-         * Method do measure real size of queue
+         * measure real size of queue based on growFactor
          * @return int
          */
         private function sizeOfQueue() {
@@ -144,7 +156,8 @@ namespace System\Collections {
 
         /**
          * Returns an enumerator that iterates through the System.Collections.Queue.
-         * @return IEnumerator An System.Collections.IEnumerator for the System.Collections.Queue.
+         * @access public
+         * @return \System\Collections\IEnumerator An System.Collections.IEnumerator for the System.Collections.Queue.
          */
         public function getEnumerator() {
             return new QueueEnumerator($this);
@@ -154,7 +167,7 @@ namespace System\Collections {
         /**
          * Removes and returns the object at the beginning of the System.Collections.Queue.
          * @access public
-         * @throws InvalidOperationException 
+         * @throws \System\InvalidOperationException The System.Collections.Queue is empty.
          * @return object The object that is removed from the beginning of the System.Collections.Queue.
          */
         public function dequeue() {
@@ -170,7 +183,7 @@ namespace System\Collections {
         /**
          * Returns the object at the beginning of the System.Collections.Queue without removing it.
          * @access public
-         * @throws InvalidOperationException
+         * @throws \System\InvalidOperationException The System.Collections.Queue is empty.
          * @return The object at the beginning of the System.Collections.Queue.
          */
         public function peek() {
@@ -191,6 +204,7 @@ namespace System\Collections {
 
         /**
          * Sets the capacity to the actual number of elements in the System.Collections.Queue.
+         * @access public
          * @return void
          */
         public function trimToSize() {
