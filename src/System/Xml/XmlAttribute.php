@@ -25,7 +25,6 @@ namespace System\Xml {
             parent::__construct($node);
         }
 
-
         /**
          * Adds the specified node to the end of the list of child nodes, of this node.
          * @access public
@@ -138,6 +137,15 @@ namespace System\Xml {
         }
 
         /**
+         * Gets the markup representing this node and all its child nodes.
+         * @access public
+         * @return string The markup containing this node and all its child nodes. Note:OuterXml does not return default attributes.
+         */
+        public function outerXml() {
+            return $this->name()."=".$this->value();
+        }
+
+        /**
          * Adds the specified node to the beginning of the list of child nodes for this node.
          * @access public
          * @throws \System\InvalidOperationException This node is of a type that does not allow child nodes of the type of the newChild node. -or- The newChild is an ancestor of this node.
@@ -150,12 +158,12 @@ namespace System\Xml {
         }
 
         /**
-         * Gets the markup representing this node and all its child nodes.
+         * Removes all the child nodes and/or attributes of the current node.
          * @access public
-         * @return string The markup containing this node and all its child nodes. Note:OuterXml does not return default attributes.
+         * @return void
          */
-        public function outerXml() {
-            return $this->name()."=".$this->value();
+        public function removeAll() {
+            $this->value("");
         }
 
         /**
