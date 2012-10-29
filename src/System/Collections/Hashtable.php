@@ -2,10 +2,6 @@
 
 namespace System\Collections {
 
-
-
-
-
     use \System\ArgumentNullException as ArgumentNullException;
     use \System\ArgumentException as ArgumentException;
     use System\ArgumentOutOfRangeException as ArgumentOutOfRangeException;
@@ -60,13 +56,18 @@ namespace System\Collections {
         /**
          * Copies the elements of the System.Collections.ICollection to an System.Array, starting at a particular System.Array index.
          * @access public
-         * @throws ArgumentNullException|ArgumentOutOfRangeException|ArgumentException
+         * @throws ArgumentNullException
+         * @throws ArgumentOutOfRangeException
+         * @throws ArgumentException
          * @param array $array The one-dimensional System.Array that is the destination of the elements copied from System.Collections.ICollection. The System.Array must have zero-based indexing.
          * @param int $index The zero-based index in array at which copying begins.
          * @return void
          */
-        public function copyTo(&$array, $index) {
-            if($index < 0) throw new ArgumentOutOfRangeException("index is less than zero.");
+        public function copyTo(array &$array, $index=0) {
+            if($index < 0):
+                throw new ArgumentOutOfRangeException("index is less than zero.");
+            endif;
+            
             $current = 0;
 
             foreach(array_keys($this->elements) as $key) {
