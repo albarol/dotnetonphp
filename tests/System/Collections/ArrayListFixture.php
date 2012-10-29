@@ -1,27 +1,25 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../../system/collections/ArrayList.php';
-require_once dirname(__FILE__) . '/../../../system/collections/Queue.php';
-require_once dirname(__FILE__) . '/../../../system/collections/Comparer.php';
+
+require_once dirname(__FILE__) . '/../../../src/Autoloader.php';
 
 use \System\Collections\ArrayList as ArrayList;
-use \System\Collections\Queue as Queue;
 
 class ArrayListFixture extends PHPUnit_Framework_TestCase {
 
     protected $queue;
 
     public function setUp() {
-        $this->queue = new Queue;
-        $this->queue->enqueue('dot');
-        $this->queue->enqueue('net');
-        $this->queue->enqueue('on');
-        $this->queue->enqueue('php');
+        $this->list = new ArrayList;
+        $this->list->add('dot');
+        $this->list->add('net');
+        $this->list->add('on');
+        $this->list->add('php');
     }
 
     public function test_Construct_ThrowsExceptionWhenCapacityIsLessThanZero() {
         $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
-        new ArrayList(-1);
+        $list = new ArrayList(-1);
     }
 
     public function test_Construct_CanConstructWithCapacity() {
@@ -31,8 +29,8 @@ class ArrayListFixture extends PHPUnit_Framework_TestCase {
     }
 
     public function test_Constructor_CanCreateFromCollection() {
-        $array = new ArrayList($this->queue);
-        $this->assertEquals($this->queue->count(), $array->count());
+        $array = new ArrayList($this->list);
+        $this->assertEquals($this->list->count(), $array->count());
     }
 
     public function test_Construct_CanCreateWithoutParameter() {
@@ -93,7 +91,7 @@ class ArrayListFixture extends PHPUnit_Framework_TestCase {
         $readOnlyArray = ArrayList::readOnly($array);
 
         #Act:
-        $readOnlyArray->addRange(new Queue);
+        $readOnlyArray->addRange(new ArrayList);
     }
 
     public function test_AddRange_ThrowsExceptionWhenIsFixedSize(){
@@ -102,7 +100,7 @@ class ArrayListFixture extends PHPUnit_Framework_TestCase {
         $fixedArray = ArrayList::fixedSize(new ArrayList);
 
         #Act:
-        $fixedArray->addRange(new Queue);
+        $fixedArray->addRange(new ArrayList);
     }
 
     public function test_AddRange_CanAddRangeOfElements() {
@@ -110,7 +108,7 @@ class ArrayListFixture extends PHPUnit_Framework_TestCase {
         $array = new ArrayList();
 
         #Act:
-        $array->addRange($this->queue);
+        $array->addRange($this->list);
 
         #Assert:
         $this->assertEquals(4, $array->count());
@@ -157,13 +155,6 @@ class ArrayListFixture extends PHPUnit_Framework_TestCase {
         $this->assertTrue($array->contains(1));
     }
 
-    public function test_CopyTo_ThrowsExceptionWhenArrayIsNull() {
-        $this->setExpectedException("\\System\\ArgumentNullException");
-        $array = new ArrayList;
-        $nullArray = null;
-        $array->copyTo($nullArray);
-    }
-
     public function test_CopyTo_ThrowsExceptionWhenIndexIsLessThanZero() {
         $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
         $array = new ArrayList;
@@ -204,12 +195,12 @@ class ArrayListFixture extends PHPUnit_Framework_TestCase {
 
     public function test_Get_ThrowsExceptionWhenIndexIsGreaterThanCount() {
         $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
-        $array = new ArrayList($this->queue);
+        $array = new ArrayList($this->list);
         $array->get(10);
     }
 
     public function test_Get_CanGetElement() {
-        $array = new ArrayList($this->queue);
+        $array = new ArrayList($this->list);
         $this->assertEquals('dot', $array->get(0));
     }
 
@@ -241,32 +232,32 @@ class ArrayListFixture extends PHPUnit_Framework_TestCase {
     }
 
     public function test_IndexOf_ResultMinusOneWhenNotFound() {
-        $array = new ArrayList($this->queue);
+        $array = new ArrayList($this->list);
         $this->assertEquals(-1, $array->indexOf(20));
     }
 
     public function test_IndexOf_ResultShouldBeElementPositionWhenFound() {
-        $array = new ArrayList($this->queue);
+        $array = new ArrayList($this->list);
         $this->assertEquals(2, $array->indexOf('on'));
     }
 
     public function test_IndexOf_ResultMinusOnWhenNotFoundAfterIndex() {
-        $array = new ArrayList($this->queue);
+        $array = new ArrayList($this->list);
         $this->assertEquals(-1, $array->indexOf('dot', 3));
     }
 
     public function test_IndexOf_ResultShouldBeElementPositionWhenFoundAfterIndex() {
-        $array = new ArrayList($this->queue);
+        $array = new ArrayList($this->list);
         $this->assertEquals(2, $array->indexOf('on', 1));
     }
 
     public function test_IndexOf_ResultMinusOnWhenNotFoundInRage() {
-        $array = new ArrayList($this->queue);
+        $array = new ArrayList($this->list);
         $this->assertEquals(-1, $array->indexOf('dot', 2, 1));
     }
 
     public function test_IndexOf_ResultShouldBeElementPositionWhenFoundInRange() {
-        $array = new ArrayList($this->queue);
+        $array = new ArrayList($this->list);
         $this->assertEquals(1, $array->indexOf('net', 0, 2));
     }
 
@@ -296,7 +287,7 @@ class ArrayListFixture extends PHPUnit_Framework_TestCase {
     }
 
     public function test_Insert_CanInsertInStartList() {
-        $array = new ArrayList($this->queue);
+        $array = new ArrayList($this->list);
         $array->insert(0, 10);
         $this->assertEquals(10, $array->get(0));
     }
@@ -308,7 +299,7 @@ class ArrayListFixture extends PHPUnit_Framework_TestCase {
     }
 
     public function test_Insert_CanInsertElementInAnyPosition() {
-        $array = new ArrayList($this->queue);
+        $array = new ArrayList($this->list);
         $array->insert(2, 10);
         $this->assertEquals(10, $array->get(2));
     }
@@ -316,48 +307,48 @@ class ArrayListFixture extends PHPUnit_Framework_TestCase {
     public function test_InsertRange_ThrowsExceptionWhenIndexIsLessThanZero() {
         $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
         $array = new ArrayList;
-        $array->insertRange(-1, $this->queue);
+        $array->insertRange(-1, $this->list);
     }
 
     public function test_InsertRange_ThrowsExceptionWhenIndexGreaterThanCount() {
         $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
         $array = new ArrayList;
-        $array->insertRange(10, $this->queue);
+        $array->insertRange(10, $this->list);
     }
 
     public function test_InsertRange_ThrowsExceptionWhenIsReadOnly() {
         $this->setExpectedException("\\System\\NotSupportedException");
         $readOnlyArray = ArrayList::readOnly(new ArrayList);
-        $readOnlyArray->insertRange(0, $this->queue);
+        $readOnlyArray->insertRange(0, $this->list);
     }
 
     public function test_InsertRange_ThrowsExceptionWhenIsFixedSize() {
         $this->setExpectedException("\\System\\NotSupportedException");
         $array = new ArrayList;
         $readOnlyArray = ArrayList::fixedSize($array);
-        $readOnlyArray->insertRange(0, $this->queue);
+        $readOnlyArray->insertRange(0, $this->list);
     }
 
     public function test_InsertRange_CanInsertInStartList() {
-        $array = new ArrayList($this->queue);
-        $array->insertRange(0, $this->queue);
+        $array = new ArrayList($this->list);
+        $array->insertRange(0, $this->list);
         $this->assertEquals('dot', $array->get(0));
     }
 
     public function test_InsertRange_CanInsertWhenArrayListIsEmpty() {
         $array = new ArrayList;
-        $array->insertRange(0, $this->queue);
+        $array->insertRange(0, $this->list);
         $this->assertEquals('net', $array->get(1));
     }
 
     public function test_InsertRange_CanInsertElementInAnyPosition() {
-        $array = new ArrayList($this->queue);
-        $array->insertRange(2, $this->queue);
+        $array = new ArrayList($this->list);
+        $array->insertRange(2, $this->list);
         $this->assertEquals('dot', $array->get(2));
     }
 
     public function test_LastIndexOf_ResultMinusOneWhenNotFound() {
-        $array = new ArrayList($this->queue);
+        $array = new ArrayList($this->list);
         $this->assertEquals(-1, $array->lastIndexOf(20));
     }
 
@@ -371,99 +362,99 @@ class ArrayListFixture extends PHPUnit_Framework_TestCase {
     }
 
     public function test_LastIndexOf_ResultMinusOnWhenNotFoundAfterIndex() {
-        $array = new ArrayList($this->queue);
+        $array = new ArrayList($this->list);
         $this->assertEquals(-1, $array->lastIndexOf(3, 3));
     }
 
     public function test_LastIndexOf_ResultShouldBeElementPositionWhenFoundAfterIndex() {
-        $array = new ArrayList($this->queue);
+        $array = new ArrayList($this->list);
         $this->assertEquals(2, $array->lastIndexOf('on', 1));
     }
 
     public function test_LastIndexOf_ResultMinusOnWhenNotFoundInRage() {
-        $array = new ArrayList($this->queue);
+        $array = new ArrayList($this->list);
         $this->assertEquals(-1, $array->lastIndexOf(2, 0, 2));
     }
 
     public function test_LastIndexOf_ResultShouldBeElementPositionWhenFoundInRange() {
-        $array = new ArrayList($this->queue);
+        $array = new ArrayList($this->list);
         $this->assertEquals(1, $array->lastIndexOf('net', 0, 2));
     }
 
     public function test_Remove_ThrowsExceptionWhenArrayIsReadOnly() {
         $this->setExpectedException("\\System\\NotSupportedException");
-        $array = ArrayList::readOnly(new ArrayList($this->queue));
+        $array = ArrayList::readOnly(new ArrayList($this->list));
         $array->remove(1);
     }
 
     public function test_Remove_ThrowsExceptionWhenArrayIsFixedSize() {
         $this->setExpectedException("\\System\\NotSupportedException");
-        $array = ArrayList::fixedSize(new ArrayList($this->queue));
+        $array = ArrayList::fixedSize(new ArrayList($this->list));
         $array->remove(1);
     }
 
     public function test_Remove_CanRemoveElement() {
-        $array = new ArrayList($this->queue);
+        $array = new ArrayList($this->list);
         $array->remove('dot');
         $this->assertEquals(3, $array->count());
     }
 
     public function test_RemoveAt_ThrowsExceptionWhenArrayIsReadOnly() {
         $this->setExpectedException("\\System\\NotSupportedException");
-        $array = ArrayList::readOnly(new ArrayList($this->queue));
+        $array = ArrayList::readOnly(new ArrayList($this->list));
         $array->removeAt(1);
     }
 
     public function test_RemoveAt_ThrowsExceptionWhenArrayIsFixedSize() {
         $this->setExpectedException("\\System\\NotSupportedException");
-        $array = ArrayList::fixedSize(new ArrayList($this->queue));
+        $array = ArrayList::fixedSize(new ArrayList($this->list));
         $array->removeAt(1);
     }
 
     public function test_RemoveAt_CanRemoveElement() {
-        $array = new ArrayList($this->queue);
+        $array = new ArrayList($this->list);
         $array->removeAt(0);
         $this->assertEquals(3, $array->count());
     }
 
     public function test_RemoveAt_CanReorganizeArrayList() {
-        $array = new ArrayList($this->queue);
+        $array = new ArrayList($this->list);
         $array->removeAt(0);
         $this->assertEquals('net', $array->get(0));
     }
 
     public function test_RemoveRange_ThrowsExceptionWhenIndexIsLessThanZero() {
         $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
-        $array = new ArrayList($this->queue);
+        $array = new ArrayList($this->list);
         $array->removeRange(-1, 1);
     }
 
     public function test_RemoveRange_ThrowsExceptionWhenCountIsLessThanZero() {
         $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
-        $array = new ArrayList($this->queue);
+        $array = new ArrayList($this->list);
         $array->removeRange(0, -1);
     }
 
     public function test_RemoveRange_ThrowsExceptionWhenRangeIsInvalid() {
         $this->setExpectedException("\\System\\ArgumentException");
-        $array = new ArrayList($this->queue);
+        $array = new ArrayList($this->list);
         $array->removeRange(0, 15);
     }
 
     public function test_RemoveRange_ThrowsExceptionWhenArrayListIsReadOnly() {
         $this->setExpectedException("\\System\\NotSupportedException");
-        $array = ArrayList::readOnly(new ArrayList($this->queue));
+        $array = ArrayList::readOnly(new ArrayList($this->list));
         $array->removeRange(0, 15);
     }
 
     public function test_RemoveRange_ThrowsExceptionWhenArrayListIsFixedSize() {
         $this->setExpectedException("\\System\\NotSupportedException");
-        $array = ArrayList::fixedSize(new ArrayList($this->queue));
+        $array = ArrayList::fixedSize(new ArrayList($this->list));
         $array->removeRange(0, 15);
     }
 
     public function test_RemoveRange_CanRemoveRangeOfElements() {
-        $array = new ArrayList($this->queue);
+        $array = new ArrayList($this->list);
         $array->removeRange(1, 2);
         $this->assertEquals(1, $array->count());
     }
@@ -480,69 +471,69 @@ class ArrayListFixture extends PHPUnit_Framework_TestCase {
 
     public function test_Reverse_ThrowsExceptionWhenListIsReadOnly() {
         $this->setExpectedException("\\System\\NotSupportedException");
-        $array = ArrayList::readOnly(new ArrayList($this->queue));
+        $array = ArrayList::readOnly(new ArrayList($this->list));
         $array->reverse();
     }
 
     public function test_Reverse_ThrowsExceptionWhenIndexIsLessThanZero() {
         $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
-        $array = new ArrayList($this->queue);
+        $array = new ArrayList($this->list);
         $array->reverse(-1, 2);
     }
 
     public function test_Reverse_ThrowsExceptionWhenCountIsLessThanZero() {
         $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
-        $array = new ArrayList($this->queue);
+        $array = new ArrayList($this->list);
         $array->reverse(2, -1);
     }
 
     public function test_Reverse_ThrowsExceptionWhenIsInvalidRange() {
         $this->setExpectedException("\\System\\ArgumentException");
-        $array = new ArrayList($this->queue);
+        $array = new ArrayList($this->list);
         $array->reverse(2, 10);
     }
 
     public function test_Reverse_CanReverseAllElements() {
-        $array = new ArrayList($this->queue);
+        $array = new ArrayList($this->list);
         $array->reverse();
         $this->assertEquals('php', $array->get(0));
     }
 
     public function test_Reverse_CanReversePartOfElements() {
-        $array = new ArrayList($this->queue);
+        $array = new ArrayList($this->list);
         $array->reverse(0, 2);
         $this->assertEquals('net', $array->get(0));
     }
 
     public function test_SetRange_ThrowsExceptionWhenIndexIsLessThanZero() {
         $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
-        $array = new ArrayList($this->queue);
-        $array->setRange(-1, $this->queue);
+        $array = new ArrayList($this->list);
+        $array->setRange(-1, $this->list);
     }
 
     public function test_SetRange_ThrowsExceptionWhenIsRangeIsInvalid() {
         $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
-        $array = new ArrayList($this->queue);
-        $array->setRange(2, $this->queue);
+        $array = new ArrayList($this->list);
+        $array->setRange(2, $this->list);
     }
 
     public function test_SetRange_ThrowsExceptionWhenIsReadOnly() {
         $this->setExpectedException("\\System\\NotSupportedException");
-        $array = ArrayList::readOnly(new ArrayList($this->queue));
-        $array->setRange(0, $this->queue);
+        $array = ArrayList::readOnly(new ArrayList($this->list));
+        $array->setRange(0, $this->list);
     }
 
     public function test_SetRange_CanSetRangeOfElements() {
-        $reversedArray = new ArrayList($this->queue);
+        $reversedArray = new ArrayList($this->list);
         $reversedArray->reverse();
-        $array = new ArrayList($this->queue);
+        $array = new ArrayList($this->list);
         $array->setRange(0, $reversedArray);
         $this->assertEquals('php', $array->get(0));
     }
 
     public function test_Sort_ThrowsExceptionWhenIsReadOnly() {
         $this->setExpectedException("\\System\\NotSupportedException");
-        $array = ArrayList::readOnly(new ArrayList($this->queue));
+        $array = ArrayList::readOnly(new ArrayList($this->list));
         $array->sort();
     }
 
@@ -552,7 +543,7 @@ class ArrayListFixture extends PHPUnit_Framework_TestCase {
         $array = new ArrayList;
         $array->add(1);
         $array->add('dotnetonphp');
-        $array->add(new Queue);
+        $array->add(new ArrayList);
         //$array->sort(new Comparer());
     }
 
@@ -567,32 +558,32 @@ class ArrayListFixture extends PHPUnit_Framework_TestCase {
     }
 
     public function test_Sort_CanSortElements() {
-        $array = new ArrayList($this->queue);
+        $array = new ArrayList($this->list);
         $array->reverse();
         $array->sort();
         $this->assertEquals('dot', $array->get(0));
     }
 
     public function test_ToArray_CanTransformInArray() {
-        $array = new ArrayList($this->queue);
+        $array = new ArrayList($this->list);
         $result = $array->toArray();
         $this->assertTrue(is_array($result));
     }
 
     public function test_TrimToSize_ThrowsExceptionWhenIsReadOnly() {
         $this->setExpectedException("\\System\\NotSupportedException");
-        $array = ArrayList::readOnly(new ArrayList($this->queue));
+        $array = ArrayList::readOnly(new ArrayList($this->list));
         $array->trimToSize();
     }
 
     public function test_TrimToSize_ThrowsExceptionWhenIsFixedSize() {
         $this->setExpectedException("\\System\\NotSupportedException");
-        $array = ArrayList::fixedSize(new ArrayList($this->queue));
+        $array = ArrayList::fixedSize(new ArrayList($this->list));
         $array->trimToSize();
     }
 
     public function test_TrimToSize_CanChangeCapacityToSizeOfList() {
-        $array = new ArrayList($this->queue);
+        $array = new ArrayList($this->list);
         $array->capacity(100);
         $array->trimToSize();
         $this->assertEquals($array->capacity(), $array->count());

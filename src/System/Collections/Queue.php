@@ -93,7 +93,7 @@ namespace System\Collections {
             return $contains;
         }
 
-        public function copyTo(&$array, $index) {
+        public function copyTo(array &$array, $index=0) {
             if(is_null($array)) throw new ArgumentNullException("array is null.");
             if($index < 0 || $index > $this->count()) throw new ArgumentOutOfRangeException("index is less than zero. -or- index greater than size of queue");
             for($i = $index; $i < $this->count(); $i++)
