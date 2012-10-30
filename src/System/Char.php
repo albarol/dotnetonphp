@@ -39,6 +39,17 @@ namespace System {
         }
 
         /**
+         * Converts the specified Unicode code point into a UTF-16 encoded string.
+         * @access public
+         * @throws \System\ArgumentOutOfRangeException utf32 is not a valid 21-bit Unicode code point ranging from U+0 through U+10FFFF, excluding the surrogate pair range from U+D800 through U+DFFF.
+         * @param int $utf32 A 21-bit Unicode code point.
+         * @return string A string consisting of one Char object or a surrogate pair of Char objects equivalent to the code point specified by the utf32 parameter.
+        */
+        public static function convertFromUtf32($utf32) {
+            throw new \System\NotImplementedException();
+        }
+
+        /**
          * Returns a value indicating whether this instance is equal to a specified \System\Char object.
          * @access public
          * @param object $obj A \System\Char value to compare to this instance.

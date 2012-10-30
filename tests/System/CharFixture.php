@@ -40,17 +40,29 @@ class CharFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(-1, $result);
     }
 
+    public function test_ConvertFromUtf32_CanConvertLetterA() {
+        # Arrange:
+        $letter = 0x0041;
+
+        # Act:
+        $str = Char::convertFromUtf32($letter);
+        print $str;
+
+        # Assert:
+        $this->assertEquals('A', $str);
+    }
+
+
     public function test_Equals_ShouldBeEqualWhenValueIsEqual() {
         # Arrange:
         $obj = Char::minValue();
 
         # Act:
-        $result = $obj->equals(Char::MAX_VALUE);
+        $result = $obj->equals(Char::MIN_VALUE);
 
         # Assert:
         $this->assertTrue($result);
     }
-
 
     public function test_MaxValue_CanGetCharWithMaxValue() {
         # Arrange:
@@ -67,6 +79,8 @@ class CharFixture extends PHPUnit_Framework_TestCase {
         # Assert:
         $this->assertEquals(Char::MIN_VALUE, $obj->value());
     }
+
+
 
 
 
