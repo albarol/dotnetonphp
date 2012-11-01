@@ -275,6 +275,8 @@ namespace System {
 
     /**
     * Returns the square root of a specified number.
+    * @access public
+    * @static
     * @param $value A number.
     * @return float value of d Returns Zero, or positive The positive square root of d.
     */
@@ -285,6 +287,8 @@ namespace System {
 
     /**
     * Returns the tangent of the specified angle.
+    * @access public
+    * @static
     * @param $a An angle, measured in radians.
     * @return float The tangent of a. If a is equal to System.Double.NaN, System.Double.NegativeInfinity, or System.Double.PositiveInfinity, this method returns System.Double.NaN.
     */
@@ -294,6 +298,8 @@ namespace System {
 
     /**
     * Returns the hyperbolic tangent of the specified angle.
+    * @access public
+    * @static
     * @param $value An angle, measured in radians.
     * @return float The hyperbolic tangent of value. If value is equal to System.Double.NegativeInfinity, this method returns -1. If value is equal to System.Double.PositiveInfinity, this method returns 1. If value is equal to System.Double.NaN, this method returns System.Double.NaN.
     */
@@ -303,6 +309,8 @@ namespace System {
 
     /**
     * Calculates the integral part of a specified decimal number.
+    * @access public
+    * @static
     * @param $d A number to truncate.
     * @return float Return Values: The integral part of d; that is, the number that remains after any fractional digits have been discarded.
     */

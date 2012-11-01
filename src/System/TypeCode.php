@@ -160,8 +160,7 @@ namespace System {
          * @return TypeCode String TypeCode
          */
         public static function string() {
-            /** @noinspection PhpUndefinedClassInspection */
-            return new Code("String", 18);
+            return new TypeCode("String", 18);
         }
 
         /**

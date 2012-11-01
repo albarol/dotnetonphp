@@ -1,146 +1,243 @@
 <?php
 
-//require_once 'PHPUnit/Framework.php';
+require_once dirname(__FILE__) . '/../../src/Autoloader.php';
 
-require_once dirname(__FILE__) . '/../../system/String.php';
+use \System\String as String;
+use \System\TypeCode as TypeCode;
 
 class StringFixture extends PHPUnit_Framework_TestCase {
 
-    public function testVerifyIfStringIsNull() {
+    public function test_IsNullOrEmpty_ShouldTrueWhenStringIsNull() {
+        # Arrange:
         $string = null;
-        $this->isTrue(String::isNullOrEmpty($string));
+
+        # Act:
+        $result = String::isNullOrEmpty($string);
+
+        # Assert:
+        $this->assertTrue($result);
     }
 
-    public function testVerifyIfStringIsEmpty() {
+    public function test_IsNullOrEmpty_ShouldTrueWhenStringIsEmpty() {
+        #Arrange:
         $string = String::getEmpty();
-        $this->isTrue(String::isNullOrEmpty($string));
+        
+        # Act:
+        $result = String::isNullOrEmpty($string);
+
+        # Assert:
+        $this->assertTrue($result);
     }
 
-    public function testVerifyIfStringContainsValue() {
-        $string = "dotnetonphp";
-        $this->isFalse(String::isNullOrEmpty($string));
+    public function test_Contains_ShouldBeTrueWhenContainsValue() {
+        # Arrange:
+        $obj = new String("dotnetonphp");
+
+        # Act:
+        $result = $obj->contains("dot");
+
+        # Assert:
+        $this->assertTrue($result);
     }
 
-    public function testWhenHaveStringsWithSameValueEqualsShouldBeTrue() {
-        $string = new String("dotnetonphp");
-        $this->isTrue($string->equals("dotnetonphp"));
+    public function test_Contains_ShouldBeFalseWhenNotContainsValue() {
+        # Arrange:
+        $obj = new String("dotnetonphp");
+
+        # Act:
+        $result = $obj->contains("hook");
+
+        # Assert:
+        $this->assertFalse($result);
     }
 
-    public function testWhenHaveStringsWithDifferentValueEqualsShouldBeFalse() {
-        $string = new String("dotnet");
-        $this->isFalse($string->equals(new String("onphp")));
+    public function test_Equals_ShouldBeTrueWhenInstancesAreEqual() {
+        # Arrange:
+        $obj = new String("dotnetonphp");
+
+        # Act:
+        $result = $obj->equals(new String("dotnetonphp"));
+
+        # Assert:
+        $this->assertTrue($result);
     }
 
-    public function testShouldConcatenateStrings() {
-        $string1 = "dotnet";
-        $string2 = "onphp";
-        $this->assertEquals(String::concat($string1, $string2)->value, "dotnetonphp");
+   public function test_Equals_ShouldBeTrueWhenInstancesAreNotEqual() {
+        # Arrange:
+        $obj = new String("dotnetonphp");
+
+        # Act:
+        $result = $obj->equals(new String("hook"));
+
+        # Assert:
+        $this->assertFalse($result);
     }
 
-    public function testShouldGettingPositionCharInString() {
-        $string = new String(".Net#On#Php");
+    public function test_Concat_ShouldConcatStrings() {
+        # Arrange
+        $words = array("dotnet", "onphp");
+        
+        # Act:
+        $obj = String::concat($words[0], $words[1]);
+        
+        # Assert:
+        $this->assertEquals("dotnetonphp", $obj->value());
+    }
+
+    public function test_IndexOf_ShouldReturnPositionWhenCharExists() {
+        # Arrange:
+        $obj = new String(".Net#On#Php");
         $char = "#";
-        $this->assertEquals($string->indexOf($char), 4); //found character
+
+        # Act:
+        $position = $obj->indexOf($char);
+
+        # Assert:
+        $this->assertEquals(4, $position);
     }
 
-    public function testShouldNotGettingPositionCharInString() {
-        $string = new String(".Net#On#Php");
-        $char = "%";
-        $this->assertEquals($string->indexOf($char), -1); //not found character
+    public function test_IndexOf_ShouldReturnPositionWhenCharNotExists() {
+        # Arrange:
+        $obj = new String(".Net#On#Php");
+        $char = "+";
+
+        # Act:
+        $position = $obj->indexOf($char);
+
+        # Assert:
+        $this->assertEquals(-1, $position);
     }
 
-    public function testStringShouldContainsSubstring() {
-        $string = new String(".Net#On#Php");
-        $correctSubstring = "#";
-        $this->isTrue($string->contains($correctSubstring)); //found substring
+    
+    public function test_ToCharArray_CanTransformStringInCharArray() {
+        # Arrange:
+        $obj = new String('DotNetOnPhp');
+
+        # Act:
+        $array = $obj->toCharArray();
+
+        # Assert:
+        $this->assertEquals("D", $array[0]);
+        $this->assertEquals("N", $array[3]);
+        $this->assertEquals("O", $array[6]);
+        $this->assertEquals("P", $array[8]);
     }
 
-    public function testStringShouldNotContainsSubstring() {
-        $string = new String(".Net#On#Php");
-        $correctSubstring = "%";
-        $this->isFalse($string->contains($correctSubstring)); //not found substring
+    public function test_ToUpper_CanTransformInUpperCase() {
+        # Arrange:
+        $obj = new String("DoTnEtOnPhP");
+
+        # Act:
+        $result = $obj->toUpper();
+
+        # Assert:
+        $this->assertEquals("DOTNETONPHP", $result->value());
     }
 
-    public function testShouldTransformStringInCharArray() {
-        $string = new String('DotNetOnPhp');
-        $array = $string->toCharArray();
-        $this->assertEquals($array[0], "D");
-        $this->assertEquals($array[1], "o");
-        $this->assertEquals($array[2], "t");
-        $this->assertEquals($array[3], "N");
-        $this->assertEquals($array[4], "e");
-        $this->assertEquals($array[5], "t");
-        $this->assertEquals($array[6], "O");
-        $this->assertEquals($array[7], "n");
-        $this->assertEquals($array[8], "P");
-        $this->assertEquals($array[9], "h");
-        $this->assertEquals($array[10], "p");
+    public function test_ToLower_CanTransformInLowerCase() {
+        # Arrange:
+        $obj = new String("DoTnEtOnPhP");
+
+        # Act:
+        $result = $obj->toLower();
+
+        # Assert:
+        $this->assertEquals("dotnetonphp", $result->value());
     }
 
-    public function testShouldTransformStringToUpperCase() {
-        $string = new String("DoTnEtOnPhP");
-        $this->assertEquals("DOTNETONPHP", $string->toUpper()->value);
+    public function test_Length_CanGetLengthOfString() {
+        # Arrange:
+        $obj = new String("dotnetonphp");
+
+        # Act:
+        $length = $obj->length();
+
+        # Assert:
+        $this->assertEquals(11, $length);
     }
 
-    public function testShouldTransformStringToLowerCase() {
-        $string = new String("DoTnEtOnPhP");
-        $this->assertEquals("dotnetonphp", $string->toLower()->value);
+    
+    public function test_Replace_CanReplacePartOfString() {
+        # Arrange:
+        $obj = new String("dotneton###");
+
+        # Act:
+        $text = $obj->replace("###", "php");
+
+        # Assert:
+        $this->assertEquals("dotnetonphp", $text->value());
     }
 
-    public function testShouldGetLengthOfString() {
-        $texto = new String("dotnetonphp");
-        $this->assertEquals(11, $texto->length());
+    
+    public function test_Replace_ThrowsExceptionWhenArgumentIsNull() {
+        # Arrange:
+        $this->setExpectedException("\\System\\ArgumentNullException");
+        $obj = new String("dotnetonphp");
+
+        # Act::
+        $obj->replace(null, "php");
     }
 
-    public function testShouldReplaceAnyPartOfString() {
-        $text = new String("dotneton###");
-        $this->assertEquals("dotnetonphp", $text->replace("###", "php")->value);
+    
+    public function test_Trim_CanRemoveSpacesFromBoundaries() {
+        # Arrange:
+        $obj = new String("    dot net on php   ");
+
+        # Act:
+        $text = $obj->trim();
+
+        # Assert:
+        $this->assertEquals("dot net on php", $text->value());
     }
 
-    public function testThrowExceptionWhenReplaceWithNullValue() {
-        $this->setExpectedException("ArgumentNullException");
-        $text = new String("dotnetonphp");
-        $text->replace(null, "php")->value;
+    public function test_Remove_CanRemovePartOfString() {
+        # Arrange:
+        $obj = new String("dotnetonphp");
+
+        # Act:
+        $text = $obj->remove(3);
+        
+        # Assert:
+        $this->assertEquals("dot", $text->value());
     }
 
-    public function testCanConstructObjectByAnyValue() {
-        $text = new String("dotnetonphp");
-        $newText = new String($text);
+    public function test_Remove_ThrowsExceptionWhenPositionIsInvalid() {
+        # Arrange:
+        $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
+        $obj = new String("dotnetonphp");
 
-        $this->assertEquals("dotnetonphp", $newText->value);
+        # Act:
+        $obj->remove(-1);
     }
 
-    public function testShouldCloneObject() {
-        $text = new String("dotnetonphp");
-        $newText = $text->cloneObject();
+    public function test_Chars_ThrowsExceptionWhenPositionIsInvalid() {
+        # Arrange:
+        $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
+        $obj = new String("dotnetonphp");
 
-        $this->assertEquals("dotnetonphp", $newText->value);
+        # Act:
+        $obj->chars(-1);
     }
 
-    public function testShouldRemoveSpacesFromBoundaries() {
-        $text = new String("    dot net on php   ");
-        $this->assertEquals("dot net on php", $text->trim()->value);
+    public function test_Chars_CanGetCharInPosition() {
+        # Arrange:
+        $obj = new String("dotnetonphp");
+
+        # Act:
+        $char = $obj->chars(0);
+
+        # Assert:
+        $this->assertEquals("d", $char);
     }
 
-    public function testShouldRemoveCharsFromString() {
-        $string = new String("dotnetonphp");
-        $this->assertEquals("dot", $string->remove(3)->value);
-    }
+    public function test_GetTypeCode_CanGetTypeCodeToString() {
+        # Arrange:
+        $obj = new String("dotnetonphp");
 
-    public function testThrowExceptionWhenRemoveContainsInvalidIndex() {
-        $this->setExpectedException("ArgumentOutOfRangeException");
-        $string = new String("dotnetonphp");
-        $this->assertEquals("dot", $string->remove(-1)->value);
-    }
+        # Act:
+        $code = $obj->getTypeCode();
 
-    public function testCanGetCharElementInString() {
-        $string = new String("dotnetonphp");
-        $this->assertEquals("d", $string->chars(0)->value);
-    }
-
-    public function testWhenGetTypeCodeShouldBeString(){
-        $code = new String("dotnetonphp");
-        $this->assertEquals($code->getTypeCode(), Code::string());
+        # Assert:
+        $this->assertEquals(TypeCode::string(), $code);
     }
 }
-?>
