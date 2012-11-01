@@ -18,5 +18,4 @@ namespace System {
 	     */
 	    function equals($other);
 	}
-
 }

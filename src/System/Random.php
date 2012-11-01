@@ -16,7 +16,7 @@ namespace System {
 
         private $seed;
 
-        public function __construct($seed=Int32::MaxValue) {
+        public function __construct($seed=Int32::MAX_VALUE) {
             $this->seed;
         }
 
