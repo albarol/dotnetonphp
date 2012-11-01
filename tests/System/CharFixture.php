@@ -46,7 +46,6 @@ class CharFixture extends PHPUnit_Framework_TestCase {
 
         # Act:
         $str = Char::convertFromUtf32($letter);
-        print $str;
 
         # Assert:
         $this->assertEquals('A', $str);
