@@ -105,7 +105,7 @@ namespace System {
         
 
         public function getTypeCode() {
-
+            return TypeCode::char();
         }
 
         public function toBoolean($provider) {

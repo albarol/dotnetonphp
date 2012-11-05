@@ -29,6 +29,17 @@ class StringFixture extends PHPUnit_Framework_TestCase {
         $this->assertTrue($result);
     }
 
+    public function test_Concat_ShouldConcatStrings() {
+        # Arrange
+        $words = array("dotnet", "onphp");
+        
+        # Act:
+        $obj = String::concat($words[0], $words[1]);
+        
+        # Assert:
+        $this->assertEquals("dotnetonphp", $obj->value());
+    }
+
     public function test_Contains_ShouldBeTrueWhenContainsValue() {
         # Arrange:
         $obj = new String("dotnetonphp");
@@ -51,6 +62,86 @@ class StringFixture extends PHPUnit_Framework_TestCase {
         $this->assertFalse($result);
     }
 
+    public function test_CompareOrdinal_ShouldBeMinusOne() {
+        # Arrange
+        $words = array("dotnet", "onphp");
+        
+        # Act:
+        $result = String::compareOrdinal($words[0], $words[1]);
+        
+        # Assert:
+        $this->assertEquals(-1, $result);
+    }
+
+    public function test_CompareOrdinal_ShouldBeOne() {
+        # Arrange
+        $words = array("dotnet", "onphp");
+        
+        # Act:
+        $result = String::compareOrdinal($words[1], $words[0]);
+        
+        # Assert:
+        $this->assertEquals(1, $result);
+    }
+
+    public function test_CompareOrdinal_ShouldBeZero() {
+        # Arrange
+        $words = array("dotnet", "onphp");
+        
+        # Act:
+        $result = String::compareOrdinal($words[1], $words[1]);
+        
+        # Assert:
+        $this->assertEquals(0, $result);
+    }
+
+    public function test_CompareTo_ShouldBeMinusOne() {
+        # Arrange
+        $str = new String("dotnet");
+        $word = "onphp";
+        
+        # Act:
+        $result = $str->compareTo($word);
+        
+        # Assert:
+        $this->assertEquals(-1, $result);
+    }
+
+    public function test_CompareTo_ShouldBeOne() {
+        # Arrange
+        $str = new String("onphp");
+        $word = "dotnet";
+        
+        # Act:
+        $result = $str->compareTo($word);
+        
+        # Assert:
+        $this->assertEquals(1, $result);
+    }
+
+    public function test_CompareTo_ShouldBeZero() {
+        # Arrange
+        $str = new String("dotnet");
+        $word = "dotnet";
+        
+        # Act:
+        $result = $str->compareTo($word);
+        
+        # Assert:
+        $this->assertEquals(0, $result);
+    }
+
+    public function test_Copy_CanCreateCopyOfString() {
+        # Arrange
+        $str = new String("dotnetonphp");
+        
+        # Act:
+        $obj = String::copy($str);
+        
+        # Assert:
+        $this->assertEquals("dotnetonphp", $obj->value());
+    }
+
     public function test_Equals_ShouldBeTrueWhenInstancesAreEqual() {
         # Arrange:
         $obj = new String("dotnetonphp");
@@ -71,17 +162,6 @@ class StringFixture extends PHPUnit_Framework_TestCase {
 
         # Assert:
         $this->assertFalse($result);
-    }
-
-    public function test_Concat_ShouldConcatStrings() {
-        # Arrange
-        $words = array("dotnet", "onphp");
-        
-        # Act:
-        $obj = String::concat($words[0], $words[1]);
-        
-        # Assert:
-        $this->assertEquals("dotnetonphp", $obj->value());
     }
 
     public function test_IndexOf_ShouldReturnPositionWhenCharExists() {

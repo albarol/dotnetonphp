@@ -62,6 +62,52 @@ namespace System {
         }
 
         /**
+         * Returns a value indicating whether the specified System.String object occurs within this string.
+         * @access public
+         * @param string $value The System.String object to seek.
+         * @return bool true if the value parameter occurs within this string, or if value is the empty string (""); otherwise, false.
+        */
+        public function contains($value) {
+            return $this->indexOf($value) > -1;
+        }
+
+        /**
+         * Compares two specified String objects by evaluating the numeric values of the corresponding Char objects in each string.
+         * @access public
+         * @static
+         * @param $strA The first String.
+         * @param $strB The second String.
+         * @return int An integer indicating the lexical relationship between the two comparands.
+        */
+        public static function compareOrdinal($strA, $strB) {
+            $first = ($strA instanceof String) ? $strA->value() : $strA;
+            $second = ($strB instanceof String) ? $strB->value() : $strB;
+            return strcmp($first, $second);
+        }
+
+        /**
+         * Compares this instance with a specified String object.
+         * @access public
+         * @param $strB A String.
+         * @return int An integer indicating the lexical relationship between the two comparands.
+        */
+        public function compareTo($strB) {
+            $first = ($strB instanceof String) ? $strB->value() : $strB;
+            return strcmp($this->value, $first);
+        }
+
+        /**
+         * Creates a new instance of String with the same value as a specified String.
+         * @access public
+         * @static
+         * @param $str The String to copy.
+         * @return \System\String A new String with the same value as str.
+        */
+        public static function copy(String $str) {
+            return clone $str;
+        }
+
+        /**
          * Returns a reference to this instance of System.String.
          * @access public
          * @return \System\String This instance of String.
@@ -163,15 +209,7 @@ namespace System {
             return $result === false ? -1 : $result;
         }
 
-        /**
-         * Returns a value indicating whether the specified System.String object occurs within this string.
-         * @access public
-         * @param string $value The System.String object to seek.
-         * @return bool true if the value parameter occurs within this string, or if value is the empty string (""); otherwise, false.
-         */
-        public function contains($value) {
-            return $this->indexOf($value) > -1;
-        }
+        
 
         /**
          * Replaces all occurrences of a specified Unicode character or String in this instance, with another specified Unicode character or String. 
@@ -295,14 +333,8 @@ namespace System {
 
         }
 
-        public function compareTo($obj) {
-
-        }
-
         public function getEnumerator() {
 
         }
-
-        
-    }
+   }
 }
