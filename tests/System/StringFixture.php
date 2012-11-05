@@ -142,6 +142,58 @@ class StringFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals("dotnetonphp", $obj->value());
     }
 
+    public function test_CopyTo_ThrowsExceptionWhenSourceIndexIsNegative() {
+        # Arrange
+        $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
+        $str = new String("dotnetonphp");
+        $destination = array();
+        
+        # Act:
+        $str->copyTo(-1, $destination, 1, 10);
+    }
+
+    public function test_CopyTo_ThrowsExceptionWhenDestinationIndexIsNegative() {
+        # Arrange
+        $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
+        $str = new String("dotnetonphp");
+        $destination = array();
+        
+        # Act:
+        $str->copyTo(0, $destination, -1, 10);
+    }
+
+    public function test_CopyTo_ThrowsExceptionWhenCountIsNegative() {
+        # Arrange
+        $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
+        $str = new String("dotnetonphp");
+        $destination = array();
+        
+        # Act:
+        $str->copyTo(0, $destination, 0, -1);
+    }
+
+    public function test_CopyTo_ThrowsExceptionWhenCountIsGreaterThanSize() {
+        # Arrange
+        $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
+        $str = new String("dotnetonphp");
+        $destination = array();
+        
+        # Act:
+        $str->copyTo(9, $destination, 0, 3);
+    }
+
+     public function test_CopyTo_CanCopyPartOfStringToArray() {
+        # Arrange
+        $str = new String("dotnetonphp");
+        $destination = array();
+        
+        # Act:
+        $str->copyTo(0, &$destination, 0, 3);
+
+        # Assert:
+        $this->assertEquals('dot', implode("", $destination));
+    }
+
     public function test_Equals_ShouldBeTrueWhenInstancesAreEqual() {
         # Arrange:
         $obj = new String("dotnetonphp");

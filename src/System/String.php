@@ -108,6 +108,27 @@ namespace System {
         }
 
         /**
+         * Copies a specified number of characters from a specified position in this instance to a specified position in an array of Unicode characters.
+         * @access public
+         * @throws \System\ArgumentOutOfRangeException sourceIndex, destinationIndex, or count is negative -or- count is greater than the length of the substring from startIndex to the end of this instance -or- count is greater than the length of the subarray from destinationIndex to the end of destination.
+         * @param int $sourceIndex A character position in this instance.
+         * @param array $destination An array of Unicode characters.
+         * @param int $destinationIndex An array element in destination.
+         * @param int $count The number of characters in this instance to copy to destination.         
+        */
+        public function copyTo($sourceIndex, array &$destination, $destinationIndex, $count) {
+            if($sourceIndex < 0 || $destinationIndex < 0 || $count < 0):
+                throw new ArgumentOutOfRangeException("sourceIndex, destinationIndex, or count is negative.");
+            endif;
+            if(($sourceIndex + $count) > $this->length()):
+                throw new ArgumentOutOfRangeException("count is greater than the length of the substring from startIndex to the end of this instance.");
+            endif;
+            for($i = 0; $i < $count; $i++):
+                $destination[$destinationIndex + $i] = $this->chars($sourceIndex + $i);
+            endfor;
+        }
+
+        /**
          * Returns a reference to this instance of System.String.
          * @access public
          * @return \System\String This instance of String.
