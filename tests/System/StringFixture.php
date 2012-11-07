@@ -182,7 +182,7 @@ class StringFixture extends PHPUnit_Framework_TestCase {
         $str->copyTo(9, $destination, 0, 3);
     }
 
-     public function test_CopyTo_CanCopyPartOfStringToArray() {
+    public function test_CopyTo_CanCopyPartOfStringToArray() {
         # Arrange
         $str = new String("dotnetonphp");
         $destination = array();
@@ -192,6 +192,28 @@ class StringFixture extends PHPUnit_Framework_TestCase {
 
         # Assert:
         $this->assertEquals('dot', implode("", $destination));
+    }
+
+    public function test_EndsWith_ShouldBeTrueIfStringEndsWith() {
+        # Arrange
+        $obj = new String("dotnetonphp");
+
+        # Act:
+        $result = $obj->endsWith("php");
+    
+        # Assert:
+        $this->assertTrue($result);
+    }
+
+    public function test_EndsWith_ShouldBeFalseIfStringNotEndsWith() {
+        # Arrange
+        $obj = new String("dotnetonphp");
+
+        # Act:
+        $result = $obj->endsWith("dot");
+    
+        # Assert:
+        $this->assertFalse($result);
     }
 
     public function test_Equals_ShouldBeTrueWhenInstancesAreEqual() {

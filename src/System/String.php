@@ -137,11 +137,32 @@ namespace System {
             return clone $this;
         }
 
-        public function equals($other) {
-            if($other instanceof String):
-                return $this->value() == $other->value();
+
+        /**
+         * Determines whether the end of this instance matches the specified string.
+         * @throws \System\ArgumentNullException value is a null reference
+         * @param string $value A String to compare to.
+         * @return bool true if value matches the end of this instance; otherwise, false.
+        */
+        public function endsWith($value) {
+            if($value instanceof String):
+                return $this->endsWith($value->value());
             endif;
-            return false;
+            $size = strlen($value);
+            if ($size == 0) {
+                return true;
+            }
+            return (substr($this->value, -$size) === $value);
+        }
+
+        /**
+         * Determines whether two String objects have the same value.
+         * @access public
+         * @param $other Determines whether this instance of String and a specified object, which must also be a String object, have the same value.
+         * @return bool true if obj is a String and its value is the same as this instance; otherwise, false.
+        */
+        public function equals($other) {
+            return $this == $other;                
         }
 
         /**
@@ -245,7 +266,7 @@ namespace System {
             if ($oldValue == null):
                 throw new ArgumentNullException("value is null.");
             elseif (self::isNullOrEmpty($oldValue)):
-                throw new ArgumentException("value is empty.");
+                throw new ArgumentException("value is empty. -or- value is");
             endif;
             return new String(str_replace($oldValue, $newValue, $this->value()));
         }        
