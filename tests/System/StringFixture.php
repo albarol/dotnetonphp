@@ -227,7 +227,7 @@ class StringFixture extends PHPUnit_Framework_TestCase {
         $this->assertTrue($result);
     }
 
-   public function test_Equals_ShouldBeTrueWhenInstancesAreNotEqual() {
+    public function test_Equals_ShouldBeTrueWhenInstancesAreNotEqual() {
         # Arrange:
         $obj = new String("dotnetonphp");
 
@@ -236,6 +236,17 @@ class StringFixture extends PHPUnit_Framework_TestCase {
 
         # Assert:
         $this->assertFalse($result);
+    }
+
+    public function test_GetEnumerator_CanGetEnumerator() {
+        # Arrange
+        $obj = new String("dotnetonphp");
+                
+        # Act:
+        $enumerator = $obj->getEnumerator();
+    
+        # Assert:
+        $this->assertEquals($enumerator instanceof CharEnumerator);
     }
 
     public function test_IndexOf_ShouldReturnPositionWhenCharExists() {

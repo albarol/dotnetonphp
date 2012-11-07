@@ -5,6 +5,7 @@ namespace System {
     use \System\ArgumentOutOfRangeException as ArgumentOutOfRangeException;
     use \System\ArgumentNullException as ArgumentNullException;
     use \System\Char as Char;
+    use \System\CharEnumerator as CharEnumerator;
     use \System\ICloneable as ICloneable;
     use \System\IConvertible as IConvertible;
     use \System\IComparable as IComparable;
@@ -166,16 +167,28 @@ namespace System {
         }
 
         /**
+         * Returns an enumerator that iterates through a collection.
+         * @access public
+         * @return \System\Collections\IEnumerator An \System\Collections\IEnumerator object that can be used to iterate through the collection.
+         */
+        public function getEnumerator() {
+            return new CharEnumerator($this->value);
+        }
+
+        /**
          * Represents the empty string. This field is read-only.
          * @static
          * @access public
          * @return \System\String The value of this field is the zero-length string, ""
          */
-
         public static function getEmpty() {
             return new String("");
         }
 
+        /**
+         * Returns the System.TypeCode for value type \System\String.
+         * @return \System\TypeCode The enumerated constant, \System\TypeCode\Int32.
+        */
         public function getTypeCode() {
             return TypeCode::string();
         }
@@ -372,10 +385,6 @@ namespace System {
         }
 
         public function toUInt64($provider) {
-
-        }
-
-        public function getEnumerator() {
 
         }
    }
