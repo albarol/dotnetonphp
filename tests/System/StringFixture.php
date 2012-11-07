@@ -246,7 +246,7 @@ class StringFixture extends PHPUnit_Framework_TestCase {
         $enumerator = $obj->getEnumerator();
     
         # Assert:
-        $this->assertEquals($enumerator instanceof CharEnumerator);
+        $this->assertTrue($enumerator instanceof \System\Collections\IEnumerator);
     }
 
     public function test_IndexOf_ShouldReturnPositionWhenCharExists() {
