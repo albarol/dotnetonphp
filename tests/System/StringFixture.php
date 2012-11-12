@@ -7,26 +7,24 @@ use \System\TypeCode as TypeCode;
 
 class StringFixture extends PHPUnit_Framework_TestCase {
 
-    public function test_IsNullOrEmpty_ShouldTrueWhenStringIsNull() {
+    public function test_Chars_ThrowsExceptionWhenPositionIsInvalid() {
         # Arrange:
-        $string = null;
+        $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
+        $obj = new String("dotnetonphp");
 
         # Act:
-        $result = String::isNullOrEmpty($string);
-
-        # Assert:
-        $this->assertTrue($result);
+        $obj->chars(-1);
     }
 
-    public function test_IsNullOrEmpty_ShouldTrueWhenStringIsEmpty() {
-        #Arrange:
-        $string = String::getEmpty();
-        
+    public function test_Chars_CanGetCharInPosition() {
+        # Arrange:
+        $obj = new String("dotnetonphp");
+
         # Act:
-        $result = String::isNullOrEmpty($string);
+        $char = $obj->chars(0);
 
         # Assert:
-        $this->assertTrue($result);
+        $this->assertEquals("d", $char);
     }
 
     public function test_Concat_ShouldConcatStrings() {
@@ -194,6 +192,17 @@ class StringFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals('dot', implode("", $destination));
     }
 
+    public function test_GetTypeCode_CanGetTypeCodeToString() {
+        # Arrange:
+        $obj = new String("dotnetonphp");
+
+        # Act:
+        $code = $obj->getTypeCode();
+
+        # Assert:
+        $this->assertEquals(TypeCode::string(), $code);
+    }
+
     public function test_EndsWith_ShouldBeTrueIfStringEndsWith() {
         # Arrange
         $obj = new String("dotnetonphp");
@@ -238,6 +247,26 @@ class StringFixture extends PHPUnit_Framework_TestCase {
         $this->assertFalse($result);
     }
 
+    public function test_Format_ThrowsExceptionWhenFormatIsNull() {
+        # Arrange
+        $this->setExpectedException("\\System\\ArgumentNullException");
+        
+        # Act:
+        String::format(null, array("a"));
+    }
+
+    public function test_Format_ThrowsExceptionWhenArgumentIsNull() {
+        # Arrange
+        $this->setExpectedException("\\System\\ArgumentNullException");
+        
+        # Act:
+        String::format("X", array());
+    }
+
+    public function test_Format_CanFormatArgument() {
+        $this->markTestIncomplete();
+    }
+
     public function test_GetEnumerator_CanGetEnumerator() {
         # Arrange
         $obj = new String("dotnetonphp");
@@ -271,6 +300,66 @@ class StringFixture extends PHPUnit_Framework_TestCase {
 
         # Assert:
         $this->assertEquals(-1, $position);
+    }
+
+    public function test_IndexOfAny_ThrowsExceptionWhenStartIndexIsNegative() {
+        # Arrange
+        $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
+        $obj = new String("dotnetonphp");
+        
+        # Act:
+        $obj->indexOfAny(array('n', 'e', 't'), -1);
+    }
+
+    public function test_IndexOfAny_ThrowsExceptionWhenStartIndexIsGreaterThanLength() {
+        # Arrange
+        $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
+        $obj = new String("dotnetonphp");
+        
+        # Act:
+        $obj->indexOfAny(array('n', 'e', 't'), 12);
+    }
+
+    public function test_IndexOfAny_ShouldBeTrueWhenLookAllString() {
+        # Arrange
+        $obj = new String("dotnetonphp");
+                
+        # Act:
+        $result = $obj->indexOfAny(array('n', 'e', 't'), 0);
+
+        $this->assertEquals(3, $result);
+    }
+
+    public function test_IndexOfAny_ShouldBeTrueWhenLookPartOfString() {
+        # Arrange
+        $obj = new String("dotnetonphp");
+                
+        # Act:
+        $result = $obj->indexOfAny(array('n', 'e', 't'), 2);
+
+        $this->assertEquals(3, $result);
+    }
+
+    public function test_IsNullOrEmpty_ShouldTrueWhenStringIsNull() {
+        # Arrange:
+        $string = null;
+
+        # Act:
+        $result = String::isNullOrEmpty($string);
+
+        # Assert:
+        $this->assertTrue($result);
+    }
+
+    public function test_IsNullOrEmpty_ShouldTrueWhenStringIsEmpty() {
+        #Arrange:
+        $string = String::getEmpty();
+        
+        # Act:
+        $result = String::isNullOrEmpty($string);
+
+        # Assert:
+        $this->assertTrue($result);
     }
 
     
@@ -375,34 +464,5 @@ class StringFixture extends PHPUnit_Framework_TestCase {
         $obj->remove(-1);
     }
 
-    public function test_Chars_ThrowsExceptionWhenPositionIsInvalid() {
-        # Arrange:
-        $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
-        $obj = new String("dotnetonphp");
-
-        # Act:
-        $obj->chars(-1);
-    }
-
-    public function test_Chars_CanGetCharInPosition() {
-        # Arrange:
-        $obj = new String("dotnetonphp");
-
-        # Act:
-        $char = $obj->chars(0);
-
-        # Assert:
-        $this->assertEquals("d", $char);
-    }
-
-    public function test_GetTypeCode_CanGetTypeCodeToString() {
-        # Arrange:
-        $obj = new String("dotnetonphp");
-
-        # Act:
-        $code = $obj->getTypeCode();
-
-        # Assert:
-        $this->assertEquals(TypeCode::string(), $code);
-    }
+    
 }

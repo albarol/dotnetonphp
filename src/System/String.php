@@ -10,6 +10,7 @@ namespace System {
     use \System\IConvertible as IConvertible;
     use \System\IComparable as IComparable;
     use \System\IEquatable as IEquatable;
+    use \System\IFormatProvider as IFormatProvider;
     use \System\TypeCode as TypeCode;
 
     use \System\Collections\IEnumerable as IEnumerable;
@@ -159,11 +160,30 @@ namespace System {
         /**
          * Determines whether two String objects have the same value.
          * @access public
+         * @throws \System\ArgumentNullException 
          * @param $other Determines whether this instance of String and a specified object, which must also be a String object, have the same value.
          * @return bool true if obj is a String and its value is the same as this instance; otherwise, false.
         */
         public function equals($other) {
             return $this == $other;                
+        }
+
+        /**
+         * Replaces the format item in a specified String with the text equivalent of the value of a specified Object instance.
+         * @access public
+         * @static
+         * @throws \System\ArgumentNullException format or args is a null reference .
+         * @throws \System\FormatException format is invalid. -or- The number indicating an argument to format is less than zero, or greater than or equal to the length of the args array.
+         * @param string $format A String containing zero or more format items.
+         * @param object $arg0 An Object array containing zero or more objects to format.
+         * @param \System\IFormatProvider $format An IFormatProvider that supplies culture-specific formatting information.
+         * @return string A copy of format in which the format items have been replaced by the String equivalent of the corresponding instances of Object in args.
+         */
+        public static function format($format, array $arg0, IFormatProvider $provider=null) {
+            if (is_null($format) || sizeof($arg0) <= 0):
+                throw new ArgumentNullException("format or args is a null reference.");
+            endif;
+            // TODO: implement 
         }
 
         /**
@@ -201,38 +221,6 @@ namespace System {
         public function length() {
             return mb_strlen($this->value, 'utf8');
         }
-
-
-        /**
-         * Returns a copy of this System.String converted to uppercase, using the casing rules of the current culture.
-         * @access public
-         * @return \System\String A System.String in uppercase.
-         */
-        public function toUpper() {
-            return new String(strtoupper($this->value));
-        }
-
-        /**
-         * Returns a copy of this \System\String converted to lowercase, using the casing rules of the current culture.
-         * @access public
-         * @return \System\String A \System\String in lowercase.
-         */
-        public function toLower() {
-            return new String(strtolower($this->value));
-        }
-
-        /**
-         * Copies the characters in this instance to a Unicode character array.
-         * @access public
-         * @return array A Unicode character array whose elements are the individual characters of this instance. If this instance is an empty string, the returned array is empty and has a zero length.
-         */
-        public function toCharArray() {
-            $array = array();
-            for ($i = 0; $i < $this->length(); $i++) {
-                $array[] = substr($this->value, $i, 1);
-            }
-            return $array;
-        }
         
         /**
          * 	Indicates whether the specified String object is a null reference or an Empty string.
@@ -248,8 +236,6 @@ namespace System {
             return is_null($string) || empty($string);
         }
 
-        
-
         /**
          * Reports the index of the first occurrence of a String, or one or more characters, within this string.
          * @access public
@@ -264,25 +250,56 @@ namespace System {
             return $result === false ? -1 : $result;
         }
 
-        
+        /**
+         * Reports the index of the first occurrence in this instance of any character in a specified array of Unicode characters. The search starts at a specified character position and examines a specified number of character positions.
+         * @access public
+         * @throws \System\ArgumentOutOfRangeException startIndex is negative.
+         * @param array $anyOf A Unicode character array containing one or more characters to seek.
+         * @param int $startIndex The search starting position.
+         * @return int The index position of the first occurrence in this instance where any character in anyOf was found; otherwise, -1 if no character in anyOf was found.
+        */
+        public function indexOfAny(array $anyOf, $startIndex=0) {
+            if($startIndex < 0):
+                throw new ArgumentOutOfRangeException("startIndex is negative.");
+            elseif ($startIndex > $this->length()):
+                throw new ArgumentOutOfRangeException("startIndex is greater than length.");
+            endif;
+
+            $word = implode($anyOf, "");
+            $result = strpos($this->value, $word, $startIndex);
+            return $result === false ? -1 : $result;
+        }
 
         /**
-         * Replaces all occurrences of a specified Unicode character or String in this instance, with another specified Unicode character or String. 
+         * Copies the characters in this instance to a Unicode character array.
          * @access public
-         * @throws \System\ArgumentNullException value is null.
-         * @throws \System\ArgumentException value is empty.
-         * @param string $oldValue A \System\String to be replaced.
-         * @param string $newValue A \System\String to replace all occurrences of oldValue.
-         * @return \System\String A System.String equivalent to this instance but with all instances of oldValue replaced with newValue.
+         * @return array A Unicode character array whose elements are the individual characters of this instance. If this instance is an empty string, the returned array is empty and has a zero length.
          */
-        public function replace($oldValue, $newValue) {
-            if ($oldValue == null):
-                throw new ArgumentNullException("value is null.");
-            elseif (self::isNullOrEmpty($oldValue)):
-                throw new ArgumentException("value is empty. -or- value is");
-            endif;
-            return new String(str_replace($oldValue, $newValue, $this->value()));
-        }        
+        public function toCharArray() {
+            $array = array();
+            for ($i = 0; $i < $this->length(); $i++) {
+                $array[] = substr($this->value, $i, 1);
+            }
+            return $array;
+        }
+
+        /**
+         * Returns a copy of this \System\String converted to lowercase, using the casing rules of the current culture.
+         * @access public
+         * @return \System\String A \System\String in lowercase.
+         */
+        public function toLower() {
+            return new String(strtolower($this->value));
+        }
+
+        /**
+         * Returns a copy of this System.String converted to uppercase, using the casing rules of the current culture.
+         * @access public
+         * @return \System\String A System.String in uppercase.
+         */
+        public function toUpper() {
+            return new String(strtoupper($this->value));
+        }
 
         /**
          * Removes all leading and trailing white-space characters from the current System.String object.
@@ -306,6 +323,24 @@ namespace System {
                 throw new ArgumentOutOfRangeException("startIndex specifies a position that is not within this string.");
             endif;
             return new String(substr($this->value, 0, $startIndex));
+        }
+
+        /**
+         * Replaces all occurrences of a specified Unicode character or String in this instance, with another specified Unicode character or String. 
+         * @access public
+         * @throws \System\ArgumentNullException value is null.
+         * @throws \System\ArgumentException value is empty.
+         * @param string $oldValue A \System\String to be replaced.
+         * @param string $newValue A \System\String to replace all occurrences of oldValue.
+         * @return \System\String A System.String equivalent to this instance but with all instances of oldValue replaced with newValue.
+         */
+        public function replace($oldValue, $newValue) {
+            if ($oldValue == null):
+                throw new ArgumentNullException("value is null.");
+            elseif (self::isNullOrEmpty($oldValue)):
+                throw new ArgumentException("value is empty. -or- value is");
+            endif;
+            return new String(str_replace($oldValue, $newValue, $this->value()));
         }
 
         /**
