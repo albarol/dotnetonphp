@@ -4,6 +4,7 @@ require_once dirname(__FILE__) . '/../../src/Autoloader.php';
 
 use \System\String as String;
 use \System\TypeCode as TypeCode;
+use \System\Text\NormalizationForm as NormalizationForm;
 
 class StringFixture extends PHPUnit_Framework_TestCase {
 
@@ -379,6 +380,28 @@ class StringFixture extends PHPUnit_Framework_TestCase {
     
         # Assert:
         $this->assertEquals("dotnetonphp", $new_string->value());
+    }
+
+    public function test_IsNormalized_VerifyIfIsNormalizedInFormC() {
+        # Arrange
+        $obj = new String("á");
+
+        # Act:
+        $result = $obj->isNormalized(NormalizationForm::formC());
+    
+        # Assert:
+        $this->assertTrue($result);
+    }
+
+    public function test_IsNormalized_VerifyIfIsNormalizedInFormD() {
+        # Arrange
+        $obj = new String("á");
+
+        # Act:
+        $result = $obj->isNormalized(NormalizationForm::formD());
+    
+        # Assert:
+        $this->assertFalse($result);
     }
 
     public function test_IsNullOrEmpty_ShouldTrueWhenStringIsNull() {

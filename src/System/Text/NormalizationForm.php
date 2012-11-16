@@ -24,7 +24,7 @@ namespace System\Text {
          * @return \System\Text\NormalizationForm
          */
         public static function formC() {
-            return new DayOfWeek("FormC", 0);
+            return new NormalizationForm("FormC", 0);
         }
 
         /**
@@ -33,7 +33,7 @@ namespace System\Text {
          * @return \System\Text\NormalizationForm
          */
         public static function formD() {
-            return new DayOfWeek("FormD", 1);
+            return new NormalizationForm("FormD", 1);
         }
 
         /**
@@ -42,7 +42,7 @@ namespace System\Text {
          * @return \System\Text\NormalizationForm
          */
         public static function formKC() {
-            return new DayOfWeek("FormKC", 2);
+            return new NormalizationForm("FormKC", 2);
         }
 
         /**
@@ -51,7 +51,7 @@ namespace System\Text {
          * @return \System\Text\NormalizationForm
          */
         public static function formKD() {
-            return new DayOfWeek("FormKD", 3);
+            return new NormalizationForm("FormKD", 3);
         }
 
     }

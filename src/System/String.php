@@ -15,6 +15,8 @@ namespace System {
 
     use \System\Collections\IEnumerable as IEnumerable;
 
+    use \System\Text\NormalizationForm as NormalizationForm;
+
     /**
      * Represents text as a series of Unicode characters.
      * @access public
@@ -285,7 +287,30 @@ namespace System {
          * @return bool true if this string is in the normalization form specified by the normalizationForm parameter; otherwise, false.
         */
         public function isNormalized($normalizationForm=null) {
-            throw new \Exception();
+            if(!class_exists("\\normalizer")):
+                return false;
+            endif;
+
+            if (is_null($normalizationForm)):
+                $normalizationForm = NormalizationForm::formC();
+            endif;
+
+            switch ($normalizationForm) {
+                case NormalizationForm::formD():
+                    $form = \Normalizer::FORM_D;
+                    break;
+                case NormalizationForm::formKC():
+                    $form = \Normalizer::FORM_KC;
+                    break;
+                case NormalizationForm::formKD():
+                    $form = \Normalizer::FORM_KD;
+                    break;
+                default:
+                    $form = \Normalizer::FORM_C;
+                    break;
+            }
+
+            return \Normalizer::isNormalized($this->value, $form);
         }
 
         /**
