@@ -257,7 +257,13 @@ namespace System {
         }
 
         /**
-         * 
+         * Inserts a specified instance of String at a specified index position in this instance.
+         * @access public
+         * @throws \System\ArgumentNullException value is a null reference
+         * @throws \System\ArgumentOutOfRangeException startIndex is negative or greater than the length of this instance.
+         * @param int $startIndex The index position of the insertion.
+         * @param string $value The String to insert.
+         * @return \System\String A new String equivalent to this instance but with value inserted at position startIndex.
         */
         public function insert($startIndex, $value) {
             if (is_null($value)):
@@ -270,6 +276,16 @@ namespace System {
             $first_part = substr($this->value, 0, $startIndex);
             $second_part = substr($this->value, $startIndex + 1, $this->length());
             return new String($first_part.$value.$second_part);
+        }
+
+        /** 
+         * Indicates whether this string is in the specified Unicode normalization form.
+         * @access public
+         * @param \System\Text\NormalizationForm $normalizationForm A Unicode normalization form.
+         * @return bool true if this string is in the normalization form specified by the normalizationForm parameter; otherwise, false.
+        */
+        public function isNormalized($normalizationForm=null) {
+            throw new \Exception();
         }
 
         /**
