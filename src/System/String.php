@@ -223,20 +223,6 @@ namespace System {
         }
         
         /**
-         * 	Indicates whether the specified String object is a null reference or an Empty string.
-         * @access public
-         * @static
-         * @param string $string A String reference.
-         * @return bool true if the value parameter is a null reference or an empty string (""); otherwise, false.
-         */
-        public static function isNullOrEmpty($string) {
-            if($string instanceof String):
-                return self::isNullOrEmpty($string->value());
-            endif;                    
-            return is_null($string) || empty($string);
-        }
-
-        /**
          * Reports the index of the first occurrence of a String, or one or more characters, within this string.
          * @access public
          * @param string $value A Unicode character to seek.
@@ -268,6 +254,36 @@ namespace System {
             $word = implode($anyOf, "");
             $result = strpos($this->value, $word, $startIndex);
             return $result === false ? -1 : $result;
+        }
+
+        /**
+         * 
+        */
+        public function insert($startIndex, $value) {
+            if (is_null($value)):
+                throw new ArgumentNullException("");
+            endif;
+            if ($startIndex < 0 || $startIndex > $this->length()):
+                throw new ArgumentOutOfRangeException("");
+            endif;
+
+            $first_part = substr($this->value, 0, $startIndex);
+            $second_part = substr($this->value, $startIndex + 1, $this->length());
+            return new String($first_part.$value.$second_part);
+        }
+
+        /**
+         *  Indicates whether the specified String object is a null reference or an Empty string.
+         * @access public
+         * @static
+         * @param string $string A String reference.
+         * @return bool true if the value parameter is a null reference or an empty string (""); otherwise, false.
+         */
+        public static function isNullOrEmpty($string) {
+            if($string instanceof String):
+                return self::isNullOrEmpty($string->value());
+            endif;                    
+            return is_null($string) || empty($string);
         }
 
         /**

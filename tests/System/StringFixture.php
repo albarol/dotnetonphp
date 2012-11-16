@@ -340,6 +340,47 @@ class StringFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(3, $result);
     }
 
+    public function test_Insert_ThrowsExceptionWhenValueIsNull() {
+        
+        # Arrange
+        $this->setExpectedException("\\System\\ArgumentNullException");
+        $obj = new String("dotnetonphp");
+                
+        # Act:
+        $obj->insert(0, null);
+    }
+
+    public function test_ThrowsExceptionWhenStartIndexIsGreaterThanSizeOfString() {
+        
+        # Arrange
+        $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
+        $obj = new String("dotnetonphp");
+
+        # Act:
+        $obj->insert(12, "new_value");
+    }
+
+    public function test_Insert_ThrowsExceptionWhenStartIndexIsNegative() {
+        # Arrange
+        $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
+        $obj = new String("dotnetonphp");
+
+        # Act:
+        $obj->insert(-1, "new_value");
+    }
+
+    public function test_Insert_CanInsertElementsInString() {
+        
+        # Arrange
+        $obj = new String("dotnet");
+
+        # Act:
+        $new_string = $obj->insert(6, "onphp");
+    
+        # Assert:
+        $this->assertEquals("dotnetonphp", $new_string->value());
+    }
+
     public function test_IsNullOrEmpty_ShouldTrueWhenStringIsNull() {
         # Arrange:
         $string = null;
