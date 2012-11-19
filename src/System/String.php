@@ -350,6 +350,25 @@ namespace System {
             return new String(implode($separator, $str));
         }
 
+
+        public function lastIndexOf($value, $startIndex=0, $count=null) {
+            if ($startIndex < 0):
+                throw new ArgumentOutOfRangeException("startIndex or count is less than 0.");
+            elseif (($startIndex + $count) > strlen($this->value)):
+                throw new ArgumentOutOfRangeException("startIndex plus count is greater than the number of elements in value.");
+            endif;
+            
+            $count = is_null($count) ? strlen($this->value) - $startIndex : $count;
+            $position = -1;
+            for($i = 0; $i < $count; $i++):
+                $current_position = $i + $startIndex;
+                if ($this->value[$current_position] == $value):
+                    $position = $current_position;
+                endif;
+            endfor;
+            return $position;
+        }
+
         /**
          * Copies the characters in this instance to a Unicode character array.
          * @access public

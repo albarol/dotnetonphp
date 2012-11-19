@@ -404,6 +404,28 @@ class StringFixture extends PHPUnit_Framework_TestCase {
         $this->assertFalse($result);
     }
 
+    public function test_IsNullOrEmpty_ShouldTrueWhenStringIsNull() {
+        # Arrange:
+        $string = null;
+
+        # Act:
+        $result = String::isNullOrEmpty($string);
+
+        # Assert:
+        $this->assertTrue($result);
+    }
+
+    public function test_IsNullOrEmpty_ShouldTrueWhenStringIsEmpty() {
+        #Arrange:
+        $string = String::getEmpty();
+        
+        # Act:
+        $result = String::isNullOrEmpty($string);
+
+        # Assert:
+        $this->assertTrue($result);
+    }
+
     public function test_Join_ThrowsExceptionWhenStartIndexIsLessThanZero() {
         
         # Arrange
@@ -412,6 +434,16 @@ class StringFixture extends PHPUnit_Framework_TestCase {
         
         # Act:
         String::join('', $value, -1);
+    }
+
+    public function test_Join_ThrowsExceptionWhenStartIndexPlusCountIsGreaterThanArrayLength() {
+        
+        # Arrange
+        $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
+        $value = array('dotnet', 'onphp');
+        
+        # Act:
+        String::join('', $value, 0, 3);
     }
 
     public function test_Join_CanJoinValuesWithSeparator() {
@@ -450,38 +482,49 @@ class StringFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals("dot,net", $obj->value());
     }
 
-    public function test_Join_ThrowsExceptionWhenStartIndexPlusCountIsGreaterThanArrayLength() {
+    public function test_LastIndexOf_ThrowsExceptionWhenStartIndexIsNegative() {
+
+        # Arrange
+        $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
+        $obj = new String("dotnetonphp");
+        
+        # Act:
+        $obj->lastIndexOf('p', -1);
+    }
+
+    public function test_LastIndexOf_ThrowsExceptionWhenStartIndexPlusCountIsGreaterThanLength() {
         
         # Arrange
         $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
-        $value = array('dotnet', 'onphp');
+        $obj = new String("dotnetonphp");
+                
+        # Act:
+        $obj->lastIndexOf('p', 0, 12);
+    }
+
+    public function test_LastIndexOf_CanGetLastPositionOfString() {
+       
+        # Arrange
+        $obj = new String("dotnetonphp");
+                
+        # Act:
+        $result = $obj->lastIndexOf('p');
         
-        # Act:
-        String::join('', $value, 0, 3);
-    }
-
-    public function test_IsNullOrEmpty_ShouldTrueWhenStringIsNull() {
-        # Arrange:
-        $string = null;
-
-        # Act:
-        $result = String::isNullOrEmpty($string);
-
         # Assert:
-        $this->assertTrue($result);
+        $this->assertEquals(10, $result);
     }
 
-    public function test_IsNullOrEmpty_ShouldTrueWhenStringIsEmpty() {
-        #Arrange:
-        $string = String::getEmpty();
+    public function test_LastIndexOf_CanGetLastPositionInRange() {
         
+        # Arrange
+        $obj = new String("dotnetonphp");
+                
         # Act:
-        $result = String::isNullOrEmpty($string);
-
+        $result = $obj->lastIndexOf('p', 5, 6);
+    
         # Assert:
-        $this->assertTrue($result);
+        $this->assertEquals(10, $result);
     }
-
     
     public function test_ToCharArray_CanTransformStringInCharArray() {
         # Arrange:
