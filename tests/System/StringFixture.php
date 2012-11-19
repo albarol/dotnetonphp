@@ -404,6 +404,62 @@ class StringFixture extends PHPUnit_Framework_TestCase {
         $this->assertFalse($result);
     }
 
+    public function test_Join_ThrowsExceptionWhenStartIndexIsLessThanZero() {
+        
+        # Arrange
+        $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
+        $value = array('dotnet', 'onphp');
+        
+        # Act:
+        String::join('', $value, -1);
+    }
+
+    public function test_Join_CanJoinValuesWithSeparator() {
+        
+        # Arrange
+        $value = array('dot', 'net', 'on', 'php');
+                
+        # Act:
+        $obj = String::join('', $value);
+    
+        # Assert:
+        $this->assertEquals("dotnetonphp", $obj->value());
+    }
+
+    public function test_Join_CanJoinValuesWithSeparatorAndIndex() {
+        
+        # Arrange
+        $value = array('dot', 'net', 'on', 'php');
+                
+        # Act:
+        $obj = String::join('', $value, 1);
+    
+        # Assert:
+        $this->assertEquals("netonphp", $obj->value());
+    }
+
+    public function test_Join_CanJoinValuesWithSeparatorAndIndexAndCount() {
+        
+        # Arrange
+        $value = array('dot', 'net', 'on', 'php');
+                
+        # Act:
+        $obj = String::join(',', $value, 0, 2);
+    
+        # Assert:
+        $this->assertEquals("dot,net", $obj->value());
+    }
+
+    public function test_Join_ThrowsExceptionWhenStartIndexPlusCountIsGreaterThanArrayLength() {
+        
+        # Arrange
+        $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
+        $value = array('dotnet', 'onphp');
+        
+        # Act:
+        String::join('', $value, 0, 3);
+    }
+
     public function test_IsNullOrEmpty_ShouldTrueWhenStringIsNull() {
         # Arrange:
         $string = null;

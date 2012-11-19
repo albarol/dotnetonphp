@@ -314,7 +314,7 @@ namespace System {
         }
 
         /**
-         *  Indicates whether the specified String object is a null reference or an Empty string.
+         * Indicates whether the specified String object is a null reference or an Empty string.
          * @access public
          * @static
          * @param string $string A String reference.
@@ -325,6 +325,29 @@ namespace System {
                 return self::isNullOrEmpty($string->value());
             endif;                    
             return is_null($string) || empty($string);
+        }
+
+        /**
+         * Concatenates a specified separator String between each element of a specified String array, yielding a single concatenated string. Parameters specify the first array element and number of elements to use.
+         * @access public
+         * @static
+         * @throws \System\ArgumentOutOfRangeException startIndex or count is less than 0. -or- startIndex plus count is greater than the number of elements in value.
+         * @param string $separator A String.
+         * @param array $value An array of String.
+         * @param int $startIndex The first array element in value to use.
+         * @param int $count The number of elements of value to use.
+         * @return \System\String A String object consisting of the strings in value joined by separator. Or, Empty if count is zero, value has no elements, or separator and all the elements of value are Empty.
+        */
+        public static function join($separator, array $value, $startIndex=0, $count=null) {
+            if ($startIndex < 0):
+                throw new ArgumentOutOfRangeException("startIndex or count is less than 0.");
+            elseif (($startIndex + $count) > sizeof($value)):
+                throw new ArgumentOutOfRangeException("startIndex plus count is greater than the number of elements in value.");
+            endif;
+            
+            $count = is_null($count) ? sizeof($value) - $startIndex : $count;
+            $str = array_slice($value, $startIndex, $count);
+            return new String(implode($separator, $str));
         }
 
         /**
