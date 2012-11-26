@@ -72,7 +72,7 @@ namespace System {
          * @return bool true if the value parameter occurs within this string, or if value is the empty string (""); otherwise, false.
         */
         public function contains($value) {
-            return $this->indexOf($value) > -1;
+            return strpos($this->value, $value) !== false;
         }
 
         /**
@@ -227,15 +227,19 @@ namespace System {
         /**
          * Reports the index of the first occurrence of a String, or one or more characters, within this string.
          * @access public
+         * @throws \System\ArgumentOutOfRangeException startIndex or count is less than 0. -or- startIndex is greater than string length.
          * @param string $value A Unicode character to seek.
+         * @param int $startIndex
          * @return int The index position of value if that character is found, or -1 if it is not.
          */
-        public function indexOf($value) {
-            if($value instanceof String):
-                return $this->indexOf($value->value());
+        public function indexOf($value, $startIndex = 0) {
+            if ($startIndex < 0):
+                throw new ArgumentOutOfRangeException("startIndex or count is less than 0.");
+            elseif ($startIndex >= $this->length()):
+                throw new ArgumentOutOfRangeException("startIndex is greater than string length.");
             endif;
-            $result = strpos($this->value, $value);
-            return $result === false ? -1 : $result;
+            $position = strpos($this->value, $value, $startIndex);
+            return $position === false ? -1 : $position;
         }
 
         /**
@@ -246,16 +250,9 @@ namespace System {
          * @param int $startIndex The search starting position.
          * @return int The index position of the first occurrence in this instance where any character in anyOf was found; otherwise, -1 if no character in anyOf was found.
         */
-        public function indexOfAny(array $anyOf, $startIndex=0) {
-            if($startIndex < 0):
-                throw new ArgumentOutOfRangeException("startIndex is negative.");
-            elseif ($startIndex > $this->length()):
-                throw new ArgumentOutOfRangeException("startIndex is greater than length.");
-            endif;
-
+        public function indexOfAny(array $anyOf, $startIndex = 0) {
             $word = implode($anyOf, "");
-            $result = strpos($this->value, $word, $startIndex);
-            return $result === false ? -1 : $result;
+            return $this->indexOf($word, $startIndex);
         }
 
         /**
@@ -338,7 +335,7 @@ namespace System {
          * @param int $count The number of elements of value to use.
          * @return \System\String A String object consisting of the strings in value joined by separator. Or, Empty if count is zero, value has no elements, or separator and all the elements of value are Empty.
         */
-        public static function join($separator, array $value, $startIndex=0, $count=null) {
+        public static function join($separator, array $value, $startIndex = 0, $count = null) {
             if ($startIndex < 0):
                 throw new ArgumentOutOfRangeException("startIndex or count is less than 0.");
             elseif (($startIndex + $count) > sizeof($value)):
@@ -350,23 +347,41 @@ namespace System {
             return new String(implode($separator, $str));
         }
 
+        /**
+         * Reports the index position of the last occurrence of a specified String within this instance. The search starts at a specified character position.
+         * @access public
+         * @throws \System\ArgumentOutOfRangeException startIndex is greater than string length. -or- startIndex or count is less than 0.
+         * @param string $value The String to seek.
+         * @param int $startIndex The search starting position.
+         * @return int The index position of value if that string is found, or -1 if it is not. If value is Empty, the return value is startIndex.
+        */
+        public function lastIndexOf($value, $startIndex = 0) {
+            if($value instanceof String):
+                return $this->lastIndexOf($value->value(), $startIndex);
+            endif;
 
-        public function lastIndexOf($value, $startIndex=0, $count=null) {
             if ($startIndex < 0):
                 throw new ArgumentOutOfRangeException("startIndex or count is less than 0.");
-            elseif (($startIndex + $count) > strlen($this->value)):
-                throw new ArgumentOutOfRangeException("startIndex plus count is greater than the number of elements in value.");
+            elseif($startIndex > $this->length()):
+                throw new ArgumentOutOfRangeException("startIndex is greater than string length.");
             endif;
-            
-            $count = is_null($count) ? strlen($this->value) - $startIndex : $count;
-            $position = -1;
-            for($i = 0; $i < $count; $i++):
-                $current_position = $i + $startIndex;
-                if ($this->value[$current_position] == $value):
-                    $position = $current_position;
-                endif;
-            endfor;
-            return $position;
+
+            $size = strlen($this->value);
+            $position = strpos (strrev($this->value), strrev($value), $startIndex);
+            return $position === false ? -1 : (($size - $position) - strlen($value));
+        }
+
+        /**
+         * Reports the index position of the last occurrence in this instance of one or more characters specified in a Unicode array. The search starts at a specified character position.
+         * @access public
+         * @throws \System\ArgumentOutOfRangeException startIndex specifies a position not within this instance.
+         * @param array $value A Unicode character array containing one or more characters to seek.
+         * @param int $startIndex The search starting position.
+         * @return int The index position of the last occurrence in this instance where any character in anyOf was found; otherwise, -1 if no character in anyOf was found.
+        */
+        public function lastIndexOfAny(array $value, $startIndex = 0) {
+            $word = implode("", $value);
+            return $this->lastIndexOf($word, $startIndex);
         }
 
         /**

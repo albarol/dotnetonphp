@@ -303,6 +303,30 @@ class StringFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(-1, $position);
     }
 
+    public function test_IndexOf_ShouldReturnPositionWhenStartIndexIsGreaterThanZero() {
+        
+        # Arrange
+        $obj = new String("dotnetonphp");
+                
+        # Act:
+        $position = $obj->indexOf('p', 2);
+    
+        # Assert:
+        $this->assertEquals(8, $position);
+    }
+
+    public function test_IndexOf_ShouldReturnPositionInSpecificRange() {
+        
+        # Arrange
+        $obj = new String("dotnetonphp");
+                
+        # Act:
+        $position = $obj->indexOf('t', 3, 3);
+    
+        # Assert:
+        $this->assertEquals(5, $position);
+    }
+
     public function test_IndexOfAny_ThrowsExceptionWhenStartIndexIsNegative() {
         # Arrange
         $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
@@ -322,22 +346,26 @@ class StringFixture extends PHPUnit_Framework_TestCase {
     }
 
     public function test_IndexOfAny_ShouldBeTrueWhenLookAllString() {
+        
         # Arrange
         $obj = new String("dotnetonphp");
                 
         # Act:
         $result = $obj->indexOfAny(array('n', 'e', 't'), 0);
 
+        # Assert:
         $this->assertEquals(3, $result);
     }
 
     public function test_IndexOfAny_ShouldBeTrueWhenLookPartOfString() {
+        
         # Arrange
         $obj = new String("dotnetonphp");
                 
         # Act:
         $result = $obj->indexOfAny(array('n', 'e', 't'), 2);
 
+        # Assert:
         $this->assertEquals(3, $result);
     }
 
@@ -492,16 +520,6 @@ class StringFixture extends PHPUnit_Framework_TestCase {
         $obj->lastIndexOf('p', -1);
     }
 
-    public function test_LastIndexOf_ThrowsExceptionWhenStartIndexPlusCountIsGreaterThanLength() {
-        
-        # Arrange
-        $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
-        $obj = new String("dotnetonphp");
-                
-        # Act:
-        $obj->lastIndexOf('p', 0, 12);
-    }
-
     public function test_LastIndexOf_CanGetLastPositionOfString() {
        
         # Arrange
@@ -520,10 +538,52 @@ class StringFixture extends PHPUnit_Framework_TestCase {
         $obj = new String("dotnetonphp");
                 
         # Act:
-        $result = $obj->lastIndexOf('p', 5, 6);
+        $result = $obj->lastIndexOf('p', 5);
     
         # Assert:
         $this->assertEquals(10, $result);
+    }
+
+    public function test_LastIndexOfAny_ThrowsExceptionWhenStartIndexIsNegative() {
+        # Arrange
+        $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
+        $obj = new String("dotnetonphp");
+        
+        # Act:
+        $obj->lastIndexOfAny(array('n', 'e', 't'), -1);
+    }
+
+    public function test_LastIndexOfAny_ThrowsExceptionWhenStartIndexIsGreaterThanLength() {
+        # Arrange
+        $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
+        $obj = new String("dotnetonphp");
+        
+        # Act:
+        $obj->lastIndexOfAny(array('n', 'e', 't'), 12);
+    }
+
+    public function test_LastIndexOfAny_ShouldBeTrueWhenLookAllString() {
+        
+        # Arrange
+        $obj = new String("dotnetonphp");
+                
+        # Act:
+        $result = $obj->lastIndexOfAny(array('n', 'e', 't'), 0);
+
+        # Assert:
+        $this->assertEquals(3, $result);
+    }
+
+    public function test_LastIndexOfAny_ShouldBeTrueWhenLookPartOfString() {
+        
+        # Arrange
+        $obj = new String("dotnetonphp");
+                
+        # Act:
+        $result = $obj->lastIndexOfAny(array('n', 'e', 't'), 2);
+
+        # Assert:
+        $this->assertEquals(3, $result);
     }
     
     public function test_ToCharArray_CanTransformStringInCharArray() {
