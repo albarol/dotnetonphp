@@ -229,7 +229,8 @@ namespace System {
          * @access public
          * @throws \System\ArgumentOutOfRangeException startIndex or count is less than 0. -or- startIndex is greater than string length.
          * @param string $value A Unicode character to seek.
-         * @param int $startIndex
+         * @param int $startIndex The search starting position.
+         * @param int $count The number of character positions to examine.
          * @return int The index position of value if that character is found, or -1 if it is not.
          */
         public function indexOf($value, $startIndex = 0, $count = null) {
@@ -373,6 +374,7 @@ namespace System {
          * @throws \System\ArgumentOutOfRangeException startIndex is greater than string length. -or- startIndex or count is less than 0.
          * @param string $value The String to seek.
          * @param int $startIndex The search starting position.
+         * @param int $count The number of character positions to examine.
          * @return int The index position of value if that string is found, or -1 if it is not. If value is Empty, the return value is startIndex.
         */
         public function lastIndexOf($value, $startIndex = 0, $count = null) {
@@ -424,11 +426,7 @@ namespace System {
          * @return array A Unicode character array whose elements are the individual characters of this instance. If this instance is an empty string, the returned array is empty and has a zero length.
          */
         public function toCharArray() {
-            $array = array();
-            for ($i = 0; $i < $this->length(); $i++) {
-                $array[] = substr($this->value, $i, 1);
-            }
-            return $array;
+            return str_split($this->value);
         }
 
         /**
