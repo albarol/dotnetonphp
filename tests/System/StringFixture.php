@@ -538,10 +538,10 @@ class StringFixture extends PHPUnit_Framework_TestCase {
         $obj = new String("dotnetonphp");
                 
         # Act:
-        $result = $obj->lastIndexOf('p', 5);
+        $result = $obj->lastIndexOf('p', 5, 4);
     
         # Assert:
-        $this->assertEquals(10, $result);
+        $this->assertEquals(8, $result);
     }
 
     public function test_LastIndexOfAny_ThrowsExceptionWhenStartIndexIsNegative() {
@@ -568,10 +568,10 @@ class StringFixture extends PHPUnit_Framework_TestCase {
         $obj = new String("dotnetonphp");
                 
         # Act:
-        $result = $obj->lastIndexOfAny(array('n', 'e', 't'), 0);
+        $result = $obj->lastIndexOfAny(array('d'), 1);
 
         # Assert:
-        $this->assertEquals(3, $result);
+        $this->assertEquals(-1, $result);
     }
 
     public function test_LastIndexOfAny_ShouldBeTrueWhenLookPartOfString() {

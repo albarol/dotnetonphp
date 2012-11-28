@@ -232,14 +232,34 @@ namespace System {
          * @param int $startIndex
          * @return int The index position of value if that character is found, or -1 if it is not.
          */
-        public function indexOf($value, $startIndex = 0) {
+        public function indexOf($value, $startIndex = 0, $count = null) {
+            if($value instanceof String):
+                return $this->lastIndexOf($value->value(), $startIndex);
+            endif;
+
             if ($startIndex < 0):
                 throw new ArgumentOutOfRangeException("startIndex or count is less than 0.");
-            elseif ($startIndex >= $this->length()):
+            elseif($startIndex > $this->length()):
                 throw new ArgumentOutOfRangeException("startIndex is greater than string length.");
+            elseif(($startIndex + $count) > $this->length()):
+                throw new ArgumentOutOfRangeException("startIndex plus count is greater than value.");
             endif;
-            $position = strpos($this->value, $value, $startIndex);
-            return $position === false ? -1 : $position;
+
+            $count = is_null($count) ? $this->length() - $startIndex : $count;
+            $len = strlen($value);
+            $position = -1;
+
+            for($i = 0; $i < $count && $position == -1; $i++)
+            {
+                $current = $startIndex + $i;
+                $substring = substr($this->value, $current, $len);
+                if($value == $substring)
+                {
+                    $position = $startIndex + $i;
+                }
+            }
+            
+            return $position;
         }
 
         /**
@@ -355,7 +375,7 @@ namespace System {
          * @param int $startIndex The search starting position.
          * @return int The index position of value if that string is found, or -1 if it is not. If value is Empty, the return value is startIndex.
         */
-        public function lastIndexOf($value, $startIndex = 0) {
+        public function lastIndexOf($value, $startIndex = 0, $count = null) {
             if($value instanceof String):
                 return $this->lastIndexOf($value->value(), $startIndex);
             endif;
@@ -364,11 +384,25 @@ namespace System {
                 throw new ArgumentOutOfRangeException("startIndex or count is less than 0.");
             elseif($startIndex > $this->length()):
                 throw new ArgumentOutOfRangeException("startIndex is greater than string length.");
+            elseif(($startIndex + $count) > $this->length()):
+                throw new ArgumentOutOfRangeException("startIndex plus count is greater than value.");
             endif;
 
-            $size = strlen($this->value);
-            $position = strpos (strrev($this->value), strrev($value), $startIndex);
-            return $position === false ? -1 : (($size - $position) - strlen($value));
+            $count = is_null($count) ? $this->length() - $startIndex : $count;
+            $len = strlen($value);
+            $position = -1;
+
+            for($i = 0; $i < $count; $i++)
+            {
+                $current = $startIndex + $i;
+                $substring = substr($this->value, $current, $len);
+                if($value == $substring)
+                {
+                    $position = $startIndex + $i;
+                }
+            }
+            
+            return $position;
         }
 
         /**
