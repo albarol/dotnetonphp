@@ -304,31 +304,16 @@ namespace System {
          * @param \System\Text\NormalizationForm $normalizationForm A Unicode normalization form.
          * @return bool true if this string is in the normalization form specified by the normalizationForm parameter; otherwise, false.
         */
-        public function isNormalized($normalizationForm=null) {
-            if(!class_exists("\\normalizer")):
-                return false;
+        public function isNormalized(NormalizationForm $normalizationForm = null) {
+            if(!class_exists("\\Normalizer")):
+                throw new \Exception("NotSupportedOperation");
             endif;
 
             if (is_null($normalizationForm)):
                 $normalizationForm = NormalizationForm::formC();
             endif;
 
-            switch ($normalizationForm) {
-                case NormalizationForm::formD():
-                    $form = \Normalizer::FORM_D;
-                    break;
-                case NormalizationForm::formKC():
-                    $form = \Normalizer::FORM_KC;
-                    break;
-                case NormalizationForm::formKD():
-                    $form = \Normalizer::FORM_KD;
-                    break;
-                default:
-                    $form = \Normalizer::FORM_C;
-                    break;
-            }
-
-            return \Normalizer::isNormalized($this->value, $form);
+            return \Normalizer::isNormalized($this->value, $normalizationForm->value());
         }
 
         /**
@@ -419,6 +404,27 @@ namespace System {
             $word = implode("", $value);
             return $this->lastIndexOf($word, $startIndex);
         }
+
+
+        /**
+         * Returns a new string whose textual value is the same as this string, but whose binary representation is in the specified Unicode normalization form.
+         * @access public
+         * @param \System\Text\NormalizationForm $normalizationForm A Unicode normalization form.
+         * @return \System\String A new string whose textual value is the same as this string, but whose binary representation is in the normalization form specified by the normalizationForm parameter.
+        */ 
+        public function normalize(NormalizationForm $normalizationForm = null) {
+            if(!class_exists("\\Normalizer")):
+                throw new \Exception("NotSupportedOperation");
+            endif;
+
+            if (is_null($normalizationForm)):
+                $normalizationForm = NormalizationForm::formC();
+            endif;
+
+            $str_normalized = normalizer_normalize($this->value, $normalizationForm->value());
+            return new String($str_normalized);
+        }
+
 
         /**
          * Copies the characters in this instance to a Unicode character array.

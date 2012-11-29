@@ -585,6 +585,32 @@ class StringFixture extends PHPUnit_Framework_TestCase {
         # Assert:
         $this->assertEquals(3, $result);
     }
+
+    public function test_Normalize_ShouldNormalizeInFormC() {
+        
+        # Arrange
+        $latin_letter = "\xCC\x8A";
+        $obj = new String("\xCC\x8A");
+                
+        # Act:
+        $normalized = $obj->normalize();
+    
+        # Assert:
+        $this->assertEquals($latin_letter, $normalized->value());
+    }
+
+    public function test_Normalize_ShouldNormalizeInFormD() {
+        
+        # Arrange
+        $latin_letter = "\xCC\x8A";
+        $obj = new String("\xCC\x8A");
+                
+        # Act:
+        $normalized = $obj->normalize(NormalizationForm::formD());
+    
+        # Assert:
+        $this->assertEquals($latin_letter, $normalized->value());
+    }
     
     public function test_ToCharArray_CanTransformStringInCharArray() {
         # Arrange:

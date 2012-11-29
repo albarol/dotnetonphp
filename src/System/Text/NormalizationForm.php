@@ -24,7 +24,7 @@ namespace System\Text {
          * @return \System\Text\NormalizationForm
          */
         public static function formC() {
-            return new NormalizationForm("FormC", 0);
+            return new NormalizationForm("FormC", 4);
         }
 
         /**
@@ -33,7 +33,7 @@ namespace System\Text {
          * @return \System\Text\NormalizationForm
          */
         public static function formD() {
-            return new NormalizationForm("FormD", 1);
+            return new NormalizationForm("FormD", 2);
         }
 
         /**
@@ -42,7 +42,7 @@ namespace System\Text {
          * @return \System\Text\NormalizationForm
          */
         public static function formKC() {
-            return new NormalizationForm("FormKC", 2);
+            return new NormalizationForm("FormKC", 5);
         }
 
         /**
