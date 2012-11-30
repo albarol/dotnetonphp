@@ -611,6 +611,84 @@ class StringFixture extends PHPUnit_Framework_TestCase {
         # Assert:
         $this->assertEquals($latin_letter, $normalized->value());
     }
+
+    public function test_PadLeft_ThrowsExceptionWhenTotalWidthIsLessThanZero() {
+        
+        # Arrange
+        $this->setExpectedException("\\System\\ArgumentException");
+        $width = -1;
+        $obj = new String("dotnetonphp");
+                
+        # Act:
+        $obj->padLeft($width);
+    }
+
+    public function test_PadLeft_ShouldIncludeWhiteSpaceInString() {
+        
+        # Arrange
+        $width = 16;
+        $obj = new String("dotnetonphp");
+                
+        # Act:
+        $str_pad = $obj->padLeft($width);
+    
+        # Assert:
+        $this->assertEquals(16, $str_pad->length());
+
+    }
+
+    public function test_PadLeft_ShouldIncludeZeroInSTring() {
+        
+        # Arrange
+        $width = 5;
+        $obj = new String("1");
+                
+        # Act:
+        $str_pad = $obj->padLeft($width, "2");
+    
+        # Assert:
+        $this->assertEquals("22221", $str_pad->value());
+    }
+
+    public function test_PadRigth_ThrowsExceptionWhenTotalWidthIsLessThanZero() {
+        
+        # Arrange
+        $this->setExpectedException("\\System\\ArgumentException");
+        $width = -1;
+        $obj = new String("dotnetonphp");
+                
+        # Act:
+        $obj->padRigth($width);
+    }
+
+    public function test_PadRigth_ShouldIncludeWhiteSpaceInString() {
+        
+        # Arrange
+        $width = 16;
+        $obj = new String("dotnetonphp");
+                
+        # Act:
+        $str_pad = $obj->padRigth($width);
+    
+        # Assert:
+        $this->assertEquals(16, $str_pad->length());
+
+    }
+
+    public function test_PadRigth_ShouldIncludeZeroInSTring() {
+        
+        # Arrange
+        $width = 5;
+        $obj = new String("1");
+                
+        # Act:
+        $str_pad = $obj->padRigth($width, "2");
+    
+        # Assert:
+        $this->assertEquals("12222", $str_pad->value());
+    }
+
+
     
     public function test_ToCharArray_CanTransformStringInCharArray() {
         # Arrange:

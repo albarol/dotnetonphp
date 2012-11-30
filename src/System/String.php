@@ -425,6 +425,37 @@ namespace System {
             return new String($str_normalized);
         }
 
+        /**
+         * Right-aligns the characters in this instance, padding on the left with a specified Unicode character for a specified total length.
+         * @access public
+         * @throws \System\ArgumentException totalWidth is less than zero. 
+         * @param int $totalWidth The number of characters in the resulting string, equal to the number of original characters plus any additional padding characters.
+         * @param string $paddingChar A Unicode padding character.
+         * @return A new String that is equivalent to this instance, but right-aligned and padded on the left with as many paddingChar characters as needed to create a length of totalWidth. Or, if totalWidth is less than the length of this instance, a new String that is identical to this instance.
+        */
+        public function padLeft($totalWidth, $paddingChar = " ") {
+            return $this->padding($totalWidth, $paddingChar, STR_PAD_LEFT);
+        }
+
+        /**
+         * Left-aligns the characters in this string, padding on the right with spaces or a specified Unicode character, for a specified total length.
+         * @access public
+         * @throws \System\ArgumentException totalWidth is less than zero. 
+         * @param int $totalWidth The number of characters in the resulting string, equal to the number of original characters plus any additional padding characters.
+         * @param string $paddingChar A Unicode padding character.
+         * @return A new String that is equivalent to this instance, but right-aligned and padded on the left with as many paddingChar characters as needed to create a length of totalWidth. Or, if totalWidth is less than the length of this instance, a new String that is identical to this instance.
+        */
+        public function padRigth($totalWidth, $paddingChar = " ") {
+            return $this->padding($totalWidth, $paddingChar, STR_PAD_RIGHT);
+        }
+
+        private function padding($totalWidth, $paddingChar, $position) {
+            if ($totalWidth < 0):
+                throw new ArgumentException("totalWidth is less than zero.");
+            endif;
+            $str_spaced = str_pad($this->value, $totalWidth, $paddingChar, $position); 
+            return new String($str_spaced);    
+        }
 
         /**
          * Copies the characters in this instance to a Unicode character array.
