@@ -136,4 +136,30 @@ class MathFixture extends PHPUnit_Framework_TestCase {
         
     }
 
+    public function test_Atan2_ShouldCalculateAtan2() {
+        
+        # Arrange
+        $x = 2;
+        $y = 3;
+                
+        # Act:
+        $result = Math::atan2($x, $y);
+    
+        # Assert:
+        $this->assertNotEquals(NAN, $result);
+    }
+
+
+    public function test_BigMul_CanMultiplyTwoSpecifiedNumbers() {
+        
+        # Arrange
+        $a = 10000;
+        $b = 10000;
+
+        # Act:
+        $result = Math::bigMul($a, $b);
+    
+        # Assert:
+        $this->assertEquals(100000000, $result);
+    }
 }

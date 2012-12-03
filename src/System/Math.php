@@ -91,7 +91,7 @@ namespace System {
     * @return int The int containing the product of the specified numbers.
     */
     public static function bigMul($a, $b) {
-      return $a * $b;
+      return ($a & 0xFFFFFFFF) * ($b & 0xFFFFFFFF);
     }
 
     /**
