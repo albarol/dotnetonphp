@@ -445,7 +445,7 @@ namespace System {
          * @param string $paddingChar A Unicode padding character.
          * @return A new String that is equivalent to this instance, but right-aligned and padded on the left with as many paddingChar characters as needed to create a length of totalWidth. Or, if totalWidth is less than the length of this instance, a new String that is identical to this instance.
         */
-        public function padRigth($totalWidth, $paddingChar = " ") {
+        public function padRight($totalWidth, $paddingChar = " ") {
             return $this->padding($totalWidth, $paddingChar, STR_PAD_RIGHT);
         }
 
@@ -456,6 +456,9 @@ namespace System {
             $str_spaced = str_pad($this->value, $totalWidth, $paddingChar, $position); 
             return new String($str_spaced);    
         }
+
+
+        
 
         /**
          * Copies the characters in this instance to a Unicode character array.

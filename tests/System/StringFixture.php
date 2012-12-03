@@ -574,6 +574,17 @@ class StringFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(-1, $result);
     }
 
+    public function test_Length_CanGetLengthOfString() {
+        # Arrange:
+        $obj = new String("dotnetonphp");
+
+        # Act:
+        $length = $obj->length();
+
+        # Assert:
+        $this->assertEquals(11, $length);
+    }
+
     public function test_LastIndexOfAny_ShouldBeTrueWhenLookPartOfString() {
         
         # Arrange
@@ -650,7 +661,7 @@ class StringFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals("22221", $str_pad->value());
     }
 
-    public function test_PadRigth_ThrowsExceptionWhenTotalWidthIsLessThanZero() {
+    public function test_PadRight_ThrowsExceptionWhenTotalWidthIsLessThanZero() {
         
         # Arrange
         $this->setExpectedException("\\System\\ArgumentException");
@@ -658,31 +669,31 @@ class StringFixture extends PHPUnit_Framework_TestCase {
         $obj = new String("dotnetonphp");
                 
         # Act:
-        $obj->padRigth($width);
+        $obj->padRight($width);
     }
 
-    public function test_PadRigth_ShouldIncludeWhiteSpaceInString() {
+    public function test_PadRight_ShouldIncludeWhiteSpaceInString() {
         
         # Arrange
         $width = 16;
         $obj = new String("dotnetonphp");
                 
         # Act:
-        $str_pad = $obj->padRigth($width);
+        $str_pad = $obj->padRight($width);
     
         # Assert:
         $this->assertEquals(16, $str_pad->length());
 
     }
 
-    public function test_PadRigth_ShouldIncludeZeroInSTring() {
+    public function test_PadRight_ShouldIncludeZeroInSTring() {
         
         # Arrange
         $width = 5;
         $obj = new String("1");
                 
         # Act:
-        $str_pad = $obj->padRigth($width, "2");
+        $str_pad = $obj->padRight($width, "2");
     
         # Assert:
         $this->assertEquals("12222", $str_pad->value());
@@ -725,18 +736,6 @@ class StringFixture extends PHPUnit_Framework_TestCase {
         # Assert:
         $this->assertEquals("dotnetonphp", $result->value());
     }
-
-    public function test_Length_CanGetLengthOfString() {
-        # Arrange:
-        $obj = new String("dotnetonphp");
-
-        # Act:
-        $length = $obj->length();
-
-        # Assert:
-        $this->assertEquals(11, $length);
-    }
-
     
     public function test_Replace_CanReplacePartOfString() {
         # Arrange:
@@ -748,7 +747,6 @@ class StringFixture extends PHPUnit_Framework_TestCase {
         # Assert:
         $this->assertEquals("dotnetonphp", $text->value());
     }
-
     
     public function test_Replace_ThrowsExceptionWhenArgumentIsNull() {
         # Arrange:
@@ -758,7 +756,6 @@ class StringFixture extends PHPUnit_Framework_TestCase {
         # Act::
         $obj->replace(null, "php");
     }
-
     
     public function test_Trim_CanRemoveSpacesFromBoundaries() {
         # Arrange:
@@ -790,6 +787,4 @@ class StringFixture extends PHPUnit_Framework_TestCase {
         # Act:
         $obj->remove(-1);
     }
-
-    
 }
