@@ -457,8 +457,38 @@ namespace System {
             return new String($str_spaced);    
         }
 
+        /**
+         * Deletes all the characters from this string beginning at a specified position and continuing through the last position.
+         * @access public
+         * @param int startIndex The zero-based position to begin deleting characters.
+         * @return \System\String A new System.String object that is equivalent to this string less the removed characters.
+         */
+        public function remove($startIndex) {
+            if ($startIndex < 0):
+                throw new ArgumentOutOfRangeException ("startIndex is less than zero.");
+            elseif ($startIndex > $this->length()):
+                throw new ArgumentOutOfRangeException("startIndex specifies a position that is not within this string.");
+            endif;
+            return new String(substr($this->value, 0, $startIndex));
+        }
 
-        
+        /**
+         * Replaces all occurrences of a specified Unicode character or String in this instance, with another specified Unicode character or String. 
+         * @access public
+         * @throws \System\ArgumentNullException value is null.
+         * @throws \System\ArgumentException value is empty.
+         * @param string $oldValue A \System\String to be replaced.
+         * @param string $newValue A \System\String to replace all occurrences of oldValue.
+         * @return \System\String A System.String equivalent to this instance but with all instances of oldValue replaced with newValue.
+         */
+        public function replace($oldValue, $newValue) {
+            if ($oldValue == null):
+                throw new ArgumentNullException("value is null.");
+            elseif (self::isNullOrEmpty($oldValue)):
+                throw new ArgumentException("value is empty. -or- value is");
+            endif;
+            return new String(str_replace($oldValue, $newValue, $this->value()));
+        }
 
         /**
          * Copies the characters in this instance to a Unicode character array.
@@ -497,36 +527,25 @@ namespace System {
         }
 
         /**
-         * Deletes all the characters from this string beginning at a specified position and continuing through the last position.
+         * Removes all occurrences of a set of characters specified in an array from the end of this instance.
          * @access public
-         * @param int startIndex The zero-based position to begin deleting characters.
-         * @return \System\String A new System.String object that is equivalent to this string less the removed characters.
-         */
-        public function remove($startIndex) {
-            if ($startIndex < 0):
-                throw new ArgumentOutOfRangeException ("startIndex is less than zero.");
-            elseif ($startIndex > $this->length()):
-                throw new ArgumentOutOfRangeException("startIndex specifies a position that is not within this string.");
-            endif;
-            return new String(substr($this->value, 0, $startIndex));
+         * @param array $trimChars An array of Unicode characters to be removed
+         * @return \System\String The String that remains after all occurrences of characters in trimChars are removed from the beginning. 
+        */
+        public function trimEnd(array $trimChars = array(' ')) {
+            $charlist = implode($trimChars);
+            return new String(rtrim($this->value, $charlist));
         }
 
         /**
-         * Replaces all occurrences of a specified Unicode character or String in this instance, with another specified Unicode character or String. 
+         * Removes all occurrences of a set of characters specified in an array from the beginning of this instance.
          * @access public
-         * @throws \System\ArgumentNullException value is null.
-         * @throws \System\ArgumentException value is empty.
-         * @param string $oldValue A \System\String to be replaced.
-         * @param string $newValue A \System\String to replace all occurrences of oldValue.
-         * @return \System\String A System.String equivalent to this instance but with all instances of oldValue replaced with newValue.
-         */
-        public function replace($oldValue, $newValue) {
-            if ($oldValue == null):
-                throw new ArgumentNullException("value is null.");
-            elseif (self::isNullOrEmpty($oldValue)):
-                throw new ArgumentException("value is empty. -or- value is");
-            endif;
-            return new String(str_replace($oldValue, $newValue, $this->value()));
+         * @param array $trimChars An array of Unicode characters to be removed
+         * @return \System\String The String that remains after all occurrences of characters in trimChars are removed from the beginning. 
+        */
+        public function trimStart(array $trimChars = array(' ')) {
+            $charlist = implode($trimChars);
+            return new String(ltrim($this->value, $charlist));
         }
 
         /**
@@ -535,7 +554,7 @@ namespace System {
          * @param string $value string value
          * @return string string value
         */
-        public function value($value=null) {
+        public function value($value = null) {
             if($value instanceof String):
                 $this->value = $value->value();
             elseif(!is_null($value)):

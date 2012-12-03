@@ -699,8 +699,46 @@ class StringFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals("12222", $str_pad->value());
     }
 
+    public function test_Remove_CanRemovePartOfString() {
+        # Arrange:
+        $obj = new String("dotnetonphp");
 
+        # Act:
+        $text = $obj->remove(3);
+        
+        # Assert:
+        $this->assertEquals("dot", $text->value());
+    }
+
+    public function test_Remove_ThrowsExceptionWhenPositionIsInvalid() {
+        # Arrange:
+        $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
+        $obj = new String("dotnetonphp");
+
+        # Act:
+        $obj->remove(-1);
+    }
+
+    public function test_Replace_CanReplacePartOfString() {
+        # Arrange:
+        $obj = new String("dotneton###");
+
+        # Act:
+        $text = $obj->replace("###", "php");
+
+        # Assert:
+        $this->assertEquals("dotnetonphp", $text->value());
+    }
     
+    public function test_Replace_ThrowsExceptionWhenArgumentIsNull() {
+        # Arrange:
+        $this->setExpectedException("\\System\\ArgumentNullException");
+        $obj = new String("dotnetonphp");
+
+        # Act::
+        $obj->replace(null, "php");
+    }
+
     public function test_ToCharArray_CanTransformStringInCharArray() {
         # Arrange:
         $obj = new String('DotNetOnPhp');
@@ -737,26 +775,6 @@ class StringFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals("dotnetonphp", $result->value());
     }
     
-    public function test_Replace_CanReplacePartOfString() {
-        # Arrange:
-        $obj = new String("dotneton###");
-
-        # Act:
-        $text = $obj->replace("###", "php");
-
-        # Assert:
-        $this->assertEquals("dotnetonphp", $text->value());
-    }
-    
-    public function test_Replace_ThrowsExceptionWhenArgumentIsNull() {
-        # Arrange:
-        $this->setExpectedException("\\System\\ArgumentNullException");
-        $obj = new String("dotnetonphp");
-
-        # Act::
-        $obj->replace(null, "php");
-    }
-    
     public function test_Trim_CanRemoveSpacesFromBoundaries() {
         # Arrange:
         $obj = new String("    dot net on php   ");
@@ -768,23 +786,54 @@ class StringFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals("dot net on php", $text->value());
     }
 
-    public function test_Remove_CanRemovePartOfString() {
+    public function test_TrimEnd_CanRemoveSpacesFromRightBoundary() {
+        
         # Arrange:
-        $obj = new String("dotnetonphp");
+        $obj = new String("    dot net on php   ");
 
         # Act:
-        $text = $obj->remove(3);
-        
+        $text = $obj->trimEnd();
+
         # Assert:
-        $this->assertEquals("dot", $text->value());
+        $this->assertEquals("    dot net on php", $text->value());
     }
 
-    public function test_Remove_ThrowsExceptionWhenPositionIsInvalid() {
+    public function test_TrimEnd_CanRemoveLetterFromRightBoundary() {
+        
         # Arrange:
-        $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
-        $obj = new String("dotnetonphp");
+        $obj = new String("    dot net on phpaaa");
+        $trimChars = array('a');
 
         # Act:
-        $obj->remove(-1);
+        $text = $obj->trimEnd($trimChars);
+
+        # Assert:
+        $this->assertEquals("    dot net on php", $text->value());
+    }
+
+    public function test_TrimStart_CanRemoveSpacesFromLeftBoundary() {
+        
+        # Arrange:
+        $obj = new String("    dot net on php   ");
+        $trimChars = array(' ');
+
+        # Act:
+        $text = $obj->trimStart($trimChars);
+
+        # Assert:
+        $this->assertEquals("dot net on php   ", $text->value());
+    }
+
+    public function test_TrimStart_CanRemoveLetterFromLeftBoundary() {
+        
+        # Arrange:
+        $obj = new String("aaaadot net on php   ");
+        $trimChars = array('a');
+
+        # Act:
+        $text = $obj->trimStart($trimChars);
+
+        # Assert:
+        $this->assertEquals("dot net on php   ", $text->value());
     }
 }
