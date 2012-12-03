@@ -2,6 +2,7 @@
 
 namespace System {
 
+  use \System\DivideByZeroException as DivideByZeroException;
   use \System\MidpointRounding as MidpointRounding;
 
   /**
@@ -40,8 +41,8 @@ namespace System {
     * Returns the angle whose cosine is the specified number.
     * @access public
     * @static
-    * @param int $d A number representing a cosine, where -1 ≤d≤ 1.
-    * @return float An angle, θ, measured in radians, such that 0 ≤θ≤π -or- System.double.NaN if d < -1 or d > 1.
+    * @param int $d A number representing a cosine, where -1 ≤ d ≤ 1.
+    * @return float An angle, θ, measured in radians, such that 0 ≤ θ ≤ π -or- System.double.NaN if d < -1 or d > 1.
     */
     public static function acos($d) {
       return acos($d);
@@ -51,8 +52,8 @@ namespace System {
     * Returns the angle whose sine is the specified number.
     * @access public
     * @static
-    * @param $d A number representing a sine, where -1 ≤d≤ 1.
-    * @return float An angle, θ, measured in radians, such that -π/2 ≤θ≤π/2  -or-  System.double.NaN if d < -1 or d > 1.
+    * @param $d A number representing a sine, where -1 ≤ d ≤ 1.
+    * @return float An angle, θ, measured in radians, such that -π/2 ≤ θ ≤ π/2  -or-  System.double.NaN if d < -1 or d > 1.
     */
     public static function asin($d) {
       return asin($d);
@@ -63,7 +64,7 @@ namespace System {
     * @access public
     * @static
     * @param $d A number representing a tangent.
-    * @return float An angle, θ, measured in radians, such that -π/2 ≤θ≤π/2. -or-  System.Double.NaN if d equals System.Double.NaN, -π/2 rounded to double precision (-1.5707963267949) if d equals System.Double.NegativeInfinity, or π/2 rounded to double precision (1.5707963267949) if d equals System.Double.PositiveInfinity.
+    * @return float An angle, θ, measured in radians, such that -π/2 ≤ θ ≤ π/2. -or- System.Double.NaN if d equals System.Double.NaN, -π/2 rounded to double precision (-1.5707963267949) if d equals System.Double.NegativeInfinity, or π/2 rounded to double precision (1.5707963267949) if d equals System.Double.PositiveInfinity.
     */
     public static function atan($d) {
       return atan($d);
@@ -75,7 +76,7 @@ namespace System {
     * @static
     * @param $y The y coordinate of a point.
     * @param $x The x coordinate of a point.
-    * @return float An angle, θ, measured in radians, such that -π≤θ≤π, and tan(θ) = y / x, where (x, y) is a point in the Cartesian plane
+    * @return float An angle, θ, measured in radians, such that -π ≤ θ ≤ π, and tan(θ) = y / x, where (x, y) is a point in the Cartesian plane
     */
     public static function atan2($y, $x) {
       return atan2($y, $x);
@@ -137,15 +138,18 @@ namespace System {
     * @return int The System.Int32 containing the quotient of the specified numbers.
     */
     public static function divRem($a,$b, &$result) {
-      if($b == 0) throw new DivideByZeroException("b is zero.");
-      $result = gmp_div_q($a, $b);
+        if($b == 0):
+            throw new DivideByZeroException("b is zero.");
+        endif;
+
+        $result = gmp_div_q($a, $b);
     }
 
     /**
     * Returns e raised to the specified power.
     * @access public
     * @static
-    * @param $d A number specifying a power.
+    * @param float $d A number specifying a power.
     * @return float The number e raised to the power d. If d equals System.Double.NaN or System.Double.PositiveInfinity, that value is returned. If d equals System.Double.NegativeInfinity, 0 is returned.
     */
     public static function exp($d) {
@@ -156,7 +160,7 @@ namespace System {
     * Returns the largest integer less than or equal to the specified decimal number.
     * @access public
     * @static
-    * @param $d A decimal number.
+    * @param float $d A decimal number.
     * @return float The largest integer less than or equal to d.
     */
     public static function floor($d) {
@@ -167,8 +171,8 @@ namespace System {
     * Returns the remainder resulting from the division of a specified number by another specified number.
     * @access public
     * @static
-    * @param $x A dividend.
-    * @param $y A divisor.
+    * @param int $x A dividend.
+    * @param int $y A divisor.
     * @return int A number equal to x - (y Q), where Q is the quotient of x / y rounded to the nearest integer (if x / y falls halfway between two integers, the even integer is returned).
     */
     public static function ieeeReminder($x, $y) {
@@ -231,8 +235,8 @@ namespace System {
     * @param $y A double-precision floating-point number that specifies a power.
     * @return float The number x raised to the power y.
     */
-    public static function pow($x,$y){
-      return pow($x,$y);
+    public static function pow($x, $y){
+      return pow($x, $y);
     }
 
     /**
@@ -244,9 +248,12 @@ namespace System {
     * @param $mode Specification for how to round d if it is midway between two other numbers.
     * @return float The integer nearest parameter d. If the fractional component of d is halfway between two integers, one of which is even and the other odd, then the even number is returned.
     */
-    public static function round($d, $decimals=0, $mode=null) {
-      if($mode instanceof MidpointRounding) return round($d, $decimals, $mode->name());
-      return round($d, $decimals);
+    public static function round($d, $decimals = 0, $mode = null) {
+        if($mode instanceof MidpointRounding):
+            return round($d, $decimals, $mode->name());
+        endif;
+
+        return round($d, $decimals);
     }
 
     /**
@@ -311,11 +318,13 @@ namespace System {
     * Calculates the integral part of a specified decimal number.
     * @access public
     * @static
-    * @param $d A number to truncate.
+    * @param float $d A number to truncate.
     * @return float Return Values: The integral part of d; that is, the number that remains after any fractional digits have been discarded.
     */
     public static function trucante($d) {
-      return false;
+      return (int)$d;
     }
+  
   }
+
 }
