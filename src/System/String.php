@@ -520,10 +520,12 @@ namespace System {
         /**
          * Removes all leading and trailing white-space characters from the current System.String object.
          * @access public
+         * @param array $trimChars An array of Unicode characters to be removed
          * @return \System\String The string that remains after all white-space characters are removed from the start and end of the current System.String object.
          */
-        public function trim() {
-            return new String(trim($this->value));
+        public function trim(array $trimChars = array(' ')) {
+            $charlist = implode($trimChars);
+            return new String(trim($this->value, $charlist));
         }
 
         /**

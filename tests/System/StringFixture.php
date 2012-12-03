@@ -786,6 +786,18 @@ class StringFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals("dot net on php", $text->value());
     }
 
+    public function test_Trim_CanRemoveLetterFromBoundaries() {
+        # Arrange:
+        $obj = new String("aaaadot net on phpaaaa");
+        $trimChars = array('a');
+
+        # Act:
+        $text = $obj->trim($trimChars);
+
+        # Assert:
+        $this->assertEquals("dot net on php", $text->value());
+    }
+
     public function test_TrimEnd_CanRemoveSpacesFromRightBoundary() {
         
         # Arrange:
@@ -815,10 +827,9 @@ class StringFixture extends PHPUnit_Framework_TestCase {
         
         # Arrange:
         $obj = new String("    dot net on php   ");
-        $trimChars = array(' ');
 
         # Act:
-        $text = $obj->trimStart($trimChars);
+        $text = $obj->trimStart();
 
         # Assert:
         $this->assertEquals("dot net on php   ", $text->value());
