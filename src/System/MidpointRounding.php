@@ -22,7 +22,7 @@ namespace System {
          * @static
          * @return MidpointRounding
          */
-        public static function AwayFromZero() {
+        public static function awayFromZero() {
             return new MidpointRounding("AwayFromZero", PHP_ROUND_HALF_DOWN);
         }
 
@@ -32,7 +32,7 @@ namespace System {
          * @static
          * @return MidpointRounding
          */
-        public static function ToEven() {
+        public static function toEven() {
             return new MidpointRounding("ToEven", PHP_ROUND_HALF_EVEN);
         }
     }

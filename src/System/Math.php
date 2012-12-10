@@ -132,17 +132,17 @@ namespace System {
     * @access public
     * @static
     * @throws \System\DivideByZeroException b is zero.
-    * @param $a The System.Int32 that contains the dividend.
-    * @param $b The System.Int32 that contains the divisor.
-    * @param $result The System.Int32 that receives the remainder.
-    * @return int The System.Int32 containing the quotient of the specified numbers.
+    * @param int $a The int that contains the dividend.
+    * @param int $b The int that contains the divisor.
+    * @param int $result The int that receives the remainder.
     */
-    public static function divRem($a,$b, &$result) {
+    public static function divRem($a, $b, &$result) {
         if($b == 0):
             throw new DivideByZeroException("b is zero.");
         endif;
 
-        $result = gmp_div_q($a, $b);
+        $result = $a % $b;
+
     }
 
     /**
@@ -176,7 +176,9 @@ namespace System {
     * @return int A number equal to x - (y Q), where Q is the quotient of x / y rounded to the nearest integer (if x / y falls halfway between two integers, the even integer is returned).
     */
     public static function ieeeReminder($x, $y) {
+      print ($y * self::round($x / $y));
       return $x - ($y * self::round($x / $y));
+
     }
 
     /**
@@ -245,11 +247,11 @@ namespace System {
     * @static
     * @param $d A decimal number to be rounded.
     * @param int $decimals The number of decimal places in the return value.
-    * @param $mode Specification for how to round d if it is midway between two other numbers.
+    * @param \System\MidpointRounding $mode Specification for how to round d if it is midway between two other numbers.
     * @return float The integer nearest parameter d. If the fractional component of d is halfway between two integers, one of which is even and the other odd, then the even number is returned.
     */
-    public static function round($d, $decimals = 0, $mode = null) {
-        if($mode instanceof MidpointRounding):
+    public static function round($d, $decimals = 0, MidpointRounding $mode = null) {
+        if(!is_null($mode)):
             return round($d, $decimals, $mode->name());
         endif;
 
@@ -264,20 +266,21 @@ namespace System {
     * @return int A number indicating the sign of value.
     */
     public static function sign($value) {
-      if(is_numeric($value)) {
+      if(is_numeric($value)):
         if($value < 0) return -1;
         if($value > 0) return 1;
-      }
+      endif;
+
       return 0;
     }
 
     /**
     * Returns the hyperbolic sine of the specified angle.
-    * @param $value An angle, measured in radians.
+    * @param $d An angle, measured in radians.
     * @return float The hyperbolic sine of value. If value is equal to System.Double.NegativeInfinity, System.Double.PositiveInfinity, or System.Double.NaN, this method returns a System.Double equal to value.
     */
-    public static function sinh($value) {
-      return sinh($value);
+    public static function sinh($d) {
+      return sinh($d);
     }
 
     /**
@@ -321,7 +324,7 @@ namespace System {
     * @param float $d A number to truncate.
     * @return float Return Values: The integral part of d; that is, the number that remains after any fractional digits have been discarded.
     */
-    public static function trucante($d) {
+    public static function truncate($d) {
       return (int)$d;
     }
   
