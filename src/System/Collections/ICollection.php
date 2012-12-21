@@ -17,9 +17,9 @@ namespace System\Collections {
       /**
        * Copies the elements of the System.Collections.ICollection to an System.Array, starting at a particular System.Array index.
        * @access public
-       * @throws ArgumentNullException array is a null reference.
-       * @throws ArgumentOutOfRangeException index is less than zero. 
-       * @throws ArgumentException array is multidimensional. -or- index is equal to or greater than the length of array. -or- The number of elements in the source ICollection is greater than the available space from index to the end of the destination array. 
+       * @throws \System\ArgumentNullException array is a null reference.
+       * @throws \System\ArgumentOutOfRangeException index is less than zero. 
+       * @throws \System\ArgumentException array is multidimensional. -or- index is equal to or greater than the length of array. -or- The number of elements in the source ICollection is greater than the available space from index to the end of the destination array. 
        * @param array $array The one-dimensional Array that is the destination of the elements copied from ICollection. The System.Array must have zero-based indexing.
        * @param int $index The zero-based index in array at which copying begins.
        * @return void

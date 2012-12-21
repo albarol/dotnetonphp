@@ -156,13 +156,6 @@ class ArrayListFixture extends PHPUnit_Framework_TestCase {
         $this->assertTrue($array->contains(1));
     }
 
-    public function test_CopyTo_ThrowsExceptionWhenArrayIsNull() {
-        $this->setExpectedException("\\System\\ArgumentNullException");
-        $array = new ArrayList;
-        $nullArray = null;
-        $array->copyTo($nullArray);
-    }
-
     public function test_CopyTo_ThrowsExceptionWhenIndexIsLessThanZero() {
         $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
         $array = new ArrayList;

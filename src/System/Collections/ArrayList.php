@@ -18,19 +18,15 @@ namespace System\Collections {
 
         private $elements = array();
         private $capacity;
-        private $readOnly;
-        private $fixedSize;
+        private $isReadOnly;
+        private $isFixedSize;
 
         /**
          * Initializes a new instance of the ArrayList class that contains elements copied from the specified collection and that has the same initial capacity as the number of elements copied.
          * @throws ArgumentNullException
          * @param int $value The ICollection whose elements are copied to the new list.
-         * @param bool $readOnly
-         * @param bool $fixedSize
          */
-        public function __construct($value=10, $readOnly=false, $fixedSize=false) {
-            $this->readOnly = $readOnly;
-            $this->fixedSize = $fixedSize;
+        public function __construct($value = 10) {
             if(is_numeric($value)) {
                 $this->createFromNumericValue($value);
             } else if($value instanceof ICollection) {
@@ -156,17 +152,18 @@ namespace System\Collections {
         /**
          * Copies the elements of the System.Collections.ICollection to an System.Array, starting at a particular System.Array index.
          * @access public
-         * @throws ArgumentNullException Array is null.
          * @throws ArgumentOutOfRangeException Index is less than zero. -or- index greater than size of list
          * @param array $array The one-dimensional System.Array that is the destination of the elements copied from System.Collections.ICollection. The System.Array must have zero-based indexing.
          * @param int $index The zero-based index in array at which copying begins.
-         * @return void
          */
         public function copyTo(array &$array, $index=0) {
-            if(is_null($array)) throw new ArgumentNullException("Array is null.");
-            if($index < 0 || $index > $this->count()) throw new ArgumentOutOfRangeException("Index is less than zero. -or- index greater than size of list");
-            for($i = $index; $i < $this->count(); $i++)
+            if($index < 0 || $index > $this->count()):
+                throw new ArgumentOutOfRangeException("Index is less than zero. -or- index greater than size of list");
+            endif;
+
+            for($i = $index; $i < $this->count(); $i++):
                 $array[] = $this->elements[$i];
+            endfor;
         }
 
         /**
@@ -186,7 +183,8 @@ namespace System\Collections {
          * @return ArrayList An System.Collections.IList wrapper with a fixed size.
          */
         public static function fixedSize(IList $list) {
-            $array = new ArrayList($list, false, true);
+            $array = new ArrayList($list);
+            $array->isFixedSize = true;
             return $array;
         }
 
@@ -295,7 +293,8 @@ namespace System\Collections {
          * @return bool true if the System.Collections.ArrayList has a fixed size; otherwise, false. The default is false.
          */
         public function isFixedSize() {
-            return $this->fixedSize;
+            return $this->isFixedSize
+;
         }
 
         /**
@@ -304,7 +303,7 @@ namespace System\Collections {
          * @return bool true if the System.Collections.IList is read-only; otherwise, false.
          */
         public function isReadOnly() {
-            return $this->readOnly;
+            return $this->isReadOnly;
         }
 
         /**
@@ -338,7 +337,8 @@ namespace System\Collections {
          * @return ArrayList A read-only System.Collections.IList wrapper around list.
          */
         public static function readOnly(IList $list) {
-            $array = new ArrayList($list, true);
+            $array = new ArrayList($list);
+            $array->isReadOnly = true;
             return $array;
         }
 
@@ -503,7 +503,8 @@ namespace System\Collections {
         }
 
         private function canWrite() {
-            return !$this->isReadOnly() && !$this->isFixedSize();
+            return !$this->isReadOnly() && !$this->isFixedSize
+();
         }
 
         private function isValidIndex($index) {
