@@ -34,6 +34,5 @@ namespace System\Xml {
          * @return int The current line position or 0 if no line information is available (for example, System.Xml.IXmlLineInfo.HasLineInfo() returns false).
          */
         function linePosition();
-
     }
 }

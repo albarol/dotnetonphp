@@ -129,7 +129,9 @@ namespace System\Collections {
          * @param int $index The zero-based index in array at which copying begins.
          */
         public function copyTo(array &$array, $index=0) {
-            if($index < 0) throw new ArgumentOutOfRangeException("index is less than zero.");
+            if($index < 0):
+                throw new ArgumentOutOfRangeException("index is less than zero.");
+            endif;
             $current = 0;
 
             foreach(array_keys($this->elements) as $key) {

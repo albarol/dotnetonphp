@@ -118,9 +118,9 @@ namespace System\Collections {
             if($index < 0 || $index > $this->count()):
                 throw new ArgumentOutOfRangeException("index is less than zero. -or- index greater than size of queue");
             endif;
-            for($i = $index; $i < $this->count(); $i++) {
+            for($i = $index; $i < $this->count(); $i++):
                 $array[] = $this->queue[$i];
-            }
+            endfor;
         }
 
         /**

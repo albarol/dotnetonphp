@@ -1,6 +1,6 @@
 <?php
 
-require_once(dirname(__FILE__) . '/../../../src/Autoloader.php');
+require_once dirname(__FILE__) . '/../../../src/Autoloader.php';
 
 use \System\Collections\Hashtable as Hashtable;
 

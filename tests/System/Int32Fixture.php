@@ -1,7 +1,6 @@
 <?php
 
-require_once 'PHPUnit/Framework.php';
-require_once dirname(__FILE__) . '/../../system/Int32.php';
+require_once dirname(__FILE__) . '/../../src/Autoloader.php';
 
 use System\Int32;
 
@@ -10,17 +9,17 @@ class Int32Fixture extends PHPUnit_Framework_TestCase {
 
 
     public function testCantConstructInt32BecauseValueIsGreaterThanMaxValue() {
-        $this->setExpectedException("OverflowException");
+        $this->setExpectedException("\\System\\OverflowException");
         $int = new Int32(2147483648);
     }
 
     public function testCantConstructInt32BecauseValueIsLessThanMinValue() {
-        $this->setExpectedException("OverflowException");
+        $this->setExpectedException("\\System\\OverflowException");
         $int = new Int32(-2147483648);
     }
 
     public function testCantConstructInt32BecauseValueIsNotNumeric() {
-        $this->setExpectedException("ArgumentException");
+        $this->setExpectedException("\\System\\ArgumentException");
         $int = new Int32('a');
     }
 
