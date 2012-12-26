@@ -1,6 +1,8 @@
 <?php
 
+namespace System\IO {
  
-class BinaryWriter {
+	class BinaryWriter {
 
+	}
 }

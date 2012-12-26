@@ -1,7 +1,7 @@
 <phpunit backupGlobals="true"
          backupStaticAttributes="false"
          cacheTokens="true"
-         colors="false"
+         colors="true"
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
@@ -17,8 +17,8 @@
          strict="false"
          verbose="false">
 	<testsuites>
-		<testsuite name="system-xml">
-			<directory suffix="Fixture.php">../System/Xml</directory>
+		<testsuite name="System_Xml">
+			<directory>./../System/Xml/*Fixture.php</directory>
 		</testsuite>
 	</testsuites>
 </phpunit>

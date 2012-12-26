@@ -1,6 +1,6 @@
 <?php
 
-require_once(dirname(__FILE__)."/../../../../system/xml/xpath/XPathDocument.php");
+#require_once(dirname(__FILE__)."/../../../../system/xml/xpath/XPathDocument.php");
 
 /**
  * Test of XPathDocument

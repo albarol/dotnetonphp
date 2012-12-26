@@ -16,7 +16,7 @@
          testSuiteLoaderClass="PHPUnit_Runner_StandardTestSuiteLoader"
          strict="false"
          verbose="false">
-	<testsuites><br/>
+	<testsuites>
 		<testsuite name="system">
 			<directory suffix="Fixture.php">../System</directory>
 		</testsuite>	
