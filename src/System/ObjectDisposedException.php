@@ -2,15 +2,22 @@
 
 namespace System {
 
-	/**
-	 * The exception that is thrown when an operation is performed on a disposed object.
-	 * @access public
-	 * @name ObjectDisposedException
-	 * @package System
-	 */
-	class ObjectDisposedException extends \Exception {
-	    public function  __construct($message="", $code=0, $previous=null) {
-	            parent::__construct($message, $code, $previous);
-	    }
-	}
+    /**
+     * The exception that is thrown when an operation is performed on a disposed object.
+     * @access public
+     * @package System
+     * @name ObjectDisposedException
+     */
+    class ObjectDisposedException extends \Exception {
+       
+        /**
+         * Initializes a new instance of the System.ObjectDisposedException class with a specified error message and a reference to the inner exception that is the cause of this exception.
+         * @access public
+         * @param string $message The message that describes the exception. The caller of this constructor is required to ensure that this string has been localized for the current system culture.
+         * @param int $code The exception that is the cause of the current exception. If the innerException parameter is not null, the current exception is raised in a catch block that handles the inner exception.
+         */
+        public function  __construct($message="", $code=0) {
+                parent::__construct($message, $code, null);
+        }
+    }
 }

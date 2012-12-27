@@ -3,15 +3,15 @@
 namespace System {
 
     /**
-     * The exception that is thrown when the format of an argument does not meet the parameter specifications of the invoked method.
+     * The exception that is thrown when there is not enough memory to continue the execution of a program.
      * @access public
      * @package System
-     * @name FormatException
+     * @name OutOfMemoryException
      */
-    class FormatException extends \Exception {
+    class OutOfMemoryException extends \Exception {
        
         /**
-         * Initializes a new instance of the System.FormatException class with a specified error message and a reference to the inner exception that is the cause of this exception.
+         * Initializes a new instance of the System.OutOfMemoryException class with a specified error message and a reference to the inner exception that is the cause of this exception.
          * @access public
          * @param string $message The message that describes the exception. The caller of this constructor is required to ensure that this string has been localized for the current system culture.
          * @param int $code The exception that is the cause of the current exception. If the innerException parameter is not null, the current exception is raised in a catch block that handles the inner exception.
