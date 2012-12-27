@@ -3,15 +3,15 @@
 namespace System {
 
     /**
-     * The exception that is thrown when the format of an argument does not meet the parameter specifications of the invoked method.
+     * The exception that is thrown when an object appears more than once in an array of synchronization objects.
      * @access public
      * @package System
-     * @name FormatException
+     * @name DuplicateWaitObjectException
      */
-    class FormatException extends \Exception {
+    class DuplicateWaitObjectException extends \Exception {
        
         /**
-         * Initializes a new instance of the System.FormatException class with a specified error message and a reference to the inner exception that is the cause of this exception.
+         * Initializes a new instance of the System.DuplicateWaitObjectException class with a specified error message and a reference to the inner exception that is the cause of this exception.
          * @access public
          * @param string $message The message that describes the exception. The caller of this constructor is required to ensure that this string has been localized for the current system culture.
          * @param int $code The exception that is the cause of the current exception. If the innerException parameter is not null, the current exception is raised in a catch block that handles the inner exception.

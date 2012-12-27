@@ -3,15 +3,15 @@
 namespace System {
 
     /**
-     * The exception that is thrown when the format of an argument does not meet the parameter specifications of the invoked method.
+     * The exception that is thrown when there is an invalid attempt to access a private or protected field inside a class.
      * @access public
      * @package System
-     * @name FormatException
+     * @name FieldAccessException
      */
-    class FormatException extends \Exception {
+    class FieldAccessException extends \Exception {
        
         /**
-         * Initializes a new instance of the System.FormatException class with a specified error message and a reference to the inner exception that is the cause of this exception.
+         * Initializes a new instance of the System.FieldAccessException class with a specified error message and a reference to the inner exception that is the cause of this exception.
          * @access public
          * @param string $message The message that describes the exception. The caller of this constructor is required to ensure that this string has been localized for the current system culture.
          * @param int $code The exception that is the cause of the current exception. If the innerException parameter is not null, the current exception is raised in a catch block that handles the inner exception.

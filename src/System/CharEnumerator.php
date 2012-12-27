@@ -6,7 +6,6 @@ namespace System {
     
     use \System\Collections\IEnumerator as IEnumerator;
 
-
     /**
      * Supports iterating over a String object and reading its individual characters. This class cannot be inherited.
      * @access public
@@ -42,7 +41,5 @@ namespace System {
          * @return void
          */
         public function reset() { }
-
-        
     }
 }
