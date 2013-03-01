@@ -14,5 +14,5 @@ class Autoloader {
         return FALSE;
     }
 }
-spl_autoload_register('Autoloader::loader');
 
+spl_autoload_register('Autoloader::loader');

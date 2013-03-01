@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../../../system/collections/ArrayList.php';
+require_once dirname(__FILE__) . '/../../../../src/Autoloader.php';
 
 use \System\Collections\ArrayList as ArrayList;
 
@@ -59,4 +59,3 @@ class ArrayListEnumeratorFixture  extends PHPUnit_Framework_TestCase {
     }
 
 }
-?>

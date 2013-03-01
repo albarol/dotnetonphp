@@ -1,7 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../../system/io/BinaryReader.php';
-require_once dirname(__FILE__) . '/../../../system/io/FileStream.php';
+require_once dirname(__FILE__) . '/../../../src/Autoloader.php';
 
 use \System\IO\BinaryReader;
 use \System\IO\FileStream;

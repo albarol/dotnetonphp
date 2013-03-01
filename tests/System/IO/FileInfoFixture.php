@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../../system/io/FileInfo.php';
+require_once dirname(__FILE__) . '/../../../src/Autoloader.php';
 
 use \System\IO\FileInfo as FileInfo;
 use \System\IO\FileAttributes as FileAttributes;

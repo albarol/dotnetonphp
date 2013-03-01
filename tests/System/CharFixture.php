@@ -78,9 +78,4 @@ class CharFixture extends PHPUnit_Framework_TestCase {
         # Assert:
         $this->assertEquals(Char::MIN_VALUE, $obj->value());
     }
-
-
-
-
-
 }

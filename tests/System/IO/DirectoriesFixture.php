@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . "/../../../system/io/Directories.php" ;
+require_once dirname(__FILE__) . '/../../../src/Autoloader.php';
 
 use \System\IO\Directories as Directories;
 

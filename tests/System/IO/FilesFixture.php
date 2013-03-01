@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../../system/io/Files.php';
+require_once dirname(__FILE__) . '/../../../src/Autoloader.php';
 
 use \System\IO\Files as Files;
 use \System\IO\FileStream as FileStream;

@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../../system/collections/Queue.php';
+require_once dirname(__FILE__) . '/../../../src/Autoloader.php';
 
 use \System\Collections\Queue as Queue;
 

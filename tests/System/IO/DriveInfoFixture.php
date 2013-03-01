@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../../system/io/DriveInfo.php';
+require_once dirname(__FILE__) . '/../../../src/Autoloader.php';
 
 use \System\IO\DriveInfo as DriveInfo;
 use \System\IO\DirectoryInfo as DirectoryInfo;

@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../../system/io/StringReader.php';
+require_once dirname(__FILE__) . '/../../../src/Autoloader.php';
 
 use \System\IO\StringReader as StringReader;
 

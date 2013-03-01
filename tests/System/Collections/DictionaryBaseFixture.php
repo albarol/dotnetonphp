@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../../system/collections/DictionaryBase.php';
+require_once dirname(__FILE__) . '/../../../src/Autoloader.php';
 
 use \System\Collections\DictionaryBase as DictionaryBase;
 
@@ -83,5 +83,3 @@ class DictionaryBaseFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(23, $dict->get("dateOfBirth"));
     }*/
 }
-
-?>

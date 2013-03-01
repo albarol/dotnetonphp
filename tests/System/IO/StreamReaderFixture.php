@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../../system/io/StreamReader.php';
+require_once dirname(__FILE__) . '/../../../src/Autoloader.php';
 
 use \System\IO\StreamReader as StreamReader;
 use \System\IO\TextReader as TextReader;

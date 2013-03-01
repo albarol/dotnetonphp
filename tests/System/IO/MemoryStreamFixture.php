@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../../system/io/MemoryStream.php';
+require_once dirname(__FILE__) . '/../../../src/Autoloader.php';
 
 use \System\IO\MemoryStream as MemoryStream;
 use \System\IO\SeekOrigin as SeekOrigin;

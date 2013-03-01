@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../../system/io/DirectoryInfo.php';
+require_once dirname(__FILE__) . '/../../../src/Autoloader.php';
 
 use \System\IO\DirectoryInfo as DirectoryInfo;
 use \System\IO\SearchOption as SearchOption;

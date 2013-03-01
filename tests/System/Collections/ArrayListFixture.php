@@ -886,4 +886,3 @@ class ArrayListFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals($array->capacity(), $array->count());
     }
 }
-?>

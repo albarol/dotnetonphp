@@ -1,6 +1,8 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../../system/text/StringBuilder.php';
+require_once dirname(__FILE__) . '/../../../src/Autoloader.php';
+
+use \System\Text\StringBuilder as StringBuilder;
 
 class StringBuilderFixture extends PHPUnit_Framework_TestCase {
 
@@ -280,4 +282,3 @@ class StringBuilderFixture extends PHPUnit_Framework_TestCase {
     }
 
 }
-?>

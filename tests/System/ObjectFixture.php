@@ -1,9 +1,8 @@
 <?php
 
-//require_once 'PHPUnit/Framework.php';
+require_once dirname(__FILE__) . '/../../src/Autoloader.php';
 
-require_once dirname(__FILE__) . '/../../system/Object.php';
-require_once dirname(__FILE__) . '/../../system/String.php';
+use \System\Object as Object;
 
 class ObjectFixture extends PHPUnit_Framework_TestCase {
 

@@ -1,6 +1,8 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../system/TimeSpan.php';
+require_once dirname(__FILE__) . '/../../src/Autoloader.php';
+
+use \System\TimeSpan as TimeSpan;
 
 class TimeSpanFixture extends PHPUnit_Framework_TestCase {
 

@@ -1,8 +1,8 @@
 <?php
-//require_once 'PHPUnit/Framework.php';
 
+require_once dirname(__FILE__) . '/../../src/Autoloader.php';
 
-require_once dirname(__FILE__) . '/../../system/Convert.php';
+use \System\Convert as Convert;
 
 class ConvertFixture extends PHPUnit_Framework_TestCase {
 
@@ -30,4 +30,3 @@ class ConvertFixture extends PHPUnit_Framework_TestCase {
 
 
 }
-?>

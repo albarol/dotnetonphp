@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../../system/text/Encoding.php';
+require_once dirname(__FILE__) . '/../../../src/Autoloader.php';
 
 use System\Text\Encoding as Encoding;
 
@@ -46,4 +46,3 @@ class EncodingFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(140, sizeof($encodings));
     }
 }
-?>

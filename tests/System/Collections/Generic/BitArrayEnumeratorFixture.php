@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../../../system/collections/BitArray.php';
+require_once dirname(__FILE__) . '/../../../../src/Autoloader.php';
 
 use \System\Collections\BitArray as BitArray;
 

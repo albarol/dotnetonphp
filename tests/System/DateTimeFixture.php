@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../system/DateTime.php';
+require_once dirname(__FILE__) . '/../../src/Autoloader.php';
 
 use \System\DateTime as DateTime;
 use \System\TimeSpan as TimeSpan;
