@@ -7,212 +7,508 @@ use \System\TimeSpan as TimeSpan;
 */
 class TimeSpanFixture extends PHPUnit_Framework_TestCase {
 
-    public function test_Add_ThrowsExceptionWhenArgumentIsNotInteger() {
-        $this->setExpectedException("\\System\\ArgumentException");
-        new TimeSpan(0, 0, "a");
+    /**
+     * @expectedException \System\ArgumentException
+     * @test
+    */
+    public function ThrowsExceptionWhenArgumentIsNotInteger() {
+        # Arrange:
+        $argument = "a";
+
+        # Act:
+        new TimeSpan(0, 0, $argument);
     }
 
-    public function test_Add_CanAddTimeSpan() {
-        $time = new TimeSpan(0, 0, 20);
-        $time->add(new TimeSpan(1, 24, 30));
-        $this->assertEquals(50, $time->minutes());
-    }
-
-    public function test_FromDays_CanCreateFromDays() {
-        $time = TimeSpan::fromDays(1);
-        $this->assertEquals(1, $time->days());
-    }
-
-
-    public function testCanConstructTimeSpanFromHours() {
-        $time = TimeSpan::fromHours(24);
-        $this->assertEquals(1, $time->days());
-        $this->assertEquals(1, $time->totalDays());
-        $this->assertEquals(24, $time->totalHours());
-        $this->assertEquals(1440, $time->totalMinutes());
-        $this->assertEquals(86400, $time->totalSeconds());
-        $this->assertEquals(86400000, $time->totalMilliseconds());
-    }
-
-    public function testCanConstructTimeSpanFromMilliseconds() {
-        $time = TimeSpan::fromMilliseconds(86400000);
-        $this->assertEquals(1, $time->days());
-        $this->assertEquals(1, $time->totalDays());
-        $this->assertEquals(24, $time->totalHours());
-        $this->assertEquals(1440, $time->totalMinutes());
-        $this->assertEquals(86400, $time->totalSeconds());
-        $this->assertEquals(86400000, $time->totalMilliseconds());
-    }
-
-    public function testCanConstructTimeSpanFromMinutes() {
-        $time = TimeSpan::fromMinutes(1440);
-        $this->assertEquals(1, $time->days());
-        $this->assertEquals(1, $time->totalDays());
-        $this->assertEquals(24, $time->totalHours());
-        $this->assertEquals(1440, $time->totalMinutes());
-        $this->assertEquals(86400, $time->totalSeconds());
-        $this->assertEquals(86400000, $time->totalMilliseconds());
-    }
-
-    public function testCanConstructTimeSpanFromSeconds() {
-        $time = TimeSpan::fromSeconds(86400);
-        $this->assertEquals(1, $time->days());
-        $this->assertEquals(1, $time->totalDays());
-        $this->assertEquals(24, $time->totalHours());
-        $this->assertEquals(1440, $time->totalMinutes());
-        $this->assertEquals(86400, $time->totalSeconds());
-        $this->assertEquals(86400000, $time->totalMilliseconds());
-    }
-
-    public function testCanConstructTimeSpanFromTicks() {
-        $time = TimeSpan::fromTicks(TimeSpan::TicksPerDay);
-        $this->assertEquals(1, $time->totalDays());
-        $this->assertEquals(24, $time->totalHours());
-        $this->assertEquals(1440, $time->totalMinutes());
-        $this->assertEquals(86400, $time->totalSeconds());
-        $this->assertEquals(86400000, $time->totalMilliseconds());
-        $this->assertEquals(TimeSpan::TicksPerDay, $time->ticks());
-    }
-
-    public function testCanNegateTimeSpanObject() {
-        $time = TimeSpan::fromSeconds(86400);
-        $this->assertEquals(1, $time->totalDays());
-        $this->assertEquals(24, $time->totalHours());
-        $this->assertEquals(1440, $time->totalMinutes());
-        $this->assertEquals(86400, $time->totalSeconds());
-        $this->assertEquals(86400000, $time->totalMilliseconds());
-
-        $negateTime = $time->negate();
-        $this->assertEquals(-1, $negateTime->totalDays());
-        $this->assertEquals(-24, $negateTime->totalHours());
-        $this->assertEquals(-1440, $negateTime->totalMinutes());
-        $this->assertEquals(-86400, $negateTime->totalSeconds());
-        $this->assertEquals(-86400000, $negateTime->totalMilliseconds());
-
-        $newTime = $negateTime->negate();
-        $this->assertEquals(1, $newTime->days());
-        $this->assertEquals(1, $newTime->totalDays());
-        $this->assertEquals(24, $newTime->totalHours());
-        $this->assertEquals(1440, $newTime->totalMinutes());
-        $this->assertEquals(86400, $newTime->totalSeconds());
-        $this->assertEquals(86400000, $newTime->totalMilliseconds());
-    }
-
-    public function testCantParseTimeSpanBecauseIncorretFormat() {
-        $this->setExpectedException("\\System\\FormatException");
-        $formats = array("a");
-        $time = TimeSpan::parse($formats[0]);
-    }
-
-    public function testCantParseTimeSpanBecauseFormatIsNull() {
-        $this->setExpectedException("\\System\\ArgumentNullException");
-        $time = TimeSpan::parse(null);
-    }
-
-    public function testCanTryParse() {
-        $result = new TimeSpan();
-        $this->assertEquals(true, TimeSpan::tryParse("23:00", $result));
-        $this->assertNotNull($result);
-        $this->assertEquals(true, ($result instanceof TimeSpan));
-    }
-
-    public function testCanParseTimeSpan() {
-        $formats = array("21", "22:50", "22:50:50", "21.22:50:50", "21:22:50:50.1000");
-
-        $time = TimeSpan::parse($formats[0]);
-        $this->assertEquals(21, $time->days());
+    /**
+     * @test
+    */
+    public function ShouldConstructWithNegativeValues() {
         
-        $time = TimeSpan::parse($formats[1]);
-        $this->assertEquals(22, $time->hours());
+        # Arrange:
+        $seconds = -10;
+    
+        # Act:
+        $timespan = TimeSpan::fromSeconds($seconds);
+    
+        # Assert:
+        $this->assertEquals(-10, $timespan->totalSeconds());
+    }
+
+    /**
+     * @test
+    */
+    public function ShouldAddNewTimeSpan() {
+        # Arrange:
+        $time = new TimeSpan(0, 0, 20);
+        
+        # Act:
+        $time->add(new TimeSpan(1, 24, 30));
+        
+        # Assert:
         $this->assertEquals(50, $time->minutes());
-
-        $time = TimeSpan::parse($formats[2]);
-        $this->assertEquals(22, $time->hours());
-        $this->assertEquals(50, $time->minutes());
-        $this->assertEquals(50, $time->seconds());
-
-        $time = TimeSpan::parse($formats[3]);
-        $this->assertEquals(21, $time->days());
-        $this->assertEquals(22, $time->hours());
-        $this->assertEquals(50, $time->minutes());
-        $this->assertEquals(50, $time->seconds());
-
-        $time = TimeSpan::parse($formats[4]);
-        $this->assertEquals(21, $time->days());
-        $this->assertEquals(22, $time->hours());
-        $this->assertEquals(50, $time->minutes());
-        $this->assertEquals(51, $time->seconds());
     }
 
-    public function testCanSubtractTimeSpan() {
-        $time = new TimeSpan(0, 0, 120);
-        $this->assertEquals(2, $time->totalHours());
-
-        $newTime = $time->subtract(new TimeSpan(0, 0, 60));
-        $this->assertEquals(1, $newTime->totalHours());
-
-        $newHour = $time->subtract(new TimeSpan(0, 1));
-        $this->assertEquals(1, $newHour->totalHours());
+    /**
+     * @test
+    */
+    public function ShouldMoveOneHourWhenAddNewTimeSpan() {
+        
+        # Arrange:
+        $minutes = 24;
+        $timespan = TimeSpan::fromMinutes(36);
+    
+        # Act:
+        $timespan->add(TimeSpan::fromMinutes($minutes));
+    
+        # Assert:
+        $this->assertEquals(1, $timespan->totalHours());
     }
 
-    public function testCantSubtractTimeSpanBecauseIsLessThanMinValue() {
-        $this->setExpectedException("\\System\\OverflowException");
-        $time = TimeSpan::minValue();
-        $time->subtract(new TimeSpan(1));
+    /**
+     * @test
+    */
+    public function ShouldMoveOneMinuteWhenAddNewTimeSpan() {
+        
+        # Arrange:
+        $seconds = 24;
+        $timespan = TimeSpan::fromSeconds(36);
+    
+        # Act:
+        $timespan->add(TimeSpan::fromSeconds($seconds));
+    
+        # Assert:
+        $this->assertEquals(1, $timespan->totalMinutes());
     }
 
-    public function testCanConstructTimeSpanWithNegativeValues() {
-        $time = new TimeSpan(-1);
-        $this->assertEquals(-1, $time->days());
-        $time->add(new TimeSpan(1));
-        $this->assertEquals(0, $time->days());
+    /**
+     * @test
+    */
+    public function ShouldMoveOneSecondsWhenAddNewTimeSpan() {
+        
+        # Arrange:
+        $milliseconds = 999;
+        $timespan = TimeSpan::fromMilliseconds(1);
+    
+        # Act:
+        $timespan->add(TimeSpan::fromMilliseconds($milliseconds));
+
+    
+        # Assert:
+        $this->assertEquals(1, $timespan->totalSeconds());
     }
 
-    public function testCanCalculateTimeSpanWithRemoveAndAddTimeSpan() {
-        $time = new TimeSpan(1, 23);
-        $this->assertEquals(1, $time->days());
-        $this->assertEquals(23, $time->hours());
-        $time->add(new TimeSpan(0, -24));
-        $this->assertEquals(0, $time->days());
-        $this->assertEquals(23, $time->hours());
-
-        $time = new TimeSpan(0, 0, 0, 23, 0);
-        $time->add(new TimeSpan(0, 0, 0, -22, 0));
-        $this->assertEquals(0, $time->days());
-        $this->assertEquals(0, $time->hours());
-        $this->assertEquals(0, $time->minutes());
-        $this->assertEquals(1, $time->seconds());
+    /**
+     * @test
+    */
+    public function ShouldCreateTimeSpanFromDays() {
+        
+        # Arrange:
+        $total_days = 2;
+    
+        # Act:
+        $time = TimeSpan::fromDays($total_days);
+    
+        # Assert:
+        $this->assertEquals(48, $time->totalHours());
     }
 
-    public function testVerifyIfValuesAreEqualTimeSpan() {
-        $time = new TimeSpan(1);
-        $time2 = new TimeSpan(1);
-        $this->assertEquals(true, $time->equals($time2));
-        $this->assertEquals(false, $time->equals(0));
-        $this->assertEquals(false, $time->equals(new TimeSpan()));
+    /**
+     * @test
+    */
+    public function ShouldConstructTimeSpanFromHours() {
+        
+        # Arrange:
+        $total_hours = 24;
+    
+        # Act:
+        $timespan = TimeSpan::fromHours($total_hours);
+    
+        # Assert:
+        $this->assertEquals(1440, $timespan->totalMinutes());
     }
 
-    public function testCantCompareTimeSpan() {
-        $this->setExpectedException("\\System\\ArgumentException");
-        $time = new TimeSpan(1);
-        $time->compareTo(1);
+    /**
+     * @test
+    */
+    public function ShouldContructuTimeSpanFromMinutes() {
+        
+        # Arrange:
+        $total_minutes = 60;
+    
+        # Act:
+        $timespan = TimeSpan::fromMinutes($total_minutes);
+    
+        # Assert:
+        $this->assertEquals(3600, $timespan->totalSeconds());
     }
 
-    public function testTimeSpanIsGreaterThanOtherTimeSpan() {
-        $time = new TimeSpan(2);
-        $time2 = new TimeSpan(1);
-        $this->assertEquals(1, $time->compareTo($time2));
+    /**
+     * @test
+    */
+    public function ShouldConstructTimeSpanFromSeconds() {
+        
+        # Arrange:
+        $total_seconds = 60;
+    
+        # Act:
+        $timespan = TimeSpan::fromSeconds($total_seconds);
+    
+        # Assert:
+        $this->assertEquals(1, $timespan->totalMinutes());
     }
 
-    public function testTimeSpanEqualOtherTimeSpan() {
-        $time = new TimeSpan(1);
-        $time2 = new TimeSpan(1);
-        $this->assertEquals(0, $time->compareTo($time2));
+    /**
+     * @test
+    */
+    public function ShouldContructTimeSpanFromMilliseconds() {
+        
+        # Arrange:
+        $total_milliseconds = 1000;
+    
+        # Act:
+        $timespan = TimeSpan::fromMilliseconds($total_milliseconds);
+    
+        # Assert:
+        $this->assertEquals(1, $timespan->totalSeconds());
     }
 
-    public function testTimeSpanIsLessThanOtherTimeSpan() {
-        $time = new TimeSpan(1);
-        $time2 = new TimeSpan(2);
-        $this->assertEquals(-1, $time->compareTo($time2));
+    /**
+     * @test
+    */
+    public function ShouldContructTimeSpanFromTicks() {
+        
+        # Arrange:
+        $ticks = TimeSpan::TicksPerDay;
+    
+        # Act:
+        $timespan = TimeSpan::fromTicks($ticks);
+    
+        # Assert:
+        $this->assertEquals(1, $timespan->totalDays());
+    }
+
+    /**
+     * @test
+    */
+    public function ShouldNegateTimeSpan() {
+        
+        # Arrange:
+        $timespan = TimeSpan::fromTicks(TimeSpan::TicksPerDay);
+    
+        # Act:
+        $negate_timespan = $timespan->negate(); 
+    
+        # Assert:
+        $this->assertEquals(-1, $negate_timespan->totalDays());
+    }
+
+    /**
+     * @test
+     * @expectedException \System\FormatException
+    */
+    public function ThrowsExceptionWhenFormatIsIncorrect() {
+        
+        # Arrange:
+        $format = "a";
+    
+        # Act:
+        TimeSpan::parse($format);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentNullException
+    */
+    public function ThrowsExceptionWhenFormatIsNull() {
+        
+        # Arrange:
+        $format = null;
+    
+        # Act:
+        TimeSpan::parse($format);
+    }
+
+    /**
+     * @test
+    */
+    public function ShouldParseDayFormat() {
+        
+        # Arrange:
+        $format = "21";
+    
+        # Act:
+        $timespan = TimeSpan::parse($format);
+    
+        # Assert:
+        $this->assertEquals(21, $timespan->totalDays());
+    }
+
+    /**
+     * @test
+    */
+    public function ShouldParseHourMinuteFormat() {
+        
+        # Arrange:
+        $format = "22:50";
+    
+        # Act:
+        $timespan = TimeSpan::parse($format);
+    
+        # Assert:
+        $this->assertEquals(22, $timespan->hours());
+        $this->assertEquals(50, $timespan->minutes());
+    }
+
+    /**
+     * @test
+    */
+    public function ShouldParseHourMinuteSecondFormat() {
+        
+        # Arrange:
+        $format = "22:59:59";
+    
+        # Act:
+        $timespan = TimeSpan::parse($format);
+    
+        # Assert:
+        $this->assertEquals(22, $timespan->hours());
+        $this->assertEquals(59, $timespan->minutes());
+        $this->assertEquals(59, $timespan->seconds());
+    }
+
+    /**
+     * @test
+    */
+    public function ShouldParseDayTimeFormat() {
+        
+        # Arrange:
+        $format = "10.22:59:59";
+    
+        # Act:
+        $timespan = TimeSpan::parse($format);
+    
+        # Assert:
+        $this->assertEquals(10, $timespan->days());
+        $this->assertEquals(22, $timespan->hours());
+        $this->assertEquals(59, $timespan->minutes());
+        $this->assertEquals(59, $timespan->seconds());
+    }
+
+    /**
+     * @test
+    */
+    public function ShouldParseDayHourMinuteSecondMillisecondFormat() {
+        
+        # Arrange:
+        $format = "21.22:50:50.999";
+    
+        # Act:
+        $timespan = TimeSpan::parse($format);
+    
+        # Assert:
+        $this->assertEquals(21, $timespan->days());
+        $this->assertEquals(22, $timespan->hours());
+        $this->assertEquals(50, $timespan->minutes());
+        $this->assertEquals(50, $timespan->seconds());
+        $this->assertEquals(999, $timespan->milliseconds());
+    }
+
+    /**
+     * @test
+    */
+    public function ShouldTryParseValidFormat() {
+        
+        # Arrange:
+        $format = "22:50";
+    
+        # Act:
+        $obj = TimeSpan::tryParse($format);
+    
+        # Assert:
+        $this->assertTrue($obj['result']);
+        $this->assertEquals(22, $obj['object']->hours());
+    }
+
+    /**
+     * @test
+    */
+    public function ShouldTryParseInvalidFormat() {
+        
+        # Arrange:
+        $format = "dotnetonphp";
+    
+        # Act:
+        $obj = TimeSpan::tryParse($format);
+    
+        # Assert:
+        $this->assertFalse($obj['result']);
+        $this->assertNull($obj['object']);
+    }
+
+    /**
+     * @test
+    */
+    public function ShouldSubtractTimeSpan() {
+        
+        # Arrange:
+        $timespan = TimeSpan::fromSeconds(10);
+    
+        # Act:
+        $newTimespan = $timespan->subtract(TimeSpan::fromSeconds(5));
+    
+        # Assert:
+        $this->assertEquals(5, $newTimespan->totalSeconds());
+    }
+
+    /**
+     * @test
+    */
+    public function ShouldMoveOneHourWhenSubtractTimeSpan() {
+        
+        # Arrange:
+        $timespan = TimeSpan::fromHours(2);
+    
+        # Act:
+        $newTimespan = $timespan->subtract(TimeSpan::fromHours(1));
+    
+        # Assert:
+        $this->assertEquals(1, $newTimespan->totalHours());
+    }
+
+    /**
+     * @test
+    */
+    public function ShouldMoveOneMinuteWhenSubtractTimeSpan() {
+        
+        # Arrange:
+        $timespan = TimeSpan::fromMinutes(2);
+    
+        # Act:
+        $newTimespan = $timespan->subtract(TimeSpan::fromMinutes(1));
+    
+        # Assert:
+        $this->assertEquals(1, $newTimespan->totalMinutes());
+    }
+
+    /**
+     * @test
+    */
+    public function ShouldMoveOneSecondWhenSubtractTimeSpan() {
+        
+        # Arrange:
+        $timespan = TimeSpan::fromSeconds(2);
+    
+        # Act:
+        $newTimespan = $timespan->subtract(TimeSpan::fromSeconds(1));
+    
+        # Assert:
+        $this->assertEquals(1, $newTimespan->totalSeconds());
+    }
+
+    /**
+     * @test
+     * @expectedException \System\OverflowException
+    */
+    public function ThrowsExceptionWhenTryRemoveLessThanMinValue() {
+        
+        # Arrange:
+        $timespan = TimeSpan::minValue();
+    
+        # Act:
+        $timespan->subtract(TimeSpan::fromSeconds(1));
+    }
+
+    /**
+     * @test
+    */
+    public function ShouldTrueWhenCompareTwoTimeSpan() {
+        
+        # Arrange:
+        $first = TimeSpan::fromSeconds(10);
+        $second = TimeSpan::fromSeconds(10);
+    
+        # Act:
+        $result = $first->equals($second);
+    
+        # Assert:
+        $this->assertTrue($result);
+    }
+
+    /**
+     * @test
+    */
+    public function ShouldFalseWhenCompareTwoTimeSpan() {
+        
+        # Arrange:
+        $first = TimeSpan::fromSeconds(10);
+        $second = TimeSpan::fromSeconds(5);
+    
+        # Act:
+        $result = $first->equals($second);
+    
+        # Assert:
+        $this->assertFalse($result);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentException
+    */
+    public function ThrowsExceptionWhenCompareInvalidValue() {
+        
+        # Arrange:
+        $value = 1;
+        $timespan = TimeSpan::fromSeconds(10);
+    
+        # Act:
+        $timespan->compareTo($value);
+    }
+
+    /**
+     * @test
+    */
+    public function ShouldGreaterThanAnotherTimeSpan() {
+        
+        # Arrange:
+        $first = TimeSpan::fromSeconds(10);
+        $second = TimeSpan::fromSeconds(8);
+    
+        # Act:
+        $result = $first->compareTo($second);
+    
+        # Assert:
+        $this->assertEquals(1, $result);
+    }
+
+    /**
+     * @test
+    */
+    public function ShouldLesserThanAnotherTimeSpan() {
+        
+        # Arrange:
+        $first = TimeSpan::fromSeconds(8);
+        $second = TimeSpan::fromSeconds(10);
+    
+        # Act:
+        $result = $first->compareTo($second);
+    
+        # Assert:
+        $this->assertEquals(-1, $result);
+    }
+
+    /**
+     * @test
+    */
+    public function ShouldEqualAnotherTimeSpan() {
+        
+        # Arrange:
+        $first = TimeSpan::fromSeconds(10);
+        $second = TimeSpan::fromSeconds(10);
+    
+        # Act:
+        $result = $first->compareTo($second);
+    
+        # Assert:
+        $this->assertEquals(0, $result);
     }
 }

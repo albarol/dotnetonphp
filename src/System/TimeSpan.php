@@ -60,16 +60,22 @@ namespace System {
          * @return TimeSpan A System.TimeSpan that represents the value of this instance plus the value of ts.
          */
         public function add(TimeSpan $ts) {
-            $sumOfMilliseconds = $this->totalMilliseconds + $ts->totalMilliseconds();
-            $this->calculateTimeSpan($sumOfMilliseconds);
+            $total_milliseconds = $this->totalMilliseconds + $ts->totalMilliseconds();
+            $this->calculateTimeSpan($total_milliseconds);
             return $this;
         }
 
         public function compareTo($obj) {
-            if(!$obj instanceof TimeSpan) throw new ArgumentException("value is not a System.TimeSpan.");
-            if($this->totalMilliseconds() > $obj->totalMilliseconds()) return 1;
-            if($this->totalMilliseconds() < $obj->totalMilliseconds()) return -1;
-            return 0;
+            if(!$obj instanceof TimeSpan):
+                throw new ArgumentException("value is not a System.TimeSpan.");
+            endif;
+
+            $this_value = $this->totalMilliseconds();
+            $another_value = $obj->totalMilliseconds();
+
+            return $this_value == $another_value 
+                   ? 0
+                   : $this_value > $another_value ? 1 : -1; 
         }
 
         /**
@@ -174,7 +180,10 @@ namespace System {
          * @return TimeSpan A System.TimeSpan that corresponds to s.
          */
         public static function parse($s) {
-            if(is_null($s)) throw new ArgumentNullException("s is null.");
+            if(is_null($s)):
+                throw new ArgumentNullException("s is null.");
+            endif;
+
             $result = array();
             if(preg_match("/^([0-9]*).(2[0-3]|[0-1][0-9]):([0-5][0-9]):([0-5][0-9])$/", $s, $result))
                 return new TimeSpan($result[1], $result[2], $result[3], $result[4]);
@@ -186,6 +195,7 @@ namespace System {
                 return new TimeSpan(0, $result[1], $result[2]);
             if(preg_match("/^(2[0-3]|[0-1][0-9]):([0-5][0-9]):([0-5][0-9])$/", $s, $result))
                 return new TimeSpan(0, $result[1], $result[2], $result[3]);
+
             throw new FormatException("s has an invalid format.");
         }
 
@@ -339,15 +349,19 @@ namespace System {
          * Constructs a new System.TimeSpan object from a time interval specified in a string. Parameters specify the time interval and the variable where the new System.TimeSpan object is returned.
          * @access public
          * @param string $s A string that specifies a time interval.
-         * @param TimeSpan $result When this method returns, contains an object that represents the time interval specified by s, or System.TimeSpan.Zero if the conversion failed. This parameter is passed uninitialized.
-         * @return bool true if s was converted successfully; otherwise, false. This operation returns false if the s parameter is null, has an invalid format, represents a time interval less than System.TimeSpan.MinValue or greater than System.TimeSpan.MaxValue, or has at least one days, hours, minutes, or seconds component outside its valid range.
+         * @return array true if s was converted successfully; otherwise, false. This operation returns false if the s parameter is null, has an invalid format, represents a time interval less than System.TimeSpan.MinValue or greater than System.TimeSpan.MaxValue, or has at least one days, hours, minutes, or seconds component outside its valid range. -and- TimeSpan $result When this method returns, contains an object that represents the time interval specified by s, or System.TimeSpan.Zero if the conversion failed. This parameter is passed uninitialized.
          */
-        public static function tryParse($s, &$result) {
+        public static function tryParse($s) {
             try { 
-                $result = TimeSpan::parse($s);
-                return true;
-            } catch(Exception $e) {
-                return false;
+                return array(
+                    'result' => true,
+                    'object' => TimeSpan::parse($s)
+                );
+            } catch(\Exception $e) {
+                return array(
+                    'result' => false,
+                    'object' => null
+                );
             }
         }
 
