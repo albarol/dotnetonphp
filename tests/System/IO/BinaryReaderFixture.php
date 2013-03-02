@@ -2,10 +2,10 @@
 
 require_once dirname(__FILE__) . '/../../../src/Autoloader.php';
 
-use \System\IO\BinaryReader;
-use \System\IO\FileStream;
-use \System\IO\FileMode;
-use \System\IO\FileAccess;
+use \System\IO\BinaryReader as BinaryReader;
+use \System\IO\FileStream as FileStream;
+use \System\IO\FileMode as FileMode;
+use \System\IO\FileAccess as FileAccess;
 
 class BinaryReaderFixture extends PHPUnit_Framework_TestCase {
 
@@ -19,7 +19,7 @@ class BinaryReaderFixture extends PHPUnit_Framework_TestCase {
 
         #Arrange:
         $this->setExpectedException("\System\ArgumentException");
-        $stream = new FileStream(dirname(__FILE__) . "/../../resources/system.io.fileInfo.txt", FileMode::Open, FileAccess::Write);
+        $stream = new FileStream(dirname(__FILE__) . "/../../resources/system.io.fileInfo.txt", FileMode::open(), FileAccess::write());
 
         #Act:
         new BinaryReader($stream);

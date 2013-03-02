@@ -132,12 +132,17 @@ namespace System {
          * @param \System\Int32 result When this method returns, contains the 32-bit signed integer value equivalent to the number contained in s, if the conversion succeeded, or zero if the conversion failed
          * @return bool true if the conversion succeeded, otherwise false.
         */
-        public static function tryParse($s, &$result) {
+        public static function tryParse($s) {
             try {
-                $result = self::parse($s);
-                return true;
+                return array(
+                    'object' => self::parse($s),
+                    'result' => true
+                );
             } catch(\Exception $ex) {
-                return false;
+                return array(
+                    'object' => null,
+                    'result' => false
+                );
             }
         }
 

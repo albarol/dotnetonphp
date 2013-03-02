@@ -5,7 +5,9 @@ require_once dirname(__FILE__) . '/../../src/Autoloader.php';
 use \System\Math as Math;
 use \System\MidpointRounding as MidpointRounding;
 
-
+/**
+ * @group core
+*/
 class MathFixture extends PHPUnit_Framework_TestCase {
 
     public function test_Abs_CanGetAbsoluteValueFromNegative() {
@@ -31,7 +33,6 @@ class MathFixture extends PHPUnit_Framework_TestCase {
     
         # Assert:
         $this->assertEquals($absolute, $result);
-
     }
 
     public function test_Acos_ShouldReturnNanWhenParameterIsGreaterThanOne() {
@@ -43,8 +44,7 @@ class MathFixture extends PHPUnit_Framework_TestCase {
         $result = Math::acos($d);
     
         # Assert:
-        $this->assertEquals(NAN, $result);
-
+        $this->assertTrue(is_nan($result));
     }
 
     public function test_Acos_ShouldReturnNanWhenParameterIsLessThanMinusOne() {
@@ -56,8 +56,7 @@ class MathFixture extends PHPUnit_Framework_TestCase {
         $result = Math::acos($d);
     
         # Assert:
-        $this->assertEquals(NAN, $result);
-
+        $this->assertTrue(is_nan($result));
     }
 
     public function test_Acos_ShouldCalculateAcos() {
@@ -69,8 +68,7 @@ class MathFixture extends PHPUnit_Framework_TestCase {
         $result = Math::acos($d);
     
         # Assert:
-        $this->assertNotEquals(NAN, $result);
-
+        $this->assertFalse(is_nan($result));
     }
 
     public function test_Asin_ShouldReturnNanWhenParameterIsGreaterThanOne() {
@@ -82,8 +80,7 @@ class MathFixture extends PHPUnit_Framework_TestCase {
         $result = Math::asin($d);
     
         # Assert:
-        $this->assertEquals(NAN, $result);
-
+        $this->assertTrue(is_nan($result));
     }
 
     public function test_Asin_ShouldReturnNanWhenParameterIsLessThanMinusOne() {
@@ -95,8 +92,7 @@ class MathFixture extends PHPUnit_Framework_TestCase {
         $result = Math::asin($d);
     
         # Assert:
-        $this->assertEquals(NAN, $result);
-
+        $this->assertTrue(is_nan($result));
     }
 
     public function test_Asin_ShouldCalculateAcos() {
@@ -108,8 +104,7 @@ class MathFixture extends PHPUnit_Framework_TestCase {
         $result = Math::asin($d);
     
         # Assert:
-        $this->assertNotEquals(NAN, $result);
-
+        $this->assertFalse(is_nan($result));
     }
 
     public function test_Atan_ShouldReturnNanWhenParameterIsNan() {
@@ -121,8 +116,7 @@ class MathFixture extends PHPUnit_Framework_TestCase {
         $result = Math::atan($d);
     
         # Assert:
-        $this->assertEquals(NAN, $result);
-        
+        $this->assertTrue(is_nan($result));
     }
 
     public function test_Atan_ShouldCalculateAtan() {
@@ -134,8 +128,7 @@ class MathFixture extends PHPUnit_Framework_TestCase {
         $result = Math::atan($d);
     
         # Assert:
-        $this->assertNotEquals(NAN, $result);
-        
+        $this->assertFalse(is_nan($result));
     }
 
     public function test_Atan2_ShouldCalculateAtan2() {
@@ -220,7 +213,7 @@ class MathFixture extends PHPUnit_Framework_TestCase {
         $result = 0;
         
         # Act:
-        Math::divRem(10, 0, &$result);
+        Math::divRem(10, 0);
     }
 
     public function test_DivRem_ShouldGetRemider() {
@@ -229,7 +222,7 @@ class MathFixture extends PHPUnit_Framework_TestCase {
         $result = 0;
                 
         # Act:
-        Math::divRem(11, 3, &$result);
+        $result = Math::divRem(11, 3);
     
         # Assert:
         $this->assertEquals(2, $result);

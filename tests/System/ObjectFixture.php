@@ -1,9 +1,10 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../src/Autoloader.php';
-
 use \System\Object as Object;
 
+/**
+ * @group core
+*/
 class ObjectFixture extends PHPUnit_Framework_TestCase {
 
     public function testWhenCreateObjectShouldBeNotNull() {
@@ -33,7 +34,6 @@ class ObjectFixture extends PHPUnit_Framework_TestCase {
 
     public function testWhenGetToStringShouldBeNameOfClass() {
         $object = new Object();
-        $this->assertEquals("Object", $object->toString());
+        $this->assertEquals("System\Object", $object->toString());
     }
 }
-?>

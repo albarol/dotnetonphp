@@ -4,6 +4,9 @@ require_once dirname(__FILE__) . '/../../src/Autoloader.php';
 
 use \System\Random as Random;
 
+/**
+ * @group core
+*/
 class RandomTest extends PHPUnit_Framework_TestCase {
 
     public function test_Next_CanGenerateRandomNumber() {

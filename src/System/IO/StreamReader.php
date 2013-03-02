@@ -87,10 +87,10 @@ namespace System\IO {
          * @param int $count The maximum number of characters to read. If the end of the stream is reached before count of characters is read into buffer, the current method returns.
          * @return int The number of characters that have been read. The number will be less than or equal to count, depending on whether the data is available within the stream. This method returns zero if called when no more characters are left to read.
          */
-        public function read(&$buffer = array(), $index = null, $count = null) {
+        public function read($index=null, $count=null) {
             if(is_null($index))
                 return $this->readOnlyCharacter();
-            return $this->readBlock(&$buffer, $index, $count);
+            return $this->readBlock($index, $count);
         }
 
         /**
@@ -98,17 +98,26 @@ namespace System\IO {
          * @access public
          * @throws ArgumentNullException|ArgumentException|ArgumentOutOfRangeException|ObjectDisposedException|IOException
          * @param array $buffer When this method returns, contains the specified character array with the values between index and (index + count - 1) replaced by the characters read from the current source.
-         * @param $index The place in buffer at which to begin writing.
-         * @param $count The maximum number of characters to read. If the end of the stream is reached before count of characters is read into buffer, the current method returns.
+         * @param int $index The place in buffer at which to begin writing.
+         * @param int $count The maximum number of characters to read. If the end of the stream is reached before count of characters is read into buffer, the current method returns.
          * @return int The position of the underlying stream is advanced by the number of characters that were read into buffer.
          */
-        public function readBlock(&$buffer, $index, $count) {
-            $copyAreaSize = $index + $count;
-            if(!isset($this->resource)) throw new IOException("An I/O error occurs, such as the stream is closed.");
-            for($i = $index; $i < $copyAreaSize; $i++):
+        public function readBlock($index=0, $count=0) {
+            $buffer = array();
+            $copy_area_size = $index + $count;
+            
+            if(!isset($this->resource)):
+                throw new IOException("An I/O error occurs, such as the stream is closed.");
+            endif;
+            
+            for($i = $index; $i < $copy_area_size; $i++):
                 array_push($buffer, fgetc($this->resource));
             endfor;
-            return $count;
+            
+            return array(
+                'buffer' => $buffer,
+                'count' => $count
+            );
         }
 
         /**
@@ -139,7 +148,10 @@ namespace System\IO {
          * @return string
          */
         protected function readOnlyCharacter() {
-            return fgetc($this->resource);
+            return array(
+                'buffer' => fgetc($this->resource),
+                'count'  => 1
+            );
         }
     }
 }

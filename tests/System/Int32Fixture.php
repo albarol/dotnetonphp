@@ -1,9 +1,10 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../src/Autoloader.php';
-
 use System\Int32 as Int32;
 
+/**
+ * @group core
+*/
 class Int32Fixture extends PHPUnit_Framework_TestCase {
 
     public function test_Construct_CanConstructWithAnyValue() {
@@ -172,25 +173,23 @@ class Int32Fixture extends PHPUnit_Framework_TestCase {
     public function test_TryParse_ReturnFalseWhenValueIsInvalid() {
         # Arrange:
         $param = "invalid_info";
-        $obj = null;
 
         # Act:
-        $result = Int32::tryParse($param, &$obj);
+        $parse = Int32::tryParse($param);
 
         # Arrange:
-        $this->assertFalse($result);
+        $this->assertFalse($parse['result']);
     }
 
     public function test_TryParse_ReturnFalseWhenValueIsValid() {
         # Arrange:
         $param = 123456;
-        $obj = null;
 
         # Act:
-        $result = Int32::tryParse($param, &$obj);
+        $parse = Int32::tryParse($param);
 
         # Arrange:
-        $this->assertTrue($result);
+        $this->assertTrue($parse['result']);
     }
 
     public function test_ToString_CanTransformToString() {

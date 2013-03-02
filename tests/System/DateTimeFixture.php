@@ -1,12 +1,13 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../src/Autoloader.php';
-
 use \System\DateTime as DateTime;
 use \System\TimeSpan as TimeSpan;
 use \System\DayOfWeek as DayOfWeek;
 use \System\DateTimeKind as DateTimeKind;
 
+/**
+ * @group core
+*/
 class DateAndTimeFixture extends PHPUnit_Framework_TestCase {
 
     public function test_Constructor_ThrowExceptionWhenInputIncorrectDay() {
@@ -322,8 +323,9 @@ class DateAndTimeFixture extends PHPUnit_Framework_TestCase {
     }
 
     public function test_IsDaylightSavingTime_CanDiscoveryIfTheTimezoneHasDaylightSaving() {
-        $date1 = new DateTime(2004, 2, 3, 23, 59, 59);
-        $this->assertEquals(false, $date1->isDaylightSavingTime());
+        date_default_timezone_set("America/Sao_Paulo");
+        $date = new DateTime(2004, 10, 3, 23, 59, 59);
+        $this->assertEquals(false, $date->isDaylightSavingTime());
     }
 
     public function test_IsLeapYear_CanDiscoverIfTheIsLeapYear() {

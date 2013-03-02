@@ -4,8 +4,13 @@ require_once dirname(__FILE__) . '/../../src/Autoloader.php';
 
 use \System\String as String;
 use \System\TypeCode as TypeCode;
+use \System\InvalidOperationException as InvalidOperationException;
+
 use \System\Text\NormalizationForm as NormalizationForm;
 
+/**
+ * @group core
+*/
 class StringFixture extends PHPUnit_Framework_TestCase {
 
     public function test_Chars_ThrowsExceptionWhenPositionIsInvalid() {
@@ -145,49 +150,44 @@ class StringFixture extends PHPUnit_Framework_TestCase {
         # Arrange
         $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
         $str = new String("dotnetonphp");
-        $destination = array();
         
         # Act:
-        $str->copyTo(-1, $destination, 1, 10);
+        $str->copyTo(-1, 1, 10);
     }
 
     public function test_CopyTo_ThrowsExceptionWhenDestinationIndexIsNegative() {
         # Arrange
         $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
         $str = new String("dotnetonphp");
-        $destination = array();
         
         # Act:
-        $str->copyTo(0, $destination, -1, 10);
+        $str->copyTo(0, -1, 10);
     }
 
     public function test_CopyTo_ThrowsExceptionWhenCountIsNegative() {
         # Arrange
         $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
         $str = new String("dotnetonphp");
-        $destination = array();
         
         # Act:
-        $str->copyTo(0, $destination, 0, -1);
+        $str->copyTo(0, 0, -1);
     }
 
     public function test_CopyTo_ThrowsExceptionWhenCountIsGreaterThanSize() {
         # Arrange
         $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
         $str = new String("dotnetonphp");
-        $destination = array();
         
         # Act:
-        $str->copyTo(9, $destination, 0, 3);
+        $str->copyTo(9, 0, 3);
     }
 
     public function test_CopyTo_CanCopyPartOfStringToArray() {
         # Arrange
         $str = new String("dotnetonphp");
-        $destination = array();
         
         # Act:
-        $str->copyTo(0, &$destination, 0, 3);
+        $destination = $str->copyTo(0, 0, 3);
 
         # Assert:
         $this->assertEquals('dot', implode("", $destination));

@@ -4,6 +4,7 @@ namespace System\Collections {
 
     use \System\ArgumentOutOfRangeException as ArgumentOutOfRangeException;
     use \System\ArgumentNullException as ArgumentNullException;
+    use \System\InvalidOperationException as InvalidOperationException;
     use \System\ICloneable as ICloneable;
 
     use \System\Collections\ICollection as ICollection;
@@ -130,7 +131,10 @@ namespace System\Collections {
          * @return object The System.Object at the top of the System.Collections.Stack.
          */
         public function peek() {
-            if($this->count() == 0) throw new InvalidOperationException("The System.Collections.Stack is empty.");
+            if($this->count() == 0):
+                throw new InvalidOperationException("The System.Collections.Stack is empty.");
+            endif;
+            
             return $this->stack[$this->head];
         }
 

@@ -86,14 +86,12 @@ class StreamReaderFixture extends PHPUnit_Framework_TestCase {
         $this->setExpectedException("\\System\\IO\\IOException");
         $reader = new StreamReader($this->fileName);
         $reader->close();
-        $array = array();
-        $reader->read($array, 0, 1);
+        $reader->read(0, 1);
     }
 
     public function test_Read_CanReadBuffer() {
         $reader = new StreamReader($this->fileName);
-        $array = array();
-        $reader->read($array, 0, 4);
+        $array = $reader->read(0, 4);
         $this->assertEquals(4, sizeof($array));
     }
 
@@ -104,8 +102,7 @@ class StreamReaderFixture extends PHPUnit_Framework_TestCase {
 
     public function test_ReadBlock_CanReadBuffer() {
         $reader = new StreamReader($this->fileName);
-        $array = array();
-        $reader->read($array, 0, 5);
+        $array = $reader->read(0, 5);
         $this->assertEquals(5, sizeof($array));
     }
 

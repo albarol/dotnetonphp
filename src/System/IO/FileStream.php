@@ -113,8 +113,8 @@ namespace System\IO {
          * @return bool true if the stream supports writing; otherwise, false.
          */
         public function canWrite() {
-            return ($this->access != FileAccess::Read) &&
-                   ($this->mode != FileMode::Open) &&
+            return ($this->access != FileAccess::read()) &&
+                   ($this->mode != FileMode::open()) &&
                    isset($this->stream);
         }
 

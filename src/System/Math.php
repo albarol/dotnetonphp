@@ -134,15 +134,14 @@ namespace System {
     * @throws \System\DivideByZeroException b is zero.
     * @param int $a The int that contains the dividend.
     * @param int $b The int that contains the divisor.
-    * @param int $result The int that receives the remainder.
+    * @return int $result The int that receives the remainder.
     */
-    public static function divRem($a, $b, &$result) {
+    public static function divRem($a, $b) {
         if($b == 0):
             throw new DivideByZeroException("b is zero.");
         endif;
 
-        $result = $a % $b;
-
+        return $a % $b;
     }
 
     /**

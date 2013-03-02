@@ -2,4 +2,5 @@
 docs/
 vendor/
 tests/logs/
+tests/coverage/
 composer.phar

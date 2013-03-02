@@ -19,6 +19,8 @@ namespace System\Collections {
       */
     class Queue implements ICollection, ICloneable {
 
+        const DEFAULT_SIZE = 1000;
+
         private $size;
         private $queue;
         private $growFactor = 1.0;
@@ -30,13 +32,13 @@ namespace System\Collections {
          * @param int $value
          * @param float $growFactor
          */
-        public function __construct($value=Int32::MaxValue, $growFactor=1.0) {
+        public function __construct($value=DEFAULT_SIZE, $growFactor=1.0) {
             if(is_numeric($value)) {
                 $this->createFromNumeric($value, $growFactor);
             } else if($value instanceof ICollection) {
                 $this->createFromCollection($value);
             } else {
-                throw new \System\ArgumentNullException("value is null.");
+                throw new ArgumentNullException("value is null.");
             }
         }
 
@@ -49,7 +51,7 @@ namespace System\Collections {
         }
 
         private function createFromCollection(ICollection $collection) {
-            $this->size = Int32::MaxValue;
+            $this->size = DEFAULT_SIZE;
             $this->queue = array();
             $enumerator = $collection->getEnumerator();
             while($enumerator->moveNext()) {

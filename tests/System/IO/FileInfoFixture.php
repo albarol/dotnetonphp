@@ -56,7 +56,7 @@ class FileInfoFixture extends PHPUnit_Framework_TestCase {
 
     public function test_Attributes_CanGetAttributesFromFile() {
         $fileInfo = new FileInfo($this->fileInfo);
-        $this->assertEquals(FileAttributes::Archive, $fileInfo->attributes());
+        $this->assertEquals(FileAttributes::archive(), $fileInfo->attributes());
     }
 
     public function test_CreationTime_GetWhenFileWasCreated() {

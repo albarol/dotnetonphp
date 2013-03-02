@@ -1,13 +1,14 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../src/Autoloader.php';
-
 use \System\TimeSpan as TimeSpan;
 
+/**
+ * @group core
+*/
 class TimeSpanFixture extends PHPUnit_Framework_TestCase {
 
     public function test_Add_ThrowsExceptionWhenArgumentIsNotInteger() {
-        $this->setExpectedException("ArgumentException");
+        $this->setExpectedException("\\System\\ArgumentException");
         new TimeSpan(0, 0, "a");
     }
 
@@ -98,13 +99,13 @@ class TimeSpanFixture extends PHPUnit_Framework_TestCase {
     }
 
     public function testCantParseTimeSpanBecauseIncorretFormat() {
-        $this->setExpectedException("FormatException");
+        $this->setExpectedException("\\System\\FormatException");
         $formats = array("a");
         $time = TimeSpan::parse($formats[0]);
     }
 
     public function testCantParseTimeSpanBecauseFormatIsNull() {
-        $this->setExpectedException("ArgumentNullException");
+        $this->setExpectedException("\\System\\ArgumentNullException");
         $time = TimeSpan::parse(null);
     }
 
@@ -155,7 +156,7 @@ class TimeSpanFixture extends PHPUnit_Framework_TestCase {
     }
 
     public function testCantSubtractTimeSpanBecauseIsLessThanMinValue() {
-        $this->setExpectedException("OverflowException");
+        $this->setExpectedException("\\System\\OverflowException");
         $time = TimeSpan::minValue();
         $time->subtract(new TimeSpan(1));
     }
@@ -192,7 +193,7 @@ class TimeSpanFixture extends PHPUnit_Framework_TestCase {
     }
 
     public function testCantCompareTimeSpan() {
-        $this->setExpectedException("ArgumentException");
+        $this->setExpectedException("\\System\\ArgumentException");
         $time = new TimeSpan(1);
         $time->compareTo(1);
     }
@@ -215,5 +216,3 @@ class TimeSpanFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(-1, $time->compareTo($time2));
     }
 }
-
-?>

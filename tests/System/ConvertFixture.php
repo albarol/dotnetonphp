@@ -1,9 +1,10 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../src/Autoloader.php';
-
 use \System\Convert as Convert;
 
+/**
+ * @group core
+*/
 class ConvertFixture extends PHPUnit_Framework_TestCase {
 
     /* TODO: Implement Method ChangeType */
@@ -14,12 +15,12 @@ class ConvertFixture extends PHPUnit_Framework_TestCase {
 
 
     public function test_FromBase64String_ThrowsExceptionWhenParameterIsNull() {
-        $this->setExpectedException("ArgumentNullException");
+        $this->setExpectedException("\\System\\ArgumentNullException");
         Convert::FromBase64String(null);
     }
 
     public function test_FromBase64String_ThrowsExceptionWhenLengthOfStringIsNotZeroOrAMultipleOfFour() {
-        $this->setExpectedException("FormatException");
+        $this->setExpectedException("\\System\\FormatException");
         Convert::FromBase64String("aGVsbG8gd29ybGQKk");
     }
 

@@ -11,6 +11,7 @@ namespace System {
     use \System\IComparable as IComparable;
     use \System\IEquatable as IEquatable;
     use \System\IFormatProvider as IFormatProvider;
+    use \System\InvalidOperationException as InvalidOperationException;
     use \System\TypeCode as TypeCode;
 
     use \System\Collections\IEnumerable as IEnumerable;
@@ -116,20 +117,25 @@ namespace System {
          * @access public
          * @throws \System\ArgumentOutOfRangeException sourceIndex, destinationIndex, or count is negative -or- count is greater than the length of the substring from startIndex to the end of this instance -or- count is greater than the length of the subarray from destinationIndex to the end of destination.
          * @param int $sourceIndex A character position in this instance.
-         * @param array $destination An array of Unicode characters.
          * @param int $destinationIndex An array element in destination.
-         * @param int $count The number of characters in this instance to copy to destination.         
+         * @param int $count The number of characters in this instance to copy to destination.
+         * @return array An array of Unicode characters.
         */
-        public function copyTo($sourceIndex, array &$destination, $destinationIndex, $count) {
+        public function copyTo($sourceIndex=0, $destinationIndex=0, $count=0) {
+            $destination = array();
+
             if($sourceIndex < 0 || $destinationIndex < 0 || $count < 0):
                 throw new ArgumentOutOfRangeException("sourceIndex, destinationIndex, or count is negative.");
             endif;
             if(($sourceIndex + $count) > $this->length()):
                 throw new ArgumentOutOfRangeException("count is greater than the length of the substring from startIndex to the end of this instance.");
             endif;
+            
             for($i = 0; $i < $count; $i++):
                 $destination[$destinationIndex + $i] = $this->chars($sourceIndex + $i);
             endfor;
+            
+            return $destination;
         }
 
         /**
@@ -301,12 +307,13 @@ namespace System {
         /** 
          * Indicates whether this string is in the specified Unicode normalization form.
          * @access public
+         * @throws \Exception string cant be normalized
          * @param \System\Text\NormalizationForm $normalizationForm A Unicode normalization form.
          * @return bool true if this string is in the normalization form specified by the normalizationForm parameter; otherwise, false.
         */
         public function isNormalized(NormalizationForm $normalizationForm = null) {
             if(!class_exists("\\Normalizer")):
-                throw new \Exception("NotSupportedOperation");
+                throw new \Exception("InvalidOperationException");
             endif;
 
             if (is_null($normalizationForm)):
@@ -414,7 +421,7 @@ namespace System {
         */ 
         public function normalize(NormalizationForm $normalizationForm = null) {
             if(!class_exists("\\Normalizer")):
-                throw new \Exception("NotSupportedOperation");
+                throw new InvalidOperationException("NotSupportedOperation");
             endif;
 
             if (is_null($normalizationForm)):

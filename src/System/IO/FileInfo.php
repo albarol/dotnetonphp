@@ -201,7 +201,7 @@ namespace System\IO {
          * @param string $share A FileShare constant specifying the type of access other FileStream objects have to this file.
          * @return FileStream A file opened in the specified mode, with read/write access and unshared.
          */
-        public function open($mode=FileMode::Open, $access=FileAccess::Read, $share=FileShare::Read) {
+        public function open($mode=null, $access=null, $share=null) {
             return new FileStream($this->fullName());
         }
 

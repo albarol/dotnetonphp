@@ -133,15 +133,19 @@ namespace System {
          * @static
          * @access public
          * @param String $value A string containing the value to convert.
-         * @param bool $result When this method returns, if the conversion succeeded, contains true if value is equivalent to System.Boolean.TrueString or false if value is equivalent to System.Boolean.FalseString. If the conversion failed, contains false. The conversion fails if value is null or is not equivalent to either System.Boolean.TrueString or System.Boolean.FalseString. This parameter is passed uninitialized.
-         * @return bool true if value was converted successfully; otherwise, false.
+         * @return bool $result When this method returns, if the conversion succeeded, contains true if value is equivalent to System.Boolean.TrueString or false if value is equivalent to System.Boolean.FalseString. If the conversion failed, contains false. The conversion fails if value is null or is not equivalent to either System.Boolean.TrueString or System.Boolean.FalseString. This parameter is passed uninitialized.
          */
-        public static function tryParse($value, &$result) {
+        public static function tryParse($value) {
             try {
-                $result = self::parse($value)->value;
-                return true;
+                return array(
+                    'object'  => self::parse($value)->value,
+                    'result' => true
+                );
             } catch(\Exception $e) {
-                return false;
+                return array(
+                    'object'  => null,
+                    'result' => false
+                );
             }
         }
 

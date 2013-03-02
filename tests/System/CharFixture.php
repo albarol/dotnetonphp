@@ -1,10 +1,11 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../src/Autoloader.php';
-
 use \System\Char as Char;
 use \System\TypeCode as TypeCode;
 
+/**
+ * @group core
+*/
 class CharFixture extends PHPUnit_Framework_TestCase {
 
     public function test_CompareTo_ShouldBeZeroWhenValuesIsEqual() {
@@ -41,6 +42,8 @@ class CharFixture extends PHPUnit_Framework_TestCase {
     }
 
     public function test_ConvertFromUtf32_CanConvertLetterA() {
+        $this->markTestIncomplete('NotImpleted');
+
         # Arrange:
         $letter = 0x0041;
 

@@ -1,10 +1,13 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../src/Autoloader.php';
+// require_once dirname(__FILE__) . '/../../src/Autoloader.php';
 
 use \System\Boolean as Boolean;
 use \System\TypeCode as TypeCode;
 
+/**
+ * @group core
+*/
 class BooleanFixture extends PHPUnit_Framework_TestCase {
 
     public function test_FalseString_ShouldBeEqualFalse() {
@@ -171,40 +174,37 @@ class BooleanFixture extends PHPUnit_Framework_TestCase {
     public function test_TryParse_CanParseTrueString() {
         # Arrange:
         $str = "True";
-        $result = null;
 
         # Act:
-        $obj = Boolean::tryParse($str, &$result);
+        $obj = Boolean::tryParse($str);
 
         # Assert:
-        $this->assertTrue($obj);
-        $this->assertTrue($result);
+        $this->assertTrue($obj['result']);
+        $this->assertTrue($obj['object']);
     }
 
     public function test_TryParse_CanParseFalseString() {
         # Arrange:
         $str = "False";
-        $result = null;
 
         # Act:
-        $obj = Boolean::tryParse($str, &$result);
+        $obj = Boolean::tryParse($str);
 
         # Assert:
-        $this->assertTrue($obj);
-        $this->assertFalse($result);
+        $this->assertTrue($obj['result']);
+        $this->assertFalse($obj['object']);
     }
 
     public function test_TryParse_CantParseInvalidString() {
         # Arrange:
         $str = "AAAA";
-        $result = null;
 
         # Act:
-        $obj = Boolean::tryParse($str, &$result);
+        $obj = Boolean::tryParse($str);
 
         # Assert:
-        $this->assertFalse($obj);
-        $this->assertNull($result);
+        $this->assertFalse($obj['result']);
+        $this->assertNull($obj['object']);
     }    
 
   
@@ -230,5 +230,3 @@ class BooleanFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(Boolean::FalseString, $str);
     }    
 }
-
-?>
