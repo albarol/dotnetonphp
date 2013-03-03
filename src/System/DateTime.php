@@ -36,7 +36,10 @@ namespace System {
          * @param int $seconds
          */
         public function  __construct($year, $month, $day, $hours = 0, $minutes = 0, $seconds = 0) {
-            if (!checkdate($month, $day, $year) || !$this->isValidYear($year)) throw new ArgumentOutOfRangeException("year is less than 1 or greater than 9999. -or-  month is less than 1 or greater than 12. -or-  day is less than 1 or greater than the number of days in month.");
+            if (!checkdate($month, $day, $year) || !$this->isValidYear($year)):
+                throw new ArgumentOutOfRangeException("year is less than 1 or greater than 9999. -or-  month is less than 1 or greater than 12. -or-  day is less than 1 or greater than the number of days in month.");
+            endif;
+
             $this->year = $year;
             $this->month = $month;
             $this->day = $day;
@@ -152,11 +155,7 @@ namespace System {
          * @return Boolean A signed number indicating the relative values of t1 and t2. Less than zero t1 is earlier than t2. Zero t1 is the same as t2. Greater than zero t1 is later than t2.
          */
         public static function compare(DateTime $t1, DateTime $t2) {
-            $date1 = strtotime($t1->toString());
-            $date2 = strtotime($t2->toString());
-            if ($date1 < $date2) return -1;
-            if ($date1 == $date2) return 0;
-            return 1;
+            return $t1->compareTo($t2);
         }
 
         /**
@@ -166,12 +165,18 @@ namespace System {
          * @return Boolean A signed number indicating the relative values of t1 and t2. Less than zero This instance is earlier than value. Zero This instance is the same as value. Greater than zero  This instance is later than value, or value is null.
          */
         public function compareTo($value) {
-            if (!($value instanceOf DateTime)) return 1;
-            $date1 = strtotime($this->toString());
-            $date2 = strtotime($value->toString());
-            if ($date1 < $date2) return -1;
-            if ($date1 == $date2) return 0;
-            return 1;
+            if (!($value instanceOf DateTime)):
+                return 1;
+            endif;
+
+            $first = strtotime($this->toString());
+            $second = strtotime($value->toString());
+            
+            if($first == $second):
+                return 0;
+            endif;
+
+            return $first > $second ? 1 : -1;
         }
 
         /**
@@ -352,10 +357,15 @@ namespace System {
          * @return DateTime An object that is equivalent to the date and time contained in s.
          */
         public static function parse($s) {
-            if ($s == null) throw new ArgumentNullException("s is null.");
+            if ($s == null):
+                throw new ArgumentNullException("s is null.");
+            endif;
+            
             $dateTime = date_parse(str_replace(".", "-", $s));
-            if ($dateTime["error_count"] > 1)
+            if ($dateTime["error_count"] > 1):
                 throw new FormatException("Format is invalid.");
+            endif;
+
             return new DateTime($dateTime["year"], $dateTime["month"], $dateTime["day"], $dateTime["hour"], $dateTime["minute"], $dateTime["second"]);
         }
 
@@ -377,9 +387,11 @@ namespace System {
          */
         public static function specifyKind(DateTime $value, DateTimeKind $kind) {
             $value->kind = $kind;
-            if ($kind == DateTimeKind::utc())
+            if ($kind == DateTimeKind::utc()):
                 return $value->utcNow();
-            return $value;
+            else:
+                return $value;
+            endif;
         }
 
 
@@ -390,12 +402,13 @@ namespace System {
          * @return TimeSpan A System.TimeSpan interval equal to the date and time represented by this instance minus the date and time represented by value.
          */
         public function subtract($value) {
-            if ($value instanceof DateTime) {
+            if ($value instanceof DateTime):
                 return $this->subtractDate($value);
-            } else if ($value instanceof TimeSpan) {
+            elseif ($value instanceof TimeSpan):
                 return $this->subtractTimeSpan($value);
-            }
-            return null;
+            else:
+                return null;
+            endif;
         }
 
         private function subtractDate($value) {

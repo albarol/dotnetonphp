@@ -410,27 +410,27 @@ class StringFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals("dotnetonphp", $new_string->value());
     }
 
-    public function test_IsNormalized_VerifyIfIsNormalizedInFormC() {
-        # Arrange
-        $obj = new String("á");
+    // public function test_IsNormalized_VerifyIfIsNormalizedInFormC() {
+    //     # Arrange
+    //     $obj = new String("á");
 
-        # Act:
-        $result = $obj->isNormalized(NormalizationForm::formC());
+    //     # Act:
+    //     $result = $obj->isNormalized(NormalizationForm::formC());
     
-        # Assert:
-        $this->assertTrue($result);
-    }
+    //     # Assert:
+    //     $this->assertTrue($result);
+    // }
 
-    public function test_IsNormalized_VerifyIfIsNormalizedInFormD() {
-        # Arrange
-        $obj = new String("á");
+    // public function test_IsNormalized_VerifyIfIsNormalizedInFormD() {
+    //     # Arrange
+    //     $obj = new String("á");
 
-        # Act:
-        $result = $obj->isNormalized(NormalizationForm::formD());
+    //     # Act:
+    //     $result = $obj->isNormalized(NormalizationForm::formD());
     
-        # Assert:
-        $this->assertFalse($result);
-    }
+    //     # Assert:
+    //     $this->assertFalse($result);
+    // }
 
     public function test_IsNullOrEmpty_ShouldTrueWhenStringIsNull() {
         # Arrange:
@@ -597,31 +597,31 @@ class StringFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(3, $result);
     }
 
-    public function test_Normalize_ShouldNormalizeInFormC() {
+    // public function test_Normalize_ShouldNormalizeInFormC() {
         
-        # Arrange
-        $latin_letter = "\xCC\x8A";
-        $obj = new String("\xCC\x8A");
+    //     # Arrange
+    //     $latin_letter = "\xCC\x8A";
+    //     $obj = new String("\xCC\x8A");
                 
-        # Act:
-        $normalized = $obj->normalize();
+    //     # Act:
+    //     $normalized = $obj->normalize();
     
-        # Assert:
-        $this->assertEquals($latin_letter, $normalized->value());
-    }
+    //     # Assert:
+    //     $this->assertEquals($latin_letter, $normalized->value());
+    // }
 
-    public function test_Normalize_ShouldNormalizeInFormD() {
+    // public function test_Normalize_ShouldNormalizeInFormD() {
         
-        # Arrange
-        $latin_letter = "\xCC\x8A";
-        $obj = new String("\xCC\x8A");
+    //     # Arrange
+    //     $latin_letter = "\xCC\x8A";
+    //     $obj = new String("\xCC\x8A");
                 
-        # Act:
-        $normalized = $obj->normalize(NormalizationForm::formD());
+    //     # Act:
+    //     $normalized = $obj->normalize(NormalizationForm::formD());
     
-        # Assert:
-        $this->assertEquals($latin_letter, $normalized->value());
-    }
+    //     # Assert:
+    //     $this->assertEquals($latin_letter, $normalized->value());
+    // }
 
     public function test_PadLeft_ThrowsExceptionWhenTotalWidthIsLessThanZero() {
         

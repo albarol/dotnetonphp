@@ -467,7 +467,7 @@ class TimeSpanFixture extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function ShouldGreaterThanAnotherTimeSpan() {
+    public function ShouldCompareToGreaterSpan() {
         
         # Arrange:
         $first = TimeSpan::fromSeconds(10);
@@ -483,7 +483,7 @@ class TimeSpanFixture extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function ShouldLesserThanAnotherTimeSpan() {
+    public function ShouldCompareToLesserTimeSpan() {
         
         # Arrange:
         $first = TimeSpan::fromSeconds(8);
@@ -499,7 +499,7 @@ class TimeSpanFixture extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function ShouldEqualAnotherTimeSpan() {
+    public function ShouldCompareToEqualTimeSpan() {
         
         # Arrange:
         $first = TimeSpan::fromSeconds(10);

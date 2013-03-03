@@ -73,9 +73,11 @@ namespace System {
             $this_value = $this->totalMilliseconds();
             $another_value = $obj->totalMilliseconds();
 
-            return $this_value == $another_value 
-                   ? 0
-                   : $this_value > $another_value ? 1 : -1; 
+            if($this_value == $another_value):
+                return 0;
+            endif;
+
+            return $this_value > $another_value ? 1 : -1; 
         }
 
         /**
@@ -96,9 +98,12 @@ namespace System {
          * @return bool true if obj represents the same time interval as this instance; otherwise, false.
          */
         public function equals($other) {
-            if(!$other instanceof TimeSpan) return false;
-            if($this->totalMilliseconds() != $other->totalMilliseconds()) return false;
-            return true;
+            if(!$other instanceof TimeSpan):
+                return false;
+            endif;
+
+            return $this->totalMilliseconds() == 
+                   $other->totalMilliseconds();
         }
 
         /**
@@ -374,7 +379,9 @@ namespace System {
         private function containsValidNumbers($numbers) {
             $result = true;
             for($i = 0; $i < sizeof($numbers) && $result; $i++) {
-                if(!is_numeric($numbers[$i])) $result = false;
+                if(!is_numeric($numbers[$i])):
+                    $result = false;
+                endif;
             }
             return $result;
         }
@@ -396,7 +403,11 @@ namespace System {
             if(is_numeric($minutes)) $time += $minutes * $this->millisecondsInMinutes;
             if(is_numeric($seconds)) $time += $seconds * $this->millisecondsInSeconds;
             if(is_numeric($milliseconds)) $time += $milliseconds;
-            if($time > TimeSpan::MaxValue || $time < TimeSpan::MinValue) throw new OverflowException("The return value is less than System.TimeSpan.MinValue or greater than System.TimeSpan.MaxValue");
+
+            if($time > TimeSpan::MaxValue || $time < TimeSpan::MinValue):
+                throw new OverflowException("The return value is less than System.TimeSpan.MinValue or greater than System.TimeSpan.MaxValue");
+            endif;
+
             return $time;
         }
 
