@@ -11,7 +11,7 @@ class TimeSpanFixture extends PHPUnit_Framework_TestCase {
      * @expectedException \System\ArgumentException
      * @test
     */
-    public function ThrowsExceptionWhenArgumentIsNotInteger() {
+    public function Construct_ThrowsExceptionWhenArgumentIsNotInteger() {
         # Arrange:
         $argument = "a";
 
@@ -22,7 +22,7 @@ class TimeSpanFixture extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function ShouldConstructWithNegativeValues() {
+    public function Construct_ShouldConstructWithNegativeValues() {
         
         # Arrange:
         $seconds = -10;
@@ -34,10 +34,12 @@ class TimeSpanFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(-10, $timespan->totalSeconds());
     }
 
+
     /**
      * @test
     */
-    public function ShouldAddNewTimeSpan() {
+    public function Add_ShouldAddNewTimeSpan() {
+        
         # Arrange:
         $time = new TimeSpan(0, 0, 20);
         
@@ -51,7 +53,7 @@ class TimeSpanFixture extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function ShouldMoveOneHourWhenAddNewTimeSpan() {
+    public function Add_ShouldMoveOneHourWhenAddNewTimeSpan() {
         
         # Arrange:
         $minutes = 24;
@@ -67,7 +69,7 @@ class TimeSpanFixture extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function ShouldMoveOneMinuteWhenAddNewTimeSpan() {
+    public function Add_ShouldMoveOneMinuteWhenAddNewTimeSpan() {
         
         # Arrange:
         $seconds = 24;
@@ -83,7 +85,7 @@ class TimeSpanFixture extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function ShouldMoveOneSecondsWhenAddNewTimeSpan() {
+    public function Add_ShouldMoveOneSecondsWhenAddNewTimeSpan() {
         
         # Arrange:
         $milliseconds = 999;
@@ -97,10 +99,11 @@ class TimeSpanFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(1, $timespan->totalSeconds());
     }
 
+
     /**
      * @test
     */
-    public function ShouldCreateTimeSpanFromDays() {
+    public function FromDays_ShouldCreateTimeSpanFromDays() {
         
         # Arrange:
         $total_days = 2;
@@ -115,7 +118,7 @@ class TimeSpanFixture extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function ShouldConstructTimeSpanFromHours() {
+    public function FromHours_ShouldConstructTimeSpanFromHours() {
         
         # Arrange:
         $total_hours = 24;
@@ -130,7 +133,7 @@ class TimeSpanFixture extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function ShouldContructuTimeSpanFromMinutes() {
+    public function FromMinutes_ShouldContructTimeSpanFromMinutes() {
         
         # Arrange:
         $total_minutes = 60;
@@ -145,7 +148,7 @@ class TimeSpanFixture extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function ShouldConstructTimeSpanFromSeconds() {
+    public function FromSeconds_ShouldConstructTimeSpanFromSeconds() {
         
         # Arrange:
         $total_seconds = 60;
@@ -160,7 +163,7 @@ class TimeSpanFixture extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function ShouldContructTimeSpanFromMilliseconds() {
+    public function FromMilliseconds_ShouldContructTimeSpanFromMilliseconds() {
         
         # Arrange:
         $total_milliseconds = 1000;
@@ -175,7 +178,7 @@ class TimeSpanFixture extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function ShouldContructTimeSpanFromTicks() {
+    public function FromTicks_ShouldContructTimeSpanFromTicks() {
         
         # Arrange:
         $ticks = TimeSpan::TicksPerDay;
@@ -190,7 +193,7 @@ class TimeSpanFixture extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function ShouldNegateTimeSpan() {
+    public function Negate_ShouldNegateTimeSpan() {
         
         # Arrange:
         $timespan = TimeSpan::fromTicks(TimeSpan::TicksPerDay);
@@ -206,7 +209,7 @@ class TimeSpanFixture extends PHPUnit_Framework_TestCase {
      * @test
      * @expectedException \System\FormatException
     */
-    public function ThrowsExceptionWhenFormatIsIncorrect() {
+    public function Parse_ThrowsExceptionWhenFormatIsIncorrect() {
         
         # Arrange:
         $format = "a";
@@ -219,7 +222,7 @@ class TimeSpanFixture extends PHPUnit_Framework_TestCase {
      * @test
      * @expectedException \System\ArgumentNullException
     */
-    public function ThrowsExceptionWhenFormatIsNull() {
+    public function Parse_ThrowsExceptionWhenFormatIsNull() {
         
         # Arrange:
         $format = null;
@@ -231,7 +234,7 @@ class TimeSpanFixture extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function ShouldParseDayFormat() {
+    public function Parse_ShouldParseDayFormat() {
         
         # Arrange:
         $format = "21";
@@ -246,7 +249,7 @@ class TimeSpanFixture extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function ShouldParseHourMinuteFormat() {
+    public function Parse_ShouldParseHourMinuteFormat() {
         
         # Arrange:
         $format = "22:50";
@@ -262,7 +265,7 @@ class TimeSpanFixture extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function ShouldParseHourMinuteSecondFormat() {
+    public function Parse_ShouldParseHourMinuteSecondFormat() {
         
         # Arrange:
         $format = "22:59:59";
@@ -279,7 +282,7 @@ class TimeSpanFixture extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function ShouldParseDayTimeFormat() {
+    public function Parse_ShouldParseDayTimeFormat() {
         
         # Arrange:
         $format = "10.22:59:59";
@@ -297,7 +300,7 @@ class TimeSpanFixture extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function ShouldParseDayHourMinuteSecondMillisecondFormat() {
+    public function Parse_ShouldParseDayHourMinuteSecondMillisecondFormat() {
         
         # Arrange:
         $format = "21.22:50:50.999";
@@ -316,7 +319,7 @@ class TimeSpanFixture extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function ShouldTryParseValidFormat() {
+    public function TryParse_ShouldTryParseValidFormat() {
         
         # Arrange:
         $format = "22:50";
@@ -332,7 +335,7 @@ class TimeSpanFixture extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function ShouldTryParseInvalidFormat() {
+    public function TryParse_ShouldTryParseInvalidFormat() {
         
         # Arrange:
         $format = "dotnetonphp";
@@ -348,7 +351,7 @@ class TimeSpanFixture extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function ShouldSubtractTimeSpan() {
+    public function Subtract_ShouldSubtractTimeSpan() {
         
         # Arrange:
         $timespan = TimeSpan::fromSeconds(10);
@@ -363,7 +366,7 @@ class TimeSpanFixture extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function ShouldMoveOneHourWhenSubtractTimeSpan() {
+    public function Subtract_ShouldMoveOneHourWhenSubtractTimeSpan() {
         
         # Arrange:
         $timespan = TimeSpan::fromHours(2);
@@ -378,7 +381,7 @@ class TimeSpanFixture extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function ShouldMoveOneMinuteWhenSubtractTimeSpan() {
+    public function Subtract_ShouldMoveOneMinuteWhenSubtractTimeSpan() {
         
         # Arrange:
         $timespan = TimeSpan::fromMinutes(2);
@@ -393,7 +396,7 @@ class TimeSpanFixture extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function ShouldMoveOneSecondWhenSubtractTimeSpan() {
+    public function Subtract_ShouldMoveOneSecondWhenSubtractTimeSpan() {
         
         # Arrange:
         $timespan = TimeSpan::fromSeconds(2);
@@ -409,7 +412,7 @@ class TimeSpanFixture extends PHPUnit_Framework_TestCase {
      * @test
      * @expectedException \System\OverflowException
     */
-    public function ThrowsExceptionWhenTryRemoveLessThanMinValue() {
+    public function Subtract_ThrowsExceptionWhenTryRemoveLessThanMinValue() {
         
         # Arrange:
         $timespan = TimeSpan::minValue();
@@ -421,7 +424,7 @@ class TimeSpanFixture extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function ShouldTrueWhenCompareTwoTimeSpan() {
+    public function Equals_ShouldTrueWhenCompareTwoTimeSpan() {
         
         # Arrange:
         $first = TimeSpan::fromSeconds(10);
@@ -437,7 +440,7 @@ class TimeSpanFixture extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function ShouldFalseWhenCompareTwoTimeSpan() {
+    public function Equals_ShouldFalseWhenCompareTwoTimeSpan() {
         
         # Arrange:
         $first = TimeSpan::fromSeconds(10);
@@ -454,7 +457,7 @@ class TimeSpanFixture extends PHPUnit_Framework_TestCase {
      * @test
      * @expectedException \System\ArgumentException
     */
-    public function ThrowsExceptionWhenCompareInvalidValue() {
+    public function CompareTo_ThrowsExceptionWhenCompareInvalidValue() {
         
         # Arrange:
         $value = 1;
@@ -467,7 +470,7 @@ class TimeSpanFixture extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function ShouldCompareToGreaterSpan() {
+    public function CompareTo_ShouldCompareToGreaterSpan() {
         
         # Arrange:
         $first = TimeSpan::fromSeconds(10);
@@ -483,7 +486,7 @@ class TimeSpanFixture extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function ShouldCompareToLesserTimeSpan() {
+    public function CompareTo_ShouldCompareToLesserTimeSpan() {
         
         # Arrange:
         $first = TimeSpan::fromSeconds(8);
@@ -499,7 +502,7 @@ class TimeSpanFixture extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function ShouldCompareToEqualTimeSpan() {
+    public function CompareTo_ShouldCompareToEqualTimeSpan() {
         
         # Arrange:
         $first = TimeSpan::fromSeconds(10);
