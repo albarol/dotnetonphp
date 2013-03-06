@@ -1,3 +1,4 @@
+
 <?php
 
 use \System\Object as Object;
@@ -7,33 +8,71 @@ use \System\Object as Object;
 */
 class ObjectFixture extends PHPUnit_Framework_TestCase {
 
-    public function testWhenCreateObjectShouldBeNotNull() {
-        $object = new Object();
-        $this->assertNotNull($object);
+    /**
+     * @test
+    */
+    public function HashCode_ShouldHaveHashCode() {
+        # Arrange:
+        $obj = new Object();
+
+        # Act:
+        $hash_code = $obj->getHashCode();
+
+        # Assert:
+        $this->assertGreaterThan(0, $hash_code);
     }
 
-    public function testWhenCreateObjectShouldHaveHashCode() {
-        $object = new Object();
-        $this->assertGreaterThan(0, $object->getHashCode());
+    /**
+     * @test
+    */
+    public function HashCode_ShouldGenerateDiffHashCode() {
+        
+        # Arrange:
+        $objOne = new Object();
+        $objTwo = new Object();
+    
+        # Act:
+        # Assert:
+        $this->assertNotEquals($objOne->getHashCode(), $objTwo->getHashCode());
     }
 
-    public function testWhenCompareTheSameObjectEqualsShouldBeTrue() {
-        $object = new Object();
-        $this->assertTrue($object->equals($object));
+
+    /**
+     * @test
+    */
+    public function Equals_ShouldBeTrueWhenCompareWithSameObject() {
+        
+        # Arrange:
+        $obj = new Object();
+        
+        # Act:
+        # Assert:
+        $this->assertTrue($obj->equals($obj));
     }
 
-    public function testWhenCompareTheDifferentObjectEqualsShouldBeFalse() {
-        $object = new Object();
-        $this->assertFalse($object->equals("string"));
+    /**
+     * @test
+    */
+    public function Equals_ShouldBeFalseWhenCompareWithAnotherObject() {
+        # Arrange:
+        $obj = new Object();
+        
+        # Act:
+        # Assert:
+        $this->assertFalse($obj->equals("obj"));
     }
 
-    public function testWhenCompareWithNullEqualsShouldBeFalse() {
-        $object = new Object();
-        $this->assertFalse($object->equals(null));
-    }
+    /**
+     * @test
+    */
+    public function ToString_ShouldGetNameOfClass() {
+        
+        # Arrange:
+        $obj = new Object();
 
-    public function testWhenGetToStringShouldBeNameOfClass() {
-        $object = new Object();
-        $this->assertEquals("System\Object", $object->toString());
+
+        # Act:
+        # Assert:
+        $this->assertEquals("System\Object", $obj->toString());
     }
 }

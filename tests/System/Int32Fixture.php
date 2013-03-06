@@ -7,7 +7,10 @@ use System\Int32 as Int32;
 */
 class Int32Fixture extends PHPUnit_Framework_TestCase {
 
-    public function test_Construct_CanConstructWithAnyValue() {
+    /**
+     * @test
+    */
+    public function Construct_CanConstructWithAnyValue() {
         # Arrange:
         $param = 123;
         
@@ -18,7 +21,10 @@ class Int32Fixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals($param, $obj->value());
     }
 
-    public function test_Construct_CanConstructWithMaxValue() {
+    /**
+     * @test
+    */
+    public function Construct_CanConstructWithMaxValue() {
         # Arrange:
         $max_value = Int32::MAX_VALUE;
         
@@ -29,7 +35,10 @@ class Int32Fixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals($max_value, $obj->value());
     }
 
-    public function test_Construct_CanConstructWithMinValue() {
+    /**
+     * @test
+    */
+    public function Construct_CanConstructWithMinValue() {
         # Arrange:
         $max_value = Int32::MIN_VALUE;
         
@@ -40,7 +49,10 @@ class Int32Fixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals($max_value, $obj->value());   
     }
 
-    public function test_CompareTo_ShouldMinusOneWhenValueIsLess() {
+    /**
+     * @test
+    */
+    public function CompareTo_ShouldMinusOneWhenValueIsLess() {
         # Arrange:
         $obj = Int32::minValue();
 
@@ -51,7 +63,10 @@ class Int32Fixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(-1, $result);
     }
 
-    public function test_CompareTo_ShouldOneWhenValueIsGreater() {
+    /**
+     * @test
+    */
+    public function CompareTo_ShouldOneWhenValueIsGreater() {
         # Arrange:
         $obj = Int32::maxValue();
 
@@ -62,7 +77,10 @@ class Int32Fixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(1, $result);
     }
 
-    public function test_CompareTo_ShouldZeroWhenValueIsEqual() {
+    /**
+     * @test
+    */
+    public function CompareTo_ShouldZeroWhenValueIsEqual() {
         # Arrange:
         $obj = Int32::maxValue();
 
@@ -73,7 +91,10 @@ class Int32Fixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(0, $result);
     }
 
-    public function test_CompareTo_ShouldCompareToAnotherInstance() {
+    /**
+     * @test
+    */
+    public function CompareTo_ShouldCompareToAnotherInstance() {
         # Arrange:
         $obj = Int32::maxValue();
 
@@ -84,7 +105,10 @@ class Int32Fixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(0, $result);
     }
 
-    public function test_Equals_ShouldTrueIfIsEqual() {
+    /**
+     * @test
+    */
+    public function Equals_ShouldTrueIfIsEqual() {
         # Arrange:
         $obj = Int32::maxValue();
 
@@ -95,7 +119,10 @@ class Int32Fixture extends PHPUnit_Framework_TestCase {
         $this->assertTrue($result);
     }
 
-    public function test_Equals_ShouldFalseIfIsNotEqual() {
+    /**
+     * @test
+    */
+    public function Equals_ShouldFalseIfIsNotEqual() {
         # Arrange:
         $obj = Int32::maxValue();
 
@@ -106,7 +133,10 @@ class Int32Fixture extends PHPUnit_Framework_TestCase {
         $this->assertFalse($result);
     }
 
-    public function test_Equals_ShouldFalseIfIsNotValue() {
+    /**
+     * @test
+    */
+    public function Equals_ShouldFalseIfIsNotValue() {
         # Arrange:
         $obj = Int32::maxValue();
 
@@ -117,7 +147,10 @@ class Int32Fixture extends PHPUnit_Framework_TestCase {
         $this->assertFalse($result);
     }
 
-    public function test_Equals_ShouldEqualsAnotherInstance() {
+    /**
+     * @test
+    */
+    public function Equals_ShouldEqualsAnotherInstance() {
         # Arrange:
         $obj = Int32::maxValue();
 
@@ -129,7 +162,10 @@ class Int32Fixture extends PHPUnit_Framework_TestCase {
     }
 
 
-    public function test_GetTypeCode_CanGetTypeCode() {
+    /**
+     * @test
+    */
+    public function GetTypeCode_CanGetTypeCode() {
         # Arrange:
         $obj = Int32::maxValue();
 
@@ -141,25 +177,34 @@ class Int32Fixture extends PHPUnit_Framework_TestCase {
     }
 
 
-    public function test_Parse_ThrowsExceptionWhenValueIsNull() {
+    /**
+     * @test
+     * @expectedException \System\ArgumentNullException
+    */
+    public function Parse_ThrowsExceptionWhenValueIsNull() {
         # Arrange:
-        $this->setExpectedException("\\System\\ArgumentNullException");
         $param = null;
 
         # Act:
         $obj = Int32::parse($param);
     }
 
-    public function test_Parse_ThrowsExceptionWhenValueIsNotInt32Value() {
+    /**
+     * @test
+     * @expectedException \System\FormatException
+    */
+    public function Parse_ThrowsExceptionWhenValueIsNotInt32Value() {
         # Arrange:
-        $this->setExpectedException("\\System\\FormatException");
         $param = "invalid_info";
 
         # Act:
         $obj = Int32::parse($param);
     }
 
-    public function test_Parse_CanParseValue() {
+    /**
+     * @test
+    */
+    public function Parse_CanParseValue() {
         # Arrange:
         $param = 123456;
 
@@ -170,7 +215,10 @@ class Int32Fixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals($param, $obj->value());
     }
 
-    public function test_TryParse_ReturnFalseWhenValueIsInvalid() {
+    /**
+     * @test
+    */
+    public function TryParse_ReturnFalseWhenValueIsInvalid() {
         # Arrange:
         $param = "invalid_info";
 
@@ -181,7 +229,10 @@ class Int32Fixture extends PHPUnit_Framework_TestCase {
         $this->assertFalse($parse['result']);
     }
 
-    public function test_TryParse_ReturnFalseWhenValueIsValid() {
+    /**
+     * @test
+    */
+    public function TryParse_ReturnFalseWhenValueIsValid() {
         # Arrange:
         $param = 123456;
 
@@ -192,7 +243,10 @@ class Int32Fixture extends PHPUnit_Framework_TestCase {
         $this->assertTrue($parse['result']);
     }
 
-    public function test_ToString_CanTransformToString() {
+    /**
+     * @test
+    */
+    public function ToString_CanTransformToString() {
         # Arrange:
         $obj = Int32::maxValue();
 
