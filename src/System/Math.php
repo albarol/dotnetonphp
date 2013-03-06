@@ -175,9 +175,7 @@ namespace System {
     * @return int A number equal to x - (y Q), where Q is the quotient of x / y rounded to the nearest integer (if x / y falls halfway between two integers, the even integer is returned).
     */
     public static function ieeeReminder($x, $y) {
-      print ($y * self::round($x / $y));
       return $x - ($y * self::round($x / $y));
-
     }
 
     /**

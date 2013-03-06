@@ -1,7 +1,5 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../src/Autoloader.php';
-
 use \System\Math as Math;
 use \System\MidpointRounding as MidpointRounding;
 
@@ -10,7 +8,10 @@ use \System\MidpointRounding as MidpointRounding;
 */
 class MathFixture extends PHPUnit_Framework_TestCase {
 
-    public function test_Abs_CanGetAbsoluteValueFromNegative() {
+    /**
+     * @test
+    */
+    public function Abs_ShouldGetAbsoluteValueFromNegative() {
         
         # Arrange
         $absolute = 1;
@@ -20,10 +21,12 @@ class MathFixture extends PHPUnit_Framework_TestCase {
     
         # Assert:
         $this->assertEquals($absolute, $result);
-
     }
 
-    public function test_Abs_CanGetAbsoluteValueFromPositive() {
+    /**
+     * @test
+    */
+    public function Abs_ShouldGetAbsoluteValueFromPositive() {
         
         # Arrange
         $absolute = 1;
@@ -35,7 +38,10 @@ class MathFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals($absolute, $result);
     }
 
-    public function test_Acos_ShouldReturnNanWhenParameterIsGreaterThanOne() {
+    /**
+     * @test
+    */
+    public function Acos_ShouldReturnNanWhenParameterIsGreaterThanOne() {
         
         # Arrange
         $d = 2;
@@ -47,7 +53,10 @@ class MathFixture extends PHPUnit_Framework_TestCase {
         $this->assertTrue(is_nan($result));
     }
 
-    public function test_Acos_ShouldReturnNanWhenParameterIsLessThanMinusOne() {
+    /**
+     * @test
+    */
+    public function Acos_ShouldReturnNanWhenParameterIsLessThanMinusOne() {
         
         # Arrange
         $d = -2;
@@ -59,7 +68,10 @@ class MathFixture extends PHPUnit_Framework_TestCase {
         $this->assertTrue(is_nan($result));
     }
 
-    public function test_Acos_ShouldCalculateAcos() {
+    /**
+     * @test
+    */
+    public function Acos_ShouldCalculateAcos() {
         
         # Arrange
         $d = 0.5;
@@ -71,7 +83,10 @@ class MathFixture extends PHPUnit_Framework_TestCase {
         $this->assertFalse(is_nan($result));
     }
 
-    public function test_Asin_ShouldReturnNanWhenParameterIsGreaterThanOne() {
+    /**
+     * @test
+    */
+    public function Asin_ShouldReturnNanWhenParameterIsGreaterThanOne() {
         
         # Arrange
         $d = 2;
@@ -83,7 +98,10 @@ class MathFixture extends PHPUnit_Framework_TestCase {
         $this->assertTrue(is_nan($result));
     }
 
-    public function test_Asin_ShouldReturnNanWhenParameterIsLessThanMinusOne() {
+    /**
+     * @test
+    */
+    public function Asin_ShouldReturnNanWhenParameterIsLessThanMinusOne() {
         
         # Arrange
         $d = -2;
@@ -95,7 +113,10 @@ class MathFixture extends PHPUnit_Framework_TestCase {
         $this->assertTrue(is_nan($result));
     }
 
-    public function test_Asin_ShouldCalculateAcos() {
+    /**
+     * @test
+    */
+    public function Asin_ShouldCalculateAcos() {
         
         # Arrange
         $d = 0.5;
@@ -107,7 +128,10 @@ class MathFixture extends PHPUnit_Framework_TestCase {
         $this->assertFalse(is_nan($result));
     }
 
-    public function test_Atan_ShouldReturnNanWhenParameterIsNan() {
+    /**
+     * @test
+    */
+    public function Atan_ShouldReturnNanWhenParameterIsNan() {
         
         # Arrange
         $d = NAN;
@@ -119,7 +143,10 @@ class MathFixture extends PHPUnit_Framework_TestCase {
         $this->assertTrue(is_nan($result));
     }
 
-    public function test_Atan_ShouldCalculateAtan() {
+    /**
+     * @test
+    */
+    public function Atan_ShouldCalculateAtan() {
         
         # Arrange
         $d = 0.5;
@@ -131,7 +158,10 @@ class MathFixture extends PHPUnit_Framework_TestCase {
         $this->assertFalse(is_nan($result));
     }
 
-    public function test_Atan2_ShouldCalculateAtan2() {
+    /**
+     * @test
+    */
+    public function Atan2_ShouldCalculateAtan2() {
         
         # Arrange
         $x = 2;
@@ -145,7 +175,10 @@ class MathFixture extends PHPUnit_Framework_TestCase {
     }
 
 
-    public function test_BigMul_CanMultiplyTwoSpecifiedNumbers() {
+    /**
+     * @test
+    */
+    public function BigMul_CanMultiplyTwoSpecifiedNumbers() {
         
         # Arrange
         $a = 10000;
@@ -158,7 +191,10 @@ class MathFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(100000000, $result);
     }
 
-    public function test_Ceiling_CanReturnSmallestIntegerToUp() {
+    /**
+     * @test
+    */
+    public function Ceiling_CanReturnSmallestIntegerToUp() {
         
         # Arrange
         $d = 11.59;
@@ -170,7 +206,10 @@ class MathFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(12, $result);     
     }
 
-    public function test_Ceiling_CanReturnSmallestIntegerToDown() {
+    /**
+     * @test
+    */
+    public function Ceiling_CanReturnSmallestIntegerToDown() {
         
         # Arrange
         $d = 11.11;
@@ -182,7 +221,10 @@ class MathFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(12, $result);     
     }
 
-    public function test_Cos_ShouldCalculateCos() {
+    /**
+     * @test
+    */
+    public function Cos_ShouldCalculateCos() {
         
         # Arrange
         $d = 30;
@@ -194,7 +236,10 @@ class MathFixture extends PHPUnit_Framework_TestCase {
         $this->assertNotEquals(NAN, $result);
     }
 
-    public function test_Cosh_ShouldCalculateCosh() {
+    /**
+     * @test
+    */
+    public function Cosh_ShouldCalculateCosh() {
         
         # Arrange
         $d = 30;
@@ -206,7 +251,10 @@ class MathFixture extends PHPUnit_Framework_TestCase {
         $this->assertNotEquals(NAN, $d);
     }
 
-    public function test_DivRem_ThrowsExceptionWhenDivisorIsZero() {
+    /**
+     * @test
+    */
+    public function DivRem_ThrowsExceptionWhenDivisorIsZero() {
         
         # Arrange
         $this->setExpectedException("\\System\\DivideByZeroException");
@@ -216,7 +264,10 @@ class MathFixture extends PHPUnit_Framework_TestCase {
         Math::divRem(10, 0);
     }
 
-    public function test_DivRem_ShouldGetRemider() {
+    /**
+     * @test
+    */
+    public function DivRem_ShouldGetRemider() {
         
         # Arrange
         $result = 0;
@@ -228,7 +279,10 @@ class MathFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(2, $result);
     }
 
-    public function test_Exp_ShouldCalculateSpecificPower() {
+    /**
+     * @test
+    */
+    public function Exp_ShouldCalculateSpecificPower() {
         
         # Arrange
         $number = 5.7;
@@ -240,7 +294,10 @@ class MathFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(298.86740096706, $result);
     }
 
-    public function test_Floor_CanReturnLargestIntegerToUp() {
+    /**
+     * @test
+    */
+    public function Floor_CanReturnLargestIntegerToUp() {
         
         # Arrange
         $d = 11.59;
@@ -252,7 +309,10 @@ class MathFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(12, $result);     
     }
 
-    public function test_Floor_CanReturnLargestIntegerToDown() {
+    /**
+     * @test
+    */
+    public function Floor_CanReturnLargestIntegerToDown() {
         
         # Arrange
         $d = 11.11;
@@ -264,7 +324,10 @@ class MathFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(12, $result);     
     }
 
-    public function test_IeeeRemider_ShouldCalculateIeee() {
+    /**
+     * @test
+    */
+    public function IeeeRemider_ShouldCalculateIeee() {
         
         # Arrange
         $x = 1;
@@ -277,7 +340,10 @@ class MathFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(-1, $result);
     }
 
-    public function test_Log_CanCalculateLogarithmBaseE() {
+    /**
+     * @test
+    */
+    public function Log_CanCalculateLogarithmBaseE() {
         
         # Arrange
         $d = 2;
@@ -289,7 +355,10 @@ class MathFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(0.69314718055995, $result);
     }
 
-    public function test_Log10_CanCalculateLogarithmBase10() {
+    /**
+     * @test
+    */
+    public function Log10_CanCalculateLogarithmBase10() {
         
         # Arrange
         $d = 2;
@@ -301,7 +370,10 @@ class MathFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(0.30102999566398, $result);
     }
 
-    public function test_Max_CanReturnMaxNumber() {
+    /**
+     * @test
+    */
+    public function Max_CanReturnMaxNumber() {
         
         # Arrange
         $val1 = 10;
@@ -314,7 +386,10 @@ class MathFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals($result, $val1);
     }
 
-    public function test_Min_CanReturnMinNumber() {
+    /**
+     * @test
+    */
+    public function Min_CanReturnMinNumber() {
         
         # Arrange
         $val1 = 10;
@@ -327,7 +402,10 @@ class MathFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals($result, $val2);
     }
 
-    public function test_Pow_CalculatePowerOfNumber() {
+    /**
+     * @test
+    */
+    public function Pow_CalculatePowerOfNumber() {
         
         # Arrange
         $x = 4;
@@ -340,7 +418,10 @@ class MathFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(16, $result);
     }
 
-    public function test_Round_CanRoundAwayFromZero() {
+    /**
+     * @test
+    */
+    public function Round_CanRoundAwayFromZero() {
         
         # Arrange
         $d = 2.57777;
@@ -352,7 +433,10 @@ class MathFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(3, $result);
     }
 
-    public function test_Round_CanRoundToEven() {
+    /**
+     * @test
+    */
+    public function Round_CanRoundToEven() {
         
         # Arrange
         $d = 2.48;
@@ -364,7 +448,10 @@ class MathFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(2, $result);
     }
 
-    public function test_Sign_CanGetSignFromPositiveNumber() {
+    /**
+     * @test
+    */
+    public function Sign_CanGetSignFromPositiveNumber() {
         
         # Arrange
         $value = 10;
@@ -376,7 +463,10 @@ class MathFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(1, $result);
     }
 
-    public function test_Sign_CanGetSignFromNegativeNumber() {
+    /**
+     * @test
+    */
+    public function Sign_CanGetSignFromNegativeNumber() {
         
         # Arrange
         $value = -10;
@@ -388,7 +478,10 @@ class MathFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(-1, $result);
     }
 
-    public function test_Sign_ReturnZeroWhenNumberIsZero() {
+    /**
+     * @test
+    */
+    public function Sign_ReturnZeroWhenNumberIsZero() {
         
         # Arrange
         $value = 0;
@@ -401,7 +494,10 @@ class MathFixture extends PHPUnit_Framework_TestCase {
         
     }
 
-    public function test_Sinh_ShouldCalculateSinh() {
+    /**
+     * @test
+    */
+    public function Sinh_ShouldCalculateSinh() {
         
         # Arrange
         $d = 30;
@@ -413,7 +509,10 @@ class MathFixture extends PHPUnit_Framework_TestCase {
         $this->assertNotEquals(NAN, $result);
     }
 
-    public function test_Sqrt_ShouldCalculateSqrt() {
+    /**
+     * @test
+    */
+    public function Sqrt_ShouldCalculateSqrt() {
         
         # Arrange
         $d = 30;
@@ -425,7 +524,10 @@ class MathFixture extends PHPUnit_Framework_TestCase {
         $this->assertNotEquals(NAN, $result);
     }
 
-    public function test_Tan_ShouldCalculateTan() {
+    /**
+     * @test
+    */
+    public function Tan_ShouldCalculateTan() {
         
         # Arrange
         $d = 30;
@@ -437,7 +539,10 @@ class MathFixture extends PHPUnit_Framework_TestCase {
         $this->assertNotEquals(NAN, $result);
     }
 
-    public function test_Tanh_ShouldCalculateTanh() {
+    /**
+     * @test
+    */
+    public function Tanh_ShouldCalculateTanh() {
         
         # Arrange
         $d = 30;
@@ -448,8 +553,14 @@ class MathFixture extends PHPUnit_Framework_TestCase {
         # Assert:
         $this->assertNotEquals(NAN, $result);
     }
-
-    public function test_Truncate_ShouldCalculateTruncate() {
+    
+    /**
+     * @test
+    */
+    /**
+     * @test
+    */
+    public function Truncate_ShouldCalculateTruncate() {
         
         # Arrange
         $d = 1.1111;
