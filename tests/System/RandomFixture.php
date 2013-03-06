@@ -1,7 +1,5 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../src/Autoloader.php';
-
 use \System\Random as Random;
 
 /**
@@ -9,7 +7,11 @@ use \System\Random as Random;
 */
 class RandomTest extends PHPUnit_Framework_TestCase {
 
-    public function test_Next_CanGenerateRandomNumber() {
+    /**
+     * @test
+    */
+    public function Next_CanGenerateRandomNumber() {
+    
         # Arrange:
         $rnd = new Random();
         
@@ -20,7 +22,11 @@ class RandomTest extends PHPUnit_Framework_TestCase {
         $this->assertGreaterThanOrEqual(0, $number);
     }
 
-    public function test_Next_CanGenerateRandomNumberWithSeed() {
+    /**
+     * @test
+    */
+    public function Next_CanGenerateRandomNumberWithSeed() {
+    
         # Arrange:
         $rnd = new Random(10);
                
@@ -33,7 +39,11 @@ class RandomTest extends PHPUnit_Framework_TestCase {
     }
 
 
-    public function test_Next_GenerateRandomShouldBeLessThanTen() {
+    /**
+     * @test
+    */
+    public function Next_GenerateRandomShouldBeLessThanTen() {
+        
         # Arrange:
         $rnd = new Random();
         $max_number = 10;
@@ -45,25 +55,37 @@ class RandomTest extends PHPUnit_Framework_TestCase {
         $this->assertLessThanOrEqual($max_number, $number);
     }
 
-    public function test_Next_ThrowsExceptionWhenMinIsLessThanZero() {
+    /**
+     * @test
+     * @expectedException \System\ArgumentOutOfRangeException
+    */
+    public function Next_ThrowsExceptionWhenMinIsLessThanZero() {
+        
         # Arrange:
-        $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
         $rnd = new Random();
         
         # Act:
         $number = $rnd->next(-1);
     }
 
-    public function test_Next_ThrowsExceptionWhenMinIsGreaterThanMaxValue() { 
+    /**
+     * @test
+     * @expectedException \System\ArgumentOutOfRangeException
+    */
+    public function Next_ThrowsExceptionWhenMinIsGreaterThanMaxValue() { 
+        
         # Arrange:
-        $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
         $rnd = new Random();
 
         # Act:
         $number = $rnd->next(2147483648);
     }
 
-    public function test_Next_CanGenerateNumberBetweenMinAndMax() {
+    /**
+     * @test
+    */
+    public function Next_CanGenerateNumberBetweenMinAndMax() {
+        
         # Arrange:
         $rnd = new Random();
         
@@ -75,16 +97,24 @@ class RandomTest extends PHPUnit_Framework_TestCase {
         $this->assertLessThanOrEqual(10, $number);
     }
 
-    public function test_Next_ThrowsExceptionWhenMinIsGreaterThanMax() {
+    /**
+     * @test
+     * @expectedException \System\ArgumentOutOfRangeException
+    */
+    public function Next_ThrowsExceptionWhenMinIsGreaterThanMax() {
+        
         # Arrange:
-        $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
         $rnd = new Random();
         
         # Act:
         $number = $rnd->next(10, 1);
     }
 
-    public function test_NextDouble_CanGenerateRandomNumberBetweenZeroAndOne() {
+    /**
+     * @test
+    */
+    public function NextDouble_CanGenerateRandomNumberBetweenZeroAndOne() {
+        
         # Arrange:
         $rnd = new Random();
         
@@ -96,16 +126,23 @@ class RandomTest extends PHPUnit_Framework_TestCase {
         $this->assertLessThanOrEqual(1.0, $number);
     }
 
-    public function test_NextBytes_ThrowsExceptionWhenBufferIsNull() {
+    /**
+     * @test
+     * @expectedException \System\ArgumentNullException
+    */
+    public function NextBytes_ThrowsExceptionWhenBufferIsNull() {
+        
         # Arrange:
-        $this->setExpectedException("\\System\\ArgumentNullException");
         $rnd = new Random();
 
         # Act:
         $rnd->nextBytes($result);
     }
 
-    public function test_NextBytes_CanGenerateRandomNumbersToArray() {
+    /**
+     * @test
+    */
+    public function NextBytes_CanGenerateRandomNumbersToArray() {
         # Arrange:
         $bytes = array(-1, -1, -1, -1);
         $rnd = new Random();
