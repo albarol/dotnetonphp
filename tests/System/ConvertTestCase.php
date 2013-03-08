@@ -26,8 +26,6 @@ class ConvertTestCase extends PHPUnit_Framework_TestCase {
 
     public function test_FromBase64String_ShouldReturnArrayOfBytes() {
         //$bytes = Convert::FromBase64String("aGVsbG8gd29ybGQK");
-        echo ("b" % 256);
+        // echo ("b" % 256);
     }
-
-
 }

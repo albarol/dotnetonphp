@@ -11,16 +11,25 @@ use \System\Text\NormalizationForm as NormalizationForm;
 */
 class StringTestCase extends PHPUnit_Framework_TestCase {
 
-    public function test_Chars_ThrowsExceptionWhenPositionIsInvalid() {
+    
+    /**
+     * @test
+     * @expectedException \System\ArgumentOutOfRangeException
+     */
+    public function Chars_ThrowsExceptionWhenPositionIsInvalid() {
+        
         # Arrange:
-        $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
         $obj = new String("dotnetonphp");
 
         # Act:
         $obj->chars(-1);
     }
 
-    public function test_Chars_CanGetCharInPosition() {
+    /**
+     * @test
+     */
+    public function Chars_CanGetCharInPosition() {
+        
         # Arrange:
         $obj = new String("dotnetonphp");
 
@@ -31,7 +40,11 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $this->assertEquals("d", $char);
     }
 
-    public function test_Concat_ShouldConcatStrings() {
+    /**
+     * @test
+     */
+    public function Concat_ShouldConcatStrings() {
+        
         # Arrange
         $words = array("dotnet", "onphp");
         
@@ -42,7 +55,11 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $this->assertEquals("dotnetonphp", $obj->value());
     }
 
-    public function test_Contains_ShouldBeTrueWhenContainsValue() {
+    /**
+     * @test
+     */
+    public function Contains_ShouldBeTrueWhenContainsValue() {
+        
         # Arrange:
         $obj = new String("dotnetonphp");
 
@@ -53,7 +70,11 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $this->assertTrue($result);
     }
 
-    public function test_Contains_ShouldBeFalseWhenNotContainsValue() {
+    /**
+     * @test
+     */
+    public function Contains_ShouldBeFalseWhenNotContainsValue() {
+        
         # Arrange:
         $obj = new String("dotnetonphp");
 
@@ -64,7 +85,11 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $this->assertFalse($result);
     }
 
-    public function test_CompareOrdinal_ShouldBeMinusOne() {
+    /**
+     * @test
+     */
+    public function CompareOrdinal_ShouldBeMinusOne() {
+        
         # Arrange
         $words = array("dotnet", "onphp");
         
@@ -75,7 +100,11 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $this->assertEquals(-1, $result);
     }
 
-    public function test_CompareOrdinal_ShouldBeOne() {
+    /**
+     * @test
+     */
+    public function CompareOrdinal_ShouldBeOne() {
+        
         # Arrange
         $words = array("dotnet", "onphp");
         
@@ -86,7 +115,11 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $this->assertEquals(1, $result);
     }
 
-    public function test_CompareOrdinal_ShouldBeZero() {
+    /**
+     * @test
+     */
+    public function CompareOrdinal_ShouldBeZero() {
+        
         # Arrange
         $words = array("dotnet", "onphp");
         
@@ -97,7 +130,11 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $this->assertEquals(0, $result);
     }
 
-    public function test_CompareTo_ShouldBeMinusOne() {
+    /**
+     * @test
+     */
+    public function CompareTo_ShouldBeMinusOne() {
+        
         # Arrange
         $str = new String("dotnet");
         $word = "onphp";
@@ -109,7 +146,11 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $this->assertEquals(-1, $result);
     }
 
-    public function test_CompareTo_ShouldBeOne() {
+    /**
+     * @test
+     */
+    public function CompareTo_ShouldBeOne() {
+        
         # Arrange
         $str = new String("onphp");
         $word = "dotnet";
@@ -121,7 +162,11 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $this->assertEquals(1, $result);
     }
 
-    public function test_CompareTo_ShouldBeZero() {
+    /**
+     * @test
+     */
+    public function CompareTo_ShouldBeZero() {
+        
         # Arrange
         $str = new String("dotnet");
         $word = "dotnet";
@@ -133,7 +178,11 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $this->assertEquals(0, $result);
     }
 
-    public function test_Copy_CanCreateCopyOfString() {
+    /**
+     * @test
+     */
+    public function Copy_CanCreateCopyOfString() {
+        
         # Arrange
         $str = new String("dotnetonphp");
         
@@ -144,43 +193,62 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $this->assertEquals("dotnetonphp", $obj->value());
     }
 
-    public function test_CopyTo_ThrowsExceptionWhenSourceIndexIsNegative() {
+    /**
+     * @test
+     * @expectedException \System\ArgumentOutOfRangeException
+     */
+    public function CopyTo_ThrowsExceptionWhenSourceIndexIsNegative() {
+        
         # Arrange
-        $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
         $str = new String("dotnetonphp");
         
         # Act:
         $str->copyTo(-1, 1, 10);
     }
 
-    public function test_CopyTo_ThrowsExceptionWhenDestinationIndexIsNegative() {
+    /**
+     * @test
+     * @expectedException \System\ArgumentOutOfRangeException
+     */
+    public function CopyTo_ThrowsExceptionWhenDestinationIndexIsNegative() {
+        
         # Arrange
-        $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
         $str = new String("dotnetonphp");
         
         # Act:
         $str->copyTo(0, -1, 10);
     }
 
-    public function test_CopyTo_ThrowsExceptionWhenCountIsNegative() {
+    /**
+     * @test
+     * @expectedException \System\ArgumentOutOfRangeException
+     */
+    public function CopyTo_ThrowsExceptionWhenCountIsNegative() {
+        
         # Arrange
-        $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
         $str = new String("dotnetonphp");
         
         # Act:
         $str->copyTo(0, 0, -1);
     }
 
-    public function test_CopyTo_ThrowsExceptionWhenCountIsGreaterThanSize() {
+    /**
+     * @test
+     * @expectedException \System\ArgumentOutOfRangeException
+     */
+    public function CopyTo_ThrowsExceptionWhenCountIsGreaterThanSize() {
+        
         # Arrange
-        $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
         $str = new String("dotnetonphp");
         
         # Act:
         $str->copyTo(9, 0, 3);
     }
 
-    public function test_CopyTo_CanCopyPartOfStringToArray() {
+    /**
+     * @test
+     */
+    public function CopyTo_CanCopyPartOfStringToArray() {
         # Arrange
         $str = new String("dotnetonphp");
         
@@ -191,7 +259,10 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $this->assertEquals('dot', implode("", $destination));
     }
 
-    public function test_GetTypeCode_CanGetTypeCodeToString() {
+    /**
+     * @test
+     */
+    public function GetTypeCode_CanGetTypeCodeToString() {
         # Arrange:
         $obj = new String("dotnetonphp");
 
@@ -202,7 +273,10 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $this->assertEquals(TypeCode::string(), $code);
     }
 
-    public function test_EndsWith_ShouldBeTrueIfStringEndsWith() {
+    /**
+     * @test
+     */
+    public function EndsWith_ShouldBeTrueIfStringEndsWith() {
         # Arrange
         $obj = new String("dotnetonphp");
 
@@ -213,7 +287,10 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $this->assertTrue($result);
     }
 
-    public function test_EndsWith_ShouldBeFalseIfStringNotEndsWith() {
+    /**
+     * @test
+     */
+    public function EndsWith_ShouldBeFalseIfStringNotEndsWith() {
         # Arrange
         $obj = new String("dotnetonphp");
 
@@ -224,7 +301,10 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $this->assertFalse($result);
     }
 
-    public function test_Equals_ShouldBeTrueWhenInstancesAreEqual() {
+    /**
+     * @test
+     */
+    public function Equals_ShouldBeTrueWhenInstancesAreEqual() {
         # Arrange:
         $obj = new String("dotnetonphp");
 
@@ -235,7 +315,10 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $this->assertTrue($result);
     }
 
-    public function test_Equals_ShouldBeTrueWhenInstancesAreNotEqual() {
+    /**
+     * @test
+     */
+    public function Equals_ShouldBeTrueWhenInstancesAreNotEqual() {
         # Arrange:
         $obj = new String("dotnetonphp");
 
@@ -246,27 +329,40 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $this->assertFalse($result);
     }
 
-    public function test_Format_ThrowsExceptionWhenFormatIsNull() {
-        # Arrange
-        $this->setExpectedException("\\System\\ArgumentNullException");
+    /**
+     * @test
+     * @expectedException \System\ArgumentNullException
+     */
+    public function Format_ThrowsExceptionWhenFormatIsNull() {
         
+        # Arrange
         # Act:
         String::format(null, array("a"));
     }
 
-    public function test_Format_ThrowsExceptionWhenArgumentIsNull() {
-        # Arrange
-        $this->setExpectedException("\\System\\ArgumentNullException");
+    /**
+     * @test
+     * @expectedException \System\ArgumentNullException
+     */
+    public function Format_ThrowsExceptionWhenArgumentIsNull() {
         
+        # Arrange
         # Act:
         String::format("X", array());
     }
 
-    public function test_Format_CanFormatArgument() {
+    /**
+     * @test
+     */
+    public function Format_CanFormatArgument() {
         $this->markTestIncomplete();
     }
 
-    public function test_GetEnumerator_CanGetEnumerator() {
+    /**
+     * @test
+     */
+    public function GetEnumerator_CanGetEnumerator() {
+        
         # Arrange
         $obj = new String("dotnetonphp");
                 
@@ -277,7 +373,11 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $this->assertTrue($enumerator instanceof \System\Collections\IEnumerator);
     }
 
-    public function test_IndexOf_ShouldReturnPositionWhenCharExists() {
+    /**
+     * @test
+     */
+    public function IndexOf_ShouldReturnPositionWhenCharExists() {
+        
         # Arrange:
         $obj = new String(".Net#On#Php");
         $char = "#";
@@ -289,7 +389,11 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $this->assertEquals(4, $position);
     }
 
-    public function test_IndexOf_ShouldReturnPositionWhenCharNotExists() {
+    /**
+     * @test
+     */
+    public function IndexOf_ShouldReturnPositionWhenCharNotExists() {
+        
         # Arrange:
         $obj = new String(".Net#On#Php");
         $char = "+";
@@ -301,7 +405,10 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $this->assertEquals(-1, $position);
     }
 
-    public function test_IndexOf_ShouldReturnPositionWhenStartIndexIsGreaterThanZero() {
+    /**
+     * @test
+     */
+    public function IndexOf_ShouldReturnPositionWhenStartIndexIsGreaterThanZero() {
         
         # Arrange
         $obj = new String("dotnetonphp");
@@ -313,7 +420,10 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $this->assertEquals(8, $position);
     }
 
-    public function test_IndexOf_ShouldReturnPositionInSpecificRange() {
+    /**
+     * @test
+     */
+    public function IndexOf_ShouldReturnPositionInSpecificRange() {
         
         # Arrange
         $obj = new String("dotnetonphp");
@@ -325,25 +435,36 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $this->assertEquals(5, $position);
     }
 
-    public function test_IndexOfAny_ThrowsExceptionWhenStartIndexIsNegative() {
+    /**
+     * @test
+     * @expectedException \System\ArgumentOutOfRangeException
+     */
+    public function IndexOfAny_ThrowsExceptionWhenStartIndexIsNegative() {
+        
         # Arrange
-        $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
         $obj = new String("dotnetonphp");
         
         # Act:
         $obj->indexOfAny(array('n', 'e', 't'), -1);
     }
 
-    public function test_IndexOfAny_ThrowsExceptionWhenStartIndexIsGreaterThanLength() {
+    /**
+     * @test
+     * @expectedException \System\ArgumentOutOfRangeException
+     */
+    public function IndexOfAny_ThrowsExceptionWhenStartIndexIsGreaterThanLength() {
+        
         # Arrange
-        $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
         $obj = new String("dotnetonphp");
         
         # Act:
         $obj->indexOfAny(array('n', 'e', 't'), 12);
     }
 
-    public function test_IndexOfAny_ShouldBeTrueWhenLookAllString() {
+    /**
+     * @test
+     */
+    public function IndexOfAny_ShouldBeTrueWhenLookAllString() {
         
         # Arrange
         $obj = new String("dotnetonphp");
@@ -355,7 +476,10 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $this->assertEquals(3, $result);
     }
 
-    public function test_IndexOfAny_ShouldBeTrueWhenLookPartOfString() {
+    /**
+     * @test
+     */
+    public function IndexOfAny_ShouldBeTrueWhenLookPartOfString() {
         
         # Arrange
         $obj = new String("dotnetonphp");
@@ -367,36 +491,49 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $this->assertEquals(3, $result);
     }
 
-    public function test_Insert_ThrowsExceptionWhenValueIsNull() {
+    /**
+     * @test
+     * @expectedException \System\ArgumentNullException
+     */
+    public function Insert_ThrowsExceptionWhenValueIsNull() {
         
         # Arrange
-        $this->setExpectedException("\\System\\ArgumentNullException");
         $obj = new String("dotnetonphp");
                 
         # Act:
         $obj->insert(0, null);
     }
 
-    public function test_ThrowsExceptionWhenStartIndexIsGreaterThanSizeOfString() {
+    /**
+     * @test
+     * @expectedException \System\ArgumentOutOfRangeException
+     */
+    public function ThrowsExceptionWhenStartIndexIsGreaterThanSizeOfString() {
         
         # Arrange
-        $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
         $obj = new String("dotnetonphp");
 
         # Act:
         $obj->insert(12, "new_value");
     }
 
-    public function test_Insert_ThrowsExceptionWhenStartIndexIsNegative() {
+    /**
+     * @test
+     * @expectedException \System\ArgumentOutOfRangeException
+     */
+    public function Insert_ThrowsExceptionWhenStartIndexIsNegative() {
+        
         # Arrange
-        $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
         $obj = new String("dotnetonphp");
 
         # Act:
         $obj->insert(-1, "new_value");
     }
 
-    public function test_Insert_CanInsertElementsInString() {
+    /**
+     * @test
+     */
+    public function Insert_CanInsertElementsInString() {
         
         # Arrange
         $obj = new String("dotnet");
@@ -408,29 +545,42 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $this->assertEquals("dotnetonphp", $new_string->value());
     }
 
-    // public function test_IsNormalized_VerifyIfIsNormalizedInFormC() {
-    //     # Arrange
-    //     $obj = new String("á");
+    /**
+     * @test
+     */
+    public function IsNormalized_VerifyIfIsNormalizedInFormC() {
+        $this->markTestIncomplete();
+        
+        # Arrange
+        $obj = new String("á");
 
-    //     # Act:
-    //     $result = $obj->isNormalized(NormalizationForm::formC());
+        # Act:
+        $result = $obj->isNormalized(NormalizationForm::formC());
     
-    //     # Assert:
-    //     $this->assertTrue($result);
-    // }
+        # Assert:
+        $this->assertTrue($result);
+    }
 
-    // public function test_IsNormalized_VerifyIfIsNormalizedInFormD() {
-    //     # Arrange
-    //     $obj = new String("á");
+    /**
+     * @test
+     */
+    public function IsNormalized_VerifyIfIsNormalizedInFormD() {
+        $this->markTestIncomplete();
 
-    //     # Act:
-    //     $result = $obj->isNormalized(NormalizationForm::formD());
+        # Arrange
+        $obj = new String("á");
+
+        # Act:
+        $result = $obj->isNormalized(NormalizationForm::formD());
     
-    //     # Assert:
-    //     $this->assertFalse($result);
-    // }
+        # Assert:
+        $this->assertFalse($result);
+    }
 
-    public function test_IsNullOrEmpty_ShouldTrueWhenStringIsNull() {
+    /**
+     * @test
+     */
+    public function IsNullOrEmpty_ShouldTrueWhenStringIsNull() {
         # Arrange:
         $string = null;
 
@@ -441,7 +591,10 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $this->assertTrue($result);
     }
 
-    public function test_IsNullOrEmpty_ShouldTrueWhenStringIsEmpty() {
+    /**
+     * @test
+     */
+    public function IsNullOrEmpty_ShouldTrueWhenStringIsEmpty() {
         #Arrange:
         $string = String::getEmpty();
         
@@ -452,7 +605,10 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $this->assertTrue($result);
     }
 
-    public function test_Join_ThrowsExceptionWhenStartIndexIsLessThanZero() {
+    /**
+     * @test
+     */
+    public function Join_ThrowsExceptionWhenStartIndexIsLessThanZero() {
         
         # Arrange
         $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
@@ -462,7 +618,10 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         String::join('', $value, -1);
     }
 
-    public function test_Join_ThrowsExceptionWhenStartIndexPlusCountIsGreaterThanArrayLength() {
+    /**
+     * @test
+     */
+    public function Join_ThrowsExceptionWhenStartIndexPlusCountIsGreaterThanArrayLength() {
         
         # Arrange
         $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
@@ -472,7 +631,10 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         String::join('', $value, 0, 3);
     }
 
-    public function test_Join_CanJoinValuesWithSeparator() {
+    /**
+     * @test
+     */
+    public function Join_CanJoinValuesWithSeparator() {
         
         # Arrange
         $value = array('dot', 'net', 'on', 'php');
@@ -484,7 +646,10 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $this->assertEquals("dotnetonphp", $obj->value());
     }
 
-    public function test_Join_CanJoinValuesWithSeparatorAndIndex() {
+    /**
+     * @test
+     */
+    public function Join_CanJoinValuesWithSeparatorAndIndex() {
         
         # Arrange
         $value = array('dot', 'net', 'on', 'php');
@@ -496,7 +661,10 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $this->assertEquals("netonphp", $obj->value());
     }
 
-    public function test_Join_CanJoinValuesWithSeparatorAndIndexAndCount() {
+    /**
+     * @test
+     */
+    public function Join_CanJoinValuesWithSeparatorAndIndexAndCount() {
         
         # Arrange
         $value = array('dot', 'net', 'on', 'php');
@@ -508,7 +676,10 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $this->assertEquals("dot,net", $obj->value());
     }
 
-    public function test_LastIndexOf_ThrowsExceptionWhenStartIndexIsNegative() {
+    /**
+     * @test
+     */
+    public function LastIndexOf_ThrowsExceptionWhenStartIndexIsNegative() {
 
         # Arrange
         $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
@@ -518,7 +689,10 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $obj->lastIndexOf('p', -1);
     }
 
-    public function test_LastIndexOf_CanGetLastPositionOfString() {
+    /**
+     * @test
+     */
+    public function LastIndexOf_CanGetLastPositionOfString() {
        
         # Arrange
         $obj = new String("dotnetonphp");
@@ -530,7 +704,10 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $this->assertEquals(10, $result);
     }
 
-    public function test_LastIndexOf_CanGetLastPositionInRange() {
+    /**
+     * @test
+     */
+    public function LastIndexOf_CanGetLastPositionInRange() {
         
         # Arrange
         $obj = new String("dotnetonphp");
@@ -542,7 +719,10 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $this->assertEquals(8, $result);
     }
 
-    public function test_LastIndexOfAny_ThrowsExceptionWhenStartIndexIsNegative() {
+    /**
+     * @test
+     */
+    public function LastIndexOfAny_ThrowsExceptionWhenStartIndexIsNegative() {
         # Arrange
         $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
         $obj = new String("dotnetonphp");
@@ -551,7 +731,10 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $obj->lastIndexOfAny(array('n', 'e', 't'), -1);
     }
 
-    public function test_LastIndexOfAny_ThrowsExceptionWhenStartIndexIsGreaterThanLength() {
+    /**
+     * @test
+     */
+    public function LastIndexOfAny_ThrowsExceptionWhenStartIndexIsGreaterThanLength() {
         # Arrange
         $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
         $obj = new String("dotnetonphp");
@@ -560,7 +743,10 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $obj->lastIndexOfAny(array('n', 'e', 't'), 12);
     }
 
-    public function test_LastIndexOfAny_ShouldBeTrueWhenLookAllString() {
+    /**
+     * @test
+     */
+    public function LastIndexOfAny_ShouldBeTrueWhenLookAllString() {
         
         # Arrange
         $obj = new String("dotnetonphp");
@@ -572,7 +758,10 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $this->assertEquals(-1, $result);
     }
 
-    public function test_Length_CanGetLengthOfString() {
+    /**
+     * @test
+     */
+    public function Length_CanGetLengthOfString() {
         # Arrange:
         $obj = new String("dotnetonphp");
 
@@ -583,7 +772,10 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $this->assertEquals(11, $length);
     }
 
-    public function test_LastIndexOfAny_ShouldBeTrueWhenLookPartOfString() {
+    /**
+     * @test
+     */
+    public function LastIndexOfAny_ShouldBeTrueWhenLookPartOfString() {
         
         # Arrange
         $obj = new String("dotnetonphp");
@@ -595,36 +787,49 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $this->assertEquals(3, $result);
     }
 
-    // public function test_Normalize_ShouldNormalizeInFormC() {
-        
-    //     # Arrange
-    //     $latin_letter = "\xCC\x8A";
-    //     $obj = new String("\xCC\x8A");
-                
-    //     # Act:
-    //     $normalized = $obj->normalize();
-    
-    //     # Assert:
-    //     $this->assertEquals($latin_letter, $normalized->value());
-    // }
+    /**
+     * @test
+     */
+    public function Normalize_ShouldNormalizeInFormC() {
 
-    // public function test_Normalize_ShouldNormalizeInFormD() {
-        
-    //     # Arrange
-    //     $latin_letter = "\xCC\x8A";
-    //     $obj = new String("\xCC\x8A");
-                
-    //     # Act:
-    //     $normalized = $obj->normalize(NormalizationForm::formD());
-    
-    //     # Assert:
-    //     $this->assertEquals($latin_letter, $normalized->value());
-    // }
-
-    public function test_PadLeft_ThrowsExceptionWhenTotalWidthIsLessThanZero() {
+        $this->markTestIncomplete();
         
         # Arrange
-        $this->setExpectedException("\\System\\ArgumentException");
+        $latin_letter = "\xCC\x8A";
+        $obj = new String("\xCC\x8A");
+                
+        # Act:
+        $normalized = $obj->normalize();
+    
+        # Assert:
+        $this->assertEquals($latin_letter, $normalized->value());
+    }
+
+    /**
+     * @test
+     */
+    public function Normalize_ShouldNormalizeInFormD() {
+
+        $this->markTestIncomplete();
+        
+        # Arrange
+        $latin_letter = "\xCC\x8A";
+        $obj = new String("\xCC\x8A");
+                
+        # Act:
+        $normalized = $obj->normalize(NormalizationForm::formD());
+    
+        # Assert:
+        $this->assertEquals($latin_letter, $normalized->value());
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentException
+     */
+    public function PadLeft_ThrowsExceptionWhenTotalWidthIsLessThanZero() {
+
+        # Arrange
         $width = -1;
         $obj = new String("dotnetonphp");
                 
@@ -632,7 +837,10 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $obj->padLeft($width);
     }
 
-    public function test_PadLeft_ShouldIncludeWhiteSpaceInString() {
+    /**
+     * @test
+     */
+    public function PadLeft_ShouldIncludeWhiteSpaceInString() {
         
         # Arrange
         $width = 16;
@@ -646,7 +854,10 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
 
     }
 
-    public function test_PadLeft_ShouldIncludeZeroInSTring() {
+    /**
+     * @test
+     */
+    public function PadLeft_ShouldIncludeZeroInSTring() {
         
         # Arrange
         $width = 5;
@@ -659,10 +870,13 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $this->assertEquals("22221", $str_pad->value());
     }
 
-    public function test_PadRight_ThrowsExceptionWhenTotalWidthIsLessThanZero() {
+    /**
+     * @test
+     * @expectedException \System\ArgumentException
+     */
+    public function PadRight_ThrowsExceptionWhenTotalWidthIsLessThanZero() {
         
         # Arrange
-        $this->setExpectedException("\\System\\ArgumentException");
         $width = -1;
         $obj = new String("dotnetonphp");
                 
@@ -670,7 +884,10 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $obj->padRight($width);
     }
 
-    public function test_PadRight_ShouldIncludeWhiteSpaceInString() {
+    /**
+     * @test
+     */
+    public function PadRight_ShouldIncludeWhiteSpaceInString() {
         
         # Arrange
         $width = 16;
@@ -684,7 +901,10 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
 
     }
 
-    public function test_PadRight_ShouldIncludeZeroInSTring() {
+    /**
+     * @test
+     */
+    public function PadRight_ShouldIncludeZeroInSTring() {
         
         # Arrange
         $width = 5;
@@ -697,7 +917,11 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $this->assertEquals("12222", $str_pad->value());
     }
 
-    public function test_Remove_CanRemovePartOfString() {
+    /**
+     * @test
+     */
+    public function Remove_CanRemovePartOfString() {
+
         # Arrange:
         $obj = new String("dotnetonphp");
 
@@ -708,16 +932,24 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $this->assertEquals("dot", $text->value());
     }
 
-    public function test_Remove_ThrowsExceptionWhenPositionIsInvalid() {
+    /**
+     * @test
+     * @expectedException \System\ArgumentOutOfRangeException
+     */
+    public function Remove_ThrowsExceptionWhenPositionIsInvalid() {
+        
         # Arrange:
-        $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
         $obj = new String("dotnetonphp");
 
         # Act:
         $obj->remove(-1);
     }
 
-    public function test_Replace_CanReplacePartOfString() {
+    /**
+     * @test
+     */
+    public function Replace_CanReplacePartOfString() {
+
         # Arrange:
         $obj = new String("dotneton###");
 
@@ -728,16 +960,24 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $this->assertEquals("dotnetonphp", $text->value());
     }
     
-    public function test_Replace_ThrowsExceptionWhenArgumentIsNull() {
+    /**
+     * @test
+     * @expectedException \System\ArgumentNullException
+     */
+    public function Replace_ThrowsExceptionWhenArgumentIsNull() {
+        
         # Arrange:
-        $this->setExpectedException("\\System\\ArgumentNullException");
         $obj = new String("dotnetonphp");
 
         # Act::
         $obj->replace(null, "php");
     }
 
-    public function test_ToCharArray_CanTransformStringInCharArray() {
+    /**
+     * @test
+     */
+    public function ToCharArray_CanTransformStringInCharArray() {
+        
         # Arrange:
         $obj = new String('DotNetOnPhp');
 
@@ -751,7 +991,11 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $this->assertEquals("P", $array[8]);
     }
 
-    public function test_ToUpper_CanTransformInUpperCase() {
+    /**
+     * @test
+     */
+    public function ToUpper_CanTransformInUpperCase() {
+        
         # Arrange:
         $obj = new String("DoTnEtOnPhP");
 
@@ -762,7 +1006,11 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $this->assertEquals("DOTNETONPHP", $result->value());
     }
 
-    public function test_ToLower_CanTransformInLowerCase() {
+    /**
+     * @test
+     */
+    public function ToLower_CanTransformInLowerCase() {
+        
         # Arrange:
         $obj = new String("DoTnEtOnPhP");
 
@@ -773,7 +1021,11 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $this->assertEquals("dotnetonphp", $result->value());
     }
     
-    public function test_Trim_CanRemoveSpacesFromBoundaries() {
+    /**
+     * @test
+     */
+    public function Trim_CanRemoveSpacesFromBoundaries() {
+        
         # Arrange:
         $obj = new String("    dot net on php   ");
 
@@ -784,7 +1036,11 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $this->assertEquals("dot net on php", $text->value());
     }
 
-    public function test_Trim_CanRemoveLetterFromBoundaries() {
+    /**
+     * @test
+     */
+    public function Trim_CanRemoveLetterFromBoundaries() {
+        
         # Arrange:
         $obj = new String("aaaadot net on phpaaaa");
         $trimChars = array('a');
@@ -796,7 +1052,10 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $this->assertEquals("dot net on php", $text->value());
     }
 
-    public function test_TrimEnd_CanRemoveSpacesFromRightBoundary() {
+    /**
+     * @test
+     */
+    public function TrimEnd_CanRemoveSpacesFromRightBoundary() {
         
         # Arrange:
         $obj = new String("    dot net on php   ");
@@ -808,7 +1067,10 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $this->assertEquals("    dot net on php", $text->value());
     }
 
-    public function test_TrimEnd_CanRemoveLetterFromRightBoundary() {
+    /**
+     * @test
+     */
+    public function TrimEnd_CanRemoveLetterFromRightBoundary() {
         
         # Arrange:
         $obj = new String("    dot net on phpaaa");
@@ -821,7 +1083,10 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $this->assertEquals("    dot net on php", $text->value());
     }
 
-    public function test_TrimStart_CanRemoveSpacesFromLeftBoundary() {
+    /**
+     * @test
+     */
+    public function TrimStart_CanRemoveSpacesFromLeftBoundary() {
         
         # Arrange:
         $obj = new String("    dot net on php   ");
@@ -833,7 +1098,10 @@ class StringTestCase extends PHPUnit_Framework_TestCase {
         $this->assertEquals("dot net on php   ", $text->value());
     }
 
-    public function test_TrimStart_CanRemoveLetterFromLeftBoundary() {
+    /**
+     * @test
+     */
+    public function TrimStart_CanRemoveLetterFromLeftBoundary() {
         
         # Arrange:
         $obj = new String("aaaadot net on php   ");

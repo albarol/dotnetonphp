@@ -18,12 +18,12 @@
    verbose="false">
 	<testsuites>
 		<testsuite name="dotnetonphp">
-			<directory suffix="Fixture.php">../System</directory>
+			<directory suffix="TestCase.php">../System</directory>
 		</testsuite>	
 	</testsuites>
 	<filter>
 	  <whitelist addUncoveredFilesFromWhitelist="true">
-		<directory suffix="Fixture.php">../../System</directory>
+		<directory suffix="TestCase.php">../../System</directory>
 	  </whitelist>
 	</filter>	
 	<logging>
