@@ -17,7 +17,6 @@ namespace System {
          * Converts a subset of a Unicode character array, which encodes binary data as base 64 digits, to an equivalent 8-bit unsigned integer array. Parameters specify the subset in the input array and the number of elements to convert.
          * @static
          * @access public
-         * @throws \System\ArgumentNullException inArray is null.
          * @throws \System\ArgumentOutOfRangeException offset or length is less than zero -or- offset plus length indicates a position not within inArray.
          * @throws \System\FormatException The length of inArray, ignoring white space characters, is not zero or multiple of 4 -or- The format of inArray is invalid.
          * @param $inArray A Unicode character array.
@@ -25,7 +24,24 @@ namespace System {
          * @param $length The number of elements in inArray to convert.
          * @return array An array of 8-bit unsigned integers equivalent to length elements at position offset in inArray.
          */
-        public static function fromBase64CharArray($inArray, $offset, $length) { }
+        public static function fromBase64CharArray($inArray = array(), $offset = 0, $length = null) { 
+            if ($offset < 0 || $length < 0):
+                throw new ArgumentOutOfRangeException("offset or length is less than zero -or- offset plus length indicates a position not within inArray.");
+            endif;
+
+            if(($offset + $length) > sizeof($inArray)):
+                throw new ArgumentOutOfRangeException("offset or length is less than zero -or- offset plus length indicates a position not within inArray.");
+            endif;
+
+            if (is_null($length)):
+                $length = sizeof($inArray) - $offset;
+            endif;
+
+            $inArray = array_slice($inArray, $offset, $length);
+            $result = Convert::fromBase64String(implode($inArray));
+
+            return $result;
+        }
 
         /**
          * Converts the specified System.String, which encodes binary data as base 64 digits, to an equivalent 8-bit unsigned integer array.
