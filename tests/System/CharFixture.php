@@ -8,7 +8,10 @@ use \System\TypeCode as TypeCode;
 */
 class CharFixture extends PHPUnit_Framework_TestCase {
 
-    public function test_CompareTo_ShouldBeZeroWhenValuesIsEqual() {
+    /**
+     * @test
+     */
+    public function CompareTo_ShouldBeZeroWhenValuesIsEqual() {
         # Arrange:
         $obj = Char::maxValue();
 
@@ -19,7 +22,10 @@ class CharFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(0, $result);
     }
 
-    public function test_CompareTo_ShouldBeMinusOneWhenInstanceIsGreater() {
+    /**
+     * @test
+     */
+    public function CompareTo_ShouldBeMinusOneWhenInstanceIsGreater() {
         # Arrange:
         $obj = Char::maxValue();
 
@@ -30,7 +36,10 @@ class CharFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(1, $result);
     }
 
-    public function test_CompareTo_ShouldBeMinusOneWhenInstanceIsLess() {
+    /**
+     * @test
+     */
+    public function CompareTo_ShouldBeMinusOneWhenInstanceIsLess() {
         # Arrange:
         $obj = Char::minValue();
 
@@ -41,21 +50,10 @@ class CharFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(-1, $result);
     }
 
-    public function test_ConvertFromUtf32_CanConvertLetterA() {
-        $this->markTestIncomplete('NotImpleted');
-
-        # Arrange:
-        $letter = 0x0041;
-
-        # Act:
-        $str = Char::convertFromUtf32($letter);
-
-        # Assert:
-        $this->assertEquals('A', $str);
-    }
-
-
-    public function test_Equals_ShouldBeEqualWhenValueIsEqual() {
+    /**
+     * @test
+     */
+    public function Equals_ShouldBeEqualWhenValueIsEqual() {
         # Arrange:
         $obj = Char::minValue();
 
@@ -66,7 +64,10 @@ class CharFixture extends PHPUnit_Framework_TestCase {
         $this->assertTrue($result);
     }
 
-    public function test_MaxValue_CanGetCharWithMaxValue() {
+    /**
+     * @test
+     */
+    public function MaxValue_CanGetCharWithMaxValue() {
         # Arrange:
         $obj = Char::maxValue();
 
@@ -74,7 +75,10 @@ class CharFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(Char::MAX_VALUE, $obj->value());
     }
 
-    public function test_MinValue_CanGetCharWithMinValue() {
+    /**
+     * @test
+     */
+    public function MinValue_CanGetCharWithMinValue() {
         # Arrange:
         $obj = Char::minValue();
 

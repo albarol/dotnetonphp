@@ -1,7 +1,5 @@
 <?php
 
-// require_once dirname(__FILE__) . '/../../src/Autoloader.php';
-
 use \System\Boolean as Boolean;
 use \System\TypeCode as TypeCode;
 
@@ -10,51 +8,60 @@ use \System\TypeCode as TypeCode;
 */
 class BooleanFixture extends PHPUnit_Framework_TestCase {
 
-    public function test_FalseString_ShouldBeEqualFalse() {
-        # Arrange:
-        $str = "False";
-
-        # Act:
-        $result = Boolean::FalseString;
-
-        # Assert:
-        $this->assertEquals($str, $result);
-    }
     
-    public function test_TrueString_ShouldBeEqualTrue() {
-        # Arrange:
-        $str = "True";
-
-        # Act:
-        $result = Boolean::TrueString;
-
-        # Assert:
-        $this->assertEquals($str, $result);   
-    }
-
-    public function test_CompareTo_InstanceFalseWithValueFalseShouldBeZero() {
+    /**
+     * @test
+     */
+    public function CompareTo_ShouldEqualWhenCompareSameFalseValue() {
+        
         # Arrange:
         $obj = new Boolean();
-
+    
         # Act:
         $result = $obj->compareTo(false);
-
+    
         # Assert:
         $this->assertEquals(0, $result);
     }
 
-    public function test_CompareTo_InstanceTrueWithValueTrueShouldBeZero() {
+
+    /**
+     * @test
+     */
+    public function CompareTo_ShouldEqualWhenCompareSameTrueValue() {
+        
         # Arrange:
         $obj = new Boolean(true);
-
+    
         # Act:
+        
         $result = $obj->compareTo(true);
 
         # Assert:
         $this->assertEquals(0, $result);
     }
 
-    public function test_CompareTo_InstanceTrueWithValueFalseShouldBeOne() {
+
+    /**
+     * @test
+     */
+    public function CompareTo_ShouldBeOneWhenTrueInstanceCompareWithFalseValue() {
+        
+        # Arrange:
+        $obj = new Boolean(true);
+    
+        # Act:
+        $result = $obj->compareTo(false);
+    
+        # Assert:
+        $this->assertEquals(1, $result);
+    }
+
+    /**
+     * @test
+     */
+    public function CompareTo_InstanceTrueWithValueFalseShouldBeOne() {
+        
         # Arrange:
         $obj = new Boolean(true);
 
@@ -65,7 +72,10 @@ class BooleanFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(1, $result);
     }
 
-    public function test_CompareTo_InstanceFalseWithValueTrueShouldBeMinusOne() {
+    /**
+     * @test
+     */
+    public function CompareTo_InstanceFalseWithValueTrueShouldBeMinusOne() {
         # Arrange:
         $obj = new Boolean();
 
@@ -76,7 +86,11 @@ class BooleanFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(-1, $result);
     }
 
-    public function test_Equals_ShouldTrueIfIsEqual() {
+    /**
+     * @test
+     */
+    public function Equals_ShouldTrueIfIsEqual() {
+        
         # Arrange:
         $obj = new Boolean();
 
@@ -87,7 +101,11 @@ class BooleanFixture extends PHPUnit_Framework_TestCase {
         $this->assertTrue($result);
     }
 
-    public function test_Equals_ShouldFalseIfIsNotEqual() {
+    /**
+     * @test
+     */
+    public function Equals_ShouldFalseIfIsNotEqual() {
+        
         # Arrange:
         $obj = new Boolean();
 
@@ -99,7 +117,11 @@ class BooleanFixture extends PHPUnit_Framework_TestCase {
     }
 
 
-    public function test_GetHashCode_GetHashCodeFalseWhenInstanceIsFalse() {
+    /**
+     * @test
+     */
+    public function GetHashCode_GetHashCodeFalseWhenInstanceIsFalse() {
+        
         # Arrange:
         $obj = new Boolean();
 
@@ -110,7 +132,11 @@ class BooleanFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(0, $result);
     }
 
-    public function test_GetHashCode_GetHashCodeTrueWhenInstanceIsTrue() {
+    /**
+     * @test
+     */
+    public function GetHashCode_GetHashCodeTrueWhenInstanceIsTrue() {
+        
         # Arrange:
         $obj = new Boolean(true);
 
@@ -121,7 +147,11 @@ class BooleanFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(1, $result);
     }
 
-    public function test_GetTypeCode_CanGetTypeCode() {
+    /**
+     * @test
+     */
+    public function GetTypeCode_CanGetTypeCode() {
+        
         # Arrange:
         $code = TypeCode::boolean();
         $obj = new Boolean();
@@ -133,23 +163,33 @@ class BooleanFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals($code, $result);
     }
 
-    public function test_Parse_ThrowsExceptionWhenArgumentIsNull() {
+    /**
+     * @test
+     * @expectedException \System\ArgumentNullException
+     */
+    public function Parse_ThrowsExceptionWhenArgumentIsNull() {
+        
         # Arrange:
-        $this->setExpectedException("\\System\\ArgumentNullException");
-
         # Act:
         $obj = Boolean::parse(null);
     }
 
-    public function test_Parse_ThrowsExceptionWhenArgumentIsInvalid() {
+    /**
+     * @test
+     * @expectedException \System\FormatException
+     */
+    public function Parse_ThrowsExceptionWhenArgumentIsInvalid() {
+        
         # Arrange:
-        $this->setExpectedException("\\System\\FormatException");
-
         # Act:
         $obj = Boolean::parse("a");
     }
 
-    public function test_Parse_CanParseFalseString() {
+    /**
+     * @test
+     */
+    public function Parse_CanParseFalseString() {
+        
         # Arrange:
         $str = "False";
 
@@ -160,7 +200,11 @@ class BooleanFixture extends PHPUnit_Framework_TestCase {
         $this->assertFalse($obj->value());
     }
 
-    public function test_Parse_CanParseTrueString() {
+    /**
+     * @test
+     */
+    public function Parse_CanParseTrueString() {
+        
         # Arrange:
         $str = "True";
 
@@ -171,7 +215,11 @@ class BooleanFixture extends PHPUnit_Framework_TestCase {
         $this->assertTrue($obj->value());
     }
 
-    public function test_TryParse_CanParseTrueString() {
+    /**
+     * @test
+     */
+    public function TryParse_CanParseTrueString() {
+        
         # Arrange:
         $str = "True";
 
@@ -183,7 +231,11 @@ class BooleanFixture extends PHPUnit_Framework_TestCase {
         $this->assertTrue($obj['object']);
     }
 
-    public function test_TryParse_CanParseFalseString() {
+    /**
+     * @test
+     */
+    public function TryParse_CanParseFalseString() {
+        
         # Arrange:
         $str = "False";
 
@@ -195,7 +247,11 @@ class BooleanFixture extends PHPUnit_Framework_TestCase {
         $this->assertFalse($obj['object']);
     }
 
-    public function test_TryParse_CantParseInvalidString() {
+    /**
+     * @test
+     */
+    public function TryParse_CantParseInvalidString() {
+        
         # Arrange:
         $str = "AAAA";
 
@@ -208,7 +264,11 @@ class BooleanFixture extends PHPUnit_Framework_TestCase {
     }    
 
   
-    public function test_ToString_CanConvertToTrueString() {
+    /**
+     * @test
+     */
+    public function ToString_CanConvertToTrueString() {
+        
         # Arrange:
         $obj = new Boolean(true);
 
@@ -219,7 +279,11 @@ class BooleanFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(Boolean::TrueString, $str);
     } 
 
-    public function test_ToString_CanConvertToFalseString() {
+    /**
+     * @test
+     */
+    public function ToString_CanConvertToFalseString() {
+        
         # Arrange:
         $obj = new Boolean();
 
