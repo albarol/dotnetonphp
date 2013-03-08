@@ -14,21 +14,6 @@ namespace System {
     class Convert {
 
         /**
-         * Returns an System.Object with the specified System.Type and whose value is equivalent to the specified object.
-         * @access public
-         * @static
-         * @throws ArgumentNullException
-         * @param $value An System.Object that implements the System.IConvertible interface.
-         * @param $conversionType A System.Type.
-         * @return void An object whose System.Type is conversionType and whose value is equivalent to value.
-         */
-        public static function changeType($value, $conversionType) {
-            if($conversionType == null)
-                throw new ArgumentNullException("conversionType is null");
-        }
-
-        
-        /**
          * Converts a subset of a Unicode character array, which encodes binary data as base 64 digits, to an equivalent 8-bit unsigned integer array. Parameters specify the subset in the input array and the number of elements to convert.
          * @static
          * @access public
@@ -37,20 +22,47 @@ namespace System {
          * @param $length The number of elements in inArray to convert.
          * @return array An array of 8-bit unsigned integers equivalent to length elements at position offset in inArray.
          */
-        public static function fromBase64CharArray($inArray, $offset, $length){ }
+        public static function fromBase64CharArray($inArray, $offset, $length) { }
 
         /**
          * Converts the specified System.String, which encodes binary data as base 64 digits, to an equivalent 8-bit unsigned integer array.
          * @static
          * @access public
-         * @throws System.ArgumentNullException: s is null.
-         * @throws System.FormatException: The length of s, ignoring white space characters, is not zero or a multiple of 4.
-         * @param String $s A System.String.
-         * @return Byte An array of 8-bit unsigned integers equivalent to s.
+         * @throws \System\ArgumentNullException s is null.
+         * @throws \System\FormatException: The length of s, ignoring white space characters, is not zero or a multiple of 4.
+         * @param string $s A string.
+         * @return array An array of 8-bit unsigned integers equivalent to s.
          */
         public static function fromBase64String($s){
-            if($s == null) throw new ArgumentNullException("s is null.");
-            if(sizeof($s) > 0 && sizeof($s) % 4 != 0) throw new FormatException("The length of s, ignoring white space characters, is not zero or a multiple of 4.");
+            if($s == null):
+                throw new ArgumentNullException("s is null.");
+            endif;
+            
+            $result = base64_decode($s, true);
+            
+            if ($result === FALSE):
+                throw new FormatException("The length of s, ignoring white space characters, is not zero or a multiple of 4.");
+            endif;
+
+
+            $out = false;
+            for($a=0; $a < strlen($result); $a++) {
+                $dec = ord(substr($result,$a,1));
+                $bin = '';
+                
+                for($i=7; $i>=0; $i--) {
+                    if ( $dec >= pow(2, $i) ) {
+                        $bin .= "1";
+                        $dec -= pow(2, $i);
+                    } else {
+                        $bin .= "0";
+                    }
+                }
+                
+                $out[$a] = $bin;
+            }
+
+            return $out;
         }
 
         /**

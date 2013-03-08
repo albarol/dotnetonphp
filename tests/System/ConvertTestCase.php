@@ -7,25 +7,43 @@ use \System\Convert as Convert;
 */
 class ConvertTestCase extends PHPUnit_Framework_TestCase {
 
-    /* TODO: Implement Method ChangeType */
-    /*public function testWhenTryChangeTypeNullShouldThrowException() {
-        $this->setExpectedException("ArgumentNullException");
-        Convert::ChangeType(null, null);
-    }*/
+    /**
+     * @test
+     * @expectedException \System\ArgumentNullException
+     */
+    public function FromBase64String_ThrowsExceptionWhenParameterIsNull() {
 
-
-    public function test_FromBase64String_ThrowsExceptionWhenParameterIsNull() {
-        $this->setExpectedException("\\System\\ArgumentNullException");
-        Convert::FromBase64String(null);
+        # Arrange:
+        # Act:
+        Convert::fromBase64String(null);
     }
 
-    public function test_FromBase64String_ThrowsExceptionWhenLengthOfStringIsNotZeroOrAMultipleOfFour() {
-        $this->setExpectedException("\\System\\FormatException");
-        Convert::FromBase64String("aGVsbG8gd29ybGQKk");
+    /**
+     * @test
+     * @expectedException \System\FormatException
+     */
+    public function FromBase64String_ThrowsExceptionWhenHasInvalidFormat() {
+        
+        # Arrange:
+        $s = "aGVsbG8gd29ybGQKk!@#AF";
+
+        # Act:
+        Convert::fromBase64String($s);
     }
 
-    public function test_FromBase64String_ShouldReturnArrayOfBytes() {
-        //$bytes = Convert::FromBase64String("aGVsbG8gd29ybGQK");
-        // echo ("b" % 256);
+    /**
+     * @test
+     */
+    public function FromBase64String_ShouldGetStringFromBase64() {
+        
+        # Arrange:
+        $s = "aGVsbG8gd29ybGQ";
+        $h_binary = '01101000';
+
+        # Act:
+        $result = Convert::fromBase64String($s);
+
+        # Assert:
+        $this->assertEquals($h_binary, $result[0]);
     }
 }
