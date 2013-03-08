@@ -6,8 +6,7 @@ use \System\TypeCode as TypeCode;
 /**
  * @group core
 */
-class BooleanFixture extends PHPUnit_Framework_TestCase {
-
+class BooleanTestCase extends PHPUnit_Framework_TestCase {
     
     /**
      * @test

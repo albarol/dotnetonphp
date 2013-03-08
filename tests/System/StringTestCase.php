@@ -1,7 +1,5 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../src/Autoloader.php';
-
 use \System\String as String;
 use \System\TypeCode as TypeCode;
 use \System\InvalidOperationException as InvalidOperationException;
@@ -11,7 +9,7 @@ use \System\Text\NormalizationForm as NormalizationForm;
 /**
  * @group core
 */
-class StringFixture extends PHPUnit_Framework_TestCase {
+class StringTestCase extends PHPUnit_Framework_TestCase {
 
     public function test_Chars_ThrowsExceptionWhenPositionIsInvalid() {
         # Arrange:

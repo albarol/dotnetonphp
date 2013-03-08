@@ -5,7 +5,7 @@ use \System\TimeSpan as TimeSpan;
 /**
  * @group core
 */
-class TimeSpanFixture extends PHPUnit_Framework_TestCase {
+class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
 
     /**
      * @expectedException \System\ArgumentException

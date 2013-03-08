@@ -5,7 +5,7 @@ use System\Int32 as Int32;
 /**
  * @group core
 */
-class Int32Fixture extends PHPUnit_Framework_TestCase {
+class Int32TestCase extends PHPUnit_Framework_TestCase {
 
     /**
      * @test

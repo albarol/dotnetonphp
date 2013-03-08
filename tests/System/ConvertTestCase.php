@@ -5,7 +5,7 @@ use \System\Convert as Convert;
 /**
  * @group core
 */
-class ConvertFixture extends PHPUnit_Framework_TestCase {
+class ConvertTestCase extends PHPUnit_Framework_TestCase {
 
     /* TODO: Implement Method ChangeType */
     /*public function testWhenTryChangeTypeNullShouldThrowException() {

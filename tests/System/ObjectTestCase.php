@@ -6,7 +6,7 @@ use \System\Object as Object;
 /**
  * @group core
 */
-class ObjectFixture extends PHPUnit_Framework_TestCase {
+class ObjectTestCase extends PHPUnit_Framework_TestCase {
 
     /**
      * @test

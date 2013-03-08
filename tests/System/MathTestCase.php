@@ -6,7 +6,7 @@ use \System\MidpointRounding as MidpointRounding;
 /**
  * @group core
 */
-class MathFixture extends PHPUnit_Framework_TestCase {
+class MathTestCase extends PHPUnit_Framework_TestCase {
 
     /**
      * @test

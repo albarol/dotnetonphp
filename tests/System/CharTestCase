@@ -6,7 +6,7 @@ use \System\TypeCode as TypeCode;
 /**
  * @group core
 */
-class CharFixture extends PHPUnit_Framework_TestCase {
+class CharTestCase extends PHPUnit_Framework_TestCase {
 
     /**
      * @test

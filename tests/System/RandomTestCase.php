@@ -5,7 +5,7 @@ use \System\Random as Random;
 /**
  * @group core
 */
-class RandomTest extends PHPUnit_Framework_TestCase {
+class RandomTestCase extends PHPUnit_Framework_TestCase {
 
     /**
      * @test
