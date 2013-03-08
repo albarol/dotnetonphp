@@ -17,6 +17,9 @@ namespace System {
          * Converts a subset of a Unicode character array, which encodes binary data as base 64 digits, to an equivalent 8-bit unsigned integer array. Parameters specify the subset in the input array and the number of elements to convert.
          * @static
          * @access public
+         * @throws \System\ArgumentNullException inArray is null.
+         * @throws \System\ArgumentOutOfRangeException offset or length is less than zero -or- offset plus length indicates a position not within inArray.
+         * @throws \System\FormatException The length of inArray, ignoring white space characters, is not zero or multiple of 4 -or- The format of inArray is invalid.
          * @param $inArray A Unicode character array.
          * @param $offset A position within inArray.
          * @param $length The number of elements in inArray to convert.
@@ -45,13 +48,13 @@ namespace System {
             endif;
 
 
-            $out = false;
-            for($a=0; $a < strlen($result); $a++) {
-                $dec = ord(substr($result,$a,1));
+            $out = array();
+            for($letter=0; $letter < strlen($result); $letter++) {
+                $dec = ord(substr($result, $letter, 1));
                 $bin = '';
                 
                 for($i=7; $i>=0; $i--) {
-                    if ( $dec >= pow(2, $i) ) {
+                    if ($dec >= pow(2, $i) ) {
                         $bin .= "1";
                         $dec -= pow(2, $i);
                     } else {
@@ -59,7 +62,7 @@ namespace System {
                     }
                 }
                 
-                $out[$a] = $bin;
+                $out[$letter] = $bin;
             }
 
             return $out;

@@ -20,6 +20,17 @@ class ConvertTestCase extends PHPUnit_Framework_TestCase {
 
     /**
      * @test
+     * @expectedException \System\ArgumentNullException
+     */
+    public function FromBase64String_ThrowsExceptionWhenEmpty() {
+        
+        # Arrange:
+        # Act:
+        Convert::fromBase64String('');
+    }
+
+    /**
+     * @test
      * @expectedException \System\FormatException
      */
     public function FromBase64String_ThrowsExceptionWhenHasInvalidFormat() {
