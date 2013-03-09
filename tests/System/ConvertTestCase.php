@@ -1,6 +1,7 @@
 <?php
 
 use \System\Convert as Convert;
+use \System\TypeCode as TypeCode;
 
 /**
  * @group core
@@ -171,5 +172,52 @@ class ConvertTestCase extends PHPUnit_Framework_TestCase {
 
         # Assert:
         $this->assertEquals($h_binary, $result[0]);
+    }
+
+    /**
+     * @test
+    */
+    public function GetTypeCode_GetEmptyTypeWhenIsNull() {
+        
+        # Arrange:
+        $instance = null;
+    
+        # Act:
+        $type_code = Convert::getTypeCode($instance);
+    
+        # Assert:
+        $this->assertEquals(TypeCode::nullable(), $type_code);
+    }
+
+    /**
+     * @test
+    */
+    public function GetTypeCode_GetTypeOfCode() {
+        
+        # Arrange:
+        $instance = \System\DateTime::now();
+    
+        # Act:
+        $type_code = Convert::getTypeCode($instance);
+    
+        # Assert:
+        $this->assertEquals('System\\DateTime', $type_code);
+    }
+
+    /**
+     * @test
+    */
+    public function ToBase64String_CanConvertBitArrayToBase64() {
+        
+        # Arrange:
+        $inArray = array('01101000', '01101000',
+                         '01101000', '01101000',
+                         '01101000', '01101000');
+    
+        # Act:
+        $base64_string = Convert::toBase64String($inArray);
+    
+        # Assert:
+        $this->assertEquals('aGhoaGho', $base64_string);
     }
 }

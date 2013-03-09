@@ -4,6 +4,7 @@ namespace System {
 
     use \System\ArgumentNullException as ArgumentNullException;
     use \System\FormatException as FormatException;
+    use \System\TypeCode as TypeCode;
 
     /**
      * Converts a base data type to another base data type.
@@ -11,7 +12,7 @@ namespace System {
      * @package System
      * @name Convert
      */
-    class Convert {
+    final class Convert {
 
         /**
          * Converts a subset of a Unicode character array, which encodes binary data as base 64 digits, to an equivalent 8-bit unsigned integer array. Parameters specify the subset in the input array and the number of elements to convert.
@@ -86,10 +87,29 @@ namespace System {
 
         /**
          * Returns the System.TypeCode for the specified object.
+         * @static
          * @access public
          * @param object $value An System.Object that implements the System.IConvertible interface.
          * @return int The System.TypeCode for value, or System.TypeCode.Empty if value is null.
          */
-        public static function getTypeCode($value) { }
+        public static function getTypeCode($value) { 
+            if (is_null($value)):
+                return TypeCode::nullable();
+            endif;
+            return get_class($value);
+        }
+
+
+        /**
+         * Converts the value of an array of 8-bit unsigned integers to its equivalent String representation encoded with base 64 digits.
+         * @static
+         * @access public
+         * @param array $inArray An array of 8-bit unsigned integers.
+         * @return string The String representation, in base 64, of the contents of inArray.
+        */
+        public static function toBase64String($inArray) {
+            $content = pack('H*', base_convert(implode($inArray), 2, 16));
+            return base64_encode($content);
+        }
     }
 }
