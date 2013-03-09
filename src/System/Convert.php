@@ -3,6 +3,7 @@
 namespace System {
 
     use \System\ArgumentNullException as ArgumentNullException;
+    use \System\DbNull as DbNull;
     use \System\FormatException as FormatException;
     use \System\TypeCode as TypeCode;
 
@@ -97,6 +98,11 @@ namespace System {
                 return TypeCode::nullable();
             endif;
             return get_class($value);
+        }
+
+
+        public static function isDbNull($value) {
+            return $value instanceof DbNull;
         }
 
 

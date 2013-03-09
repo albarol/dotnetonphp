@@ -1,6 +1,7 @@
 <?php
 
 use \System\Convert as Convert;
+use \System\DbNull as DbNull;
 use \System\TypeCode as TypeCode;
 
 /**
@@ -203,6 +204,37 @@ class ConvertTestCase extends PHPUnit_Framework_TestCase {
         # Assert:
         $this->assertEquals('System\\DateTime', $type_code);
     }
+
+    /**
+     * @test
+    */
+    public function IsDbNull_ShouldBeFalseWhenValueIsNotDbNull() {
+        
+        # Arrange:
+        $obj = 1;
+    
+        # Act:
+        $result = Convert::isDbNull($obj);
+    
+        # Assert:
+        $this->assertFalse($result);
+    }
+
+    /**
+     * @test
+    */
+    public function IsDbNull_ShouldBeTrueWhenValueIsDbNull() {
+        
+        # Arrange:
+        $obj = DbNull::value();
+    
+        # Act:
+        $result = Convert::isDbNull($obj);
+
+        # Assert:
+        $this->assertTrue($result);
+    }
+
 
     /**
      * @test
