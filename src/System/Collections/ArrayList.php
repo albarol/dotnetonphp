@@ -233,18 +233,21 @@ namespace System\Collections {
          * Returns an \System\Collections\ArrayList which represents a subset of the elements in the source \System\Collections\ArrayList.
          * @access public
          * @throws \System\ArgumentOutOfRangeException index less than zero -or- index greater than max value.
-         * @throws ArgumentException index and count do not denote a valid range of elements in the \System\Collections\ArrayList
+         * @throws \System\ArgumentException index and count do not denote a valid range of elements in the \System\Collections\ArrayList
          * @param int $index The zero-based \System\Collections\ArrayList index at which the range starts.
          * @param int $count The number of elements in the range.
          * @return \System\Collections\ArrayList An \System\Collections\ArrayList which represents a subset of the elements in the source \System\Collections\ArrayList.
          */
         public function getRange($index, $count) {
-            if(!$this->isValidIndex($index) || $count < 0):
+            
+            if(!$this->isValidIndex($index) || $count < 0) {
                 throw new ArgumentOutOfRangeException("index less than zero -or- index greater than max value.");
-            endif;
-            if(!$this->isValidRange($index, $count)):
+            }
+
+            if(!$this->isValidRange($index, $count)) {
                 throw new ArgumentException("index and count do not denote a valid range of elements in the \System\Collections\ArrayList");
-            endif;
+            }
+            
             $list = new ArrayList();
             for($i = 0; $i < $count; $i++)
                 $list->add($this->elements[$index + $i]);
