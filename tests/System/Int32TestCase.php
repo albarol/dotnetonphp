@@ -26,7 +26,7 @@ class Int32TestCase extends PHPUnit_Framework_TestCase {
     */
     public function Construct_CanConstructWithMaxValue() {
         # Arrange:
-        $max_value = Int32::MAX_VALUE;
+        $max_value = Int32::MaxValue;
         
         # Act:
         $obj = Int32::maxValue();
@@ -40,7 +40,7 @@ class Int32TestCase extends PHPUnit_Framework_TestCase {
     */
     public function Construct_CanConstructWithMinValue() {
         # Arrange:
-        $max_value = Int32::MIN_VALUE;
+        $max_value = Int32::MinValue;
         
         # Act:
         $obj = Int32::minValue();
@@ -57,7 +57,7 @@ class Int32TestCase extends PHPUnit_Framework_TestCase {
         $obj = Int32::minValue();
 
         # Act:
-        $result = $obj->compareTo(Int32::MAX_VALUE);
+        $result = $obj->compareTo(Int32::MaxValue);
 
         # Assert:
         $this->assertEquals(-1, $result);
@@ -71,7 +71,7 @@ class Int32TestCase extends PHPUnit_Framework_TestCase {
         $obj = Int32::maxValue();
 
         # Act:
-        $result = $obj->compareTo(Int32::MIN_VALUE);
+        $result = $obj->compareTo(Int32::MinValue);
 
         # Assert:
         $this->assertEquals(1, $result);
@@ -85,7 +85,7 @@ class Int32TestCase extends PHPUnit_Framework_TestCase {
         $obj = Int32::maxValue();
 
         # Act:
-        $result = $obj->compareTo(Int32::MAX_VALUE);
+        $result = $obj->compareTo(Int32::MaxValue);
 
         # Assert:
         $this->assertEquals(0, $result);
@@ -113,7 +113,7 @@ class Int32TestCase extends PHPUnit_Framework_TestCase {
         $obj = Int32::maxValue();
 
         # Act:
-        $result = $obj->equals(Int32::MAX_VALUE);
+        $result = $obj->equals(Int32::MaxValue);
 
         # Assert:
         $this->assertTrue($result);
@@ -127,7 +127,7 @@ class Int32TestCase extends PHPUnit_Framework_TestCase {
         $obj = Int32::maxValue();
 
         # Act:
-        $result = $obj->equals(Int32::MIN_VALUE);
+        $result = $obj->equals(Int32::MinValue);
 
         # Assert:
         $this->assertFalse($result);
@@ -141,7 +141,7 @@ class Int32TestCase extends PHPUnit_Framework_TestCase {
         $obj = Int32::maxValue();
 
         # Act:
-        $result = $obj->equals("Int32::MIN_VALUE");
+        $result = $obj->equals("Int32::MinValue");
 
         # Assert:
         $this->assertFalse($result);
