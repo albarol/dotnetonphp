@@ -16,7 +16,7 @@ class CharTestCase extends PHPUnit_Framework_TestCase {
         $obj = Char::maxValue();
 
         # Act:
-        $result = $obj->compareTo(Char::MAX_VALUE);
+        $result = $obj->compareTo(Char::MaxValue);
 
         # Assert:
         $this->assertEquals(0, $result);
@@ -30,7 +30,7 @@ class CharTestCase extends PHPUnit_Framework_TestCase {
         $obj = Char::maxValue();
 
         # Act:
-        $result = $obj->compareTo(Char::MIN_VALUE);
+        $result = $obj->compareTo(Char::MinValue);
 
         # Assert:
         $this->assertEquals(1, $result);
@@ -44,7 +44,7 @@ class CharTestCase extends PHPUnit_Framework_TestCase {
         $obj = Char::minValue();
 
         # Act:
-        $result = $obj->compareTo(Char::MAX_VALUE);
+        $result = $obj->compareTo(Char::MaxValue);
 
         # Assert:
         $this->assertEquals(-1, $result);
@@ -58,7 +58,7 @@ class CharTestCase extends PHPUnit_Framework_TestCase {
         $obj = Char::minValue();
 
         # Act:
-        $result = $obj->equals(Char::MIN_VALUE);
+        $result = $obj->equals(Char::MinValue);
 
         # Assert:
         $this->assertTrue($result);
@@ -72,17 +72,34 @@ class CharTestCase extends PHPUnit_Framework_TestCase {
         $obj = Char::maxValue();
 
         # Assert:
-        $this->assertEquals(Char::MAX_VALUE, $obj->value());
+        $this->assertEquals(Char::MaxValue, $obj->value());
     }
 
     /**
      * @test
      */
     public function MinValue_CanGetCharWithMinValue() {
+        
         # Arrange:
         $obj = Char::minValue();
 
         # Assert:
-        $this->assertEquals(Char::MIN_VALUE, $obj->value());
+        $this->assertEquals(Char::MinValue, $obj->value());
+    }
+
+    /**
+     * @test
+     */
+    public function GetTypeCode_ShouldBeCharTypeCode() {
+        
+        # Arrange:
+        $obj = Char::minValue();
+        $instance_type = 'System\\TypeCode';
+    
+        # Act:
+        $type_code = $obj->getTypeCode();
+    
+        # Assert:
+        $this->assertInstanceOf($instance_type, $type_code);
     }
 }
