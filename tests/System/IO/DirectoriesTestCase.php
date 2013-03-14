@@ -13,11 +13,6 @@ class DirectoriesTestCase extends PHPUnit_Framework_TestCase
         return '/tmp/' . md5(rand(1, 99).rand(1, 10)) ;
     }
 
-    public function tearDown() 
-    {
-
-    }
-
     /**
      * @test
     */

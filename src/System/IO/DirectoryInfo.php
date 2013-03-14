@@ -30,6 +30,8 @@ namespace System\IO {
      */
     final class DirectoryInfo extends FileSystemInfo {
 
+        const MaxPathSize = 248;
+
         private $parent;
         private $directories = array();
         private $files = array();
@@ -37,14 +39,14 @@ namespace System\IO {
         /**
          * Initializes a new instance of the System.IO.DirectoryInfo class on the specified path.
          * @access public
-         * @throws \System\ArgumentNullException: path is null.
-         * @throws \System\Security\SecurityException: The caller does not have the required permission.
-         * @throws \System\ArgumentException: path contains invalid characters such as ", <, >, or |.
-         * @throws \System\IO\PathTooLongException: The specified path, file name, or both exceed the system-defined maximum length. For example, on Windows-based platforms, paths must be less than 248 characters, and file names must be less than 260 characters. The specified path, file name, or both are too long.
+         * @throws \System\ArgumentNullException path is null.
+         * @throws \System\Security\SecurityException The caller does not have the required permission.
+         * @throws \System\IO\PathTooLongException The specified path, file name, or both exceed the system-defined maximum length. For example, on Windows-based platforms, paths must be less than 248 characters, and file names must be less than 260 characters. The specified path, file name, or both are too long.
          * @param string $path A string specifying the path on which to create the DirectoryInfo.
          * @return \System\IO\DirectoryInfo path A string specifying the path on which to create the DirectoryInfo.
          */
-        public function __construct($path) {
+        public function __construct($path) 
+        {
             $this->setPropertiesToDirectory($path);
             $this->validatePathName($path);
         }
@@ -233,23 +235,32 @@ namespace System\IO {
         }
 
 
-        //TODO: change contains to preg_match
         /**
          * This method validate if path is valid.
          * @access private
-         * @throws ArgumentNullException|PathTooLongException|IOException|ArgumentException
-         * @param string $path pathName
+         * @throws \System\ArgumentNullException path is null.
+         * @throws \System\IO\PathTooLongException The specified path, file name, or both exceed the system-defined maximum length. For example, on Windows-based platforms, paths must be less than 248 characters, and file names must be less than 260 characters. The specified path, file name, or both are too long.
+         * @throws \System\IO\IOException The subdirectory cannot be created.  -or- A file or directory already has the name specified by path
+         * @param string $path pathName 
          * @return bool
          */
-        private function validatePathName($path) {
-            $stringPath = new String($path);
-            if(String::isNullOrEmpty($path)) throw new ArgumentNullException("path is null.");
-            if($stringPath->length() > 248) throw new PathTooLongException("The specified path, file name, or both exceed the system-defined maximum length. For example, on Windows-based platforms, paths must be less than 248 characters, and file names must be less than 260 characters. The specified path, file name, or both are too long.");
-            if(file_exists($this->fullName()) && !is_dir($this->fullName())) throw new IOException("The subdirectory cannot be created.  -or- A file or directory already has the name specified by path");
-            if($stringPath->contains("*") ||
-               $stringPath->contains("<") ||
-               $stringPath->contains(">") ||
-               $stringPath->contains("|")) throw new ArgumentException("Path does not specify a valid file path or contains invalid DirectoryInfo characters.");
+        private function validatePathName($path) 
+        {
+            if(empty($path)) 
+            {
+                throw new ArgumentNullException("path is null.");
+            }
+
+            if(strlen($path) > self::MaxPathSize) 
+            {
+                throw new PathTooLongException("The specified path, file name, or both exceed the system-defined maximum length. For example, on Windows-based platforms, paths must be less than 248 characters, and file names must be less than 260 characters. The specified path, file name, or both are too long.");
+            }
+
+            if(file_exists($this->fullName()) && !is_dir($this->fullName())) 
+            {
+                throw new IOException("The subdirectory cannot be created.  -or- A file or directory already has the name specified by path");
+            }
+
             return true;
         }
 
