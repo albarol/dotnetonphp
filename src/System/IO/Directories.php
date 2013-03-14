@@ -23,12 +23,18 @@ namespace System\IO {
          * Creates all the directories in the specified path, applying the specified Windows security.
          * @static
          * @access public
-         * @throws IOException|UnauthorizedAccessException|ArgumentException|ArgumentNullException|PathTooLongException|DirectoryNotFoundException
-         * @param $path The directory to create.
+         * @throws \System\IO\IOException
+         * @throws \System\Security\UnauthorizedAccessException
+         * @throws \System\ArgumentException 
+         * @throws \System\ArgumentNullException
+         * @throws \System\PathTooLongException
+         * @throws \System\IO\DirectoryNotFoundException
+         * @param string $path The directory to create.
          * @param $directorySecurity The access control to apply to the directory.
-         * @return DirectoryInfo A System.IO.DirectoryInfo object representing the newly created directory.
+         * @return \System\IO\DirectoryInfo A DirectoryInfo object representing the newly created directory.
          */
-        public static function createDirectory($path, $directorySecurity=null) {
+        public static function createDirectory($path, $directorySecurity=null) 
+        {
             $directory = new DirectoryInfo($path);
             $directory->create();
             return $directory;
@@ -67,7 +73,8 @@ namespace System\IO {
          * @param string $path The path of the directory.
          * @return \System\DateTime A System.DateTime structure set to the creation date and time for the specified directory. This value is expressed in local time.
          */
-        public static function getCreationTime($path) {
+        public static function getCreationTime($path) 
+        {
             $directoryInfo = new DirectoryInfo($path);
             return $directoryInfo->creationTime();
         }
@@ -79,7 +86,8 @@ namespace System\IO {
          * @param string $path The path of the directory.
          * @return \System\DateTime A System.DateTime structure set to the creation date and time for the specified directory. This value is expressed in local time.
          */
-        public static function getCreationTimeUtc($path) {
+        public static function getCreationTimeUtc($path) 
+        {
             $directoryInfo = new DirectoryInfo($path);
             return $directoryInfo->creationTimeUtc();
         }
@@ -90,7 +98,8 @@ namespace System\IO {
          * @access public
          * @return string A string containing the path of the current working directory.
          */
-        public static function getCurrentDirectory() {
+        public static function getCurrentDirectory() 
+        {
             return getcwd();
         }
 
@@ -105,12 +114,17 @@ namespace System\IO {
          * @param int $searchOption One of the System.IO.SearchOption values that specifies whether the search operation should include all subdirectories or only the current directory.
          * @return array An array of type String containing the names of subdirectories in path.
          */
-        public static function getDirectories($path, $pattern="", $searchOption=null) {
-            $directoryInfo = new DirectoryInfo($path);
-            $directories = $directoryInfo->getDirectories($pattern, $searchOption);
+        public static function getDirectories($path, $pattern = "", $searchOption = null) {
+            
+            $info = new DirectoryInfo($path);
+            $childrens = $info->getDirectories($pattern, $searchOption);
             $names = array();
-            foreach($directories as $dir)
+            
+            foreach($childrens as $dir) 
+            {
                 array_push($names, $dir->name());
+            }
+                
             return $names;
         }
 
@@ -123,7 +137,8 @@ namespace System\IO {
          * @param string $path The path of a file or directory.
          * @return string A string containing the volume information, root information, or both for the specified path.
          */
-        public static function getDirectoryRoot($path) {
+        public static function getDirectoryRoot($path) 
+        {
             $directoryInfo = new DirectoryInfo($path);
            return $directoryInfo->root()->name();
         }

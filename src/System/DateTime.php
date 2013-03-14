@@ -542,9 +542,10 @@ namespace System {
          * @access public
          * @return DateTime
          */
-        public function utcNow() {
+        public function utcNow() 
+        {
             $current_date = strtotime($this->toString("Y-m-d H:m:s"));
-            $utc_date = getdate(strtotime(gmdate("Y-d-m H:m:s", $current_date)));
+            $utc_date = getdate(strtotime(gmdate("Y-m-d H:m:s", $current_date)));
             return new DateTime($utc_date["year"], $utc_date["mon"], $utc_date["mday"], $utc_date["hours"], $utc_date["minutes"], $utc_date["seconds"]);
         }
 

@@ -16,8 +16,8 @@ namespace System {
 
         private $value;
 
-        const MIN_VALUE = 0x0000;
-        const MAX_VALUE = 0xFFFF;
+        const MinValue = 0x0000;
+        const MaxValue = 0xFFFF;
         
         public function __construct() { }
 

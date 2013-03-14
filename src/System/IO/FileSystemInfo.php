@@ -49,8 +49,9 @@ namespace System\IO {
          * @access public
          * @return \System\DateTime The creation date and time of the current System.IO.FileSystemInfo object.
          */
-        public function creationTimeUtc(){
-            return gmdate($this->dates["CREATED_TIME"]->toString("c"));
+        public function creationTimeUtc()
+        {
+            return $this->dates["CREATED_TIME"]->toUniversalTime();
         }
 
         /**
@@ -169,7 +170,7 @@ namespace System\IO {
                 $this->dates["LAST_ACCESS_TIME"] = DateTime::parse(date("Y-m-d", fileatime($fileSystem)));
                 $this->dates["LAST_WRITE_TIME"] = DateTime::parse(date("Y-m-d", filemtime($fileSystem)));
                 $this->dates["CREATED_TIME"] = DateTime::parse(date("Y-m-d", filectime($fileSystem)));
-                $this->info["FULL_NAME"] = $this->info["DIRECTORY_NAME"].Path::AltDirectorySeparatorChar.basename($fileSystem);
+                $this->info["FULL_NAME"] = $this->info["DIRECTORY_NAME"].Path::DirectorySeparatorChar.basename($fileSystem);
                 $this->info["EXISTS"] = true;
             }
             $this->info["NAME"] = basename($this->info["FULL_NAME"]);

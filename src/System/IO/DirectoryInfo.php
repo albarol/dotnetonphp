@@ -37,12 +37,12 @@ namespace System\IO {
         /**
          * Initializes a new instance of the System.IO.DirectoryInfo class on the specified path.
          * @access public
-         * @throws system.ArgumentNullException: path is null.
-         * @throws system.security.securityException: The caller does not have the required permission.
-         * @throws system.ArgumentException: path contains invalid characters such as ", <, >, or |.
-         * @throws system.IO.PathTooLongException: The specified path, file name, or both exceed the system-defined maximum length. For example, on Windows-based platforms, paths must be less than 248 characters, and file names must be less than 260 characters. The specified path, file name, or both are too long.
-         * @param String $path A string specifying the path on which to create the DirectoryInfo.
-         * @return DirectoryInfo path: A string specifying the path on which to create the DirectoryInfo.
+         * @throws \System\ArgumentNullException: path is null.
+         * @throws \System\Security\SecurityException: The caller does not have the required permission.
+         * @throws \System\ArgumentException: path contains invalid characters such as ", <, >, or |.
+         * @throws \System\IO\PathTooLongException: The specified path, file name, or both exceed the system-defined maximum length. For example, on Windows-based platforms, paths must be less than 248 characters, and file names must be less than 260 characters. The specified path, file name, or both are too long.
+         * @param string $path A string specifying the path on which to create the DirectoryInfo.
+         * @return \System\IO\DirectoryInfo path A string specifying the path on which to create the DirectoryInfo.
          */
         public function __construct($path) {
             $this->setPropertiesToDirectory($path);
@@ -52,7 +52,7 @@ namespace System\IO {
         /**
          * Creates a directory.
          * @access public
-         * @throws IOException
+         * @throws \System\IOException The directory cannot be created.
          * @return void
          */
         public function create() {
@@ -82,13 +82,22 @@ namespace System\IO {
 
         /**
          * Deletes this instance of a System.IO.DirectoryInfo, specifying whether to delete subdirectories and files.
-         * @throws IOException
+         * @throws \System\IOException The directory is read-only. -or- The directory contains one or more files or subdirectories and recursive is false.  -or- The directory is the application's current working directory.
          * @param bool $recursive true to delete this directory, its subdirectories, and all files; otherwise, false.
          * @return void
          */
-        public function delete($recursive=false) {
-            if(!is_writable($this->fullName())) throw new IOException("The directory is read-only.");
-            if(!$recursive && $this->hasChildren()) throw new IOException("The directory contains one or more files or subdirectories and recursive is false.  -or- The directory is the application's current working directory.");
+        public function delete($recursive = false) {
+            
+            if(!is_writeable($this->fullName())) 
+            {
+                throw new IOException("The directory is read-only.");
+            }
+
+            if(!$recursive && $this->hasChildren()) 
+            {
+                throw new IOException("The directory contains one or more files or subdirectories and recursive is false.  -or- The directory is the application's current working directory.");
+            }
+
             $this->deleteChildrenFiles($this->getFiles());
             $this->deleteChildrenDirectories($this->getDirectories(), $recursive);
             rmdir($this->fullName());

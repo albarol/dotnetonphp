@@ -1,6 +1,7 @@
 <?php
 
-namespace System\IO {
+namespace System\IO 
+{
 
     use System\ArgumentException as ArgumentException;
 
@@ -15,7 +16,8 @@ namespace System\IO {
      * @package System
      * @subpackage IO
      */
-    class BinaryReader {
+    class BinaryReader 
+    {
 
         private $stream;
 
@@ -25,15 +27,15 @@ namespace System\IO {
          * @access public
          * @throws \System\ArgumentException The stream does not support reading, the stream is null, or the stream is already closed.
          * @throws \System\ArgumentNullException encoding is null.
-         * @param Stream $input The supplied stream
+         * @param \System\IO\Stream $input The supplied stream
          * @param \System\Text\Encoding $encoding The character encoding.
          */
-        public function __construct(Stream $input, Encoding $encoding=null) {
-            if($input == null || !$input->canRead()) {
+        public function __construct(Stream $input, Encoding $encoding=null) 
+        {
+            if($input == null || !$input->canRead()) 
+            {
                 throw new ArgumentException("The stream does not support reading, the stream is null, or the stream is already closed.");
             }
-
-
         }
 
         /**
