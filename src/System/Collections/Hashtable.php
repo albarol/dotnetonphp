@@ -19,11 +19,11 @@ namespace System\Collections {
      * @package System
      * @subpackage Collections
      */
-    class Hashtable implements ICloneable, IDictionary, ISerializable, IDeserializationCallback  {
-
+    class Hashtable implements ICloneable, IDictionary, ISerializable, IDeserializationCallback  
+    {
         private $elements = array();
 
-        public function __construct($d=null) 
+        public function __construct($d = null) 
         {
             if($d instanceof IDictionary) 
             {
@@ -269,7 +269,7 @@ namespace System\Collections {
         /**
          * Removes the element with the specified key from the System.Collections.IDictionary object.
          * @access public
-         * @throws ArgumentNullException|NotSupportedException
+         * @throws \System\ArgumentNullException
          * @param object $key The key of the element to remove.
          * @return void
          */
@@ -303,6 +303,11 @@ namespace System\Collections {
          */
         public function set($key, $value) 
         {
+            if (is_null($key))
+            {
+                throw new ArgumentNullException("key is null.");
+            }
+
             $this->elements[$key] = $value;
         }
     }

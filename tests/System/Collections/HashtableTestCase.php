@@ -7,7 +7,8 @@ class HashtableTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
      */
-    public function Construct_ConstructFromDictionary() {
+    public function Construct_ConstructFromDictionary() 
+    {
         
         # Arrange:
         $hash = new Hashtable;
@@ -24,7 +25,8 @@ class HashtableTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
      */
-    public function Construct_ShouldConstructHashtable() {
+    public function Construct_ShouldConstructHashtable() 
+    {
         
         # Arrange:
         # Act:
@@ -38,7 +40,8 @@ class HashtableTestCase extends PHPUnit_Framework_TestCase {
      * @test
      * @expectedException \System\ArgumentNullException
      */
-    public function Add_ThrowsExceptionWhenKeyIsNull() {
+    public function Add_ThrowsExceptionWhenKeyIsNull() 
+    {
         
         # Arrange:
         $hash = new Hashtable;
@@ -52,7 +55,8 @@ class HashtableTestCase extends PHPUnit_Framework_TestCase {
      * @test
      * @expectedException \System\ArgumentException
      */
-    public function Add_ThrowsExceptionWhenKeyAlreadyExists() {
+    public function Add_ThrowsExceptionWhenKeyAlreadyExists() 
+    {
         
         # Arrange:
         $hash = new Hashtable;
@@ -370,29 +374,21 @@ class HashtableTestCase extends PHPUnit_Framework_TestCase {
         $hash->remove(null);
     }
 
-    /**
-     * @test
-     */
-    public function Remove_ThrowsExceptionWhenHashtableIsReadOnly() {
-        $this->markTestSkipped("This method not implemented.");
-    }
 
     /**
      * @test
      */
-    public function Remove_ThrowsExceptionWhenHashtableIsFixedSize() {
-        $this->markTestSkipped("This method not implemented.");
-    }
-
-    /**
-     * @test
-     */
-    public function Remove_CanRemoveElements() {
+    public function Remove_CanRemoveElements() 
+    {
+        # Arrange:
         $hash = new Hashtable;
         $hash->add(1, "a");
-        $hash->add(2, "b");
+
+        # Act:
         $hash->remove(1);
-        $this->assertEquals(1, $hash->count());
+        
+        # Assert:
+        $this->assertEquals(0, $hash->count());
     }
 
     
@@ -400,25 +396,63 @@ class HashtableTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
      */
-    public function Values_GetAllValues() {
+    public function Values_GetAllValues() 
+    {
+        # Arrange:
         $hash = new Hashtable;
         $hash->add(1, "a");
-        $hash->add(2, "b");
-        $this->assertEquals(2, sizeof($hash->values()));
+        
+        # Act:
+        $values = $hash->values();
+
+        # Assert:
+        $this->assertEquals('a', $values[0]);
     }
 
     
+    /**
+     * @test
+     * @expectedException \System\ArgumentNullException
+     */
+    public function Set_ThrowsExceptionWhenKeyIsNull() 
+    {
+        
+        # Arrange:
+        $hash = new Hashtable;
+        $key = null;
+    
+        # Act:
+        $hash->set($key, 'a');
+    }
 
     /**
      * @test
      */
-    public function Set_CanSetElement() {
+    public function Set_CanSetElement() 
+    {
+       # Arrange:
         $hash = new Hashtable;
-        $hash->add(1, "b");
-        $hash->set(1, "a");
-        $this->assertEquals("a", $hash->get(1));
+        $hash->add(1, 2);
+    
+        # Act:
+        $hash->set(1, 'a');
+    
+        # Assert:
+        $this->assertEquals('a', $hash->get(1));
     }
 
+    /**
+     * @test
+     */
+    public function Set_ShouldAddElementWhenNotExists() 
+    {
+       # Arrange:
+        $hash = new Hashtable;
     
-
+        # Act:
+        $hash->set(1, 'a');
+    
+        # Assert:
+        $this->assertEquals('a', $hash->get(1));
+    }
 }

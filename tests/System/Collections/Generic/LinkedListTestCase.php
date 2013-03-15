@@ -1,11 +1,9 @@
 <?php
 
-require_once 'PHPUnit/Framework.php';
+use \System\Collections\LinkedList as LinkedList;
 
-require_once dirname(__FILE__) . '/../../../system/collections/LinkedList.php';
-
-class LinkedListTest extends PHPUnit_Framework_TestCase {
-
+class LinkedListTestCase extends PHPUnit_Framework_TestCase 
+{
     public function testCanAddFirstToLinkedList() {
         $linked = new LinkedList();
         $linked->addFirst("Alexandre");
