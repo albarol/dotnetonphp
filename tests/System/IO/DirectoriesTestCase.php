@@ -5,13 +5,8 @@ use \System\IO\Directories as Directories;
 /**
  * @group io
 */
-class DirectoriesTestCase extends PHPUnit_Framework_TestCase 
+class DirectoriesTestCase extends IOBaseTestCase 
 {
-
-    private function generateName() 
-    {
-        return '/tmp/' . md5(rand(1, 99).rand(1, 10)) ;
-    }
 
     /**
      * @test

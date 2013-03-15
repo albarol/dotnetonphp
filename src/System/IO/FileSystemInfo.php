@@ -156,15 +156,19 @@ namespace System\IO {
             $this->attributes = FileAttributes::archive();
         }
 
-        protected  function setPropertiesToDirectory($fileSystem) {
-            if(!file_exists($fileSystem)) {
+        protected function setPropertiesToDirectory($fileSystem) 
+        {
+            if(!file_exists($fileSystem)) 
+            {
                 $this->info["DIRECTORY_NAME"] = $fileSystem;
                 $this->dates["LAST_ACCESS_TIME"] = DateTime::now();
                 $this->dates["LAST_WRITE_TIME"] = DateTime::now();
                 $this->dates["CREATED_TIME"] = DateTime::now();
                 $this->info["FULL_NAME"] = $this->info["DIRECTORY_NAME"];
                 $this->info["EXISTS"] = false;
-            } else {
+            } 
+            else 
+            {
                 $info = pathinfo($fileSystem);
                 $this->info["DIRECTORY_NAME"] = realpath($info["dirname"]);
                 $this->dates["LAST_ACCESS_TIME"] = DateTime::parse(date("Y-m-d", fileatime($fileSystem)));

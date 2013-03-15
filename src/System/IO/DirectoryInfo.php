@@ -57,11 +57,15 @@ namespace System\IO {
          * @throws \System\IOException The directory cannot be created.
          * @return void
          */
-        public function create() {
-            try {
+        public function create() 
+        {
+            try 
+            {
                 mkdir($this->fullName());
                 $this->setPropertiesToDirectory($this->fullName());
-            } catch(\Exception $ex) {
+            } 
+            catch(\Exception $ex) 
+            {
                 throw new IOException("The directory cannot be created.");
             }
         }
@@ -69,22 +73,43 @@ namespace System\IO {
         /**
          * Creates a sub-directory or sub-directories on the specified path. The specified path can be relative to this instance of the system.io.DirectoryInfo class.
          * @access public
-         * @param String $path The specified path. This cannot be a different disk volume or Universal Naming Convention (UNC) name.
+         * @throws \System\ArgumentNullException path is null.
+         * @throws \System\IO\IOException The directory cannot be created.
+         * @param string $path The specified path. This cannot be a different disk volume or Universal Naming Convention (UNC) name.
          * @param DirectorySecurity $directorySecurity The security to apply.
-         * @return DirectoryInfo The last directory specified in path.
+         * @return \System\IO\DirectoryInfo The last directory specified in path.
          */
-        public function createSubDirectory($path, DirectorySecurity $directorySecurity=null) {
-            $subDirectoryName = $this->fullName().Path::DirectorySeparatorChar.$path;
-            if(is_null($path)) throw new ArgumentNullException("path is null.");
-            if(file_exists($subDirectoryName)) throw new IOException("The directory cannot be created.");
-            $this->validatePathName($subDirectoryName);
-            mkdir($subDirectoryName, 0777);
-            return new DirectoryInfo($subDirectoryName);
+        public function createSubDirectory($path) 
+        {
+            if(is_null($path)) 
+            {
+                throw new ArgumentNullException("path is null.");
+            }
+
+            $subdirectory_name = $this->fullName().Path::DirectorySeparatorChar.$path;
+            $this->validatePathName($subdirectory_name);
+
+            try
+            {
+                if (!file_exists($this->fullName()))
+                {
+                    $this->create();
+                }
+
+                mkdir($subdirectory_name, 0777);
+            } 
+            catch(\Exception $e)
+            {
+                throw new IOException("The directory cannot be created.");
+            }
+            
+            return new DirectoryInfo($subdirectory_name);
         }
 
         /**
          * Deletes this instance of a System.IO.DirectoryInfo, specifying whether to delete subdirectories and files.
-         * @throws \System\IOException The directory is read-only. -or- The directory contains one or more files or subdirectories and recursive is false.  -or- The directory is the application's current working directory.
+         * @access public
+         * @throws \System\IOException The directory is read-only. -or- The directory contains one or more files or subdirectories and recursive is false.  -or- The directory is the application's current working directory. -or- The directory not exists.
          * @param bool $recursive true to delete this directory, its subdirectories, and all files; otherwise, false.
          * @return void
          */
@@ -100,22 +125,52 @@ namespace System\IO {
                 throw new IOException("The directory contains one or more files or subdirectories and recursive is false.  -or- The directory is the application's current working directory.");
             }
 
-            $this->deleteChildrenFiles($this->getFiles());
-            $this->deleteChildrenDirectories($this->getDirectories(), $recursive);
+            if (!file_exists($this->fullName()))
+            {
+                throw new IOException("The directory not exists.");
+            }
+
+            $this->deleteChildrens($this->fullName(), $recursive);
             rmdir($this->fullName());
         }
 
-        private function deleteChildrenFiles($files) {
-            for ($index = 0; $index < sizeof($files); $index++)
-                $files[$index]->delete();
+        private function deleteChildrens($dir, $recursive) 
+        {
+            $resources = scandir($dir);
+
+            for($index = 0; $index < sizeof($resources); $index++)
+            {
+                $name = $resources[$index];
+
+                if (!$this->isChildren($name))
+                {
+                    continue;
+                }
+
+                $item = $dir . Path::AltDirectorySeparatorChar . $name;
+
+                if(is_dir($item))
+                {
+                    if($recursive)
+                    {
+                        $this->deleteChildrens($item, $recursive);
+                    }
+                    
+                    rmdir($item);
+                }
+                else
+                {
+                    unlink($item);
+                }
+            }
         }
 
-        private function deleteChildrenDirectories($directories, $recursive) {
-            for($index = 0; $index < sizeof($directories); $index++)
-                $directories[$index]->delete($recursive);
-        }
-
-        public function fullName() {
+        /**
+         *
+         * @access public
+        */
+        public function fullName() 
+        {
             return $this->info["FULL_NAME"];
         }
 
@@ -125,45 +180,66 @@ namespace System\IO {
          * @throws SystemException|UnauthorizedAccessException|IOException|PlatformNotSupportedException|UnauthorizedAccessException
          * @return DirectorySecurity A System.Security.AccessControl.DirectorySecurity object that encapsulates the access control rules for the directory.
          */
-        public function getAccessControl() {
+        public function getAccessControl() 
+        {
             //TODO: Implement GetAccessControl
         }
 
         /**
          * Returns an array of directories in the current System.IO.DirectoryInfo matching the given search criteria and using a value to determine whether to search subdirectories.
          * @access public
-         * @throws ArgumentNullException|DirectoryNotFoundException|SecurityException
+         * @throws \System\ArgumentNullException searchPattern is null.
+         * @throws \System\IO\DirectoryNotFoundException 
+         * @throws \System\Security\SecurityException
          * @param string $pattern The search string, such as "System*", used to search for all directories beginning with the word "System".
-         * @param SearchOption $searchOptions One of the values of the System.IO.SearchOption enumeration that specifies whether the search operation should include only the current directory or should include all subdirectories.
+         * @param \System\IO\SearchOption $searchOptions One of the values of the System.IO.SearchOption enumeration that specifies whether the search operation should include only the current directory or should include all subdirectories.
          * @return array An array of type DirectoryInfo matching searchPattern.
          */
-        public function getDirectories($pattern="",$searchOptions=null) {
-            if(is_null($pattern)) throw new ArgumentNullException("searchPattern is null.");
-            if(strlen($pattern) == 0) {
-                if(!$this->hasLoadedResources())
-                    $this->loadResources();
+        public function getDirectories($pattern = "", SearchOption $searchOptions = null) 
+        {
+            if(is_null($pattern)) 
+            {
+                throw new ArgumentNullException("searchPattern is null.");
+            }
+            
+            if(strlen($pattern) == 0) 
+            {
+                if(!$this->hasLoadedFileSystemObjects())
+                {
+                    $this->getFileSystemObjects();
+                }
+
                 return $this->directories;
             }
             return $this->searchDirectories($pattern, $searchOptions);
         }
 
-        private function hasLoadedResources()
-        {
-            return (sizeof($this->directories) + sizeof($this->files)) > 0;
-        }
+        
 
         /**
          * Returns a file list from the current directory matching the given searchPattern and using a value to determine whether to search subdirectories.
-         * @throws ArgumentNullException|DirectoryNotFoundException|SecurityException
+         * @access public
+         * @throws \System\ArgumentNullException searchPattern is null.
+         * @throws \System\IO\DirectoryNotFoundException 
+         * @throws \System\Security\SecurityException
          * @param string $pattern The search string, such as "System*", used to search for all directories beginning with the word "System".
          * @param SearchOption $searchOptions One of the values of the System.IO.SearchOption enumeration that specifies whether the search operation should include only the current directory or should include all subdirectories.
          * @return array
          */
-        public function getFiles($pattern="", $searchOptions=null) {
-            if(is_null($pattern)) throw new ArgumentNullException("searchPattern is null.");
-            if(strlen($pattern) == 0) {
-                if(!$this->hasLoadedResources())
-                    $this->loadResources();
+        public function getFiles($pattern = "", SearchOption $searchOptions = null) 
+        {
+            if(is_null($pattern)) 
+            {
+                throw new ArgumentNullException("searchPattern is null.");
+            }
+            
+            if(strlen($pattern) == 0) 
+            {
+                if(!$this->hasLoadedFileSystemObjects())
+                {
+                    $this->getFileSystemObjects();
+                }
+
                 return $this->files;
             }
             return $this->searchFiles($pattern, $searchOptions);
@@ -172,32 +248,191 @@ namespace System\IO {
         /**
          * Retrieves an array of strongly typed System.IO.FileSystemInfo objects representing the files and subdirectories matching the specified search criteria.
          * @access public
-         * @throws ArgumentNullException|DirectoryNotFoundException|SecurityException
+         * @throws \System\ArgumentNullException pattern is null.
+         * @throws \System\IO\DirectoryNotFoundException
+         * @throws \System\Security\SecurityException
          * @param string $pattern The search string, such as "System*", used to search for all directories beginning with the word "System".
          * @return array An array of strongly typed FileSystemInfo objects matching the search criteria.
          */
-        public function getFileSystemInfos($pattern="") {
-            $array = array_merge($this->getDirectories($pattern), $this->getFiles($pattern));
+        public function getFileSystemInfos($pattern = "") 
+        {
+            return array_merge($this->getDirectories($pattern), $this->getFiles($pattern));;
+        }
+
+        /**
+         * Support method to load all filesystemobjects
+         * @access private
+        */
+        private function getFileSystemObjects() 
+        {
+            $resources = scandir($this->fullName());
+
+            for($index = 0; $index < sizeof($resources); $index++)
+            {
+                $this->addResource($resources[$index]);
+            }
+        }
+
+        private function addResource($resource) 
+        {
+            if ($this->isChildren($resource)) 
+            {
+                if (is_dir($this->getChildrenFullName($resource)))
+                {
+                    $this->directories[] = new DirectoryInfo($this->getChildrenFullName($resource));
+                }
+                else if (is_file($this->getChildrenFullName($resource))) 
+                {
+                    $this->files[] = new FileInfo($this->getChildrenFullName($resource));
+                }
+            }
+        }
+
+        /**
+         * Check if all filesystemobjects was loaded
+        */
+        private function hasLoadedFileSystemObjects()
+        {
+            return (sizeof($this->directories) + sizeof($this->files)) > 0;
+        }
+
+        /**
+         * Search directories recursive if searchOptions = AllDirectories
+         * @param $pattern
+         * @param $searchOptions
+         * @return array
+         */
+        private function searchDirectories($pattern, $searchOptions=null) 
+        {
+            $directories = $this->getDirectories();
+            $array = array();
+
+            for($index = 0; $index < sizeof($directories); $index++) 
+            {
+                if(preg_match($pattern, $directories[$index]->name()))
+                {
+                    $array[] = $directories[$index];
+                }
+                
+                if($searchOptions == SearchOption::allDirectories())
+                {
+                    $childrens = $directories[$index]->getDirectories($pattern, $searchOptions);
+                    $array = array_merge($array, $childrens);
+                }
+            }
+            return $array;
+        }
+
+        /**
+         * Search files -or- recursive if searchOptions == AllDirectories
+         * @param $pattern
+         * @param $searchOptions
+         * @return array
+         */
+        private function searchFiles($pattern, $searchOptions=null) 
+        {
+            $directories = $this->getDirectories();
+            $files = $this->getFiles();
+            $array = array();
+
+            for($index = 0; $index < sizeof($files); $index++) 
+            {
+                if(preg_match($pattern, $files[$index]->name()))
+                {
+                    $array[] = $files[$index];
+                }
+            }
+
+            if($searchOptions == SearchOption::allDirectories()) 
+            {
+                for($index = 0; $index < sizeof($directories); $index++) 
+                {
+                    $array = array_merge($array, $directories[$index]->getFiles($pattern,$searchOptions));
+                }
+            }
             return $array;
         }
 
         /**
          * Moves a system.io.DirectoryInfo instance and its contents to a new path.
          * @access public
-         * @throws ArgumentNullException|ArgumentException|IOException|SecurityException|DirectoryNotFoundException
+         * @throws \System\ArgumentNullException destDirName is null.
+         * @throws \System\ArgumentException destDirName already exists.
+         * @throws \System\IOException
+         * @throws \System\Security\SecurityException
+         * @throws \System\IO\DirectoryNotFoundException
          * @param string $destDirName The name and path to which to move this directory. The destination cannot be another disk volume or a directory with the identical name. It can be an existing directory to which you want to add this directory as a subdirectory.
          * @return void
          */
-        public function moveTo($destDirName) {
-            if($destDirName == null) throw new ArgumentNullException("destDirName is null.");
-            $destination = realpath($destDirName)."\\".$this->name();
-            if(file_exists($destination)) throw new IOException("destDirName already exists.");
-            $this->_copyDirectory($this->fullName(), $destination);
+        public function moveTo($destDirName) 
+        {
+            if(is_null($destDirName)) 
+            {
+                throw new ArgumentNullException("destDirName is null.");
+            }
+
+            if (!file_exists($destDirName))
+            {
+                throw new DirectoryNotFoundException("destDirName does not exists.");   
+            }
+
+            $destination = realpath($destDirName) . Path::AltDirectorySeparatorChar. $this->name();
+
+            if(file_exists($destination)) 
+            {
+                throw new ArgumentException("destDirName already exists.");
+            }
+
+            // try
+            // {
+                $this->copyDirectory($this->fullName(), $destination);    
+            // }
+            // catch(\Exception $ex)
+            // {
+            //     throw new IOException("");
+            // }
+            
             $this->delete(true);
             $this->setPropertiesToDirectory($destination);
         }
 
-        public function name() {
+        /**
+         * Recursive method to copy from directory to other directory
+         * @param $source
+         * @param $destination
+         * @return void
+         */
+        private function copyDirectory($source, $destination) 
+        {
+            if(!file_exists($destination))
+            {
+                mkdir($destination);
+            }
+                
+            $directory = dir($source);
+            while (FALSE !== ($current = $directory->read())) 
+            {
+                if (!$this->isChildren($current)) 
+                {
+                    continue;
+                }
+
+                $path_dir = $source . Path::AltDirectorySeparatorChar . $current;
+                $sub_destination = $destination . Path::AltDirectorySeparatorChar . $current;
+                
+                if (is_dir($path_dir)) 
+                {
+                    $this->copyDirectory($path_dir, $sub_destination);
+                    continue;
+                }
+                
+                copy($path_dir, $sub_destination);
+            }
+            $directory->close();
+        }
+
+        public function name() 
+        {
             return $this->info["NAME"];
         }
 
@@ -219,7 +454,8 @@ namespace System\IO {
          * @throws IOException
          * @return void
          */
-        public function refresh() {
+        public function refresh() 
+        {
             $this->setPropertiesToDirectory($this->fullName());
         }
 
@@ -264,98 +500,11 @@ namespace System\IO {
             return true;
         }
 
-        /**
-         * Method to get all directories and convert to DirectoryInfo objects
-         * @return array
-         */
-        private function loadResources() {
-            $resources = scandir($this->fullName());
-            for($index = 0; $index < sizeof($resources); $index++)
-                $this->addResource($resources[$index]);
-        }
-
-        private function addResource($resource) {
-            if ($this->isChildren($resource)) {
-                if (is_dir($this->getChildrenFullName($resource)))
-                    $this->directories[] = new DirectoryInfo($this->getChildrenFullName($resource));
-                else if (is_file($this->getChildrenFullName($resource))) {
-                    $this->files[] = new FileInfo($this->getChildrenFullName($resource));
-                }
-            }
-        }
 
 
-        /**
-         * Search directories recursive if searchOptions = AllDirectories
-         * @param $pattern
-         * @param $searchOptions
-         * @return array
-         */
-        private function searchDirectories($pattern, $searchOptions=null) {
-            $directories = $this->getDirectories();
-            $array = array();
+        
 
-            for($index = 0; $index < sizeof($directories); $index++) {
-                if(preg_match($pattern, $directories[$index]->name()))
-                    $array[] = $directories[$index];
-                if($searchOptions == SearchOption::AllDirectories)
-                    $array = array_merge($array, $directories[$index]->getDirectories($pattern,$searchOptions));
-            }
-            return $array;
-        }
 
-        /**
-         * Search files -or- recursive if searchOptions == AllDirectories
-         * @param $pattern
-         * @param $searchOptions
-         * @return array
-         */
-        private function searchFiles($pattern, $searchOptions=null) {
-            $directories = $this->getDirectories();
-            $files = $this->getFiles();
-            $array = array();
-
-            for($index = 0; $index < sizeof($files); $index++) {
-                if(preg_match($pattern, $files[$index]->name()))
-                    $array[] = $files[$index];
-
-            }
-
-            if($searchOptions == SearchOption::AllDirectories) {
-                for($index = 0; $index < sizeof($directories); $index++) {
-                    $array = array_merge($array, $directories[$index]->getFiles($pattern,$searchOptions));
-                }
-            }
-            return $array;
-        }
-
-        /**
-         * Recursive method to copy from directory to other directory
-         * @param $source
-         * @param $destination
-         * @return void
-         */
-        private function _copyDirectory($source, $destination) {
-            if ( is_dir( $source ) ) {
-                if(!file_exists($destination))
-                    mkdir($destination);
-                $directory = dir( $source );
-                while ( FALSE !== ( $readDirectory = $directory->read() ) ) {
-                    if ( $readDirectory == '.' || $readDirectory == '..' ) {
-                        continue;
-                    }
-                    $PathDir = $source . '\\' . $readDirectory;
-                    if ( is_dir( $PathDir ) ) {
-                        $this->_copyDirectory( $PathDir, $destination . '\\' . $readDirectory );
-                        continue;
-                    }
-                    copy( $PathDir, $destination . '\\' . $readDirectory );
-                }
-                $directory->close();
-            }else {
-                copy( $source, $destination );
-            }
-        }
 
 
         /**
@@ -371,7 +520,8 @@ namespace System\IO {
          * Get total childrens
          * @return int
          */
-        private function hasChildren() {
+        private function hasChildren() 
+        {
             $totalSize = sizeof(scandir($this->fullName()));
             return $totalSize > 2;
         }
@@ -381,8 +531,9 @@ namespace System\IO {
          * @param string $name
          * @return string
          */
-        private function getChildrenFullName($name) {
-            return $this->fullName() . "\\" . $name;
+        private function getChildrenFullName($name) 
+        {
+            return $this->fullName() . Path::AltDirectorySeparatorChar . $name;
         }
     }
 }
