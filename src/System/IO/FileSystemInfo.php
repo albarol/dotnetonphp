@@ -38,9 +38,12 @@ namespace System\IO {
          * @param \System\DateTime $creationTime The creation date and time of the current System.IO.FileSystemInfo object
          * @return \System\DateTime The creation date and time of the current System.IO.FileSystemInfo object.
          */
-        public function creationTime(DateTime $creationTime=null){
-            if($creationTime != null)
+        public function creationTime(DateTime $creationTime = null)
+        {
+            if(!is_null($creationTime))
+            {
                 $this->dates["CREATED_TIME"] = $creationTime;
+            }
             return $this->dates["CREATED_TIME"];
         }
 
@@ -51,7 +54,7 @@ namespace System\IO {
          */
         public function creationTimeUtc()
         {
-            return $this->dates["CREATED_TIME"]->toUniversalTime();
+            return $this->dates["CREATED_TIME"]->utcNow();
         }
 
         /**
@@ -59,7 +62,8 @@ namespace System\IO {
          * @access public
          * @return bool true if the file or directory exists; otherwise, false.
          */
-        public function exists() {
+        public function exists() 
+        {
             return $this->info["EXISTS"];
         }
 
@@ -68,8 +72,9 @@ namespace System\IO {
          * @access public
          * @return string A string containing the system.io.FileSystemInfo extension.
          */
-        public function extension() {
-            return ($this->info["EXTENSION"] != null) ? $this->info["EXTENSION"] : null;
+        public function extension() 
+        {
+            return is_null($this->info["EXTENSION"]) ? null : $this->info["EXTENSION"];
         }
 
         /**
@@ -85,9 +90,13 @@ namespace System\IO {
          * @param \System\DateTime $accessTime sets the time
          * @return \System\DateTime The time that the current file or directory was last accessed.
          */
-        public function lastAccessTime(DateTime $accessTime=null) {
-            if($accessTime != null)
+        public function lastAccessTime(DateTime $accessTime = null) {
+            
+            if(!is_null($accessTime))
+            {
                 $this->dates["LAST_ACCESS_TIME"] = $accessTime;
+            }
+                
             return $this->dates["LAST_ACCESS_TIME"];
         }
 
@@ -96,8 +105,9 @@ namespace System\IO {
          * @access public
          * @return \System\DateTime The time that the current file or directory was last accessed.
          */
-        public function lastAccessTimeUtc() {
-            return gmdate($this->dates["LAST_ACCESS_TIME"]->toString("c"));
+        public function lastAccessTimeUtc() 
+        {
+            return $this->dates["LAST_ACCESS_TIME"]->utcNow();
         }
 
         /**
@@ -106,9 +116,13 @@ namespace System\IO {
          * @param \System\DateTime $writeTime sets the time
          * @return \System\DateTime The time the current file was last written.
          */
-        public function lastWriteTime(DateTime $writeTime=null) {
-             if($writeTime != null)
+        public function lastWriteTime(DateTime $writeTime = null) 
+        {
+            if(!is_null($writeTime))
+            {
                 $this->dates["LAST_WRITE_TIME"] = $writeTime;
+            }
+            
             return $this->dates["LAST_WRITE_TIME"];
         }
 
@@ -117,8 +131,9 @@ namespace System\IO {
          * @access public
          * @return \System\DateTime The time that the current file or directory was last written to.
          */
-        public function lastWriteTimeUtc() {
-            return gmdate($this->dates["LAST_WRITE_TIME"]->toString("c"));
+        public function lastWriteTimeUtc() 
+        {
+            return $this->dates["LAST_WRITE_TIME"]->utcNow();
         }
 
         /**
@@ -174,7 +189,16 @@ namespace System\IO {
                 $this->dates["LAST_ACCESS_TIME"] = DateTime::parse(date("Y-m-d", fileatime($fileSystem)));
                 $this->dates["LAST_WRITE_TIME"] = DateTime::parse(date("Y-m-d", filemtime($fileSystem)));
                 $this->dates["CREATED_TIME"] = DateTime::parse(date("Y-m-d", filectime($fileSystem)));
-                $this->info["FULL_NAME"] = $this->info["DIRECTORY_NAME"].Path::DirectorySeparatorChar.basename($fileSystem);
+                
+                if($this->info["DIRECTORY_NAME"] == Path::DirectorySeparatorChar)
+                {
+                    $this->info["FULL_NAME"] = $this->info["DIRECTORY_NAME"].basename($fileSystem);    
+                }
+                else
+                {
+                    $this->info["FULL_NAME"] = $this->info["DIRECTORY_NAME"].Path::DirectorySeparatorChar.basename($fileSystem);
+                }
+
                 $this->info["EXISTS"] = true;
             }
             $this->info["NAME"] = basename($this->info["FULL_NAME"]);

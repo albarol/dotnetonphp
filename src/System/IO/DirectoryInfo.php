@@ -28,7 +28,8 @@ namespace System\IO {
      * @subpackage IO
      * @name DirectoryInfo
      */
-    final class DirectoryInfo extends FileSystemInfo {
+    final class DirectoryInfo extends FileSystemInfo 
+    {
 
         const MaxPathSize = 248;
 
@@ -448,9 +449,10 @@ namespace System\IO {
          */
         public function parent() 
         {
-            if(is_null($this->parent)) 
+            if(is_null($this->parent))
             {
-                $this->parent = new DirectoryInfo(str_replace($this->name(), "", $this->fullName()));
+                $parent_path = str_replace($this->name(), "", $this->fullName());
+                $this->parent = new DirectoryInfo($parent_path);
             }
 
             return $this->parent;
@@ -482,7 +484,7 @@ namespace System\IO {
                 return new DirectoryInfo(Path::AltDirectorySeparatorChar);
             }
 
-            return new DirectoryInfo($path[0].'/'.$path[1]);
+            return new DirectoryInfo($path[0].Path::AltDirectorySeparatorChar.$path[1]);
         }
 
 

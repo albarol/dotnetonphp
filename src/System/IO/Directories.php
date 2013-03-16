@@ -16,9 +16,9 @@ namespace System\IO {
      * @package System
      * @subpackage IO
      */
-    final class Directories {
-
-
+    final class Directories 
+    {
+    
         /**
          * Creates all the directories in the specified path, applying the specified Windows security.
          * @static
@@ -49,7 +49,8 @@ namespace System\IO {
          * @param bool $recursive true to remove directories, subdirectories, and files in path; otherwise, false. 
          * @return void
          */
-        public static function delete($path, $recursive=false) {
+        public static function delete($path, $recursive=false) 
+        {
             $directory = new DirectoryInfo($path);
             $directory->delete($recursive);
         }
@@ -61,7 +62,8 @@ namespace System\IO {
          * @param string $path The path to test.
          * @return void true if path refers to an existing directory; otherwise, false.
          */
-        public static function exists($path) {
+        public static function exists($path) 
+        {
             return (file_exists($path) && is_dir($path));
         }
 
@@ -108,13 +110,18 @@ namespace System\IO {
          * Gets the names of subdirectories in the specified directory.
          * @static
          * @access public
-         * @throws UnauthorizedAccessException|ArgumentException|ArgumentNullException|PathTooLongException|IOException|DirectoryNotFoundException
+         * @throws \System\Security\UnauthorizedAccessException
+         * @throws \System\ArgumentException
+         * @throws \System\ArgumentNullException
+         * @throws \System\IO\PathTooLongException
+         * @throws \System\IO\IOException
+         * @throws \System\IO\DirectoryNotFoundException
          * @param string $path The path for which an array of subdirectory names is returned.
          * @param string $pattern The search string to match against the names of files in path. The parameter cannot end in two periods ("..") or contain two periods ("..") followed by System.IO.Path.DirectorySeparatorChar or System.IO.Path.AltDirectorySeparatorChar, nor can it contain any of the characters in System.IO.Path.InvalidPathChars.
-         * @param int $searchOption One of the System.IO.SearchOption values that specifies whether the search operation should include all subdirectories or only the current directory.
+         * @param \System\IO\SearchOption $searchOption One of the System.IO.SearchOption values that specifies whether the search operation should include all subdirectories or only the current directory.
          * @return array An array of type String containing the names of subdirectories in path.
          */
-        public static function getDirectories($path, $pattern = "", $searchOption = null) {
+        public static function getDirectories($path, $pattern = "", SearchOption $searchOption = null) {
             
             $info = new DirectoryInfo($path);
             $childrens = $info->getDirectories($pattern, $searchOption);
@@ -133,7 +140,10 @@ namespace System\IO {
          * Returns the volume information, root information, or both for the specified path.
          * @static
          * @access public
-         * @throws UnauthorizedAccessException|ArgumentException|ArgumentNullException|PathTooLongException
+         * @throws \System\Security\UnauthorizedAccessException
+         * @throws \System\ArgumentException
+         * @throws \System\ArgumentNullException
+         * @throws \System\IO\PathTooLongException
          * @param string $path The path of a file or directory.
          * @return string A string containing the volume information, root information, or both for the specified path.
          */
@@ -148,18 +158,27 @@ namespace System\IO {
          * Returns the names of files in the specified directory that match the specified search pattern, using a value to determine whether to search subdirectories.
          * @static
          * @access public
-         * @throws UnauthorizedAccessException|ArgumentException|ArgumentNullException|PathTooLongException|IOException|DirectoryNotFoundException
+         * @throws \System\Security\UnauthorizedAccessException
+         * @throws \System\ArgumentException
+         * @throws \System\ArgumentNullException
+         * @throws \System\IO\PathTooLongException
+         * @throws \System\IO\IOException
+         * @throws \System\IO\DirectoryNotFoundException
          * @param string $path The path for which an array of subdirectory names is returned.
          * @param string $pattern The search string to match against the names of files in path. The parameter cannot end in two periods ("..") or contain two periods ("..") followed by System.IO.Path.DirectorySeparatorChar or System.IO.Path.AltDirectorySeparatorChar, nor can it contain any of the characters in System.IO.Path.InvalidPathChars.
-         * @param int $searchOption One of the System.IO.SearchOption values that specifies whether the search operation should include all subdirectories or only the current directory.
+         * @param \System\IO\SearchOption $searchOption One of the System.IO.SearchOption values that specifies whether the search operation should include all subdirectories or only the current directory.
          * @return array An array of type String containing the names of subdirectories in path.
          */
-        public static function getFiles($path, $pattern="", $searchOption=null) {
+        public static function getFiles($path, $pattern="", SearchOption $searchOption=null) {
             $directoryInfo = new DirectoryInfo($path);
             $files = $directoryInfo->getFiles($pattern, $searchOption);
             $names = array();
+            
             foreach($files as $file)
+            {
                 array_push($names, $file->name());
+            }
+
             return $names;
         }
 
@@ -167,17 +186,27 @@ namespace System\IO {
          * Returns the names of files in the specified directory that match the specified search pattern, using a value to determine whether to search subdirectories.
          * @static
          * @access public
-         * @throws UnauthorizedAccessException|ArgumentException|ArgumentNullException|PathTooLongException|IOException|DirectoryNotFoundException
+         * @throws \System\Security\UnauthorizedAccessException
+         * @throws \System\ArgumentException
+         * @throws \System\ArgumentNullException
+         * @throws \System\IO\PathTooLongException
+         * @throws \System\IO\IOException
+         * @throws \System\IO\DirectoryNotFoundException
          * @param string $path The path for which an array of subdirectory names is returned.
          * @param string $pattern The search string to match against the names of files in path. The parameter cannot end in two periods ("..") or contain two periods ("..") followed by System.IO.Path.DirectorySeparatorChar or System.IO.Path.AltDirectorySeparatorChar, nor can it contain any of the characters in System.IO.Path.InvalidPathChars.
          * @return array An array of type String containing the names of subdirectories in path.
          */
-        public static function getFileSytemEntries($path, $pattern="") {
-            $directoryInfo = new DirectoryInfo($path);
-            $entries = $directoryInfo->getFileSystemInfos($pattern);
+        public static function getFileSytemEntries($path, $pattern="") 
+        {
+            $info = new DirectoryInfo($path);
+            $entries = $info->getFileSystemInfos($pattern);
             $names = array();
+            
             foreach($entries as $entry)
+            {
                 array_push($names, $entry->name());
+            }
+                
             return $names;
         }
 
@@ -188,9 +217,10 @@ namespace System\IO {
          * @param string $path The file or directory for which to obtain access date and time information.
          * @return \System\DateTime A System.DateTime structure set to the date and time the specified file or directory was last accessed. This value is expressed in local time.
          */
-        public static function getLastAccessTime($path) {
-            $directoryInfo = new DirectoryInfo($path);
-            return $directoryInfo->lastAccessTime();
+        public static function getLastAccessTime($path) 
+        {
+            $info = new DirectoryInfo($path);
+            return $info->lastAccessTime();
         }
 
 
@@ -201,9 +231,10 @@ namespace System\IO {
          * @param string $path The file or directory for which to obtain access date and time information.
          * @return \System\DateTime A System.DateTime structure set to the date and time the specified file or directory was last accessed. This value is expressed in UTC time.
          */
-        public static function getLastAccessTimeUtc($path) {
-            $directoryInfo = new DirectoryInfo($path);
-            return $directoryInfo->lastAccessTimeUtc();
+        public static function getLastAccessTimeUtc($path) 
+        {
+            $info = new DirectoryInfo($path);
+            return $info->lastAccessTimeUtc();
         }
 
         /**
@@ -213,9 +244,10 @@ namespace System\IO {
          * @param string $path The file or directory for which to obtain access date and time information.
          * @return \System\DateTime A System.DateTime structure set to the date and time the specified file or directory was last accessed. This value is expressed in UTC time.
          */
-        public static function getLastWriteTime($path) {
-            $directoryInfo = new DirectoryInfo($path);
-            return $directoryInfo->lastAccessTimeUtc();
+        public static function getLastWriteTime($path) 
+        {
+            $info = new DirectoryInfo($path);
+            return $info->lastAccessTimeUtc();
         }
 
         /**
@@ -225,22 +257,10 @@ namespace System\IO {
          * @param string $path The file or directory for which to obtain modification date and time information.
          * @return \System\DateTime A System.DateTime structure set to the date and time the specified file or directory was last accessed. This value is expressed in UTC time.
          */
-        public static function getLastWriteTimeUtc($path) {
-            $directoryInfo = new DirectoryInfo($path);
-            return $directoryInfo->lastAccessTimeUtc();
-        }
-
-
-        /**
-         * Retrieves the names of the logical drives on this computer in the form "<drive letter>:\".
-         * @static
-         * @access public
-         * @throws IOException|UnauthorizedAccessException
-         * @return string The logical drives on this computer.
-         */
-        public static function getLogicalDrivers() {
-            $directory = new DirectoryInfo(Directories::getCurrentDirectory());
-            return $directory->root()->name();
+        public static function getLastWriteTimeUtc($path) 
+        {
+            $info = new DirectoryInfo($path);
+            return $info->lastAccessTimeUtc();
         }
 
 
@@ -251,7 +271,8 @@ namespace System\IO {
          * @param string $path The path for which to retrieve the parent directory.
          * @return \System\IO\DirectoryInfo The parent directory, or null if path is the root directory, including the root of a UNC server or share name.
          */
-        public static function getParent($path) {
+        public static function getParent($path) 
+        {
             $directory = new DirectoryInfo($path);
             return $directory->parent();
         }
@@ -260,12 +281,18 @@ namespace System\IO {
         /**
          * Moves a file or a directory and its contents to a new location.
          * @static
-         * @throws IOException|UnauthorizedAccessException|ArgumentException|ArgumentNullException|PathTooLongException|DirectoryNotFoundException
+         * @throws \System\Security\UnauthorizedAccessException
+         * @throws \System\ArgumentException
+         * @throws \System\ArgumentNullException
+         * @throws \System\IO\PathTooLongException
+         * @throws \System\IO\IOException
+         * @throws \System\IO\DirectoryNotFoundException
          * @param string $sourceDirName The path of the file or directory to move.
          * @param string $destDirName The path to the new location for sourceDirName. If sourceDirName is a file, then destDirName must also be a file name.
          * @return void
          */
-        public static function move($sourceDirName, $destDirName) {
+        public static function move($sourceDirName, $destDirName) 
+        {
             $directory = new DirectoryInfo($sourceDirName);
             $directory->moveTo($destDirName);
         }

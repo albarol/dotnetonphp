@@ -1,8 +1,7 @@
 <?php
 
-namespace System {
-
-
+namespace System 
+{
     use \System\ArgumentOutOfRangeException as ArgumentOutOfRangeException;
     use \System\DayOfWeek as DayOfWeek;
     use \System\DateTimeKind as DateTimeKind;
@@ -15,7 +14,8 @@ namespace System {
      * @package System
      * @name DateTime
      */
-    final class DateTime {
+    final class DateTime 
+    {
 
         private $year;
         private $month;
@@ -283,7 +283,8 @@ namespace System {
          * @access public
          * @return int The hour component, expressed as a value between 0 and 23.
          */
-        public function hours() {
+        public function hours() 
+        {
             return $this->hours;
         }
 
@@ -293,7 +294,8 @@ namespace System {
          * @access public
          * @return bool true if System.DateTime.Kind is System.DateTimeKind.Local or System.DateTimeKind.Unspecified and the value of this instance of System.DateTime is within the Daylight Saving Time range for the current time zone. false if System.DateTime.Kind is System.DateTimeKind.Utc.
          */
-        public function isDaylightSavingTime() {
+        public function isDaylightSavingTime() 
+        {
             return ($this->toString("I") == 1 ? true : false);
         }
 
@@ -304,7 +306,8 @@ namespace System {
          * @param int $year A 4-digit year.
          * @return bool true if year is a leap year; otherwise, false.
          */
-        public static function isLeapYear($year) {
+        public static function isLeapYear($year) 
+        {
             $isLeap = date("L", mktime(0, 0, 0, 1, 1, $year));
             return ($isLeap == 1) ? true : false;
         }
@@ -342,7 +345,8 @@ namespace System {
          * @access public
          * @return DateTime A System.DateTime whose value is the current local date and time.
          */
-        public static function now() {
+        public static function now() 
+        {
             $date = getdate();
             return new DateTime($date["year"], $date["mon"], $date["mday"], $date["hours"], $date["minutes"], $date["seconds"]);
         }
@@ -352,7 +356,8 @@ namespace System {
          * Converts the specified string representation of a date and time to its DateTime equivalent.
          * @access public
          * @static
-         * @throws ArgumentNullException|FormatException
+         * @throws \System\ArgumentNullException s is null.
+         * @throws \System\FormatException Format is invalid.
          * @param string $s A string containing a date and time to convert.
          * @return DateTime An object that is equivalent to the date and time contained in s.
          */
@@ -385,30 +390,33 @@ namespace System {
          * @param \System\DateTimeKind $kind
          * @return \System\DateTime A new DateTime object consisting of the same time represented by the value parameter and the DateTimeKind value specified by the kind parameter.
          */
-        public static function specifyKind(DateTime $value, DateTimeKind $kind) {
+        public static function specifyKind(DateTime $value, DateTimeKind $kind) 
+        {
             $value->kind = $kind;
-            if ($kind == DateTimeKind::utc()):
-                return $value->utcNow();
-            else:
-                return $value;
-            endif;
+            return $kind == DateTimeKind::utc() ? $value->utcNow() : $value;
         }
 
 
         /**
          * Subtracts the specified date and time from this instance.
          * @access public
-         * @param DateTime $value An instance of System.DateTime. -or- An instance of System.TimeSpan
-         * @return TimeSpan A System.TimeSpan interval equal to the date and time represented by this instance minus the date and time represented by value.
+         * @param \System\DateTime $value An instance of System.DateTime. -or- An instance of System.TimeSpan
+         * @return \System\TimeSpan A System.TimeSpan interval equal to the date and time represented by this instance minus the date and time represented by value.
          */
-        public function subtract($value) {
-            if ($value instanceof DateTime):
+        public function subtract($value) 
+        {
+            if ($value instanceof DateTime)
+            {
                 return $this->subtractDate($value);
-            elseif ($value instanceof TimeSpan):
+            }
+            elseif ($value instanceof TimeSpan)
+            {
                 return $this->subtractTimeSpan($value);
-            else:
+            }
+            else
+            {
                 return null;
-            endif;
+            }
         }
 
         private function subtractDate($value) {
@@ -434,9 +442,10 @@ namespace System {
          * Gets the current date.
          * @access public
          * @static
-         * @return DateTime A System.DateTime set to today's date, with the time component set to 00:00:00.
+         * @return \System\DateTime A System.DateTime set to today's date, with the time component set to 00:00:00.
          */
-        public static function today() {
+        public static function today() 
+        {
             $now = self::now();
             return $now->date();
         }
@@ -451,7 +460,8 @@ namespace System {
          * @return bool
          */
         public static function tryParse($s, &$result) {
-            try {
+            try 
+            {
                 $result = self::parse($s);
                 return true;
             } catch (\Exception $e) {
@@ -577,7 +587,12 @@ namespace System {
         private function calculateDate($value, &$parameter) {
             $parameter += $value;
             $date = mktime($this->hours, $this->minutes, $this->seconds, $this->month, $this->day, $this->year);
-            if (!$this->isValidYear(date("Y", $date))) throw new ArgumentOutOfRangeException("The resulting System.DateTime is less than System.DateTime.MinValue or greater than System.DateTime.MaxValue.");
+            
+            if (!$this->isValidYear(date("Y", $date))) 
+            {
+                throw new ArgumentOutOfRangeException("The resulting System.DateTime is less than System.DateTime.MinValue or greater than System.DateTime.MaxValue.");
+            }
+            
             $this->changeValueOfAttributes($date);
         }
 

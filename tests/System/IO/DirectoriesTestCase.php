@@ -1,12 +1,18 @@
 <?php
 
 use \System\IO\Directories as Directories;
+use \System\DateTime as DateTime;
 
 /**
  * @group io
 */
-class DirectoriesTestCase extends IOBaseTestCase 
+class DirectoriesTestCase extends PHPUnit_Framework_TestCase
 {
+
+    private function generateName() 
+    {
+        return '/tmp/' . md5(rand(1, 20).rand(21, 70).rand(71, 100));
+    }
 
     /**
      * @test
@@ -129,104 +135,210 @@ class DirectoriesTestCase extends IOBaseTestCase
         $this->assertTrue(strpos($current, $repo_name) !== false);
     }
 
-    // /**
-    //  * @test
-    // */
-    // public function GetDirectories_CanGetDirectories() 
-    // {
-    //     # Arrange:
-    //     $name = $this->generateName();
-    //     mkdir($name);
+    /**
+     * @test
+    */
+    public function GetDirectories_CanGetDirectories() 
+    {
+        # Arrange:
+        $name = $this->generateName();
+        mkdir($name);
 
-    //     # Act:
-    //     $directories = Directories::getDirectories('/tmp/');
+        # Act:
+        $directories = Directories::getDirectories('/tmp');
 
-    //     # Assert:
-    //     $this->assertGreaterThan(0, sizeof($directories));
+        # Assert:
+        $this->assertGreaterThan(0, sizeof($directories));
 
-    //     # Post:
-    //     rmdir($name);
-    // }
+        # Post:
+        rmdir($name);
+    }
 
-    // /**
-    //  * @test
-    // */
-    // public function GetDirectoryRoot_CanGetRoot() {
-    //     $root = Directories::getDirectoryRoot($this->resourcesPath);
-    //     $this->assertNotNull($root);
-    // }
+    /**
+     * @test
+    */
+    public function GetDirectoryRoot_CanGetRoot() 
+    {
+        # Arrange:
+        $name = $this->generateName();
+        
+        # Act:
+        $root = Directories::getDirectoryRoot($name);
 
-    // /**
-    //  * @test
-    // */
-    // public function GetFiles_CanGetFiles() {
-    //     $files = Directories::getFiles($this->resourcesPath);
-    //     $this->assertGreaterThan(0, sizeof($files));
-    // }
+        # Assert:
+        $this->assertEquals('tmp', $root);
+    }
 
-    // /**
-    //  * @test
-    // */
-    // public function GetFileSystemEntries_CanGetFileSystemEntries() {
-    //     $entries = Directories::getFileSytemEntries($this->resourcesPath.'/../');
-    //     $this->assertGreaterThan(0, sizeof($entries));
-    // }
+    /**
+     * @test
+    */
+    public function GetFiles_CanGetFiles() 
+    {
+        # Arrange:
+        $name = $this->generateName();
+        mkdir($name);
 
-    // /**
-    //  * @test
-    // */
-    // public function GetLastAccessTime_CanGetLastAccessTime() {
-    //     $accessTime = Directories::getLastAccessTime($this->resourcesPath);
-    //     $this->assertNotNull($accessTime);
-    // }
+        for($i = 0; $i < 3; $i++)
+        {
+            $file = $name.'/'.md5(rand(1, 10).rand(11, 20)).'txt';
+            fopen($file, 'w');
+        }
+        
+        # Act:
+        $files = Directories::getFiles($name);
 
-    // /**
-    //  * @test
-    // */
-    // public function GetLastAccessTimeUtc_CanGetLastAccessTimeUtc() {
-    //     $accessTimeUtc = Directories::getLastAccessTime($this->resourcesPath);
-    //     $this->assertNotNull($accessTimeUtc);
-    // }
+        # Assert:
+        $this->assertEquals(3, sizeof($files));
 
-    // /**
-    //  * @test
-    // */
-    // public function GetLastWriteTime_CanGetLastWriteTime() {
-    //     $writeTime = Directories::getLastWriteTime($this->resourcesPath);
-    //     $this->assertNotNull($writeTime);
-    // }
+        # Post:
+        Directories::delete($name, true);
+    }
 
-    // /**
-    //  * @test
-    // */
-    // public function GetLastWriteTimeUtc_CanGetLastAccessTimeUtc() {
-    //     $accessTimeUtc = Directories::getLastWriteTimeUtc($this->resourcesPath);
-    //     $this->assertNotNull($accessTimeUtc);
-    // }
+    /**
+     * @test
+    */
+    public function GetFileSystemEntries_CanGetFileSystemEntries() 
+    {
+        # Arrange:
+        $name = $this->generateName();
+        mkdir($name);
 
-    // /**
-    //  * @test
-    // */
-    // public function GetLogicalDrivers_CanGetLogicalName() {
-    //     $driverName = Directories::getLogicalDrivers();
-    //     $this->assertNotNull($driverName);
-    // }
+        for($i = 0; $i < 3; $i++)
+        {
+            $file = $name.'/'.md5(rand(1, 10).rand(11, 20)).'txt';
+            fopen($file, 'w');
+            mkdir($name.'/'.$i);
+        }
+        
+        # Act:
+        $files = Directories::getFileSytemEntries($name);
 
-    // /**
-    //  * @test
-    // */
-    // public function GetParent_CanGetParent() {
-    //     $parent = Directories::getParent($this->resourcesPath);
-    //     $this->assertNotNull($parent);
-    // }
+        # Assert:
+        $this->assertEquals(6, sizeof($files));
 
-    // /**
-    //  * @test
-    // */
-    // public function Move_CanMovePath() {
-    //     Directories::createDirectory($this->resourcesPath.'/newDirectory');
-    //     Directories::createDirectory($this->resourcesPath.'/newDirectory2');
-    //     Directories::move($this->resourcesPath.'/newDirectory', $this->resourcesPath.'/newDirectory2');
-    //     Directories::delete($this->resourcesPath.'/newDirectory2', true);
-    // }
+        # Post:
+        Directories::delete($name, true);
+    }
+
+    /**
+     * @test
+    */
+    public function GetLastAccessTime_CanGetLastAccessTime() 
+    {
+        # Arrange:
+        $name = $this->generateName();
+        mkdir($name);
+        $date = getdate();
+
+        # Act:
+        $time = Directories::getLastAccessTime($name);
+
+        # Assert:
+        $this->assertEquals($date['year'], $time->year());
+
+        # Post:
+        Directories::delete($name);
+    }
+
+    /**
+     * @test
+    */
+    public function GetLastAccessTimeUtc_CanGetLastAccessTimeUtc() 
+    {
+        # Arrange:
+        $name = $this->generateName();
+        mkdir($name);
+        $utc = getdate(strtotime(gmdate('Y-m-d H:m:s', mktime())));
+
+        # Act:
+        $time = Directories::getLastAccessTimeUtc($name);
+
+        # Assert:
+        $this->assertEquals($utc['year'], $time->year());
+
+        # Post:
+        Directories::delete($name);
+    }
+
+    /**
+     * @test
+    */
+    public function GetLastWriteTime_CanGetLastWriteTime() 
+    {
+        # Arrange:
+        $name = $this->generateName();
+        mkdir($name);
+        $date = getdate();
+
+        # Act:
+        $time = Directories::getLastWriteTime($name);
+
+        # Assert:
+        $this->assertEquals($date['year'], $time->year());
+
+        # Post:
+        Directories::delete($name);
+    }
+
+    /**
+     * @test
+    */
+    public function GetLastWriteTimeUtc_CanGetLastAccessTimeUtc() 
+    {
+        # Arrange:
+        $name = $this->generateName();
+        mkdir($name);
+        $utc = getdate(strtotime(gmdate('Y-m-d H:m:s', mktime())));
+
+        # Act:
+        $time = Directories::getLastWriteTimeUtc($name);
+
+        # Assert:
+        $this->assertEquals($utc['year'], $time->year());
+
+        # Post:
+        Directories::delete($name);
+    }
+
+
+    /**
+     * @test
+    */
+    public function GetParent_CanGetParent() 
+    {
+        # Arrange:
+        $name = $this->generateName();
+        mkdir($name);
+
+        # Act:
+        $parent = Directories::getParent($name);
+
+        # Assert:
+        $this->assertEquals('/tmp', $parent->fullName());
+
+        # Post:
+        Directories::delete($name, true);
+    }
+
+    /**
+     * @test
+    */
+    public function Move_CanMovePath() 
+    {
+        # Arrange:
+        $name = $this->generateName();
+        $destination = $this->generateName();
+        $complete_path = $destination.'/'.$name;
+        mkdir($name);
+        mkdir($destination);
+
+        # Act:
+        Directories::move($name, $destination);
+        
+        # Assert:
+        Directories::exists($complete_path);
+
+        # Post
+        Directories::delete($destination, true);
+    }
 }
