@@ -466,6 +466,9 @@ namespace System\IO {
         public function refresh() 
         {
             $this->setPropertiesToDirectory($this->fullName());
+            $this->directories = array();
+            $this->files = array();
+            $this->parent = null;
         }
 
         /**

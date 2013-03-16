@@ -20,31 +20,37 @@ namespace System\Text {
      */
     final class StringBuilder implements ISerializable {
 
-        private $result;
+        private $result = array();
         private $maxCapacity;
-        private $actualCapacity;
+        private $capacity;
 
         /**
          * Initializes a new instance of the System.Text.StringBuilder class using the specified capacity.
          * @access public
          * @param int $maxCapacity The suggested starting size of this instance.
          */
-        public function  __construct($maxCapacity=2147483647) {
-            $this->result = array();
+        public function  __construct($maxCapacity=2147483647) 
+        {
             $this->maxCapacity = $maxCapacity;
         }
 
         /**
          * Appends a copy of a specified substring to the end of this instance.
-         * @throws ArgumentOutOfRangeException|ArgumentNullException
+         * @access public
+         * @throws \System\ArgumentOutOfRangeException count less than zero. -or- startIndex less than zero. -or- startIndex + count is greater than the length of value. -or- The value specified for a set operation is greater than the maximum capacity
+         * @throws \System\ArgumentNullException value is null.
          * @param string $value The System.String that contains the substring to append.
          * @param int $startIndex The starting position of the substring within value.
          * @param int $count The number of characters in value to append.
          */
-        public function append($value, $startIndex=null, $count=0) {
-            if(is_null($startIndex)) {
+        public function append($value, $startIndex = null, $count = 0) 
+        {
+            if(is_null($startIndex)) 
+            {
                 $this->addElement($value);
-            } else {
+            } 
+            else 
+            {
                 $this->appendSubstring($value, $startIndex, $count);
             }
         }
@@ -52,82 +58,131 @@ namespace System\Text {
 
         /**
          * Appends a formatted string, which contains zero or more format specifications, to this instance. Each format specification is replaced by the string representation of a corresponding object argument.
-         * @throws ArgumentNullException|FormatException|ArgumentOutOfRangeException
-         * @param String $format A composite format string.
-         * @param String $args An array of objects to format.
+         * @access public
+         * @throws \System\ArgumentNullException format is null. -or- args is null.
+         * @throws \System\FormatException
+         * @throws \System\ArgumentOutOfRangeException count less than zero. -or- startIndex less than zero. -or- startIndex + count is greater than the length of value. -or- The value specified for a set operation is greater than the maximum capacity
+         * @param string $format A composite format string.
+         * @param string $args An array of objects to format.
          */
-        public function appendFormat($format,$args) {
-            if($format == null || $args == null) throw new ArgumentNullException("format or args is null.");
-            for($i = 0; $i <= sizeof($args); $i++)
+        public function appendFormat($format, $args) 
+        {
+            if(is_null($format))
+            {
+                throw new ArgumentNullException("format is null.");
+            }
+            
+            if(is_null($args))
+            {
+                throw new ArgumentNullException("args is null.");
+            } 
+
+            for($i = 0; $i < sizeof($args); $i++)
+            {
                 $format = str_replace("{".$i."}", $args[$i], $format);
+            }
+                
             $this->append($format);
         }
 
         /**
          * Appends a copy of the specified string and the default line terminator to the end of the current System.Text.StringBuilder object.
          * @access public
-         * @param string $value The System.String to append.
+         * @throws \System\ArgumentOutOfRangeException count less than zero. -or- startIndex less than zero. -or- startIndex + count is greater than the length of value. -or- The value specified for a set operation is greater than the maximum capacity
+         * @throws \System\ArgumentNullException value is null.
+         * @param string $value The string to append.
          */
-        public function appendLine($value="") {
-            $this->addElement("$value\r\n");
+        public function appendLine($value = "")
+        {
+            $this->addElement($value.PHP_EOL);
         }
 
         /**
          * Gets or sets the maximum number of characters that can be contained in the memory allocated by the current instance.
          * @access public
+         * @throws \System\ArgumentOutOfRangeException capacity is less than zero. -or - The value specified for a set operation is less than the current length of this instance. -or- The value specified for a set operation is greater than the maximum capacity
          * @param int $value Set the maximum number of characters to the current instance.
          * @return int gets the maximum number of characters allocated by the current instance.
          */
-        public function capacity($value=null) {
-            if(is_int($value)) {
-                if($value < 0 || $value < $this->length() || $value > $this->maxCapacity) throw new ArgumentOutOfRangeException("capacity is less than zero. -or - The value specified for a set operation is less than the current length of this instance. -or- The value specified for a set operation is greater than the maximum capacity.");
-                $this->actualCapacity = $value;
+        public function capacity($value = null) 
+        {
+            if(is_int($value))
+            {
+                if($value < 0 || $value < $this->length() || $value > $this->maxCapacity) 
+                {
+                    throw new ArgumentOutOfRangeException("capacity is less than zero. -or - The value specified for a set operation is less than the current length of this instance. -or- The value specified for a set operation is greater than the maximum capacity.");
+                }
+                $this->capacity = $value;
             }
-            return $this->actualCapacity;
+            return $this->capacity;
         }
 
 
         /**
          * Copies the characters from a specified segment of this instance to a specified segment of a destination System.Char array.
          * @access public
-         * @throws ArgumentNullException|ArgumentOutOfRangeException|ArgumentException
+         * @throws \System\ArgumentNullException
+         * @throws \System\ArgumentOutOfRangeException
+         * @throws \System\ArgumentException
          * @param int $sourceIndex The starting position in this instance where characters will be copied from. The index is zero-based.
-         * @param int $destination The System.Char array where characters will be copied to.
+         * @param array $destination The System.Char array where characters will be copied to.
          * @param int $destinationIndex The starting position in destination where characters will be copied to. The index is zero-based.
          * @param int $count The number of characters to be copied.
          */
-        public function copyTo($sourceIndex, &$destination, $destinationIndex, $count) {
-            if(is_null($destination)) throw new ArgumentNullException("destination is null.");
-            if($sourceIndex < 0 || $destinationIndex < 0 || $count < 0 || $sourceIndex > $this->length()) throw new ArgumentOutOfRangeException("sourceIndex, destinationIndex, or count, is less than zero.  -or-  sourceIndex is greater than the length of this instance.");
-            if(($sourceIndex + $count > $this->length()) || ($destinationIndex + $count > sizeof($destination))) throw new ArgumentException("sourceIndex + count is greater than the length of this instance. -or- destinationIndex + count is greater than the length of destination.");
+        public function copyTo($sourceIndex, &$destination, $destinationIndex, $count) 
+        {
+            if(is_null($destination)) 
+            {
+                throw new ArgumentNullException("destination is null.");
+            }
+
+            if($sourceIndex < 0 || $destinationIndex < 0 || $count < 0 || $sourceIndex > $this->length()) 
+            {
+                throw new ArgumentOutOfRangeException("sourceIndex, destinationIndex, or count, is less than zero.  -or-  sourceIndex is greater than the length of this instance.");
+            }
+            
+            if(($sourceIndex + $count > $this->length()) || ($destinationIndex + $count > sizeof($destination))) 
+            {
+                throw new ArgumentException("sourceIndex + count is greater than the length of this instance. -or- destinationIndex + count is greater than the length of destination.");
+            }
 
             $source = str_split($this->toString());
             for($i = 0; $i < $count; $i++)
+            {
                 $destination[$destinationIndex + $i] = $source[$sourceIndex + $i];
+            }
         }
 
         /**
-         * Ensures that the capacity of this instance of System.Text.StringBuilder is at least the specified value.
-         * @throws ArgumentOutOfRangeException
+         * Ensures that the capacity of this instance of StringBuilder is at least the specified value.
+         * @throws \System\ArgumentOutOfRangeException
          * @param int $capacity The minimum capacity to ensure.
          * @return int The new capacity of this instance.
          */
-        public function ensureCapacity($capacity) {
-            if($this->actualCapacity < $capacity)
+        public function ensureCapacity($capacity) 
+        {
+            if($this->capacity < $capacity)
+            {
                 $this->capacity($capacity);
-            return $this->actualCapacity;
+            }
+            return $this->capacity;
         }
 
 
         /**
          * Inserts the string representation of a specified subarray of Unicode characters into this instance at the specified character position.
          * @access public
-         * @throws ArgumentOutOfRangeException
+         * @throws \System\ArgumentOutOfRangeException
          * @param int $index The position in this instance where insertion begins.
          * @param object $value A character array.
          */
-        public function insert($index, $value) {
-            if($this->isInvalidIndex($index)) throw new ArgumentOutOfRangeException("index is less than zero or greater than the current length of this instance.");
+        public function insert($index, $value) 
+        {
+            if($this->isInvalidIndex($index)) 
+            {
+                throw new ArgumentOutOfRangeException("index is less than zero or greater than the current length of this instance.");
+            }
+            
             $this->addElement($value, $index);
         }
 
@@ -137,7 +192,8 @@ namespace System\Text {
          * @access public
          * @return int The maximum number of characters this instance can hold.
          */
-        public function maxCapacity() {
+        public function maxCapacity() 
+        {
             return $this->maxCapacity;
         }
 
@@ -222,26 +278,59 @@ namespace System\Text {
 
         }
         
-        private function addElement($value, $index=null) {
-            if(is_null($value)) throw new ArgumentNullException("value is null, and startIndex and count are not zero.");
-            if(is_null($index)) {
+        private function addElement($value, $index=null) 
+        {
+            if(is_null($value)) 
+            {
+                throw new ArgumentNullException("value is null");
+            }
+            
+            if(is_null($index)) 
+            {
                 $this->result = array_merge($this->result, str_split($value));
-            } else {
+            } 
+            else 
+            {
                 array_splice($this->result, $index, 0, str_split($value));
             }
+
             $this->capacity($this->length());
         }
 
-        private function appendSubstring($value, $startIndex, $count) {
-            if($count < 0 || $startIndex < 0 || (strlen($value) < $startIndex + $count)) throw new ArgumentOutOfRangeException ("count less than zero. -or- startIndex less than zero.  -or- startIndex + count is greater than the length of value.");
-            ($count == 0) ? $this->addElement(substr($value, $startIndex)) : $this->addElement(substr($value, $startIndex, $count));
+        private function appendSubstring($value, $startIndex, $count) 
+        {
+            if ($count < 0)
+            {
+                throw new ArgumentOutOfRangeException ("count less than zero.");
+            }
+
+            if ($startIndex < 0)
+            {
+                throw new ArgumentOutOfRangeException ("startIndex less than zero.");
+            }
+
+            if(strlen($value) < ($startIndex + $count))
+            {
+                throw new ArgumentOutOfRangeException ("startIndex + count is greater than the length of value.");
+            }
+
+            if($count == 0)
+            {
+                $this->addElement(substr($value, $startIndex));
+            }
+            else
+            {
+                $this->addElement(substr($value, $startIndex, $count));
+            }
         }
 
-        private function isInvalidRange($startIndex, $length) {
+        private function isInvalidRange($startIndex, $length) 
+        {
             return $startIndex < 0 || $length < 0 || ($startIndex + $length) > $this->length();
         }
 
-        private function isInvalidIndex($index) {
+        private function isInvalidIndex($index) 
+        {
             return $index < 0 || $index > $this->length();
         }
     }
