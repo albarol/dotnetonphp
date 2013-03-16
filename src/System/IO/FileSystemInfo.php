@@ -1,34 +1,37 @@
 <?php
 
-namespace System\IO {
-
+namespace System\IO 
+{
     use \System\DateTime as DateTime;
     use \System\IO\FileAttributes as FileAttributes;
     use \System\IO\Path as Path;
 
     /**
-     *  Provides the base class for both system.io.FileInfo and system.io.DirectoryInfo objects.
+     * Provides the base class for both system.io.FileInfo and system.io.DirectoryInfo objects.
      * @access public
      * @name FileSystemInfo
      * @package System
      * @subpackage IO
      */
-    abstract class FileSystemInfo {
-
+    abstract class FileSystemInfo 
+    {
         protected $dates = array();
         protected $attributes = "";
         protected $info = array();
 
-
         /**
          * Gets or sets the attributes for the current file or directory.
          * @access public
-         * @param FileAttributes $attributes fileAttributes of the current FileSystemInfo.
-         * @return FileAttributes fileAttributes of the current FileSystemInfo.
+         * @param \System\IO\FileAttributes $attributes fileAttributes of the current FileSystemInfo.
+         * @return \System\IO\FileAttributes fileAttributes of the current FileSystemInfo.
          */
-        public function attributes(FileAttributes $attributes=null) {
-            if($attributes != null)
+        public function attributes(FileAttributes $attributes=null) 
+        {
+            if(!is_null($attributes))
+            {
                 $this->attributes = $attributes;
+            }
+                
             return $this->attributes;
         }
 
@@ -42,9 +45,9 @@ namespace System\IO {
         {
             if(!is_null($creationTime))
             {
-                $this->dates["CREATED_TIME"] = $creationTime;
+                $this->dates["created_time"] = $creationTime;
             }
-            return $this->dates["CREATED_TIME"];
+            return $this->dates["created_time"];
         }
 
         /**
@@ -54,7 +57,7 @@ namespace System\IO {
          */
         public function creationTimeUtc()
         {
-            return $this->dates["CREATED_TIME"]->utcNow();
+            return $this->dates["created_time"]->utcNow();
         }
 
         /**
@@ -64,7 +67,7 @@ namespace System\IO {
          */
         public function exists() 
         {
-            return $this->info["EXISTS"];
+            return $this->info["exists"];
         }
 
         /**
@@ -74,7 +77,7 @@ namespace System\IO {
          */
         public function extension() 
         {
-            return is_null($this->info["EXTENSION"]) ? null : $this->info["EXTENSION"];
+            return is_null($this->info["extension"]) ? null : $this->info["extension"];
         }
 
         /**
@@ -90,14 +93,14 @@ namespace System\IO {
          * @param \System\DateTime $accessTime sets the time
          * @return \System\DateTime The time that the current file or directory was last accessed.
          */
-        public function lastAccessTime(DateTime $accessTime = null) {
-            
+        public function lastAccessTime(DateTime $accessTime = null) 
+        {
             if(!is_null($accessTime))
             {
-                $this->dates["LAST_ACCESS_TIME"] = $accessTime;
+                $this->dates["last_access_time"] = $accessTime;
             }
                 
-            return $this->dates["LAST_ACCESS_TIME"];
+            return $this->dates["last_access_time"];
         }
 
         /**
@@ -107,7 +110,7 @@ namespace System\IO {
          */
         public function lastAccessTimeUtc() 
         {
-            return $this->dates["LAST_ACCESS_TIME"]->utcNow();
+            return $this->dates["last_access_time"]->utcNow();
         }
 
         /**
@@ -120,10 +123,10 @@ namespace System\IO {
         {
             if(!is_null($writeTime))
             {
-                $this->dates["LAST_WRITE_TIME"] = $writeTime;
+                $this->dates["last_write_time"] = $writeTime;
             }
             
-            return $this->dates["LAST_WRITE_TIME"];
+            return $this->dates["last_write_time"];
         }
 
         /**
@@ -133,7 +136,7 @@ namespace System\IO {
          */
         public function lastWriteTimeUtc() 
         {
-            return $this->dates["LAST_WRITE_TIME"]->utcNow();
+            return $this->dates["last_write_time"]->utcNow();
         }
 
         /**
@@ -148,26 +151,28 @@ namespace System\IO {
          * Provides information for files and directories.
          * @param string $fileSystem
          */
-        protected function setPropertiesToFile($fileSystem) {
-            if(!file_exists($fileSystem)) {
-                $this->info["DIRECTORY_NAME"] = "";
-                $this->dates["LAST_ACCESS_TIME"] = DateTime::now();
-                $this->dates["LAST_WRITE_TIME"] = DateTime::now();
-                $this->dates["CREATED_TIME"] = DateTime::now();
-                $this->info["EXTENSION"] = end(explode(".", $fileSystem));
-                $this->info["FULL_NAME"] = "";
-                $this->info["NAME"] = $fileSystem;
-            } else {
-                $info = pathinfo($fileSystem);
-                $this->info["DIRECTORY_NAME"] = realpath($info["dirname"]);
-                $this->info["NAME"] = $info["filename"];
-                $this->info["EXTENSION"] = isset($info["extension"]) ? $info["extension"] : "";
-                $this->info["FULL_NAME"] = $this->info["DIRECTORY_NAME"].Path::AltDirectorySeparatorChar.$this->info["NAME"].".".$this->info["EXTENSION"];
-                $this->dates["LAST_ACCESS_TIME"] = DateTime::parse(date("Y-m-d", fileatime($fileSystem)));
-                $this->dates["LAST_WRITE_TIME"] = DateTime::parse(date("Y-m-d", filemtime($fileSystem)));
-                $this->dates["CREATED_TIME"] = DateTime::parse(date("Y-m-d", filectime($fileSystem)));
+        protected function setPropertiesToFile($fileSystem) 
+        {
+            $info = pathinfo($fileSystem);
+            $this->info["directory_name"] = realpath($info["dirname"]);
+            $this->info["name"] = $info["filename"];
+            $this->info["extension"] = isset($info["extension"]) ? $info["extension"] : "";
+            $this->info["full_name"] = $this->info["directory_name"].Path::AltDirectorySeparatorChar.$this->info["name"].".".$this->info["extension"];
+            $this->info["exists"] = file_exists($fileSystem);
+
+            if(!file_exists($fileSystem)) 
+            {            
+                $this->dates["last_access_time"] = DateTime::now();
+                $this->dates["last_write_time"] = DateTime::now();
+                $this->dates["created_time"] = DateTime::now();
             }
-            $this->info["EXISTS"] = true;
+            else
+            {
+                $this->dates["last_access_time"] = DateTime::parse(date("Y-m-d", fileatime($fileSystem)));
+                $this->dates["last_write_time"] = DateTime::parse(date("Y-m-d", filemtime($fileSystem)));
+                $this->dates["created_time"] = DateTime::parse(date("Y-m-d", filectime($fileSystem)));
+            }
+
             $this->attributes = FileAttributes::archive();
         }
 
@@ -175,34 +180,35 @@ namespace System\IO {
         {
             if(!file_exists($fileSystem)) 
             {
-                $this->info["DIRECTORY_NAME"] = $fileSystem;
-                $this->dates["LAST_ACCESS_TIME"] = DateTime::now();
-                $this->dates["LAST_WRITE_TIME"] = DateTime::now();
-                $this->dates["CREATED_TIME"] = DateTime::now();
-                $this->info["FULL_NAME"] = $this->info["DIRECTORY_NAME"];
-                $this->info["EXISTS"] = false;
+                $this->info["directory_name"] = $fileSystem;
+                $this->dates["last_access_time"] = DateTime::now();
+                $this->dates["last_write_time"] = DateTime::now();
+                $this->dates["created_time"] = DateTime::now();
+                $this->info["full_name"] = $this->info["directory_name"];
+                $this->info["exists"] = false;
             } 
             else 
             {
                 $info = pathinfo($fileSystem);
-                $this->info["DIRECTORY_NAME"] = realpath($info["dirname"]);
-                $this->dates["LAST_ACCESS_TIME"] = DateTime::parse(date("Y-m-d", fileatime($fileSystem)));
-                $this->dates["LAST_WRITE_TIME"] = DateTime::parse(date("Y-m-d", filemtime($fileSystem)));
-                $this->dates["CREATED_TIME"] = DateTime::parse(date("Y-m-d", filectime($fileSystem)));
+                $this->info["directory_name"] = realpath($info["dirname"]);
+                $this->dates["last_access_time"] = DateTime::parse(date("Y-m-d", fileatime($fileSystem)));
+                $this->dates["last_write_time"] = DateTime::parse(date("Y-m-d", filemtime($fileSystem)));
+                $this->dates["created_time"] = DateTime::parse(date("Y-m-d", filectime($fileSystem)));
                 
-                if($this->info["DIRECTORY_NAME"] == Path::DirectorySeparatorChar)
+                if($this->info["directory_name"] == Path::DirectorySeparatorChar)
                 {
-                    $this->info["FULL_NAME"] = $this->info["DIRECTORY_NAME"].basename($fileSystem);    
+                    $this->info["full_name"] = $this->info["directory_name"].basename($fileSystem);    
                 }
                 else
                 {
-                    $this->info["FULL_NAME"] = $this->info["DIRECTORY_NAME"].Path::DirectorySeparatorChar.basename($fileSystem);
+                    $this->info["full_name"] = $this->info["directory_name"].Path::DirectorySeparatorChar.basename($fileSystem);
                 }
 
-                $this->info["EXISTS"] = true;
+                $this->info["exists"] = true;
             }
-            $this->info["NAME"] = basename($this->info["FULL_NAME"]);
-            $this->info["EXTENSION"] = "";
+
+            $this->info["name"] = basename($this->info["full_name"]);
+            $this->info["extension"] = "";
             $this->attributes = FileAttributes::directory();
         }
     }

@@ -17,7 +17,6 @@ namespace System\IO {
      * TODO: @methods CreateSubDirectory(DirectorySecurity)
      * TODO: @methods GetAcessControl(DirectorySecurity)
      * TODO: @methods GetAcessControl()
-     * TODO: @methods MoveTo(string)
      */
 
 
@@ -172,7 +171,7 @@ namespace System\IO {
         */
         public function fullName() 
         {
-            return $this->info["FULL_NAME"];
+            return $this->info["full_name"];
         }
 
         /**
@@ -438,7 +437,7 @@ namespace System\IO {
 
         public function name() 
         {
-            return $this->info["NAME"];
+            return $this->info["name"];
         }
 
         /**

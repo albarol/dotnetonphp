@@ -22,19 +22,34 @@ namespace System\IO {
         private $autoFlush;
         private $fileName;
 
-        public function __construct($path, $append=false) {
-            if(is_null($path) || strlen($path) == 0) throw new IOException("File was not opened.");
+        /**
+         *
+         * @access public
+        */
+        public function __construct($path, $append=false) 
+        {
+            if(is_null($path) || strlen($path) == 0) 
+            {
+                throw new IOException("File was not opened.");
+            }
             $this->fileName = $path;
             $this->openFile($append);
         }
 
-        private function openFile($append) {
+        private function openFile($append) 
+        {
+            $mode = FileMode::create();
+
             if($append)
-                $this->resource = fopen($this->fileName, FileMode::append());
-            if (file_exists($this->fileName))
-                $this->resource = fopen($this->fileName, FileMode::openOrCreate());
-            else
-                $this->resource = fopen($this->fileName, FileMode::create());
+            {
+                $mode = FileMode::append();
+            }
+            else if(file_exists($this->fileName))
+            {
+                $mode = FileMode::openOrCreate();
+            }
+
+            $this->resource = fopen($this->fileName, $mode->value());            
         }
 
         /**

@@ -56,7 +56,8 @@ namespace System\IO {
                 $access = FileAccess::read();
             }
 
-            if($mode == FileMode::open() && !file_exists($path)) {
+            if($mode == FileMode::open() && !file_exists($path)) 
+            {
                 throw new FileNotFoundException("The file cannot be found, such as when mode is FileMode.Truncate or FileMode.Open, and the file specified by path does not exist.");
             }
 

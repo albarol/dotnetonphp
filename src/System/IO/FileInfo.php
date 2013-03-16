@@ -27,22 +27,19 @@ namespace System\IO {
 
         /**
          * Initializes a new instance of the System.IO.FileInfo class, which acts as a wrapper for a file path.
-         *
-         * @param String $fileName The fully qualified name of the new file, or the relative file name.
-         *
-         * @throws System.ArgumentNullException: fileName is null.
-         * @throws System.Security.SecurityException: The caller does not have the required permission.
-         * @throws System.ArgumentException: The file name is empty, contains only white spaces, or contains invalid characters.
-         * @throws System.UnauthorizedAccessException: Access to fileName is denied.
-         * @throws System.IO.PathTooLongException: The specified path, file name, or both exceed the system-defined maximum length. For example, on Windows-based platforms, paths must be less than 248 characters, and file names must be less than 260 characters.
-         * @throws System.NotSupportedException: fileName contains a colon (:) in the middle of the string.
-         *
+         * @access public
+         * @throws \System\ArgumentNullException fileName is null.
+         * @throws \System\Security\SecurityException The caller does not have the required permission.
+         * @throws \System\ArgumentException The file name is empty, contains only white spaces, or contains invalid characters.
+         * @throws \System\UnauthorizedAccessException Access to fileName is denied.
+         * @throws \System\IO\PathTooLongException The specified path, file name, or both exceed the system-defined maximum length. For example, on Windows-based platforms, paths must be less than 248 characters, and file names must be less than 260 characters.
+         * @param string $fileName The fully qualified name of the new file, or the relative file name.
          */
-        public function __construct($fileName) {
+        public function __construct($fileName) 
+        {
             $this->validateFileName($fileName);
-            if (!file_exists($fileName)) throw new FileNotFoundException("File was not found.");
             $this->setPropertiesToFile($fileName);
-            $this->directory = new DirectoryInfo($this->info["DIRECTORY_NAME"]);
+            $this->directory = new DirectoryInfo($this->info["directory_name"]);
         }
 
 
@@ -50,9 +47,10 @@ namespace System\IO {
         /**
          * Creates a System.IO.StreamWriter that appends text to the file represented by this instance of the System.IO.FileInfo.
          * @access public
-         * @return StreamWriter
+         * @return \System\IO\StreamWriter
          */
-        public function appendText() {
+        public function appendText() 
+        {
             return new StreamWriter($this->fullName());
         }
 
@@ -60,7 +58,7 @@ namespace System\IO {
          * Copies an existing file to a new file, allowing the overwriting of an existing file.
          * @param string $destFileName The name of the new file to copy to.
          * @param bool $overwrite true to allow an existing file to be overwritten; otherwise, false.
-         * @return FileInfo A new file, or an overwrite of an existing file if overwrite is true. If the file exists and overwrite is false, an IOException is thrown. 
+         * @return \System\FileInfo A new file, or an overwrite of an existing file if overwrite is true. If the file exists and overwrite is false, an IOException is thrown. 
          */
         public function copyTo($destFileName, $overwrite=false){
             $this->validateFileName($destFileName);
@@ -86,7 +84,8 @@ namespace System\IO {
          * @param $destFileName
          * @return string
          */
-        private function getRealPath($destFileName) {
+        private function getRealPath($destFileName) 
+        {
             return strpos($destFileName, Path::DirectorySeparatorChar) === false ?  $this->directoryName() . Path::DirectorySeparatorChar . $destFileName : $destFileName;
         }
 
@@ -95,8 +94,9 @@ namespace System\IO {
          * @access public
          * @return FileStream A new file.
          */
-        public function create() {
-            return new FileStream($this->fullName());
+        public function create() 
+        {
+            return new FileStream($this->fullName(), FileMode::openOrCreate());
         }
 
         /**
@@ -104,7 +104,8 @@ namespace System\IO {
          * @access public
          * @return StreamWriter A new StreamWriter.
          */
-        public function createText() {
+        public function createText() 
+        {
             return new StreamWriter($this->fullName());
         }
 
@@ -113,7 +114,8 @@ namespace System\IO {
          * @access public
          * @return void
          */
-        public function decrypt() {
+        public function decrypt() 
+        {
             //TODO: Implement decrypt method
         }
 
@@ -122,17 +124,21 @@ namespace System\IO {
          * @access public
          * @return void
          */
-        public function delete() {
+        public function delete() 
+        {
             if($this->exists())
+            {
                 unlink($this->fullName());
+            }
         }
 
         /**
          * Gets an instance of the parent directory.
          * @access public
-         * @return DirectoryInfo A DirectoryInfo object representing the parent directory of this file.
+         * @return \System\IO\DirectoryInfo A DirectoryInfo object representing the parent directory of this file.
          */
-        public function directory() {
+        public function directory() 
+        {
             return $this->directory;
         }
 
@@ -141,7 +147,8 @@ namespace System\IO {
          * @access public
          * @return string A string representing the directory's full path.
          */
-        public function directoryName() {
+        public function directoryName() 
+        {
             return $this->directory->fullName();
         }
 
@@ -150,12 +157,14 @@ namespace System\IO {
          * @access public
          * @return void
          */
-        public function encrypt() {
+        public function encrypt() 
+        {
             //TODO: Implement encrypt method
         }
 
-        public function fullName() {
-            return $this->info["FULL_NAME"];
+        public function fullName() 
+        {
+            return $this->info["full_name"];
         }
 
         /**
@@ -242,7 +251,7 @@ namespace System\IO {
         }
 
         public function name() {
-            return $this->info["NAME"].".".$this->extension();
+            return $this->info["name"].".".$this->extension();
         }
 
 
@@ -273,14 +282,28 @@ namespace System\IO {
 
         /**
          * Method to validate if file is valid
-         * @throws ArgumentException|ArgumentNullException|PathTooLongException
+         * @throws \System\ArgumentException
+         * @throws \System\ArgumentNullException
+         * @throws \System\IO\PathTooLongException
          * @param $fileName
          * @return void
          */
-        private function validateFileName($fileName) {
-            if (is_null($fileName)) throw new ArgumentNullException("fileName is null");
-            if (strlen($fileName) == 0) throw new ArgumentException("The file name is empty, contains only white spaces, or contains invalid characters.");
-            if (strlen($fileName) > 248) throw new PathTooLongException("The specified path, file name, or both exceed the system-defined maximum length. For example, on Windows-based platforms, paths must be less than 248 characters, and file names must be less than 260 characters.");
+        private function validateFileName($file_name) 
+        {
+            if (is_null($file_name)) 
+            {
+                throw new ArgumentNullException("fileName is null");
+            }
+
+            if (strlen($file_name) == 0) 
+            {
+                throw new ArgumentException("The file name is empty, contains only white spaces, or contains invalid characters.");
+            }
+            
+            if (strlen($file_name) > 248) 
+            {
+                throw new PathTooLongException("The specified path, file name, or both exceed the system-defined maximum length. For example, on Windows-based platforms, paths must be less than 248 characters, and file names must be less than 260 characters.");
+            }
         }
     }
 }

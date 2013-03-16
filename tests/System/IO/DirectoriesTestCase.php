@@ -328,7 +328,7 @@ class DirectoriesTestCase extends PHPUnit_Framework_TestCase
         # Arrange:
         $name = $this->generateName();
         $destination = $this->generateName();
-        $complete_path = $destination.'/'.$name;
+        $complete_path = $destination.'/'.str_replace('/tmp', "", $name);
         mkdir($name);
         mkdir($destination);
 
@@ -336,7 +336,8 @@ class DirectoriesTestCase extends PHPUnit_Framework_TestCase
         Directories::move($name, $destination);
         
         # Assert:
-        Directories::exists($complete_path);
+        
+        $this->assertTrue(file_exists($complete_path));
 
         # Post
         Directories::delete($destination, true);
