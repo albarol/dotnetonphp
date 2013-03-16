@@ -32,7 +32,7 @@ namespace System\IO {
 
         const MaxPathSize = 248;
 
-        private $parent;
+        private $parent = null;
         private $directories = array();
         private $files = array();
 
@@ -360,7 +360,7 @@ namespace System\IO {
          * @throws \System\ArgumentException destDirName already exists.
          * @throws \System\IOException
          * @throws \System\Security\SecurityException
-         * @throws \System\IO\DirectoryNotFoundException
+         * @throws \System\IO\DirectoryNotFoundException destDirName does not exists.
          * @param string $destDirName The name and path to which to move this directory. The destination cannot be another disk volume or a directory with the identical name. It can be an existing directory to which you want to add this directory as a subdirectory.
          * @return void
          */
@@ -383,17 +383,21 @@ namespace System\IO {
                 throw new ArgumentException("destDirName already exists.");
             }
 
-            // try
-            // {
+            try
+            {
                 $this->copyDirectory($this->fullName(), $destination);    
-            // }
-            // catch(\Exception $ex)
-            // {
-            //     throw new IOException("");
-            // }
+            }
+            catch(\Exception $ex)
+            {
+                throw new IOException("");
+            }
             
+            # Remove old references
             $this->delete(true);
             $this->setPropertiesToDirectory($destination);
+            $this->directories = array();
+            $this->files = array();
+            $this->parent = null;
         }
 
         /**
@@ -439,19 +443,23 @@ namespace System\IO {
         /**
          * Gets the parent directory of a specified subdirectory.
          * @access public
-         * @throws SecurityException
+         * @throws \System\Security\SecurityException
          * @return DirectoryInfo The parent directory, or null if the path is null or if the file path denotes a root (such as "\", "C:", or * "\\server\share").
          */
-        public function parent() {
-            if($this->parent == null)
+        public function parent() 
+        {
+            if(is_null($this->parent)) 
+            {
                 $this->parent = new DirectoryInfo(str_replace($this->name(), "", $this->fullName()));
+            }
+
             return $this->parent;
         }
 
         /**
          * Refreshes the state of the object.
          * @access public
-         * @throws IOException
+         * @throws \System\IO\IOException
          * @return void
          */
         public function refresh() 
@@ -462,12 +470,19 @@ namespace System\IO {
         /**
          * Gets the root portion of a path.
          * @access public
-         * @throws SecurityException
+         * @throws \System\Security\SecurityException
          * @return DirectoryInfo A System.IO.DirectoryInfo object representing the root of a path.
          */
-        public function root() {
-            $currentDirectory = explode("\\", $this->fullName());
-            return new DirectoryInfo($currentDirectory[0]);
+        public function root() 
+        {
+            $path = explode(Path::AltDirectorySeparatorChar, $this->fullName());
+            
+            if (empty($path[1]))
+            {
+                return new DirectoryInfo(Path::AltDirectorySeparatorChar);
+            }
+
+            return new DirectoryInfo($path[0].'/'.$path[1]);
         }
 
 
@@ -499,13 +514,6 @@ namespace System\IO {
 
             return true;
         }
-
-
-
-        
-
-
-
 
         /**
          * Validate if resource is children

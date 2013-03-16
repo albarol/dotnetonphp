@@ -564,30 +564,36 @@ class DirectoryInfoTestCase extends PHPUnit_Framework_TestCase
         rmdir($destination);
     }
 
-    // /**
-    //  * @test
-    // */
-    // public function Parent_GetParentDirectory() {
-    //     $directoryInfo = new DirectoryInfo($this->resourcesPath);
-    //     $parent = $directoryInfo->parent();
-    //     $this->assertEquals("tests", $parent->name());
-    // }
+    /**
+     * @test
+    */
+    public function Parent_GetParentDirectory() 
+    {
+        # Arrange:
+        $name = $this->generateName();
+        $info = new DirectoryInfo($name);
+        
+        # Act:
+        $parent = $info->parent();
 
-    // /**
-    //  * @test
-    // */
-    // public function Refresh_CanRefreshStatusOfObject() {
-    //     $directoryInfo = new DirectoryInfo($this->resourcesPath);
-    //     $directoryInfo->refresh();
-    //     $this->assertEquals("resources", $directoryInfo->name());
-    // }
+        # Assert:
+        $this->assertEquals('tmp', $parent->name());
+    }
 
-    // /**
-    //  * @test
-    // */
-    // public function Root_CanGetRootPath() {
-    //     $directoryInfo = new DirectoryInfo($this->resourcesPath);
-    //     $root = $directoryInfo->root();
-    //     $this->assertNotNull($root->name());
-    // }
+
+    /**
+     * @test
+    */
+    public function Root_CanGetRootPath() 
+    {
+        # Arrange:
+        $name = $this->generateName();
+        $info = new DirectoryInfo($name);
+        
+        # Act:
+        $root = $info->root();
+
+        # Assert:
+        $this->assertEquals('tmp', $root->name());
+    }
 }
