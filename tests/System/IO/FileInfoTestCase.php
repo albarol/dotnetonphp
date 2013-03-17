@@ -6,6 +6,9 @@ use \System\IO\StreamWriter as StreamWriter;
 use \System\IO\FileStream as FileStream;
 use \System\IO\StreamReader as StreamReader;
 
+/**
+ * @group io
+*/
 class FileInfoTestCase extends PHPUnit_Framework_TestCase 
 {
 

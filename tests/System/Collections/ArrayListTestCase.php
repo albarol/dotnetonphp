@@ -2,6 +2,9 @@
 
 use \System\Collections\ArrayList as ArrayList;
 
+/**
+ * @group collections
+*/
 class ArrayListTestCase extends PHPUnit_Framework_TestCase {
 
     private $list;
