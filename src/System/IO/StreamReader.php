@@ -1,7 +1,7 @@
 <?php
 
-namespace System\IO {
-
+namespace System\IO 
+{
     use \System\ArgumentNullException as ArgumentNullException;
     use \System\ArgumentException as ArgumentException;
     use \System\ObjectDisposedException as ObjectDisposedException;
@@ -21,35 +21,54 @@ namespace System\IO {
      * @package System
      * @subpackage IO
      */
-    class StreamReader extends TextReader {
-
+    class StreamReader extends TextReader 
+    {
         /**
          * Initializes a new instance of the System.IO.StreamReader class for the specified file name.
-         * @throws ArgumentException|ArgumentNullException|FileNotFoundException|DirectoryNotFoundException|IOException
+         * @throws \System\ArgumentException path is an empty string.
+         * @throws \System\ArgumentNullException path is null.
+         * @throws \System\IO\FileNotFoundException The file cannot be found.
          * @param string $path The complete file path to be read.
          */
-        public function __construct($path) {
-            if(is_null($path)) throw new ArgumentNullException("path is null.");
-            if(strlen($path) == 0) throw new ArgumentException('path is an empty string ("")');
-            if(!file_exists($path)) throw new IOException("The file cannot be found.");
-            $this->resource = fopen($path, FileMode::openOrCreate()->value());
+        public function __construct($path) 
+        {
+            if(is_null($path))
+            {
+                throw new ArgumentNullException("path is null.");
+            }
+
+            if(strlen($path) == 0) 
+            {
+                throw new ArgumentException('path is an empty string ("")');
+            }
+
+            if(!file_exists($path)) 
+            {
+                throw new FileNotFoundException("The file cannot be found.");
+            }
+
+            $this->resource = fopen($path, FileMode::open()->value());
         }
 
         /**
          * Gets the current character encoding that the current System.IO.StreamReader object is using.
          * @access public
-         * @return Encoding The current character encoding used by the current reader. The value can be different after the first call to any Overload:System.IO.StreamReader.Read method of System.IO.StreamReader, since encoding autodetection is not done until the first call to a Overload:System.IO.StreamReader.Read method.
+         * @return \System\Text\Encoding The current character encoding used by the current reader. The value can be different after the first call to any Overload:System.IO.StreamReader.Read method of System.IO.StreamReader, since encoding autodetection is not done until the first call to a Overload:System.IO.StreamReader.Read method.
          */
         public function currentEncoding() {}
 
         /**
          * Gets a value that indicates whether the current stream position is at the end of the stream.
          * @access public
-         * @throws ObjectDisposedException
+         * @throws \System\ObjectDisposedException The underlying stream has been disposed.
          * @return bool true if the current stream position is at the end of the stream; otherwise false.
          */
-        public function endOfStream() {
-            if(!isset($this->resource)) throw new ObjectDisposedException("The underlying stream has been disposed.");
+        public function endOfStream() 
+        {
+            if(!isset($this->resource)) 
+            {
+                throw new ObjectDisposedException("The underlying stream has been disposed.");
+            }
             return feof($this->resource);
         }
 
@@ -58,7 +77,8 @@ namespace System\IO {
          * @access public
          * @return void
          */
-        function dispose() {
+        function dispose() 
+        {
             $this->close();
         }
 
