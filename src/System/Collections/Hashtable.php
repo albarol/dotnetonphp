@@ -22,20 +22,26 @@ namespace System\Collections {
     class Hashtable implements ICloneable, IDictionary, ISerializable, IDeserializationCallback  
     {
         private $elements = array();
+        private $isFixedSize = false;
+        private $isReadOnly = false;
 
-        public function __construct($d = null) 
+        /**
+         * Initializes a new, empty instance of the Hashtable class using the default initial capacity, load factor, hash code provider, and comparer.
+         * @access public
+         * @param object $value The IDictionary object to copy to a new Hashtable object.
+         * @param \System\Collections\IEqualityComparer The IEqualityComparer object that defines the hash code provider and the comparer to use with the Hashtable object.
+        */
+        public function __construct($value = null, IEqualityComparer $equalityComparer = null) 
         {
-            if($d instanceof IDictionary) 
+            if($value instanceof IDictionary)
             {
-                $this->constructFromDictionary($d);
-            }
-        }
-
-        private function constructFromDictionary(IDictionary $d)
-        {
-            foreach($d->keys() as $key)
-            {
-                $this->elements[$key] = $d->get($key);
+                foreach($value->keys() as $key)
+                {
+                    $this->elements[$key] = $value->get($key);
+                }
+                
+                $this->isFixedSize = $value->isFixedSize();
+                $this->isReadOnly = $value->isReadOnly();
             }
         }
 
@@ -88,18 +94,6 @@ namespace System\Collections {
          * Determines whether the System.Collections.IDictionary object contains an element with the specified key.
          * @access public
          * @throws \System\ArgumentNullException key is null.
-         * @param object $key The key to locate in the System.Collections.IDictionary object.
-         * @return bool true if the System.Collections.IDictionary contains an element with the key; otherwise, false.
-         */
-        public function contains($key) 
-        {
-            return $this->containsKey($key);
-        }
-
-        /**
-         * Determines whether the System.Collections.Hashtable contains a specific key.
-         * @access public
-         * @throws \System\ArgumentNullException key is null.
          * @param $key The key to locate in the System.Collections.Hashtable.
          * @return bool true if the System.Collections.Hashtable contains an element with the specified key; otherwise, false.
          */
@@ -109,6 +103,7 @@ namespace System\Collections {
             {
                 throw new ArgumentNullException("key is null.");
             }
+
             return array_key_exists($key, $this->elements);
         }
 
@@ -120,18 +115,7 @@ namespace System\Collections {
          */
         public function containsValue($value) 
         {
-            $exists = false;
-            
-            foreach($this->keys() as $key)
-            {
-                $exists = $this->elements[$key] == $value;
-                
-                if ($exists)
-                {
-                    break;
-                }
-            }
-            return $exists;
+            return array_search($value, $this->elements) !== FALSE;
         }
 
         /**
@@ -141,7 +125,6 @@ namespace System\Collections {
          * @throws \System\ArgumentException
          * @param array $array The one-dimensional System.Array that is the destination of the elements copied from System.Collections.ICollection. The System.Array must have zero-based indexing.
          * @param int $index The zero-based index in array at which copying begins.
-         * @return void
          */
         public function copyTo(array &$array, $index = 0) 
         {
@@ -233,7 +216,7 @@ namespace System\Collections {
          */
         public function isFixedSize()
         {
-            return false;
+            return $this->isFixedSize;
         }
 
         /**
@@ -243,13 +226,13 @@ namespace System\Collections {
          */
         public function isReadOnly()
         {
-            return false;
+            return $this->isReadOnly;
         }
 
         /**
-         * Gets an System.Collections.ICollection object containing the keys of the System.Collections.IDictionary object.
+         * Gets an \System\Collections\ICollection object containing the keys of the System.Collections.IDictionary object.
          * @access public
-         * @return ICollection An System.Collections.ICollection object containing the keys of the System.Collections.IDictionary object.
+         * @return \System\Collections\ICollection An ICollection object containing the keys of the \System\Collections\IDictionary object.
          */
         public function keys() 
         {
@@ -258,6 +241,7 @@ namespace System\Collections {
 
         /**
          * Runs when the entire object graph has been deserialized.
+         * @access public
          * @param $sender The object that initiated the callback. The functionality for this parameter is not currently implemented.
          * @return void
          */

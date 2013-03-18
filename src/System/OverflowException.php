@@ -1,15 +1,15 @@
 <?php
 
-namespace System {
-
+namespace System 
+{
     /**
      * The exception that is thrown when an arithmetic, casting, or conversion operation in a checked context results in an overflow.
      * @access public
      * @package System
      * @name OverflowException
      */
-    class OverflowException extends \Exception {
-       
+    class OverflowException extends \Exception 
+    {
         /**
          * Initializes a new instance of the System.OverflowException class with a specified error message and a reference to the inner exception that is the cause of this exception.
          * @access public

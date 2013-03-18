@@ -11,7 +11,7 @@ namespace System\Collections {
 	 */
 	abstract class ReadOnlyCollectionBase implements ICollection {
 
-	    protected $InnerList;
+	    protected $innerList;
 	    
 	    /**
 	     * Initializes a new instance of the System.Collections.ReadOnlyCollectionBase class.

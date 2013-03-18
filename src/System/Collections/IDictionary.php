@@ -1,9 +1,7 @@
 <?php
 
-namespace System\Collections {
-
-
-
+namespace System\Collections 
+{
     use \System\Collections\ICollection as ICollection;
 
     /**
@@ -13,8 +11,8 @@ namespace System\Collections {
      * @package System
      * @subpackage Collections
      */
-    interface IDictionary extends ICollection {
-
+    interface IDictionary extends ICollection 
+    {
         /**
          * Adds an element with the provided key and value to the System.Collections.IDictionary object.
          * @access public
