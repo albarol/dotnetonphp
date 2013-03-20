@@ -1,14 +1,10 @@
 language: php
 
 php:
-  - 5.3.3
+  - 5.4
+  - 5.3
 
-install: 
-    - php composer.phar install
-
-script: 
-    - make core
+script: make
 
 notifications:
-    irc:
-        - irc.freenode.org#dotnetonphp
+    irc: "irc.freenode.org#dotnetonphp"
