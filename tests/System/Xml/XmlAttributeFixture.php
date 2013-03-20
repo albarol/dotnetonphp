@@ -1,19 +1,18 @@
 <?php
 
-require_once(dirname(__FILE__) . '/../../../src/Autoloader.php');
-
 use \System\Xml\XmlDocument as XmlDocument;
 use \System\Xml\XmlElement as XmlElement;
 use \System\Xml\XmlAttribute as XmlAttribute;
 use \System\Xml\XmlNodeType as XmlNodeType;
 
 
-class XmlAttributeFixture extends PHPUnit_Framework_TestCase {
-
+class XmlAttributeFixture extends PHPUnit_Framework_TestCase 
+{
 	private $element;
     private $document;
 
-	public function setUp() {
+	public function setUp() 
+    {
 		$xml = "<books xmlns:b='http://www.books.com'>
                     <b:book id='1'>
                         <author>Jack Herrington</author>
@@ -34,9 +33,13 @@ class XmlAttributeFixture extends PHPUnit_Framework_TestCase {
 	}
 
     
-	public function test_AppendChild_ThrowsExceptionWhenTryAppendElement() {
+	/**
+     * @test
+     * @expectedException \System\InvalidOperationException
+    */
+    public function AppendChild_ThrowsExceptionWhenTryAppendElement() 
+    {
         # Arrange:
-        $this->setExpectedException('\\System\\InvalidOperationException');
         $attr = $this->element->attributes()->itemOf(0);
         $element = $this->document->createElement('newElement');
         
@@ -44,7 +47,11 @@ class XmlAttributeFixture extends PHPUnit_Framework_TestCase {
         $attr->appendChild($element);
     }
 
-    public function test_AppendChild_ChangeAttributeValueWhenAppendTextNode() {
+    /**
+     * @test
+    */
+    public function AppendChild_ChangeAttributeValueWhenAppendTextNode()
+    {
         # Arrange:
         $attr = $this->element->attributes()->itemOf(0);
         $text = $this->document->createTextNode('2');
@@ -56,7 +63,11 @@ class XmlAttributeFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals('12', $attr->value());
     }
 
-    public function test_Clone_CanCloneObject() {
+    /**
+     * @test
+    */
+    public function Clone_CanCloneObject() 
+    {
         # Arrange:
         $attr = $this->element->attributes()->itemOf(0);
         
@@ -67,7 +78,11 @@ class XmlAttributeFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals($clone->value(), $attr->value());
     }
 
-    public function test_CloneNode_CanCloneNodeRecursively() {
+    /**
+     * @test
+    */
+    public function CloneNode_CanCloneNodeRecursively() 
+    {
         # Arrange:
         $attr = $this->element->attributes()->itemOf(0);
         
@@ -78,7 +93,11 @@ class XmlAttributeFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals("id=1", $attr->outerXml());
     }
 
-    public function test_CloneNode_CanCloneParentNode() {
+    /**
+     * @test
+    */
+    public function CloneNode_CanCloneParentNode() 
+    {
         # Arrange:
         $attr = $this->element->attributes()->itemOf(0);
         
@@ -89,7 +108,11 @@ class XmlAttributeFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals("id=1", $attr->outerXml());
     }
 
-    public function test_InsertAfter_CanInsertNodeBefore() {
+    /**
+     * @test
+    */
+    public function InsertAfter_CanInsertNodeBefore() 
+    {
         # Arrange:
         $attr = $this->element->attributes()->itemOf(0);
         $newAttr = $this->document->createAttribute('name');
@@ -101,7 +124,11 @@ class XmlAttributeFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(2, $attr->parentNode()->attributes()->count());
     }
 
-    public function test_InsertBefore_CanInsertNodeBefore() {
+    /**
+     * @test
+    */
+    public function InsertBefore_CanInsertNodeBefore() 
+    {
         # Arrange:
         $attr = $this->element->attributes()->itemOf(0);
         $newAttr = $this->document->createAttribute('name');
@@ -113,7 +140,11 @@ class XmlAttributeFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(2, $attr->parentNode()->attributes()->count());
     }
 
-    public function test_PrependChild_CanInsertNodeOfBeginning() {
+    /**
+     * @test
+    */
+    public function PrependChild_CanInsertNodeOfBeginning() 
+    {
         # Arrange:
         $attr = $this->element->attributes()->itemOf(0);
         $newAttr = $this->document->createAttribute('name');

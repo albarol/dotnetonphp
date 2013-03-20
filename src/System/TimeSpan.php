@@ -56,26 +56,30 @@ namespace System {
         /**
          * Adds the specified System.TimeSpan to this instance.
          * @access public
-         * @param TimeSpan $ts A System.TimeSpan.
-         * @return TimeSpan A System.TimeSpan that represents the value of this instance plus the value of ts.
+         * @param \System\TimeSpan $ts A System.TimeSpan.
+         * @return \System\TimeSpan A System.TimeSpan that represents the value of this instance plus the value of ts.
          */
-        public function add(TimeSpan $ts) {
+        public function add(TimeSpan $ts) 
+        {
             $total_milliseconds = $this->totalMilliseconds + $ts->totalMilliseconds();
             $this->calculateTimeSpan($total_milliseconds);
             return $this;
         }
 
-        public function compareTo($obj) {
-            if(!$obj instanceof TimeSpan):
+        public function compareTo($obj) 
+        {
+            if(!$obj instanceof TimeSpan)
+            {
                 throw new ArgumentException("value is not a System.TimeSpan.");
-            endif;
+            }
 
             $this_value = $this->totalMilliseconds();
             $another_value = $obj->totalMilliseconds();
 
-            if($this_value == $another_value):
+            if($this_value == $another_value)
+            {
                 return 0;
-            endif;
+            }
 
             return $this_value > $another_value ? 1 : -1; 
         }
@@ -83,9 +87,10 @@ namespace System {
         /**
          * Returns a new System.TimeSpan object whose value is the absolute value of the current System.TimeSpan object.
          * @access public
-         * @return TimeSpan A new System.TimeSpan whose value is the absolute value of the current System.TimeSpan object.
+         * @return \System\TimeSpan A new System.TimeSpan whose value is the absolute value of the current System.TimeSpan object.
          */
-        public function duration() {
+        public function duration() 
+        {
             if($this->totalMilliseconds == TimeSpan::MinValue) throw new OverFlowException("The value of this instance is System.TimeSpan.MinValue.");
             return clone $this;
         }
@@ -97,73 +102,75 @@ namespace System {
          * @param object $other An object to compare with this instance.
          * @return bool true if obj represents the same time interval as this instance; otherwise, false.
          */
-        public function equals($other) {
-            if(!$other instanceof TimeSpan):
-                return false;
-            endif;
-
-            return $this->totalMilliseconds() == 
-                   $other->totalMilliseconds();
+        public function equals($other) 
+        {
+            return $this == $other;
         }
 
         /**
-         * Returns a System.TimeSpan that represents a specified number of days, where the specification is accurate to the nearest millisecond.
+         * Returns a TimeSpan that represents a specified number of days, where the specification is accurate to the nearest millisecond.
          * @access public
          * @param int $value value A number of days, accurate to the nearest millisecond.
-         * @return TimeSpan A System.TimeSpan that represents value.
+         * @return \System\TimeSpan A System.TimeSpan that represents value.
          */
-        public static function fromDays($value) {
+        public static function fromDays($value) 
+        {
             return new TimeSpan($value, 0, 0, 0, 0);
         }
 
         /**
-         * Returns a System.TimeSpan that represents a specified number of hours, where the specification is accurate to the nearest millisecond.
+         * Returns a TimeSpan that represents a specified number of hours, where the specification is accurate to the nearest millisecond.
          * @access public
          * @param int $value A number of hours accurate to the nearest millisecond.
-         * @return TimeSpan A System.TimeSpan that represents value.
+         * @return \System\TimeSpan A System.TimeSpan that represents value.
          */
-        public static function fromHours($value) {
+        public static function fromHours($value) 
+        {
             return new TimeSpan(0, $value, 0, 0, 0);
         }
 
 
          /**
-          * Returns a System.TimeSpan that represents a specified number of milliseconds.
+          * Returns a TimeSpan that represents a specified number of milliseconds.
           * @access public
           * @param int $value A number of milliseconds.
-          * @return A System.TimeSpan that represents value.
+          * @return \System\Timespan A TimeSpan that represents value.
           */
-        public static function fromMilliseconds($value) {
+        public static function fromMilliseconds($value) 
+        {
             return new TimeSpan(0, 0, 0, 0, $value);
         }
 
         /**
-          * Returns a System.TimeSpan that represents a specified number of minutes, where the specification is accurate to the nearest millisecond.
+          * Returns a TimeSpan that represents a specified number of minutes, where the specification is accurate to the nearest millisecond.
           * @access public
           * @param int $value A number of minutes, accurate to the nearest millisecond.
-          * @return TimeSpan A System.TimeSpan that represents value.
+          * @return \System\TimeSpan A TimeSpan that represents value.
           */
-        public static function fromMinutes($value) {
+        public static function fromMinutes($value) 
+        {
             return new TimeSpan(0, 0, $value, 0, 0);
         }
 
         /**
-         * Returns a System.TimeSpan that represents a specified number of seconds, where the specification is accurate to the nearest millisecond.
+         * Returns a TimeSpan that represents a specified number of seconds, where the specification is accurate to the nearest millisecond.
          * @access public
          * @param int $value A number of seconds, accurate to the nearest millisecond.
-         * @return TimeSpan A System.TimeSpan that represents value.
+         * @return \System\TimeSpan A TimeSpan that represents value.
          */
-        public static function fromSeconds($value) {
+        public static function fromSeconds($value) 
+        {
             return new TimeSpan(0, 0, 0, $value, 0);
         }
 
         /**
-         * Returns a System.TimeSpan that represents a specified time, where the specification is in units of ticks.
+         * Returns a TimeSpan that represents a specified time, where the specification is in units of ticks.
          * @access public
          * @param int $value A number of ticks that represent a time.
-         * @return TimeSpan A System.TimeSpan with a value of value.
+         * @return \System\TimeSpan A TimeSpan with a value of value.
          */
-        public static function fromTicks($value) {
+        public static function fromTicks($value) 
+        {
             return new TimeSpan(0, 0, 0, 0, ($value / TimeSpan::TicksPerMillisecond));
         }
 
@@ -171,9 +178,10 @@ namespace System {
         /**
          * Returns a System.TimeSpan whose value is the negated value of this instance.
          * @access public
-         * @return TimeSpan The same numeric value as this instance, but with the opposite sign.
+         * @return \System\TimeSpan The same numeric value as this instance, but with the opposite sign.
          */
-        public function negate() {
+        public function negate() 
+        {
             return new TimeSpan(0, 0, 0, 0, -1 * $this->totalMilliseconds);
         }
 
@@ -182,23 +190,32 @@ namespace System {
          * @static
          * @access public
          * @param string $s A string that specifies a time interval.
-         * @return TimeSpan A System.TimeSpan that corresponds to s.
+         * @return \System\TimeSpan A System.TimeSpan that corresponds to s.
          */
-        public static function parse($s) {
-            if(is_null($s)):
+        public static function parse($s) 
+        {
+            if(is_null($s))
+            {
                 throw new ArgumentNullException("s is null.");
-            endif;
+            }
 
+            $matches = array(
+                'D.H:m:s'   => "/^([0-9]*).(2[0-3]|[0-1][0-9]):([0-5][0-9]):([0-5][0-9])$/",
+                'D.H:m:s.t' => "/^([0-9]*).(2[0-3]|[0-1][0-9]):([0-5][0-9]):([0-5][0-9]).([0-9]*)$/",
+                'D'         => "/^\d+$/",
+                'H:m'       => "/^(2[0-3]|[0-1][0-9]):([0-5][0-9])$/",
+                'H:m:s'     => "/^(2[0-3]|[0-1][0-9]):([0-5][0-9]):([0-5][0-9])$/" 
+            );
             $result = array();
-            if(preg_match("/^([0-9]*).(2[0-3]|[0-1][0-9]):([0-5][0-9]):([0-5][0-9])$/", $s, $result))
+            if(preg_match($matches['D.H:m:s'], $s, $result))
                 return new TimeSpan($result[1], $result[2], $result[3], $result[4]);
-            if(preg_match("/^([0-9]*).(2[0-3]|[0-1][0-9]):([0-5][0-9]):([0-5][0-9]).([0-9]*)$/", $s, $result))
+            if(preg_match($matches['D.H:m:s.t'], $s, $result))
                 return new TimeSpan($result[1], $result[2], $result[3], $result[4], $result[5]);
-            if(preg_match("/^\d+$/", $s, $result))
+            if(preg_match($matches['D'], $s, $result))
                 return new TimeSpan ($result[0], 0, 0, 0, 0);
-            if(preg_match("/^(2[0-3]|[0-1][0-9]):([0-5][0-9])$/", $s, $result))
+            if(preg_match($matches['H:m'], $s, $result))
                 return new TimeSpan(0, $result[1], $result[2]);
-            if(preg_match("/^(2[0-3]|[0-1][0-9]):([0-5][0-9]):([0-5][0-9])$/", $s, $result))
+            if(preg_match($matches['H:m:s'], $s, $result))
                 return new TimeSpan(0, $result[1], $result[2], $result[3]);
 
             throw new FormatException("s has an invalid format.");

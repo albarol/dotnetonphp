@@ -1,8 +1,5 @@
 <?php
 
-require_once(dirname(__FILE__) . '/../../../src/Autoloader.php');
-
-
 use \System\Xml\XmlCDataSection as XmlCDataSection;
 use \System\Xml\XmlComment as XmlComment;
 use \System\Xml\XmlDocument as XmlDocument;
@@ -16,14 +13,19 @@ use \System\Xml\XmlWhitespace as XmlWhitespace;
 use \System\IO\FileStream as FileStream;
 use \System\IO\StreamReader as StreamReader;
 
-class XmlDocumentFixture extends PHPUnit_Framework_TestCase {
+class XmlDocumentFixture extends PHPUnit_Framework_TestCase 
+{
 
     private $xml = array(
         'well-formed' => '<?xml version="1.0"?><books xmlns:b="http://www.books.com"><book ISBN="1-861001-57-5"><title><![CDATA[Pride And Prejudice]]></title><price>19</price></book></books>',
         'bad-formed'  => "<?xml version='1.0'?><books><book></books><book>"
     );
 
-    public function test_CreateAttribute_CanCreateAttributeByPrefix() {
+    /**
+     * @test
+    */
+    public function CreateAttribute_CanCreateAttributeByPrefix() 
+    {
         # Arrange:
         $doc = new XmlDocument;
         $expected = '<book b:id=""/>';
@@ -38,7 +40,11 @@ class XmlDocumentFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals($expected, $element->outerXml());
     }
 
-    public function test_CreateAttribute_CanCreateAttributeByName() {
+    /**
+     * @test
+    */
+    public function CreateAttribute_CanCreateAttributeByName() 
+    {
         # Arrange:
         $doc = new XmlDocument;
         $expected = '<book id=""/>';
@@ -53,7 +59,11 @@ class XmlDocumentFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals($expected, $element->outerXml());
     }
 
-    public function test_CreateCDataSection_CanCDataSection() {
+    /**
+     * @test
+    */
+    public function CreateCDataSection_CanCDataSection() 
+    {
         # Arrange:
         $doc = new XmlDocument;
         $expected = '<book><![CDATA[text]]></book>';
@@ -69,7 +79,11 @@ class XmlDocumentFixture extends PHPUnit_Framework_TestCase {
         $this->assertTrue($cdata instanceOf XmlCDataSection);
     }
 
-    public function test_CreateElement_CanCreateComment() {
+    /**
+     * @test
+    */
+    public function CreateElement_CanCreateComment() 
+    {
         # Arrange:
         $doc = new XmlDocument;
         $expected = '<book><!--Any comment--></book>';
@@ -84,7 +98,11 @@ class XmlDocumentFixture extends PHPUnit_Framework_TestCase {
         $this->assertTrue($comment instanceOf XmlComment);
     }
 
-    public function test_CreateDocumentFragment_CanCreateDocumentFragment() {
+    /**
+     * @test
+    */
+    public function CreateDocumentFragment_CanCreateDocumentFragment() 
+    {
         # Arrange:
         $doc = new XmlDocument;
         $expected = '<?xml version="1.0"?><book/>';
@@ -99,11 +117,19 @@ class XmlDocumentFixture extends PHPUnit_Framework_TestCase {
         $this->assertTrue($frag instanceOf XmlDocumentFragment);
     }
 
-    public function test_CreateDocumentType_CanCreateDocumentType() {
+    /**
+     * @test
+    */
+    public function CreateDocumentType_CanCreateDocumentType() 
+    {
         $this->markTestIncomplete('php not support this operation');
     }
 
-    public function test_CreateEntityReference_CanCreateEntityReference() {
+    /**
+     * @test
+    */
+    public function CreateEntityReference_CanCreateEntityReference() 
+    {
         # Arrange:
         $doc = new XmlDocument;
         $doc->loadXml('<!DOCTYPE book [<!ENTITY h "hardcover">]><book genre="novel" ISBN="1-861001-57-5"><title>Pride And Prejudice</title><misc/></book>');
@@ -118,7 +144,11 @@ class XmlDocumentFixture extends PHPUnit_Framework_TestCase {
         $this->assertTrue($entity instanceOf XmlEntityReference);
     }
 
-    public function test_CreateElement_CanCreateElementByPrefix() {
+    /**
+     * @test
+    */
+    public function CreateElement_CanCreateElementByPrefix() 
+    {
         # Arrange:
         $doc = new XmlDocument;
         $expected = '<b:book xmlns:b="http://www.books.com"/>';
@@ -129,7 +159,11 @@ class XmlDocumentFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals($expected, $element->outerXml());
     }
 
-    public function test_CreateElement_CanCreateElementByName() {
+    /**
+     * @test
+    */
+    public function CreateElement_CanCreateElementByName() 
+    {
         # Arrange:
         $doc = new XmlDocument;
         $expected = '<book/>';
@@ -141,7 +175,11 @@ class XmlDocumentFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals($expected, $element->outerXml());
     }
 
-    public function test_CreateProcessingInstruction_CanCreateProcessingInstruction() {
+    /**
+     * @test
+    */
+    public function CreateProcessingInstruction_CanCreateProcessingInstruction() 
+    {
         # Arrange:
         $doc = new XmlDocument;
         $expected = '<?xml version="1.0"?><?xml-stylesheet type="text/xsl" href="book.xsl"?>';
@@ -154,7 +192,11 @@ class XmlDocumentFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals($expected, $doc->outerXml());
     }
 
-    public function test_CreateSignificantWhitespace_ThrowsExceptionWhenDataNotContainsSpaceCharacters() {
+    /**
+     * @test
+    */
+    public function CreateSignificantWhitespace_ThrowsExceptionWhenDataNotContainsSpaceCharacters() 
+    {
         # Arrange:
         $this->setExpectedException('\System\ArgumentException');
         $doc = new XmlDocument;
@@ -163,7 +205,11 @@ class XmlDocumentFixture extends PHPUnit_Framework_TestCase {
         $whitespace = $doc->createSignificantWhitespace("asdf");
     }
 
-    public function test_CreateSignificantWhitespace_CanCreateSignificantWhitespace() {
+    /**
+     * @test
+    */
+    public function CreateSignificantWhitespace_CanCreateSignificantWhitespace() 
+    {
         # Arrange:
         $doc = new XmlDocument;
         $doc->preserveWhitespace(true);
@@ -178,7 +224,11 @@ class XmlDocumentFixture extends PHPUnit_Framework_TestCase {
         $this->assertTrue($whitespace instanceOf XmlSignificantWhitespace);
     }
 
-    public function test_CreateTextNode_CanCreateTextNode() {
+    /**
+     * @test
+    */
+    public function CreateTextNode_CanCreateTextNode() 
+    {
         # Arrange:
         $doc = new XmlDocument;
         $expected = "asdf";
@@ -191,7 +241,11 @@ class XmlDocumentFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals($expected, $textNode->outerXml());
     }
 
-    public function test_CreateWhitespace_CanCreateWhitespace() {
+    /**
+     * @test
+    */
+    public function CreateWhitespace_CanCreateWhitespace() 
+    {
         # Arrange:
         $doc = new XmlDocument;
         $expected = "\t";
@@ -205,7 +259,11 @@ class XmlDocumentFixture extends PHPUnit_Framework_TestCase {
         $this->assertTrue($whitespace instanceOf XmlWhitespace);
     }
 
-    public function test_CreateXmlDeclaration_CanCreateXmlDeclaration() {
+    /**
+     * @test
+    */
+    public function CreateXmlDeclaration_CanCreateXmlDeclaration() 
+    {
         # Arrange:
         $doc = new XmlDocument;
         $expected = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
@@ -220,7 +278,11 @@ class XmlDocumentFixture extends PHPUnit_Framework_TestCase {
     }
 
 
-    public function test_GetElementById_ReturnNullWhenIdDoesNotExists() {
+    /**
+     * @test
+    */
+    public function GetElementById_ReturnNullWhenIdDoesNotExists() 
+    {
         # Arrange:
         $doc = new XmlDocument;
         $doc->loadXml($this->xml['well-formed']);
@@ -232,7 +294,11 @@ class XmlDocumentFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(null, $element);
     }
 
-    public function test_GetElementById_CanGetElementById() {
+    /**
+     * @test
+    */
+    public function GetElementById_CanGetElementById() 
+    {
         # Arrange:
         $doc = new XmlDocument;
         $doc->loadXml('<?xml version="1.0"?><books><book id="new-book"/><book id="old-book"/></books>');
@@ -245,7 +311,11 @@ class XmlDocumentFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals($expected, $element->outerXml());
     }
 
-    public function test_GetElementsByTagName_DontFindAnyTag() {
+    /**
+     * @test
+    */
+    public function GetElementsByTagName_DontFindAnyTag() 
+    {
         # Arrange:
         $doc = new XmlDocument;
         $doc->loadXml($this->xml['well-formed']);
@@ -257,7 +327,11 @@ class XmlDocumentFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(0, $elements->count());
     }
 
-    public function test_GetElementsByTagName_CanAllElements() {
+    /**
+     * @test
+    */
+    public function GetElementsByTagName_CanAllElements() 
+    {
         # Arrange:
         $doc = new XmlDocument;
         $doc->loadXml($this->xml['well-formed']);
@@ -269,7 +343,11 @@ class XmlDocumentFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(4, $elements->count());
     }
 
-    public function test_GetElementsByTagName_CanGetElementsByTagName() {
+    /**
+     * @test
+    */
+    public function GetElementsByTagName_CanGetElementsByTagName() 
+    {
         # Arrange:
         $doc = new XmlDocument;
         $doc->loadXml($this->xml['well-formed']);
@@ -281,7 +359,11 @@ class XmlDocumentFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(1, $elements->count());
     }
 
-    public function test_ImportNode_CanImportNodeInDeep() {
+    /**
+     * @test
+    */
+    public function ImportNode_CanImportNodeInDeep() 
+    {
         # Arrange:
         $doc = new XmlDocument;
         $doc->loadXml("<bookstore><book genre='novel' ISBN='1-861001-57-5'><title>Pride And Prejudice</title></book></bookstore>");
@@ -299,7 +381,11 @@ class XmlDocumentFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals($expected, $doc->outerXml());
     }
 
-    /*public function test_ImportNode_CanImportNodeWithoutDeep() {
+    /*/**
+     * @test
+    */
+    public function ImportNode_CanImportNodeWithoutDeep() 
+    {
         # Arrange:
         $doc = new XmlDocument;
         $doc->loadXml("<bookstore><book genre='novel' ISBN='1-861001-57-5'><title>Pride And Prejudice</title></book></bookstore>");
@@ -315,9 +401,13 @@ class XmlDocumentFixture extends PHPUnit_Framework_TestCase {
 
         # Assert:
         $this->assertEquals($expected, $doc->outerXml());
-    }*/
+    }
 
-    public function test_Load_CanLoadXmlFromStream() {
+    /**
+     * @test
+    */
+    public function Load_CanLoadXmlFromStream() 
+    {
         # Arrange:
         $fileName = dirname(__FILE__).'/../../resources/system.xml.document-well-formed.xml';
         $stream = new FileStream($fileName);
@@ -330,7 +420,11 @@ class XmlDocumentFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(5, $xml->documentElement()->childNodeS()->count());
     }
 
-    public function test_Load_CanLoadXmlFromString() {
+    /**
+     * @test
+    */
+    public function Load_CanLoadXmlFromString() 
+    {
         # Arrange:
         $url = "https://raw.github.com/fakeezz/dotnetonphp/xml/tests/resources/system.xml.document-well-formed.xml";
         $xml = new XmlDocument;
@@ -342,7 +436,11 @@ class XmlDocumentFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(5, $xml->documentElement()->childNodeS()->count());
     }
 
-    public function test_Load_FromTextReaderCanLoadXml() {
+    /**
+     * @test
+    */
+    public function Load_FromTextReaderCanLoadXml() 
+    {
         # Arrange:
         $fileName = dirname(__FILE__).'/../../resources/system.xml.document-well-formed.xml';
         $reader = new StreamReader($fileName);
@@ -355,20 +453,32 @@ class XmlDocumentFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(5, $xml->documentElement()->childNodeS()->count());
     }
 
-    public function test_Load_FromXmlReaderCanLoadXml() {
+    /**
+     * @test
+    */
+    public function Load_FromXmlReaderCanLoadXml() 
+    {
         $this->markTestIncomplete("Implement XmlReader");
     }
 
-    public function test_LoadXml_ThrowsExceptionWhenXmlWasNotWellFormed() {
+    /**
+     * @test
+     * @expectedException \System\Xml\Exception
+    */
+    public function LoadXml_ThrowsExceptionWhenXmlWasNotWellFormed() 
+    {
         # Arrange:
-        $this->setExpectedException("\\System\\Xml\\XmlException");
         $xml = new XmlDocument();
         
         # Act:
         $xml->loadXml($this->xml['bad-formed']);
     }
 
-    public function test_LoadXml_CanLoadXmlFromString() {
+    /**
+     * @test
+    */
+    public function LoadXml_CanLoadXmlFromString() 
+    {
         # Arrange:
         $doc = new XmlDocument();
         
@@ -379,15 +489,27 @@ class XmlDocumentFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(1, $doc->childNodes()->count());
     }
 
-    public function test_ReadNode_CanReadNodeFromXmlReader() {
+    /**
+     * @test
+    */
+    public function ReadNode_CanReadNodeFromXmlReader() 
+    {
         $this->markTestIncomplete('Implement XmlReader');
     }
 
-    public function test_WriteContentTo_CanWriteContent() {
+    /**
+     * @test
+    */
+    public function WriteContentTo_CanWriteContent() 
+    {
         $this->markTestIncomplete('Implement XmlWriter');
     }
 
-    public function test_WriteTo_CanWriteContent() {
+    /**
+     * @test
+    */
+    public function WriteTo_CanWriteContent() 
+    {
         $this->markTestIncomplete('Implement XmlWriter');
     }
 }

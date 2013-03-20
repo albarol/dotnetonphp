@@ -11,7 +11,8 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
      * @expectedException \System\ArgumentException
      * @test
     */
-    public function Construct_ThrowsExceptionWhenArgumentIsNotInteger() {
+    public function Construct_ThrowsExceptionWhenArgumentIsNotInteger() 
+    {
         # Arrange:
         $argument = "a";
 
@@ -22,7 +23,8 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function Construct_ShouldConstructWithNegativeValues() {
+    public function Construct_ShouldConstructWithNegativeValues() 
+    {
         
         # Arrange:
         $seconds = -10;
@@ -38,7 +40,8 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function Add_ShouldAddNewTimeSpan() {
+    public function Add_ShouldAddNewTimeSpan() 
+    {
         
         # Arrange:
         $time = new TimeSpan(0, 0, 20);
@@ -53,7 +56,8 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function Add_ShouldMoveOneHourWhenAddNewTimeSpan() {
+    public function Add_ShouldMoveOneHourWhenAddNewTimeSpan() 
+    {
         
         # Arrange:
         $minutes = 24;
@@ -69,7 +73,8 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function Add_ShouldMoveOneMinuteWhenAddNewTimeSpan() {
+    public function Add_ShouldMoveOneMinuteWhenAddNewTimeSpan() 
+    {
         
         # Arrange:
         $seconds = 24;
@@ -85,7 +90,8 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function Add_ShouldMoveOneSecondsWhenAddNewTimeSpan() {
+    public function Add_ShouldMoveOneSecondsWhenAddNewTimeSpan() 
+    {
         
         # Arrange:
         $milliseconds = 999;
@@ -103,7 +109,8 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function FromDays_ShouldCreateTimeSpanFromDays() {
+    public function FromDays_ShouldCreateTimeSpanFromDays() 
+    {
         
         # Arrange:
         $total_days = 2;
@@ -118,7 +125,8 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function FromHours_ShouldConstructTimeSpanFromHours() {
+    public function FromHours_ShouldConstructTimeSpanFromHours() 
+    {
         
         # Arrange:
         $total_hours = 24;
@@ -133,7 +141,8 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function FromMinutes_ShouldContructTimeSpanFromMinutes() {
+    public function FromMinutes_ShouldContructTimeSpanFromMinutes() 
+    {
         
         # Arrange:
         $total_minutes = 60;
@@ -148,7 +157,8 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function FromSeconds_ShouldConstructTimeSpanFromSeconds() {
+    public function FromSeconds_ShouldConstructTimeSpanFromSeconds() 
+    {
         
         # Arrange:
         $total_seconds = 60;
@@ -163,7 +173,8 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function FromMilliseconds_ShouldContructTimeSpanFromMilliseconds() {
+    public function FromMilliseconds_ShouldContructTimeSpanFromMilliseconds() 
+    {
         
         # Arrange:
         $total_milliseconds = 1000;
@@ -178,7 +189,8 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function FromTicks_ShouldContructTimeSpanFromTicks() {
+    public function FromTicks_ShouldContructTimeSpanFromTicks() 
+    {
         
         # Arrange:
         $ticks = TimeSpan::TicksPerDay;
@@ -193,7 +205,8 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function Negate_ShouldNegateTimeSpan() {
+    public function Negate_ShouldNegateTimeSpan() 
+    {
         
         # Arrange:
         $timespan = TimeSpan::fromTicks(TimeSpan::TicksPerDay);
@@ -209,7 +222,8 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
      * @test
      * @expectedException \System\FormatException
     */
-    public function Parse_ThrowsExceptionWhenFormatIsIncorrect() {
+    public function Parse_ThrowsExceptionWhenFormatIsIncorrect() 
+    {
         
         # Arrange:
         $format = "a";
@@ -222,7 +236,8 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
      * @test
      * @expectedException \System\ArgumentNullException
     */
-    public function Parse_ThrowsExceptionWhenFormatIsNull() {
+    public function Parse_ThrowsExceptionWhenFormatIsNull() 
+    {
         
         # Arrange:
         $format = null;
@@ -234,7 +249,8 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function Parse_ShouldParseDayFormat() {
+    public function Parse_ShouldParseDayFormat() 
+    {
         
         # Arrange:
         $format = "21";
@@ -249,7 +265,8 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function Parse_ShouldParseHourMinuteFormat() {
+    public function Parse_ShouldParseHourMinuteFormat() 
+    {
         
         # Arrange:
         $format = "22:50";
@@ -265,7 +282,8 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function Parse_ShouldParseHourMinuteSecondFormat() {
+    public function Parse_ShouldParseHourMinuteSecondFormat() 
+    {
         
         # Arrange:
         $format = "22:59:59";
@@ -282,7 +300,8 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function Parse_ShouldParseDayTimeFormat() {
+    public function Parse_ShouldParseDayTimeFormat() 
+    {
         
         # Arrange:
         $format = "10.22:59:59";
@@ -300,7 +319,8 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function Parse_ShouldParseDayHourMinuteSecondMillisecondFormat() {
+    public function Parse_ShouldParseDayHourMinuteSecondMillisecondFormat() 
+    {
         
         # Arrange:
         $format = "21.22:50:50.999";
@@ -319,7 +339,8 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function TryParse_ShouldTryParseValidFormat() {
+    public function TryParse_ShouldTryParseValidFormat() 
+    {
         
         # Arrange:
         $format = "22:50";
@@ -335,7 +356,8 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function TryParse_ShouldTryParseInvalidFormat() {
+    public function TryParse_ShouldTryParseInvalidFormat() 
+    {
         
         # Arrange:
         $format = "dotnetonphp";
@@ -351,7 +373,8 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function Subtract_ShouldSubtractTimeSpan() {
+    public function Subtract_ShouldSubtractTimeSpan() 
+    {
         
         # Arrange:
         $timespan = TimeSpan::fromSeconds(10);
@@ -366,7 +389,8 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function Subtract_ShouldMoveOneHourWhenSubtractTimeSpan() {
+    public function Subtract_ShouldMoveOneHourWhenSubtractTimeSpan() 
+    {
         
         # Arrange:
         $timespan = TimeSpan::fromHours(2);
@@ -381,7 +405,8 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function Subtract_ShouldMoveOneMinuteWhenSubtractTimeSpan() {
+    public function Subtract_ShouldMoveOneMinuteWhenSubtractTimeSpan() 
+    {
         
         # Arrange:
         $timespan = TimeSpan::fromMinutes(2);
@@ -396,7 +421,8 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function Subtract_ShouldMoveOneSecondWhenSubtractTimeSpan() {
+    public function Subtract_ShouldMoveOneSecondWhenSubtractTimeSpan() 
+    {
         
         # Arrange:
         $timespan = TimeSpan::fromSeconds(2);
@@ -412,7 +438,8 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
      * @test
      * @expectedException \System\OverflowException
     */
-    public function Subtract_ThrowsExceptionWhenTryRemoveLessThanMinValue() {
+    public function Subtract_ThrowsExceptionWhenTryRemoveLessThanMinValue() 
+    {
         
         # Arrange:
         $timespan = TimeSpan::minValue();
@@ -424,7 +451,8 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function Equals_ShouldTrueWhenCompareTwoTimeSpan() {
+    public function Equals_ShouldTrueWhenCompareTwoTimeSpan() 
+    {
         
         # Arrange:
         $first = TimeSpan::fromSeconds(10);
@@ -440,7 +468,8 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function Equals_ShouldFalseWhenCompareTwoTimeSpan() {
+    public function Equals_ShouldFalseWhenCompareTwoTimeSpan() 
+    {
         
         # Arrange:
         $first = TimeSpan::fromSeconds(10);
@@ -457,7 +486,8 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
      * @test
      * @expectedException \System\ArgumentException
     */
-    public function CompareTo_ThrowsExceptionWhenCompareInvalidValue() {
+    public function CompareTo_ThrowsExceptionWhenCompareInvalidValue() 
+    {
         
         # Arrange:
         $value = 1;
@@ -470,7 +500,8 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function CompareTo_ShouldCompareToGreaterSpan() {
+    public function CompareTo_ShouldCompareToGreaterSpan() 
+    {
         
         # Arrange:
         $first = TimeSpan::fromSeconds(10);
@@ -486,7 +517,8 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function CompareTo_ShouldCompareToLesserTimeSpan() {
+    public function CompareTo_ShouldCompareToLesserTimeSpan() 
+    {
         
         # Arrange:
         $first = TimeSpan::fromSeconds(8);
@@ -502,7 +534,8 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function CompareTo_ShouldCompareToEqualTimeSpan() {
+    public function CompareTo_ShouldCompareToEqualTimeSpan() 
+    {
         
         # Arrange:
         $first = TimeSpan::fromSeconds(10);

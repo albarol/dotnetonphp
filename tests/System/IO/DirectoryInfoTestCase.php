@@ -66,9 +66,6 @@ class DirectoryInfoTestCase extends PHPUnit_Framework_TestCase
 
         # Act:
         $info->create();
-
-        # Post
-        rmdir($name);
     }
 
     /**
@@ -85,9 +82,6 @@ class DirectoryInfoTestCase extends PHPUnit_Framework_TestCase
 
         # Assert:
         $this->assertTrue(file_exists($name));
-
-        # Post:
-        $info->delete();
     }
 
     /**
@@ -133,9 +127,6 @@ class DirectoryInfoTestCase extends PHPUnit_Framework_TestCase
 
         # Act:
         $info->createSubDirectory($sub_name);
-
-        # Post:
-        $info->delete(true);
     }
 
     /**
@@ -154,9 +145,6 @@ class DirectoryInfoTestCase extends PHPUnit_Framework_TestCase
     
         # Assert:
         $this->assertTrue(file_exists($child->fullName()));
-
-        # Post:
-        $info->delete(true);
     }
 
     /**
@@ -174,9 +162,6 @@ class DirectoryInfoTestCase extends PHPUnit_Framework_TestCase
     
         # Assert:
         $this->assertTrue(file_exists($info->fullName()));
-
-        # Post:
-        $info->delete(true);
     }
 
     /**

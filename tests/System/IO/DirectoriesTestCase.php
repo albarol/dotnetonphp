@@ -27,9 +27,6 @@ class DirectoriesTestCase extends PHPUnit_Framework_TestCase
         
         # Assert:
         $this->assertTrue(file_exists($name));
-        
-        # Post:
-        $info->delete();
     }
 
     /**
@@ -62,9 +59,6 @@ class DirectoriesTestCase extends PHPUnit_Framework_TestCase
 
         # Assert:
         $this->assertTrue($exists);
-
-        # Post:
-        rmdir($name);
     }
 
     /**
@@ -96,9 +90,6 @@ class DirectoriesTestCase extends PHPUnit_Framework_TestCase
 
         # Assert:
         $this->assertTrue($creationTime->year() > 2010);
-
-        # Post:
-        rmdir($name);
     }
 
     /**
@@ -115,9 +106,6 @@ class DirectoriesTestCase extends PHPUnit_Framework_TestCase
 
         # Assert:
         $this->assertTrue($creationTime->year() > 2010);
-
-        # Post:
-        rmdir($name);
     }
 
     /**
@@ -149,9 +137,6 @@ class DirectoriesTestCase extends PHPUnit_Framework_TestCase
 
         # Assert:
         $this->assertGreaterThan(0, sizeof($directories));
-
-        # Post:
-        rmdir($name);
     }
 
     /**
@@ -189,9 +174,6 @@ class DirectoriesTestCase extends PHPUnit_Framework_TestCase
 
         # Assert:
         $this->assertEquals(3, sizeof($files));
-
-        # Post:
-        Directories::delete($name, true);
     }
 
     /**
@@ -215,9 +197,6 @@ class DirectoriesTestCase extends PHPUnit_Framework_TestCase
 
         # Assert:
         $this->assertEquals(6, sizeof($files));
-
-        # Post:
-        Directories::delete($name, true);
     }
 
     /**
@@ -235,9 +214,6 @@ class DirectoriesTestCase extends PHPUnit_Framework_TestCase
 
         # Assert:
         $this->assertEquals($date['year'], $time->year());
-
-        # Post:
-        Directories::delete($name);
     }
 
     /**
@@ -255,9 +231,6 @@ class DirectoriesTestCase extends PHPUnit_Framework_TestCase
 
         # Assert:
         $this->assertEquals($utc['year'], $time->year());
-
-        # Post:
-        Directories::delete($name);
     }
 
     /**
@@ -275,9 +248,6 @@ class DirectoriesTestCase extends PHPUnit_Framework_TestCase
 
         # Assert:
         $this->assertEquals($date['year'], $time->year());
-
-        # Post:
-        Directories::delete($name);
     }
 
     /**
@@ -295,9 +265,6 @@ class DirectoriesTestCase extends PHPUnit_Framework_TestCase
 
         # Assert:
         $this->assertEquals($utc['year'], $time->year());
-
-        # Post:
-        Directories::delete($name);
     }
 
 
@@ -315,9 +282,6 @@ class DirectoriesTestCase extends PHPUnit_Framework_TestCase
 
         # Assert:
         $this->assertEquals('/tmp', $parent->fullName());
-
-        # Post:
-        Directories::delete($name, true);
     }
 
     /**
@@ -338,8 +302,5 @@ class DirectoriesTestCase extends PHPUnit_Framework_TestCase
         # Assert:
         
         $this->assertTrue(file_exists($complete_path));
-
-        # Post
-        Directories::delete($destination, true);
     }
 }
