@@ -3,7 +3,7 @@ language: php
 php:
   - 5.3
 
-install: php composer.phar install
+install: composer install
 
 script: make
 
