@@ -290,10 +290,9 @@ class ArrayListTestCase extends PHPUnit_Framework_TestCase {
         $array = new ArrayList;
         $array->add(1);
         $array->add(2);
-        $buffer = array();
         
         # Act:
-        $array->copyTo($buffer, 0);
+        $buffer = $array->copyTo(0);
         
         # Assert:
         $this->assertEquals(2, sizeof($buffer));
@@ -308,10 +307,9 @@ class ArrayListTestCase extends PHPUnit_Framework_TestCase {
         $array = new ArrayList;
         $array->add(1);
         $array->add(2);
-        $buffer = array();
         
         # Act:
-        $array->copyTo($buffer, 1);
+        $buffer = $array->copyTo(1);
         
         # Assert:
         $this->assertEquals(1, sizeof($buffer));

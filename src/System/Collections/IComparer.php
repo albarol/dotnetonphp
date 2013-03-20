@@ -1,7 +1,7 @@
 <?php
 
-namespace System\Collections {
-
+namespace System\Collections 
+{
 	/**
 	 * Exposes a method that compares two objects.
 	 * @access public
@@ -9,8 +9,8 @@ namespace System\Collections {
 	 * @package System
 	 * @subpackage Collections
 	 */
-	interface IComparer {
-
+	interface IComparer 
+	{
 	    /**
 	     * Compares two objects and returns a value indicating whether one is less than, equal to, or greater than the other.
 	     * @access public

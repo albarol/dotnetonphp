@@ -1,9 +1,7 @@
 <?php
 
-namespace System\Collections {
-
-
-
+namespace System\Collections 
+{
     use \System\Collections\ICollection as ICollection;
 
     /**
@@ -13,8 +11,8 @@ namespace System\Collections {
      * @package System
      * @subpackage Collections
      */
-    interface IDictionary extends ICollection {
-
+    interface IDictionary extends ICollection 
+    {
         /**
          * Adds an element with the provided key and value to the System.Collections.IDictionary object.
          * @access public
@@ -32,12 +30,12 @@ namespace System\Collections {
         function clear();
 
         /**
-         * Determines whether the System.Collections.IDictionary object contains an element with the specified key.
+         * Determines whether the IDictionary object contains an element with the specified key.
          * @access public
-         * @throws ArgumentNullException
+         * @throws \System\ArgumentNullException key is null.
          * @abstract
-         * @param $key The key to locate in the System.Collections.IDictionary object.
-         * @return boolean true if the System.Collections.IDictionary contains an element with the key; otherwise, false.
+         * @param object $key The key to locate in the IDictionary object.
+         * @return boolean true if the IDictionary contains an element with the key; otherwise, false.
          */
         function contains($key);
 

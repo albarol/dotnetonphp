@@ -3,7 +3,6 @@
 namespace System {
 
     use \System\IComparable as IComparable;
-    use \System\IConvertible as IConvertible;
     use \System\IEquatable as IEquatable;
 
     /**
@@ -12,7 +11,7 @@ namespace System {
      * @name Char
      * @package System
      */
-    final class Char implements IComparable, IConvertible, IEquatable {
+    final class Char implements IComparable, IEquatable {
 
         private $value;
 
@@ -28,14 +27,14 @@ namespace System {
          * @param object $value A object to compare to this instance.
          * @return int A signed number indicating the relative values of this instance and the value parameter.
          */
-        public function compareTo($value) {
-            if ($this->value == $value):
+        public function compareTo($value) 
+        {
+            if ($this->value == $value)
+            {
                 return 0;
-            elseif($this->value < $value):
-                return -1;
-            elseif($this->value > $value):
-                return 1;
-            endif;
+            }
+
+            return ($this->value > $value) ? 1 : -1;
         }
 
         /**
@@ -94,18 +93,18 @@ namespace System {
          * @param char $value set char value
          * @return char char value
         */
-        public function value($value=null) 
+        public function value($value = null) 
         {
             if (is_null($value))
             {
                 return $this->value;
             }
-                
+
             if($value >= self::MinValue && $value <= self::MaxValue)
             {
                 $this->value = $value;
             }
-                
+
             return $this->value; 
         }
 

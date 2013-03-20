@@ -1,24 +1,22 @@
 <?php
 
-require_once 'PHPUnit/Framework.php';
+use \System\Collections\Generic\LinkedList as LinkedList;
 
-require_once dirname(__FILE__) . '/../../../system/collections/LinkedList.php';
-
-class LinkedListTest extends PHPUnit_Framework_TestCase {
-
+class LinkedListTestCase extends PHPUnit_Framework_TestCase 
+{
     public function testCanAddFirstToLinkedList() {
         $linked = new LinkedList();
         $linked->addFirst("Alexandre");
 
         $this->assertEquals(1, $linked->count());
-        $this->assertEquals("Alexandre", $linked->getFirst()->getValue());
+        $this->assertEquals("Alexandre", $linked->first()->value());
 
         $linked->addFirst("Barbieri");
         $this->assertEquals(2, $linked->count());
-        $this->assertEquals("Barbieri", $linked->getFirst()->getValue());
-        $this->assertEquals("Alexandre", $linked->getFirst()->getNext()->getValue());
-        $this->assertEquals(null, $linked->getLast()->getNext());
-        $this->assertEquals(null, $linked->getFirst()->getPrevious());
+        $this->assertEquals("Barbieri", $linked->first()->value());
+        $this->assertEquals("Alexandre", $linked->first()->next()->value());
+        $this->assertEquals(null, $linked->last()->next());
+        $this->assertEquals(null, $linked->first()->previous());
     }
 
     public function testCanAddLastToLinkedList() {
@@ -26,15 +24,15 @@ class LinkedListTest extends PHPUnit_Framework_TestCase {
         $linked->addLast("Alexandre");
 
         $this->assertEquals(1, $linked->count());
-        $this->assertEquals("Alexandre", $linked->getLast()->getValue());
+        $this->assertEquals("Alexandre", $linked->last()->value());
         $linked->addLast("Barbieri");
         $this->assertEquals(2, $linked->count());
-        $this->assertEquals("Barbieri", $linked->getLast()->getValue());
-        $this->assertEquals("Alexandre", $linked->getLast()->getPrevious()->getValue());
-        $this->assertEquals("Alexandre", $linked->getFirst()->getValue());
-        $this->assertEquals("Barbieri", $linked->getFirst()->getNext()->getValue());
-        $this->assertEquals(null, $linked->getLast()->getNext());
-        $this->assertEquals(null, $linked->getFirst()->getPrevious());
+        $this->assertEquals("Barbieri", $linked->last()->value());
+        $this->assertEquals("Alexandre", $linked->last()->previous()->value());
+        $this->assertEquals("Alexandre", $linked->first()->value());
+        $this->assertEquals("Barbieri", $linked->first()->next()->value());
+        $this->assertEquals(null, $linked->last()->next());
+        $this->assertEquals(null, $linked->first()->previous());
     }
 
     public function testCanAddFirstAndLastElement() {
@@ -43,34 +41,12 @@ class LinkedListTest extends PHPUnit_Framework_TestCase {
         $linked->addLast("Barbieri");
 
         $this->assertEquals(2, $linked->count());
-        $this->assertEquals("Alexandre", $linked->getFirst()->getValue());
-        $this->assertEquals("Barbieri", $linked->getLast()->getValue());
-        $this->assertEquals("Alexandre", $linked->getLast()->getPrevious()->getValue());
-        $this->assertEquals("Barbieri", $linked->getFirst()->getNext()->getValue());
-        $this->assertEquals(null, $linked->getLast()->getNext());
-        $this->assertEquals(null, $linked->getFirst()->getPrevious());
-    }
-
-    public function testCanGetElement() {
-        $linked = new LinkedList();
-        $linked->addFirst("Alexandre");
-        $linked->addLast("Barbieri");
-        $linked->addLast("Domingues");
-        $linked->addLast("Oliveira");
-
-        $this->assertEquals(4, $linked->count());
-        $this->assertEquals("Barbieri", $linked->get(1)->getValue());
-    }
-
-    public function testCantGetElement() {
-        $this->setExpectedException("OutOfRangeException");
-        $linked = new LinkedList();
-        $linked->addFirst("Alexandre");
-        $linked->addLast("Barbieri");
-        $linked->addLast("Domingues");
-        $linked->addLast("Oliveira");
-        $this->assertEquals("Barbieri", $linked->get(15)->getValue());
-
+        $this->assertEquals("Alexandre", $linked->first()->value());
+        $this->assertEquals("Barbieri", $linked->last()->value());
+        $this->assertEquals("Alexandre", $linked->last()->previous()->value());
+        $this->assertEquals("Barbieri", $linked->first()->next()->value());
+        $this->assertEquals(null, $linked->last()->next());
+        $this->assertEquals(null, $linked->first()->previous());
     }
 
     public function testCanAddBeforeElement() {
@@ -79,10 +55,10 @@ class LinkedListTest extends PHPUnit_Framework_TestCase {
         $linked->addBefore(0, "Programmer");
 
         $this->assertEquals(2, $linked->count());
-        $this->assertEquals("Programmer", $linked->getFirst()->getValue());
+        $this->assertEquals("Programmer", $linked->first()->value());
 
         $linked->addBefore(1, "Php");
-        $this->assertEquals("Php", $linked->getFirst()->getNext()->getValue());
+        $this->assertEquals("Php", $linked->first()->next()->value());
     }
 
     public function testCanAddAfterElement() {
@@ -91,11 +67,11 @@ class LinkedListTest extends PHPUnit_Framework_TestCase {
         $linked->addAfter(0, "Programmer");
 
         $this->assertEquals(2, $linked->count());
-        $this->assertEquals("Programmer", $linked->get(1)->getValue());
+        // $this->assertEquals("Programmer", $linked->get(1)->value());
 
         $linked->addAfter(5, "Php");
-        $this->assertEquals("Php", $linked->getLast()->getValue());
-        $this->assertEquals("Programmer", $linked->getLast()->getPrevious()->getValue());
+        $this->assertEquals("Php", $linked->last()->value());
+        $this->assertEquals("Programmer", $linked->last()->previous()->value());
     }
 
     public function testCanFindFirstElement() {
@@ -106,8 +82,8 @@ class LinkedListTest extends PHPUnit_Framework_TestCase {
         $linked->addLast("Programmer");
 
         $find = $linked->find("Programmer");
-        $this->assertEquals("Programmer", $find->getValue());
-        $this->assertEquals("Alexandre", $find->getPrevious()->getValue());
+        $this->assertEquals("Programmer", $find->value());
+        $this->assertEquals("Alexandre", $find->previous()->value());
     }
 
     public function testCanFindLastElement() {
@@ -118,8 +94,8 @@ class LinkedListTest extends PHPUnit_Framework_TestCase {
         $linked->addLast("Programmer");
 
         $find = $linked->findLast("Programmer");
-        $this->assertEquals("Programmer", $find->getValue());
-        $this->assertEquals("Php", $find->getPrevious()->getValue());
+        $this->assertEquals("Programmer", $find->value());
+        $this->assertEquals("Php", $find->previous()->value());
     }
 
     public function testCantFindElement() {
@@ -166,5 +142,3 @@ class LinkedListTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals(0, $linked->count());
     }
 }
-
-?>

@@ -88,13 +88,11 @@ namespace System\Collections {
          * @access public
          * @throws \System\ArgumentNullException array is null.
          * @throws \System\ArgumentOutOfRangeException index is less than zero. -or- index greater than size of queue
-         * @param array $array The one-dimensional System.Array that is the destination of the elements copied from System.Collections.ICollection. The System.Array must have zero-based indexing.
          * @param int $index The zero-based index in array at which copying begins.
-         * @return void
+         * @return array The one-dimensional array that is the destination of the elements copied from ICollection. The array must have zero-based indexing.
          */
-        public function copyTo(&$array, $index) 
+        public function copyTo($index = 0)
         {
-            
             if(is_null($array)) 
             {
                 throw new ArgumentNullException("array is null.");
@@ -105,10 +103,13 @@ namespace System\Collections {
                 throw new ArgumentOutOfRangeException("index is less than zero. -or- index greater than size of queue");
             }
 
+            $array = array();
             for($i = $index; $i < $this->count(); $i++) 
             {
                 $array[] = $this->values[$i];
             }
+
+            return $array;
         }
 
         /**

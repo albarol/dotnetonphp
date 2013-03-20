@@ -1,7 +1,7 @@
 <?php
 
 namespace System {
-    
+
     use \System\ArgumentNullException as ArgumentNullException;
     use \System\FormatException as FormatException;
     use \System\TypeCode as TypeCode;

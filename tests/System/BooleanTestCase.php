@@ -11,6 +11,21 @@ class BooleanTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
      */
+    public function CompareTo_ShouldReturnNullWhenValueIsNotBoolean() {
+        
+        # Arrange:
+        $obj = new Boolean;
+    
+        # Act:
+        $result = $obj->compareTo('abc');
+    
+        # Assert:
+        $this->assertNull($result);
+    }
+
+    /**
+     * @test
+     */
     public function CompareTo_ShouldEqualWhenCompareSameFalseValue() {
         
         # Arrange:
@@ -291,5 +306,20 @@ class BooleanTestCase extends PHPUnit_Framework_TestCase {
 
         # Assert:
         $this->assertEquals(Boolean::FalseString, $str);
-    }    
+    }
+
+    /**
+     * @test
+     */
+    public function ToString_CanConvertImplicit() {
+        
+        # Arrange:
+        $obj = new Boolean;
+    
+        # Act:
+        $str = "".$obj;
+    
+        # Assert:
+        $this->assertEquals(Boolean::FalseString, $str);
+    }
 }

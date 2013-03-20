@@ -4,7 +4,6 @@ namespace System {
 
     use \System\ArgumentNullException as ArgumentNullException;
     use \System\IComparable as IComparable;
-    use \System\IConvertible as IConvertible;
     use \System\IEquatable as IEquatable;
     use \System\FormatException as FormatException;
     use \System\TypeCode as TypeCode;
@@ -16,10 +15,10 @@ namespace System {
      * @name Boolean
      * @final
      */
-    final class Boolean implements IComparable, IConvertible, IEquatable {
+    final class Boolean implements IComparable, IEquatable {
 
         private $value;
-        private $readOnly;
+        private $read_only;
 
         public function  __construct($value=false) {
             $this->value($value);
@@ -160,66 +159,6 @@ namespace System {
                 $this->value = $value;
             }
             return $this->value;
-        }
-
-        public function toBoolean($provider) {
-
-        }
-
-        public function toByte($provider) {
-
-        }
-
-        public function toChar($provider) {
-
-        }
-
-        public function toDateTime($provider) {
-
-        }
-
-        public function toDecimal($provider) {
-
-        }
-
-        public function toDouble($provider) {
-
-        }
-
-        public function toInt16($provider) {
-
-        }
-
-        public function toInt32($provider) {
-
-        }
-
-        public function toInt64($provider) {
-
-        }
-
-        public function toSByte($provider) {
-
-        }
-
-        public function toSingle($provider) {
-
-        }
-
-        public function toType($conversionType, $provider) {
-
-        }
-
-        public function toUInt16($provider) {
-
-        }
-
-        public function toUInt32($provider) {
-
-        }
-
-        public function toUInt64($provider) {
-
         }
     }
 }
