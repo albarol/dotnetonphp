@@ -8,16 +8,31 @@ use \System\TimeSpan as TimeSpan;
 class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
 
     /**
-     * @expectedException \System\ArgumentException
      * @test
+     * @expectedException \System\ArgumentException
     */
-    public function Construct_ThrowsExceptionWhenArgumentIsNotInteger() 
+    public function Construct_ThrowsExceptionWhenArgumentIsGreaterThanMaxValue() 
     {
         # Arrange:
-        $argument = "a";
+        $days = 99999999999999999;
 
         # Act:
-        new TimeSpan(0, 0, $argument);
+        new TimeSpan($days);
+    }
+
+    /**
+     * @test
+    */
+    public function Construct_ShouldConstructWithPositiveValues() 
+    {
+        # Arrange:
+        $seconds = 10;
+    
+        # Act:
+        $timespan = new TimeSpan(0, 0, 0, $seconds);
+    
+        # Assert:
+        $this->assertEquals(10, $timespan->totalSeconds());
     }
 
     /**
@@ -30,10 +45,37 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
         $seconds = -10;
     
         # Act:
-        $timespan = TimeSpan::fromSeconds($seconds);
+        $timespan = new TimeSpan(0, 0, 0, $seconds);
     
         # Assert:
         $this->assertEquals(-10, $timespan->totalSeconds());
+    }
+
+    /**
+     * @test
+     * @expectedException \System\OverflowException
+    */
+    public function Add_ThrowsExceptionWhenResultIsGreaterThanMaxValue() 
+    {
+        
+        # Arrange:
+        $timespan = TimeSpan::fromMilliseconds(TimeSpan::MaxValue);
+    
+        # Act:
+        $timespan->add(TimeSpan::fromMilliseconds(1));
+    }
+
+    /**
+     * @test
+     * @expectedException \System\OverflowException
+    */
+    public function Add_ThrowsExceptionWhenResultIsLessThanMinValue() 
+    {
+        # Arrange:
+        $timespan = TimeSpan::fromMilliseconds(TimeSpan::MinValue);
+    
+        # Act:
+        $timespan->add(TimeSpan::fromMilliseconds(-1));
     }
 
 
@@ -42,10 +84,9 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
     */
     public function Add_ShouldAddNewTimeSpan() 
     {
-        
         # Arrange:
         $time = new TimeSpan(0, 0, 20);
-        
+
         # Act:
         $time->add(new TimeSpan(1, 24, 30));
         
@@ -105,6 +146,208 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
         $this->assertEquals(1, $timespan->totalSeconds());
     }
 
+    /**
+     * @test
+    */
+    public function Compare_ShouldBeNegativeWhenIsLessThanOther() 
+    {
+        # Arrange:
+        $t1 = TimeSpan::fromSeconds(0);
+        $t2 = TimeSpan::fromSeconds(1);
+  
+        # Act:
+        $result = TimeSpan::compare($t1, $t2);
+    
+        # Assert:
+        $this->assertEquals(-1, $result);
+    }
+
+    /**
+     * @test
+    */
+    public function Compare_ShouldBeZeroWhenEqualOther() 
+    {
+        # Arrange:
+        $t1 = TimeSpan::fromSeconds(0);
+        $t2 = TimeSpan::fromSeconds(0);
+    
+        # Act:
+        $result = TimeSpan::compare($t1, $t2);
+    
+        # Assert:
+        $this->assertEquals(0, $result);
+    }
+
+    /**
+     * @test
+    */
+    public function Compare_ShouldBePositiveWhenGreaterThanOther() 
+    {
+        # Arrange:
+        $t1 = TimeSpan::fromSeconds(1);
+        $t2 = TimeSpan::fromSeconds(0);
+    
+        # Act:
+        $result = TimeSpan::compare($t1, $t2);
+    
+        # Assert:
+        $this->assertEquals(1, $result);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentException
+    */
+    public function CompareTo_ThrowsExceptionWhenCompareInvalidValue() 
+    {
+        
+        # Arrange:
+        $value = 1;
+        $timespan = TimeSpan::fromSeconds(10);
+    
+        # Act:
+        $timespan->compareTo($value);
+    }
+
+    /**
+     * @test
+    */
+    public function CompareTo_ShouldBePositiveWhenGreaterThanOther() 
+    {
+        
+        # Arrange:
+        $t1 = TimeSpan::fromSeconds(1);
+        $t2 = TimeSpan::fromSeconds(0);
+    
+        # Act:
+        $result = $t1->compareTo($t2);
+    
+        # Assert:
+        $this->assertEquals(1, $result);
+    }
+
+    /**
+     * @test
+    */
+    public function CompareTo_ShouldBeNegativeWhenLessThanOther() 
+    {
+        
+        # Arrange:
+        $t1 = TimeSpan::fromSeconds(0);
+        $t2 = TimeSpan::fromSeconds(1);
+    
+        # Act:
+        $result = $t1->compareTo($t2);
+    
+        # Assert:
+        $this->assertEquals(-1, $result);
+    }
+
+    /**
+     * @test
+    */
+    public function CompareTo_ShouldBeZeroWhenEqualOther() 
+    {
+        
+        # Arrange:
+        $t1 = TimeSpan::fromSeconds(0);
+        $t2 = TimeSpan::fromSeconds(0);
+    
+        # Act:
+        $result = $t1->compareTo($t2);
+    
+        # Assert:
+        $this->assertEquals(0, $result);
+    }
+
+    /**
+     * @test
+    */
+    public function CompareTo_ShouldBePositiveWhenCompareWithNull() 
+    {
+        # Arrange:
+        $t1 = TimeSpan::fromSeconds(0);
+    
+        # Act:
+        $result = $t1->compareTo(null);
+    
+        # Assert:
+        $this->assertEquals(1, $result);
+    }
+
+    /**
+     * @test
+    */
+    public function Days_ShouldGetWholeDay() 
+    {
+        # Arrange:
+        $t1 = TimeSpan::fromDays(1);
+    
+        # Act:
+        $result = $t1->days();
+    
+        # Assert:
+        $this->assertEquals(1, $result);
+    }
+
+    /**
+     * @test
+    */
+    public function Days_ShouldGetPartOfDay() 
+    {
+        # Arrange:
+        $t1 = TimeSpan::fromHours(28);
+    
+        # Act:
+        $result = $t1->days();
+    
+        # Assert:
+        $this->assertEquals(1, $result);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\OverflowException
+    */
+    public function Duration_ThrowsExceptionWhenTimeSpanIsMinValue() 
+    {
+        # Arrange:
+        $timespan = TimeSpan::fromMilliseconds(TimeSpan::MinValue);
+    
+        # Act:
+        $duration = $timespan->duration();
+    }
+
+
+    /**
+     * @test
+    */
+    public function Duration_GetAbsoluteValueFromTimespanWhenValueIsNegative() 
+    {
+        # Arrange:
+        $timespan = TimeSpan::fromHours(-1);
+    
+        # Act:
+        $duration = $timespan->duration();
+    
+        # Assert:
+        $this->assertEquals(1, $duration->hours());
+    }
+
+    /**
+     * @test
+    */
+    public function Duration_GetAbsoluteValueFromTimespanWhenValueIsPositive() 
+    {
+        # Arrange:
+        $timespan = TimeSpan::fromHours(1);
+    
+        # Act:
+        $duration = $timespan->duration();
+    
+        # Assert:
+        $this->assertEquals(1, $duration->hours());
+    }
 
     /**
      * @test
@@ -436,13 +679,13 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
 
     /**
      * @test
-     * @expectedException \System\OverflowException
+     * @expectedException \System\ArgumentException
     */
     public function Subtract_ThrowsExceptionWhenTryRemoveLessThanMinValue() 
     {
         
         # Arrange:
-        $timespan = TimeSpan::minValue();
+        $timespan = TimeSpan::fromMilliseconds(TimeSpan::MinValue);
     
         # Act:
         $timespan->subtract(TimeSpan::fromSeconds(1));
@@ -482,69 +725,5 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
         $this->assertFalse($result);
     }
 
-    /**
-     * @test
-     * @expectedException \System\ArgumentException
-    */
-    public function CompareTo_ThrowsExceptionWhenCompareInvalidValue() 
-    {
-        
-        # Arrange:
-        $value = 1;
-        $timespan = TimeSpan::fromSeconds(10);
     
-        # Act:
-        $timespan->compareTo($value);
-    }
-
-    /**
-     * @test
-    */
-    public function CompareTo_ShouldCompareToGreaterSpan() 
-    {
-        
-        # Arrange:
-        $first = TimeSpan::fromSeconds(10);
-        $second = TimeSpan::fromSeconds(8);
-    
-        # Act:
-        $result = $first->compareTo($second);
-    
-        # Assert:
-        $this->assertEquals(1, $result);
-    }
-
-    /**
-     * @test
-    */
-    public function CompareTo_ShouldCompareToLesserTimeSpan() 
-    {
-        
-        # Arrange:
-        $first = TimeSpan::fromSeconds(8);
-        $second = TimeSpan::fromSeconds(10);
-    
-        # Act:
-        $result = $first->compareTo($second);
-    
-        # Assert:
-        $this->assertEquals(-1, $result);
-    }
-
-    /**
-     * @test
-    */
-    public function CompareTo_ShouldCompareToEqualTimeSpan() 
-    {
-        
-        # Arrange:
-        $first = TimeSpan::fromSeconds(10);
-        $second = TimeSpan::fromSeconds(10);
-    
-        # Act:
-        $result = $first->compareTo($second);
-    
-        # Assert:
-        $this->assertEquals(0, $result);
-    }
 }
