@@ -94,7 +94,25 @@ namespace System\Collections\Generic
          */
         public function addBefore(LinkedListNode $node, LinkedListNode $newNode) 
         {
-            
+            if ($node->linkedList() != $this)
+            {
+                throw new InvalidOperationException("node is not in the current LinkedList.");
+            }
+
+            if(!is_null($newNode->linkedList()) && $newNode->linkedList() != $this)
+            {
+                throw new InvalidOperationException("newNode belongs to another LinkedList.");
+            }
+
+            $newNode->linkedList($this);
+            $newNode->next($node);
+            $newNode->previous($node->previous());
+            $node->previous($newNode);
+
+            if($node == $this->first)
+            {
+                $this->first = $newNode;
+            }
         }
 
         /**
@@ -105,7 +123,28 @@ namespace System\Collections\Generic
          */
         public function addFirst($value) 
         {
-            
+            $node = new LinkedListNode($value);
+            $node->linkedList($this);
+
+            if (is_null($this->first))
+            {
+                $this->first = $node;
+            }
+
+            if(is_null($this->last))
+            {
+                $this->last = $node;
+            }
+            else
+            {
+                $first = $this->first();
+
+                $node->next($first);
+                $first->previous($node);
+                
+                $this->first = $node;
+            }
+            return $node;
         }
 
         /**

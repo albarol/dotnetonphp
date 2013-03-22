@@ -159,4 +159,98 @@ class LinkedListTestCase extends PHPUnit_Framework_TestCase
         # Assert:
         $this->assertEquals(2, $l1->last()->value());
     }
+
+    /**
+     * @test
+     * @expectedException \System\InvalidOperationException
+     */
+    public function AddBefore_ThrowsExceptionWhenNodeNotBelongsToLinkedList() 
+    {
+        # Arrange:
+        $node = new LinkedListNode(1);
+        $linkedList = new LinkedList;
+    
+        # Act:
+        $linkedList->addBefore($node, new LinkedListNode(1));
+    }
+
+    /**
+     * @test
+     * @expectedException \System\InvalidOperationException
+     */
+    public function AddBefore_ThrowsExceptionWhenNewNodeBelongsToAnotherLinkedList() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+        $l1->add(1);
+        $l2 = new LinkedList;
+        $l2->add(2);
+        
+        # Act:
+        $l1->AddBefore($l1->first(), $l2->first());
+    }
+
+    /**
+     * @test
+     */
+    public function AddBefore_CanAddElementAfterSpecificNode() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+        $l1->add(1);
+    
+        # Act:
+        $l1->addBefore($l1->last(), new LinkedListNode(2));
+    
+        # Assert:
+        $beforeNode = $l1->last()->previous();
+        $this->assertEquals(2, $beforeNode->value());
+    }
+
+    /**
+     * @test
+     */
+    public function AddBefore_ShouldChangeFirstWhenNodeInsertBeforeFirst() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+        $l1->add(1);
+    
+        # Act:
+        $l1->addBefore($l1->first(), new LinkedListNode(2));
+    
+        # Assert:
+        $this->assertEquals(2, $l1->first()->value());
+    }
+
+    /**
+     * @test
+     */
+    public function AddFirst_ShouldAddElementWhenListIsEmpty() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+
+        # Act:
+        $l1->addFirst(1);
+    
+        # Assert:
+        $this->assertEquals(1, $l1->first()->value());
+    }
+
+    /**
+     * @test
+     */
+    public function AddFirst_ShouldAddElementWhenListContainsFirstElement() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+        $l1->add(1);
+
+        # Act:
+        $l1->addFirst(2);
+    
+        # Assert:
+        $this->assertEquals(2, $l1->first()->value());
+    }
 }
