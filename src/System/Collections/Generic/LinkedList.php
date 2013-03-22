@@ -126,14 +126,14 @@ namespace System\Collections\Generic
             $node = new LinkedListNode($value);
             $node->linkedList($this);
 
-            if (is_null($this->first))
-            {
-                $this->first = $node;
-            }
-
             if(is_null($this->last))
             {
                 $this->last = $node;
+            }
+
+            if (is_null($this->first))
+            {
+                $this->first = $node;
             }
             else
             {
