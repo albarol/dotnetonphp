@@ -12,6 +12,11 @@ namespace System\Collections\Generic
      */
     final class LinkedListNode 
     {
+        private $value;
+        private $next;
+        private $previous;
+        private $linkedList;
+
         /**
          * Initializes a new instance of the LinkedListNode class, containing the specified value.
          * @access public
@@ -19,7 +24,7 @@ namespace System\Collections\Generic
         */
         public function __construct($value)
         {
-
+            $this->value = $value;
         }
 
         public function equals()
@@ -32,24 +37,36 @@ namespace System\Collections\Generic
 
         }
 
-        public function list()
+        public function linkedList(LinkedList $linkedList = null)
         {
-
+            if(!is_null($linkedList) && is_null($this->linkedList))
+            {
+                $this->linkedList = $linkedList;
+            }
+            return $this->linkedList;
         }
 
-        public function next()
+        public function next(LinkedListNode $node = null)
         {
-
+            if(!is_null($node))
+            {
+                $this->next = $node;
+            }
+            return $this->next;
         }
 
-        public function previous()
+        public function previous(LinkedListNode $node = null)
         {
-
+            if(!is_null($node))
+            {
+                $this->previous = $node;
+            }
+            return $this->previous;
         }
 
         public function value()
         {
-
+            return $this->value;
         }
 
         public function toString()

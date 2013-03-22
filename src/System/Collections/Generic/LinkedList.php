@@ -3,10 +3,14 @@
 namespace System\Collections\Generic
 {
     
+    use System\InvalidOperationException as InvalidOperationException;
+
     use System\Collections\ICollection as ICollection;
     use System\Collections\IEnumerable as IEnumerable;
     
-    use \System\Runtime\Serialization\IDeserializationCallback as IDeserializationCallback;
+    use System\Collections\Generic\BaseEnumerator as BaseEnumerator;
+
+    use System\Runtime\Serialization\IDeserializationCallback as IDeserializationCallback;
     use System\Runtime\Serialization\ISerializable as ISerializable;
 
 
@@ -23,6 +27,23 @@ namespace System\Collections\Generic
         private $first;
         private $last;
 
+        /**
+         * Initializes a new instance of the LinkedList class that contains elements copied from the specified IEnumerable and has sufficient capacity to accommodate the number of elements copied.
+         * @access public
+         * @param \System\Collections\IEnumerable $collection The IEnumerable whose elements are copied to the new LinkedList.
+         * 
+        */
+        public function __construct(IEnumerable $collection = null)
+        {
+            if(!is_null($collection))
+            {
+                $enumerator = $collection->getEnumerator();
+                while($enumerator->moveNext())
+                {
+                    $this->add($enumerator->current());
+                }
+            }
+        }
 
         /**
          * Adds an item at the end of the ICollection.
@@ -31,26 +52,42 @@ namespace System\Collections\Generic
         */
         public function add($value)
         {
-
+            $this->addLast($value);
         }
 
         /**
          * Adds the specified new node after the specified existing node in the LinkedList.
          * @access public
-         * @throws \System\ArgumentNullException node is a null reference -or- newNode is a null reference
          * @throws \System\InvalidOperationException node is not in the current LinkedList. -or- newNode belongs to another LinkedList.
          * @param \System\Collections\Generic\LinkedListNode $node The LinkedListNode after which to insert newNode.
          * @param \System\Collections\Generic\LinkedListNode $newNode The new LinkedListNode to add to the LinkedList.
          */
         public function addAfter(LinkedListNode $node, LinkedListNode $newNode) 
         {
+            if ($node->linkedList() != $this)
+            {
+                throw new InvalidOperationException("node is not in the current LinkedList.");
+            }
 
+            if(!is_null($newNode->linkedList()) && $newNode->linkedList() != $this)
+            {
+                throw new InvalidOperationException("newNode belongs to another LinkedList.");
+            }
+
+            $newNode->linkedList($this);
+            $newNode->previous($node);
+            $newNode->next($node->next());
+            $node->next($newNode);
+
+            if($node == $this->last)
+            {
+                $this->last = $newNode;
+            }
         }
 
         /**
          * Adds the specified new node before the specified existing node in the LinkedList.
          * @access public
-         * @throws \System\ArgumentNullException node is a null reference -or- newNode is a null reference
          * @throws \System\InvalidOperationException node is not in the current LinkedList. -or- newNode belongs to another LinkedList.
          * @param \System\Collections\Generic\LinkedListNode $node The LinkedListNode after which to insert newNode.
          * @param \System\Collections\Generic\LinkedListNode $newNode The new LinkedListNode to add to the LinkedList.
@@ -79,7 +116,27 @@ namespace System\Collections\Generic
          */
         public function addLast($value) 
         {
-            
+            $node = new LinkedListNode($value);
+            $node->linkedList($this);
+
+            if (is_null($this->first))
+            {
+                $this->first = $node;
+            }
+
+            if(is_null($this->last))
+            {
+                $this->last = $node;
+            }
+            else
+            {
+                $last = $this->last();
+
+                $node->previous($last);
+                $last->next($node);
+                
+                $this->last = $node;
+            }
         }
 
         /**
@@ -121,7 +178,21 @@ namespace System\Collections\Generic
         */
         public function count()
         {
-            
+            if (is_null($this->first()))
+            {
+                return 0;
+            }
+
+            $total = 0;
+            $current = $this->first();
+
+            do
+            {
+                $current = $current->next();
+                $total++;    
+            } while(!is_null($current));
+
+            return $total;
         }
 
         /**
@@ -164,7 +235,7 @@ namespace System\Collections\Generic
         */
         public function first()
         {
-
+            return $this->first;
         }
 
         /**
@@ -174,7 +245,21 @@ namespace System\Collections\Generic
         */
         public function getEnumerator()
         {
+            if (is_null($this->first()))
+            {
+                return new BaseEnumerator(array());
+            }
 
+            $array = array();
+            $current = $this->first();
+
+            do
+            {
+                array_push($array, $current->value());
+                $current = $current->next();
+            } while(!is_null($current));
+
+            return new BaseEnumerator($array);
         }
 
         /**
@@ -206,7 +291,7 @@ namespace System\Collections\Generic
         */
         public function last()
         {
-
+            return $this->last;
         }
 
         /**
