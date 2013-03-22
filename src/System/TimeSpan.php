@@ -86,7 +86,7 @@ namespace System
             
             if($milliseconds > self::MaxValue || $milliseconds < self::MinValue)
             {
-                throw new ArgumentException("The return value is less than System.TimeSpan.MinValue or greater than System.TimeSpan.MaxValue");
+                throw new ArgumentException("The parameters specify a TimeSpan value less than MinValue or greater than MaxValue.");
             }
 
             $this->calculateTimeSpan($milliseconds);
@@ -193,17 +193,26 @@ namespace System
         /**
          * Returns a TimeSpan that represents a specified number of days, where the specification is accurate to the nearest millisecond.
          * @access public
+         * @throws \System\OverflowException value is less than MinValue or greater than MaxValue.
+         * @throws \System\ArgumentException valus is equal to NaN
          * @param int $value value A number of days, accurate to the nearest millisecond.
          * @return \System\TimeSpan A System.TimeSpan that represents value.
          */
         public static function fromDays($value) 
         {
+            if(is_nan($value))
+            {
+                throw new OverflowException("value is equal to NaN");
+            }
+
             return new TimeSpan($value, 0, 0, 0, 0);
         }
 
         /**
          * Returns a TimeSpan that represents a specified number of hours, where the specification is accurate to the nearest millisecond.
          * @access public
+         * @throws \System\OverflowException value is less than MinValue or greater than MaxValue.
+         * @throws \System\ArgumentException valus is equal to NaN
          * @param int $value A number of hours accurate to the nearest millisecond.
          * @return \System\TimeSpan A System.TimeSpan that represents value.
          */

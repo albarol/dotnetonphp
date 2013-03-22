@@ -352,14 +352,79 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
+    public function Equals_ShouldBeTrueWhenObjectIsEqual() 
+    {
+        # Arrange:
+        $t1 = TimeSpan::fromSeconds(1);
+        $t2 = TimeSpan::fromSeconds(1);
+    
+        # Act:
+        $result = $t1->equals($t2);
+    
+        # Assert:
+        $this->assertTrue($result);
+    }
+
+    /**
+     * @test
+    */
+    public function Equals_ShouldBeFalseWhenObjectIsNotEqual() 
+    {
+        # Arrange:
+        $t1 = TimeSpan::fromSeconds(1);
+        $t2 = TimeSpan::fromSeconds(2);
+    
+        # Act:
+        $result = $t1->equals($t2);
+    
+        # Assert:
+        $this->assertFalse($result);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\OverflowException
+    */
+    public function FromDays_ThrowsExceptionWhenValueIsNAN() 
+    {
+        # Arrange:
+        # Act:
+        TimeSpan::fromDays(NAN);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentException
+    */
+    public function FromDays_ThrowsExceptionWhenValueIsGreaterThanMaxValue() 
+    {
+        # Arrange:
+        # Act:
+        TimeSpan::fromDays(99999999);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentException
+    */
+    public function FromDays_ThrowsExceptionWhenValueIsLessThanMinValue() 
+    {
+        # Arrange:
+        # Act:
+        TimeSpan::fromDays(-99999999);
+    }
+
+    /**
+     * @test
+    */
     public function FromDays_ShouldCreateTimeSpanFromDays() 
     {
         
         # Arrange:
-        $total_days = 2;
+        $days = 2;
     
         # Act:
-        $time = TimeSpan::fromDays($total_days);
+        $time = TimeSpan::fromDays($days);
     
         # Assert:
         $this->assertEquals(48, $time->totalHours());
