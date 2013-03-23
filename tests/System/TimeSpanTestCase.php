@@ -5,8 +5,8 @@ use \System\TimeSpan as TimeSpan;
 /**
  * @group core
 */
-class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
-
+class TimeSpanTestCase extends PHPUnit_Framework_TestCase 
+{
     /**
      * @test
      * @expectedException \System\ArgumentException
@@ -696,6 +696,19 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
 
     /**
      * @test
+     * @expectedException \System\OverflowException
+    */
+    public function Negate_ThrowsExceptionWhenValusIsLessThanMinValue() 
+    {
+        # Arrange:
+        $timespan = TimeSpan::fromMilliseconds(TimeSpan::MinValue);
+    
+        # Act:
+        $timespan->negate();
+    }
+
+    /**
+     * @test
     */
     public function Negate_ShouldNegateTimeSpan() 
     {
@@ -708,6 +721,32 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
     
         # Assert:
         $this->assertEquals(-1, $negate_timespan->totalDays());
+    }
+
+    /**
+     * @test
+    */
+    public function Negate_ShouldNegateArbitraryValue() 
+    {
+        # Arrange:
+        $timespan = new TimeSpan(21, 10, 21, 0);
+    
+        # Act:
+        $negated = $timespan->negate();
+    
+        # Assert:
+        $this->assertEquals(-21, $negated->days());
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentNullException
+    */
+    public function Parse_ThrowsExceptionWhenParameterIsNull() 
+    {
+        # Arrange:
+        # Act:
+        TimeSpan::parse(null);
     }
 
     /**
@@ -726,17 +765,17 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
 
     /**
      * @test
-     * @expectedException \System\ArgumentNullException
+     * @expectedException \System\ArgumentException
     */
-    public function Parse_ThrowsExceptionWhenFormatIsNull() 
+    public function Parse_ThrowsExceptionWhenValueIsGreaterThanMaxValue() 
     {
-        
         # Arrange:
-        $format = null;
+        $format = "999999999999";
     
         # Act:
         TimeSpan::parse($format);
     }
+
 
     /**
      * @test
@@ -830,10 +869,95 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
 
     /**
      * @test
+     * @expectedException \System\OverflowException
+    */
+    public function Subtract_ThrowsExceptionWhenTryRemoveLessThanMinValue() 
+    {
+        # Arrange:
+        $timespan = TimeSpan::fromMilliseconds(TimeSpan::MinValue);
+    
+        # Act:
+        $timespan->subtract(TimeSpan::fromSeconds(1));
+    }
+
+    /**
+     * @test
+     * @expectedException \System\OverflowException
+    */
+    public function Subtract_ThrowsExceptionWhenTryRemoveGreaterThanMaxValue() 
+    {
+        # Arrange:
+        $timespan = TimeSpan::fromMilliseconds(TimeSpan::MaxValue);
+    
+        # Act:
+        $timespan->subtract(TimeSpan::fromSeconds(-1));
+    }
+
+    /**
+     * @test
+    */
+    public function Subtract_ShouldSubtractTimeSpan() 
+    {
+        # Arrange:
+        $timespan = TimeSpan::fromSeconds(10);
+    
+        # Act:
+        $newTimespan = $timespan->subtract(TimeSpan::fromSeconds(5));
+    
+        # Assert:
+        $this->assertEquals(5, $newTimespan->totalSeconds());
+    }
+
+    /**
+     * @test
+    */
+    public function Subtract_ShouldMoveOneHourWhenSubtractTimeSpan() 
+    {
+        # Arrange:
+        $timespan = TimeSpan::fromHours(2);
+    
+        # Act:
+        $newTimespan = $timespan->subtract(TimeSpan::fromHours(1));
+    
+        # Assert:
+        $this->assertEquals(1, $newTimespan->totalHours());
+    }
+
+    /**
+     * @test
+    */
+    public function Subtract_ShouldMoveOneMinuteWhenSubtractTimeSpan() 
+    {
+        # Arrange:
+        $timespan = TimeSpan::fromMinutes(2);
+    
+        # Act:
+        $newTimespan = $timespan->subtract(TimeSpan::fromMinutes(1));
+    
+        # Assert:
+        $this->assertEquals(1, $newTimespan->totalMinutes());
+    }
+
+    /**
+     * @test
+    */
+    public function Subtract_ShouldMoveOneSecondWhenSubtractTimeSpan() 
+    {
+        # Arrange:
+        $timespan = TimeSpan::fromSeconds(2);
+    
+        # Act:
+        $newTimespan = $timespan->subtract(TimeSpan::fromSeconds(1));
+    
+        # Assert:
+        $this->assertEquals(1, $newTimespan->totalSeconds());
+    }
+
+    /**
+     * @test
     */
     public function TryParse_ShouldTryParseValidFormat() 
     {
-        
         # Arrange:
         $format = "22:50";
     
@@ -865,114 +989,30 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function Subtract_ShouldSubtractTimeSpan() 
+    public function ToString_ShouldGetTimeSpanStringFormat() 
     {
-        
         # Arrange:
-        $timespan = TimeSpan::fromSeconds(10);
+        $timespan = new TimeSpan(21, 12, 3, 9, 8);
     
         # Act:
-        $newTimespan = $timespan->subtract(TimeSpan::fromSeconds(5));
+        $result = $timespan->toString();
     
         # Assert:
-        $this->assertEquals(5, $newTimespan->totalSeconds());
+        $this->assertEquals("21.12:03:09.8000000", $result);
     }
 
     /**
      * @test
     */
-    public function Subtract_ShouldMoveOneHourWhenSubtractTimeSpan() 
+    public function ToString_ShouldGetTimeSpanStringFormatNegative() 
     {
-        
         # Arrange:
-        $timespan = TimeSpan::fromHours(2);
+        $timespan = new TimeSpan(21, 12, 3, 9, 8);
     
         # Act:
-        $newTimespan = $timespan->subtract(TimeSpan::fromHours(1));
+        $result = $timespan->negate()->toString();
     
         # Assert:
-        $this->assertEquals(1, $newTimespan->totalHours());
+        $this->assertEquals("-21.12:03:09.8000000", $result);
     }
-
-    /**
-     * @test
-    */
-    public function Subtract_ShouldMoveOneMinuteWhenSubtractTimeSpan() 
-    {
-        
-        # Arrange:
-        $timespan = TimeSpan::fromMinutes(2);
-    
-        # Act:
-        $newTimespan = $timespan->subtract(TimeSpan::fromMinutes(1));
-    
-        # Assert:
-        $this->assertEquals(1, $newTimespan->totalMinutes());
-    }
-
-    /**
-     * @test
-    */
-    public function Subtract_ShouldMoveOneSecondWhenSubtractTimeSpan() 
-    {
-        
-        # Arrange:
-        $timespan = TimeSpan::fromSeconds(2);
-    
-        # Act:
-        $newTimespan = $timespan->subtract(TimeSpan::fromSeconds(1));
-    
-        # Assert:
-        $this->assertEquals(1, $newTimespan->totalSeconds());
-    }
-
-    /**
-     * @test
-     * @expectedException \System\ArgumentException
-    */
-    public function Subtract_ThrowsExceptionWhenTryRemoveLessThanMinValue() 
-    {
-        
-        # Arrange:
-        $timespan = TimeSpan::fromMilliseconds(TimeSpan::MinValue);
-    
-        # Act:
-        $timespan->subtract(TimeSpan::fromSeconds(1));
-    }
-
-    /**
-     * @test
-    */
-    public function Equals_ShouldTrueWhenCompareTwoTimeSpan() 
-    {
-        
-        # Arrange:
-        $first = TimeSpan::fromSeconds(10);
-        $second = TimeSpan::fromSeconds(10);
-    
-        # Act:
-        $result = $first->equals($second);
-    
-        # Assert:
-        $this->assertTrue($result);
-    }
-
-    /**
-     * @test
-    */
-    public function Equals_ShouldFalseWhenCompareTwoTimeSpan() 
-    {
-        
-        # Arrange:
-        $first = TimeSpan::fromSeconds(10);
-        $second = TimeSpan::fromSeconds(5);
-    
-        # Act:
-        $result = $first->equals($second);
-    
-        # Assert:
-        $this->assertFalse($result);
-    }
-
-    
 }

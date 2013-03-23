@@ -2,7 +2,6 @@
 
 namespace System 
 { 
-    use \System\Math as Math;
     use \System\OverflowException as OverflowException;
     use \System\ArgumentException as ArgumentException;
     use \System\ArgumentNullException as ArgumentNullException;
@@ -325,7 +324,7 @@ namespace System
             {
                 throw new OverflowException("value is equal to NaN");
             }
-            
+
             return new TimeSpan(0, 0, 0, 0, ($value / TimeSpan::TicksPerMillisecond));
         }
 
@@ -368,18 +367,31 @@ namespace System
 
         /**
          * Returns a System.TimeSpan whose value is the negated value of this instance.
+         *
          * @access public
+         * @throws \System\OverflowException The negated value of this instance cannot be represented by a TimeSpan; that is, the value of this instance is MinValue.
          * @return \System\TimeSpan The same numeric value as this instance, but with the opposite sign.
          */
         public function negate() 
         {
-            return new TimeSpan(0, 0, 0, 0, -1 * $this->totalMilliseconds);
+            $value = -1*$this->totalMilliseconds;
+
+            if($value > self::MaxValue)
+            {
+                throw new OverflowException("The negated value of this instance cannot be represented by a TimeSpan; that is, the value of this instance is MinValue.");
+            }
+
+            return new TimeSpan(0, 0, 0, 0, $value);
         }
 
         /**
          * Constructs a new System.TimeSpan object from a time interval specified in a string.
+         *
          * @static
          * @access public
+         * @throws \System\ArgumentNullException s is null.
+         * @throws \System\FormatException s has an invalid format.
+         * @throws \System\OverflowException s represents a number less than MinValue or greater than MaxValue.
          * @param string $s A string that specifies a time interval.
          * @return \System\TimeSpan A System.TimeSpan that corresponds to s.
          */
@@ -414,6 +426,7 @@ namespace System
 
         /**
          * Gets the number of whole seconds represented by the current System.TimeSpan structure.
+         *
          * @access public
          * @return float The second component of the current System.TimeSpan structure. The return value ranges from -59 through 59.
          */
@@ -424,18 +437,27 @@ namespace System
 
         /**
          * Subtracts the specified System.TimeSpan from this instance.
+         *
          * @access public
-         * @param TimeSpan $ts A System.TimeSpan.
-         * @return TimeSpan A System.TimeSpan whose value is the result of the value of this instance minus the value of ts.
+         * @throws \System\OverflowException The return value is less than MinValue or greater than MaxValue.
+         * @param \System\TimeSpan $ts A System.TimeSpan.
+         * @return \System\TimeSpan A System.TimeSpan whose value is the result of the value of this instance minus the value of ts.
          */
         public function subtract(TimeSpan $ts) 
         {
             $milliseconds = $this->totalMilliseconds - $ts->totalMilliseconds();
+
+            if($milliseconds < self::MinValue or $milliseconds > self::MaxValue)
+            {
+                throw new OverflowException("The return value is less than MinValue or greater than MaxValue.");
+            }
+
             return new TimeSpan(0, 0, 0, 0, $milliseconds);
         }
 
         /**
          * Gets the number of ticks that represent the value of the current System.TimeSpan structure.
+         *
          * @access public
          * @return float The number of ticks contained in this instance.
          */
@@ -444,13 +466,38 @@ namespace System
             return $this->ticks;
         }
 
+        /**
+         * Returns the string representation of the value of this instance.
+         * 
+         * @access public
+         * @return string 
+        */
         public function toString()
         {
+            $sign = ($this->totalMilliseconds == 0) ? 1 : $this->totalMilliseconds / abs($this->totalMilliseconds);
+            $str_sign = ($sign == -1) ? '-' : '';
+            return $str_sign .
+                   abs($this->days) . "." .
+                   str_pad(abs($this->hours), 2, '0', STR_PAD_LEFT) . ":" .
+                   str_pad(abs($this->minutes), 2, '0', STR_PAD_LEFT) . ":" . 
+                   str_pad(abs($this->seconds), 2, '0', STR_PAD_LEFT) . "." . 
+                   str_pad(abs($this->milliseconds), 7, '0', STR_PAD_RIGHT);
+        }
 
+        /**
+         * Returns the string representation of the value of this instance.
+         * 
+         * @access public
+         * @return string 
+        */
+        public function __toString()
+        {
+            return $this->toString();
         }
 
         /**
          * Gets the value of the current System.TimeSpan structure expressed in whole and fractional days.
+         *
          * @access public
          * @return float The total number of days represented by this instance.
          */
@@ -461,6 +508,7 @@ namespace System
 
         /**
          * Gets the value of the current System.TimeSpan structure expressed in whole and fractional hours.
+         *
          * @access public
          * @return float The total number of hours represented by this instance.
          */
@@ -471,6 +519,7 @@ namespace System
 
         /**
          * Gets the value of the current System.TimeSpan structure expressed in whole and fractional milliseconds.
+         *
          * @access public
          * @return float The total number of milliseconds represented by this instance.
          */
@@ -481,6 +530,7 @@ namespace System
 
         /**
          * Gets the value of the current System.TimeSpan structure expressed in whole and fractional minutes.
+         *
          * @access public
          * @return float The total number of minutes represented by this instance.
          */
@@ -490,6 +540,7 @@ namespace System
 
         /**
          * Gets the value of the current System.TimeSpan structure expressed in whole and fractional seconds.
+         *
          * @access public
          * @return float The total number of seconds represented by this instance.
          */
@@ -501,6 +552,7 @@ namespace System
 
         /**
          * Constructs a new System.TimeSpan object from a time interval specified in a string. Parameters specify the time interval and the variable where the new System.TimeSpan object is returned.
+         *
          * @access public
          * @param string $s A string that specifies a time interval.
          * @return array true if s was converted successfully; otherwise, false. This operation returns false if the s parameter is null, has an invalid format, represents a time interval less than System.TimeSpan.MinValue or greater than System.TimeSpan.MaxValue, or has at least one days, hours, minutes, or seconds component outside its valid range. -and- TimeSpan $result When this method returns, contains an object that represents the time interval specified by s, or System.TimeSpan.Zero if the conversion failed. This parameter is passed uninitialized.
@@ -524,23 +576,6 @@ namespace System
         }
 
         /**
-         * Validate if arguments is numeric
-         * @access private
-         * @param $numbers Array with arguments
-         * @return  true if arguments is numeric, otherwise false
-         */
-        private function containsValidNumbers($numbers) 
-        {
-            $result = true;
-            for($i = 0; $i < sizeof($numbers) && $result; $i++) {
-                if(!is_numeric($numbers[$i])):
-                    $result = false;
-                endif;
-            }
-            return $result;
-        }
-
-        /**
          * Convert all values in milliseconds
          * @throws \System\ArgumentException
          * @param int $days
@@ -552,25 +587,34 @@ namespace System
          */
         private function convertToMilliseconds($days=0,$hours=0,$minutes=0,$seconds=0,$milliseconds=0) {
             $time = 0;
-            if(is_numeric($days)) $time = $days * $this->millisecondsInDays;
-            if(is_numeric($hours)) $time += $hours * $this->millisecondsInHours;
-            if(is_numeric($minutes)) $time += $minutes * $this->millisecondsInMinutes;
-            if(is_numeric($seconds)) $time += $seconds * $this->millisecondsInSeconds;
-            if(is_numeric($milliseconds)) $time += $milliseconds;
-
+            
+            if(is_numeric($days)) 
+            {
+                $time = $days * $this->millisecondsInDays;
+            }
+            
+            if(is_numeric($hours)) 
+            {
+                $time += $hours * $this->millisecondsInHours;
+            }
+            
+            if(is_numeric($minutes))
+            {
+                $time += $minutes * $this->millisecondsInMinutes;
+            }
+            
+            if(is_numeric($seconds))
+            {
+                $time += $seconds * $this->millisecondsInSeconds;
+            }
+            
+            if(is_numeric($milliseconds)) 
+            {
+                $time += $milliseconds;
+            }
             
             return $time;
         }
-
-        /**
-         * Convert milliseconds to ticks
-         * @param $totalMilliseconds
-         * @return
-         */
-        private function convertToTicks($totalMilliseconds) {
-            return $totalMilliseconds * TimeSpan::TicksPerMillisecond;
-        }
-
 
         /**
          * Calculate value total of timespan
@@ -579,26 +623,25 @@ namespace System
          */
         private function calculateTimeSpan($totalMilliseconds) 
         {
-            $sign = ($totalMilliseconds == 0) ? 1 : $totalMilliseconds / Math::abs($totalMilliseconds);
-            $totalMilliseconds = Math::abs($totalMilliseconds)*$sign;
-
+            $sign = ($totalMilliseconds == 0) ? 1 : $totalMilliseconds / abs($totalMilliseconds);
             $this->totalMilliseconds = $totalMilliseconds;
+            $totalMilliseconds = abs($totalMilliseconds);
 
-            $this->days = $this->getValueToProperty($totalMilliseconds, $this->millisecondsInDays);
+            $this->days = $this->getValueToProperty($totalMilliseconds, $this->millisecondsInDays) * $sign;
             $totalMilliseconds = $this->removeTicksFromMilliseconds($totalMilliseconds, $this->millisecondsInDays);
 
-            $this->hours = $this->getValueToProperty($totalMilliseconds, $this->millisecondsInHours);
+            $this->hours = $this->getValueToProperty($totalMilliseconds, $this->millisecondsInHours) * $sign;
             $totalMilliseconds = $this->removeTicksFromMilliseconds($totalMilliseconds, $this->millisecondsInHours);
 
-            $this->minutes = $this->getValueToProperty($totalMilliseconds, $this->millisecondsInMinutes);
+            $this->minutes = $this->getValueToProperty($totalMilliseconds, $this->millisecondsInMinutes) * $sign;
             $totalMilliseconds = $this->removeTicksFromMilliseconds($totalMilliseconds, $this->millisecondsInMinutes);
 
-            $this->seconds = $this->getValueToProperty($totalMilliseconds, $this->millisecondsInSeconds);
+            $this->seconds = $this->getValueToProperty($totalMilliseconds, $this->millisecondsInSeconds) * $sign;
             $totalMilliseconds = $this->removeTicksFromMilliseconds($totalMilliseconds, $this->millisecondsInSeconds);
 
-            $this->milliseconds = $this->getValueToProperty($totalMilliseconds, 1);
+            $this->milliseconds = $this->getValueToProperty($totalMilliseconds, 1) * $sign;
 
-            $this->ticks = $this->convertToTicks($this->totalMilliseconds);
+            $this->ticks = $this->totalMilliseconds * TimeSpan::TicksPerMillisecond *$sign;
         }
 
         private function getValueToProperty($totalMilliseconds, $ticks) 
