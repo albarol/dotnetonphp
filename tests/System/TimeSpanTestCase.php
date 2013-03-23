@@ -385,7 +385,7 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
      * @test
      * @expectedException \System\OverflowException
     */
-    public function FromDays_ThrowsExceptionWhenValueIsNAN() 
+    public function FromDays_ThrowsExceptionWhenValueIsNaN() 
     {
         # Arrange:
         # Act:
@@ -432,10 +432,46 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
 
     /**
      * @test
+     * @expectedException \System\OverflowException
+    */
+    public function FromHours_ThrowsExceptionWhenValueIsNaN() 
+    {
+        # Arrange:
+        # Act:
+        TimeSpan::fromHours(NAN);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentException
+    */
+    public function FromHours_ThrowsExceptionWhenValueIsGreaterThanMaxValue() 
+    {
+        # Arrange:
+        $hours = TimeSpan::MaxValue;
+    
+        # Act:
+        TimeSpan::fromHours($hours);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentException
+    */
+    public function FromHours_ThrowsExceptionWhenValueIsLessThanMinValue() 
+    {
+        # Arrange:
+        $hours = TimeSpan::MinValue;
+    
+        # Act:
+        TimeSpan::fromHours($hours);
+    }
+
+    /**
+     * @test
     */
     public function FromHours_ShouldConstructTimeSpanFromHours() 
     {
-        
         # Arrange:
         $total_hours = 24;
     
@@ -444,6 +480,96 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
     
         # Assert:
         $this->assertEquals(1440, $timespan->totalMinutes());
+    }
+
+    /**
+     * @test
+     * @expectedException \System\OverflowException
+    */
+    public function FromMilliseconds_ThrowsExceptionWhenValueIsNaN() 
+    {
+        # Arrange:
+        # Act:
+        TimeSpan::fromMilliseconds(NAN);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentException
+    */
+    public function FromMilliseconds_ThrowsExceptionWhenValueIsGreaterThanMaxValue() 
+    {
+        # Arrange:
+        $milliseconds = TimeSpan::MaxValue + 1;
+    
+        # Act:
+        TimeSpan::fromMilliseconds($milliseconds);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentException
+    */
+    public function FromMilliseconds_ThrowsExceptionWhenValueIsLessThanMinValue() 
+    {
+        # Arrange:
+        $milliseconds = TimeSpan::MinValue - 1;
+    
+        # Act:
+        TimeSpan::fromMilliseconds($milliseconds);
+    }
+
+    /**
+     * @test
+    */
+    public function FromMilliseconds_ShouldContructTimeSpanFromMilliseconds() 
+    {
+        
+        # Arrange:
+        $total_milliseconds = 1000;
+    
+        # Act:
+        $timespan = TimeSpan::fromMilliseconds($total_milliseconds);
+    
+        # Assert:
+        $this->assertEquals(1, $timespan->totalSeconds());
+    }
+
+    /**
+     * @test
+     * @expectedException \System\OverflowException
+    */
+    public function FromMinutes_ThrowsExceptionWhenValueIsNaN() 
+    {
+        # Arrange:
+        # Act:
+        TimeSpan::fromMinutes(NAN);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentException
+    */
+    public function FromMinutes_ThrowsExceptionWhenValueIsGreaterThanMaxValue() 
+    {
+        # Arrange:
+        $minutes = TimeSpan::MaxValue;
+    
+        # Act:
+        TimeSpan::fromMinutes($minutes);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentException
+    */
+    public function FromMinutes_ThrowsExceptionWhenValueIsLessThanMinValue() 
+    {
+        # Arrange:
+        $minutes = TimeSpan::MinValue;
+    
+        # Act:
+        TimeSpan::fromMinutes($minutes);
     }
 
     /**
@@ -464,6 +590,43 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
 
     /**
      * @test
+     * @expectedException \System\OverflowException
+    */
+    public function FromSeconds_ThrowsExceptionWhenValueIsNaN() 
+    {
+        # Arrange:
+        # Act:
+        TimeSpan::fromSeconds(NAN);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentException
+    */
+    public function FromSeconds_ThrowsExceptionWhenValueIsGreaterThanMaxValue() 
+    {
+        # Arrange:
+        $seconds = TimeSpan::MaxValue;
+    
+        # Act:
+        TimeSpan::fromSeconds($seconds);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentException
+    */
+    public function FromSeconds_ThrowsExceptionWhenValueIsLessThanMinValue() 
+    {
+        # Arrange:
+        $seconds = TimeSpan::MinValue;
+    
+        # Act:
+        TimeSpan::fromSeconds($seconds);
+    }
+
+    /**
+     * @test
     */
     public function FromSeconds_ShouldConstructTimeSpanFromSeconds() 
     {
@@ -480,18 +643,39 @@ class TimeSpanTestCase extends PHPUnit_Framework_TestCase {
 
     /**
      * @test
+     * @expectedException \System\OverflowException
     */
-    public function FromMilliseconds_ShouldContructTimeSpanFromMilliseconds() 
+    public function FromTicks_ThrowsExceptionWhenValueIsNaN() 
     {
-        
         # Arrange:
-        $total_milliseconds = 1000;
+        # Act:
+        TimeSpan::fromTicks(NAN);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentException
+    */
+    public function FromTicks_ThrowsExceptionWhenValueIsGreaterThanMaxValue() 
+    {
+        # Arrange:
+        $ticks = TimeSpan::MaxValue*TimeSpan::TicksPerSecond;
     
         # Act:
-        $timespan = TimeSpan::fromMilliseconds($total_milliseconds);
+        TimeSpan::fromTicks($ticks);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentException
+    */
+    public function FromTicks_ThrowsExceptionWhenValueIsLessThanMinValue() 
+    {
+        # Arrange:
+        $ticks = TimeSpan::MinValue*TimeSpan::TicksPerSecond;
     
-        # Assert:
-        $this->assertEquals(1, $timespan->totalSeconds());
+        # Act:
+        TimeSpan::fromTicks($ticks);
     }
 
     /**

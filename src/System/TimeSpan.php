@@ -12,6 +12,7 @@ namespace System
 
     /**
      * Represents a time interval.
+     *
      * @package System
      * @name TimeSpan
      * @access public
@@ -20,41 +21,57 @@ namespace System
     {
         /**
          * Represents the number of ticks in 1 day. This field is constant.
+         *
+         * @access public
         */
         const TicksPerDay = 864000000000;
         
         /**
          * Represents the number of ticks in 1 hour. This field is constant.
+         *
+         * @access public
         */
         const TicksPerHour = 36000000000;
 
         /**
          * Represents the number of ticks in 1 minute. This field is constant.
+         *
+         * @access public
         */
         const TicksPerMinute = 600000000;
 
         /**
          * Represents the number of ticks in 1 second. This field is constant.
+         *
+         * @access public
         */
         const TicksPerSecond = 10000000;
 
         /**
          * Represents the number of ticks in 1 millisecond. This field is constant.
+         *
+         * @access public
         */
         const TicksPerMillisecond = 10000;
         
         /**
          * Represents the minimun TimeSpan value. This field is read-only.
+         *
+         * @access public
         */
         const MinValue = -92233720368548;
 
         /**
          * Represents the maximum TimeSpan value. This field is read-only.
+         *
+         * @access public
         */
         const MaxValue = 92233720368547;
 
         /**
          * Represents the zero TimeSpan value. This field is read-only.
+         *
+         * @access public
         */
         const Zero = 0;
 
@@ -73,6 +90,7 @@ namespace System
 
         /**
          * Initializes a new System.TimeSpan to a specified number of days, hours, minutes, seconds, and milliseconds.
+         * 
          * @throws \System\ArgumentException The parameters specify a TimeSpan value less than MinValue or greater than MaxValue.
          * @param int $days Number of days.
          * @param int $hours Number of hours.
@@ -84,7 +102,7 @@ namespace System
         {
             $milliseconds = $this->convertToMilliseconds($days, $hours, $minutes, $seconds, $milliseconds);
             
-            if($milliseconds > self::MaxValue || $milliseconds < self::MinValue)
+            if ($milliseconds > self::MaxValue || $milliseconds < self::MinValue)
             {
                 throw new ArgumentException("The parameters specify a TimeSpan value less than MinValue or greater than MaxValue.");
             }
@@ -94,6 +112,7 @@ namespace System
 
         /**
          * Adds the specified System.TimeSpan to this instance.
+         *
          * @access public
          * @throws \System\OverflowException The resulting TimeSpan is less than MinValue or greater than MaxValue.
          * @param \System\TimeSpan $ts A System.TimeSpan.
@@ -113,6 +132,7 @@ namespace System
 
         /**
          * Compares two TimeSpan values and returns an integer that indicates their relationship.
+         *
          * @access public
          * @param \System\TimeSpan $t1 A TimeSpan.
          * @param \System\TimeSpan $t2 A TimeSpan.
@@ -125,6 +145,7 @@ namespace System
 
         /**
          * Compares this instance to a specified object and returns an indication of their relative values.
+         *
          * @access public
          * @throws \System\ArgumentException value is not a TimeSpan
          * @param object $value An object to compare, or a null reference
@@ -155,6 +176,7 @@ namespace System
 
         /**
          * Gets the number of whole days represented by the current System.TimeSpan structure.
+         *
          * @access public
          * @return int The day component of this instance. The return value can be positive or negative.
          */
@@ -165,6 +187,7 @@ namespace System
 
         /**
          * Returns a new Timespan object whose value is the absolute value of the current Timespan object.
+         *
          * @access public
          * @return \System\TimeSpan A new System.TimeSpan whose value is the absolute value of the current System.TimeSpan object.
          */
@@ -181,6 +204,7 @@ namespace System
         
         /**
          * Returns a value indicating whether this instance is equal to a specified System.TimeSpan object.
+         *
          * @access public
          * @param object $other An object to compare with this instance.
          * @return bool true if obj represents the same time interval as this instance; otherwise, false.
@@ -192,6 +216,7 @@ namespace System
 
         /**
          * Returns a TimeSpan that represents a specified number of days, where the specification is accurate to the nearest millisecond.
+         *
          * @access public
          * @throws \System\OverflowException value is less than MinValue or greater than MaxValue.
          * @throws \System\ArgumentException valus is equal to NaN
@@ -210,6 +235,7 @@ namespace System
 
         /**
          * Returns a TimeSpan that represents a specified number of hours, where the specification is accurate to the nearest millisecond.
+         *
          * @access public
          * @throws \System\OverflowException value is less than MinValue or greater than MaxValue.
          * @throws \System\ArgumentException valus is equal to NaN
@@ -218,51 +244,88 @@ namespace System
          */
         public static function fromHours($value) 
         {
+            if(is_nan($value))
+            {
+                throw new OverflowException("value is equal to NaN");
+            }
+
             return new TimeSpan(0, $value, 0, 0, 0);
         }
 
 
          /**
           * Returns a TimeSpan that represents a specified number of milliseconds.
+          *
           * @access public
+          * @throws \System\OverflowException value is less than MinValue or greater than MaxValue.
+          * @throws \System\ArgumentException valus is equal to NaN
           * @param int $value A number of milliseconds.
           * @return \System\Timespan A TimeSpan that represents value.
           */
         public static function fromMilliseconds($value) 
         {
+            if(is_nan($value))
+            {
+                throw new OverflowException("value is equal to NaN");
+            }
+
             return new TimeSpan(0, 0, 0, 0, $value);
         }
 
         /**
           * Returns a TimeSpan that represents a specified number of minutes, where the specification is accurate to the nearest millisecond.
+          *
           * @access public
+          * @throws \System\OverflowException value is less than MinValue or greater than MaxValue.
+          * @throws \System\ArgumentException valus is equal to NaN
           * @param int $value A number of minutes, accurate to the nearest millisecond.
           * @return \System\TimeSpan A TimeSpan that represents value.
           */
         public static function fromMinutes($value) 
         {
+            if(is_nan($value))
+            {
+                throw new OverflowException("value is equal to NaN");
+            }
+
             return new TimeSpan(0, 0, $value, 0, 0);
         }
 
         /**
          * Returns a TimeSpan that represents a specified number of seconds, where the specification is accurate to the nearest millisecond.
+         *
          * @access public
+         * @throws \System\OverflowException value is less than MinValue or greater than MaxValue.
+         * @throws \System\ArgumentException valus is equal to NaN
          * @param int $value A number of seconds, accurate to the nearest millisecond.
          * @return \System\TimeSpan A TimeSpan that represents value.
          */
         public static function fromSeconds($value) 
         {
+            if(is_nan($value))
+            {
+                throw new OverflowException("value is equal to NaN");
+            }
+
             return new TimeSpan(0, 0, 0, $value, 0);
         }
 
         /**
          * Returns a TimeSpan that represents a specified time, where the specification is in units of ticks.
+         *
          * @access public
+         * @throws \System\OverflowException value is less than MinValue or greater than MaxValue.
+         * @throws \System\ArgumentException valus is equal to NaN
          * @param int $value A number of ticks that represent a time.
          * @return \System\TimeSpan A TimeSpan with a value of value.
          */
         public static function fromTicks($value) 
         {
+            if(is_nan($value))
+            {
+                throw new OverflowException("value is equal to NaN");
+            }
+            
             return new TimeSpan(0, 0, 0, 0, ($value / TimeSpan::TicksPerMillisecond));
         }
 
