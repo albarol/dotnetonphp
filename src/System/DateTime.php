@@ -2,21 +2,17 @@
 
 namespace System 
 {
-    use \System\ArgumentOutOfRangeException as ArgumentOutOfRangeException;
-    use \System\DayOfWeek as DayOfWeek;
-    use \System\DateTimeKind as DateTimeKind;
-    use \System\TimeSpan as TimeSpan;
-    use \System\TypeCode as TypeCode;
+    use \System\Runtime\Serialization\ISerializable as ISerializable;
 
     /**
      * Represents an instant in time, typically expressed as a date and time of day.
+     *
      * @access public
      * @package System
      * @name DateTime
      */
-    final class DateTime 
+    final class DateTime implements IComparable, IFormattable, IConvertible, ISerializable, IEquatable
     {
-
         private $year;
         private $month;
         private $day;
@@ -27,18 +23,47 @@ namespace System
 
         /**
          * Initializes a new instance of the DateTime structure.
+         *
          * @access public
-         * @param int $year
-         * @param int $month
-         * @param int $day
-         * @param int $hours
-         * @param int $minutes
-         * @param int $seconds
+         * @throws \System\ArgumentOutOfRangeException year is less than 1902 or greater than 2037. -or-  month is less than 1 or greater than 12. -or-  day is less than 1 or greater than the number of days in month -or- hour is less than 0 or greater than 23 -or- minute is less than 0 or greater than 59 -or- second is less than 0 or greater than 59.
+         * @param int $year The year (1902 through 2037).
+         * @param int $month The month (1 through 12).
+         * @param int $day The day (1 through the number of days in month).
+         * @param int $hours The hours (0 through 23).
+         * @param int $minutes The minutes (0 through 59).
+         * @param int $seconds The seconds (0 through 59).
          */
-        public function  __construct($year, $month, $day, $hours = 0, $minutes = 0, $seconds = 0) {
-            if (!checkdate($month, $day, $year) || !$this->isValidYear($year)):
-                throw new ArgumentOutOfRangeException("year is less than 1 or greater than 9999. -or-  month is less than 1 or greater than 12. -or-  day is less than 1 or greater than the number of days in month.");
-            endif;
+        public function  __construct($year, $month, $day, $hours = 0, $minutes = 0, $seconds = 0) 
+        {
+            if(!$this->isValidYear($year))
+            {
+                throw new ArgumentOutOfRangeException("year is less than 1902 or greater than 2037.");
+            }
+
+            if ($month < 1 or $month > 12)
+            {
+                throw new ArgumentOutOfRangeException("month is less than 1 or greater than 12.");
+            }
+
+            if (!checkdate($month, $day, $year))
+            {
+                throw new ArgumentOutOfRangeException("day is less than 1 or greater than the number of days in month");
+            }
+
+            if ($hours < 0 or $hours > 23)
+            {
+                throw new ArgumentOutOfRangeException("hour is less than 0 or greater than 23");
+            }
+
+            if ($minutes < 0 or $minutes > 59)
+            {
+                throw new ArgumentOutOfRangeException("minute is less than 0 or greater than 59");
+            }
+
+            if ($seconds < 0 or $seconds > 59)
+            {
+                throw new ArgumentOutOfRangeException("second is less than 0 or greater than 59.");
+            }
 
             $this->year = $year;
             $this->month = $month;
@@ -49,26 +74,14 @@ namespace System
             $this->kind = DateTimeKind::unespecified();
         }
 
-
-        /*
-         * TODO: System.DateTime.FromBinary(long);
-         * TODO: System.DateTime.FromBinary(long);
-         * TODO: System.DateTime.FromFileTime(long);
-         * TODO: System.DateTime.ToBinary()
-         * TODO: System.DateTime.ToFileTime()
-         * TODO: System.DateTime.ToFileTimeUtc()
-         * TODO: System.DateTime.ToFileTimeUtc()
-         * TODO: System.DateTime.ToUniversalTime()
-         * TODO: Ticks
-         */
-
         /**
          * Adds the value of the specified System.TimeSpan to the value of this instance.
          * @access public
          * @param TimeSpan $value A System.TimeSpan object that represents a positive or negative time interval.
          * @return DateTime A System.DateTime whose value is the sum of the date and time represented by this instance and the time interval represented by value.
          */
-        public function add(TimeSpan $value) {
+        public function add(TimeSpan $value) 
+        {
             $time = clone $this;
             $time->addDays($value->days());
             $time->addHours($value->hours());
@@ -100,6 +113,11 @@ namespace System
             return $this;
         }
 
+
+        public function addMilliseconds()
+        {
+
+        }
 
         /**
          * Adds the specified number of minutes to the value of this instance.
@@ -133,6 +151,11 @@ namespace System
         public function addSeconds($value) {
             $this->calculateDate($value, $this->seconds);
             return $this;
+        }
+
+        public function addTicks()
+        {
+
         }
 
         /**
@@ -246,6 +269,25 @@ namespace System
             return $date->toString("t");
         }
 
+        public function equals($other)
+        {
+
+        }
+
+        public function fromBinary()
+        {
+
+        }
+
+        public function fromFileTime()
+        {
+
+        }
+
+        public function fromFileTimeUtc()
+        {
+
+        }
 
         /**
          * Converts the value of this instance to all the string representations supported by the standard System.DateTime format specifiers.
@@ -279,11 +321,34 @@ namespace System
         }
 
         /**
+         * Populates a SerializationInfo with the data needed to serialize the target object.
+         *
+         * @access public
+         * @throws \System\Security\SecurityException The caller does not have the required permission.
+         * @param \System\Runtime\Serialization\SerializationInfo $info The System.Runtime.Serialization.SerializationInfo to populate with data.
+         * @param \System\Runtime\Serialization\StreamingContext $context The destination for this serialization.
+         */
+        public function getObjectData($info, $context)
+        {
+
+        }
+
+        public function getType()
+        {
+
+        }
+
+        public function getTypeCode()
+        {
+
+        }
+
+        /**
          * Gets the hour component of the date represented by this instance.
          * @access public
          * @return int The hour component, expressed as a value between 0 and 23.
          */
-        public function hours() 
+        public function hour() 
         {
             return $this->hours;
         }
@@ -296,7 +361,7 @@ namespace System
          */
         public function isDaylightSavingTime() 
         {
-            return ($this->toString("I") == 1 ? true : false);
+            return $this->toString("I") == 1;
         }
 
         /**
@@ -321,13 +386,28 @@ namespace System
             return $this->kind;
         }
 
+        public function maxValue()
+        {
+
+        }
+
+        public function millisecond()
+        {
+
+        }
+
+        public function minValue()
+        {
+
+        }
+
 
         /**
          * Gets the minute component of the date represented by this instance.
          * @access public
          * @return int The minute component, expressed as a value between 0 and 59.
          */
-        public function minutes() {
+        public function minute() {
             return $this->minutes;
         }
 
@@ -374,12 +454,17 @@ namespace System
             return new DateTime($dateTime["year"], $dateTime["month"], $dateTime["day"], $dateTime["hour"], $dateTime["minute"], $dateTime["second"]);
         }
 
+        public function parseExact()
+        {
+
+        }
+
         /**
         * Gets the seconds component of the date represented by this instance.
         * @access public
         * @return int The seconds, between 0 and 59.
         */
-        public function seconds() {
+        public function second() {
             return $this->seconds;
         }
 
@@ -423,19 +508,82 @@ namespace System
             $year = $this->year() - $value->year();
             $month = $this->month() - $value->month();
             $day = $this->day() - $value->day();
-            $hours = $this->hours() - $value->hours();
-            $minutes = $this->minutes() - $value->minutes();
-            $seconds = $this->seconds() - $value->seconds();
+            $hours = $this->hour() - $value->hour();
+            $minutes = $this->minute() - $value->minute();
+            $seconds = $this->second() - $value->second();
             $day = $day + ($month * 30.5) + ($year * 365.25);
             return new TimeSpan($day, $hours, $minutes, $seconds);
         }
 
         private function subtractTimeSpan($value) {
             $day = $this->day() - $value->days();
-            $hours = $this->hours() - $value->hours();
-            $minutes = $this->minutes() - $value->minutes();
-            $seconds = $this->seconds() - $value->seconds();
+            $hours = $this->hour() - $value->hours();
+            $minutes = $this->minute() - $value->minutes();
+            $seconds = $this->second() - $value->seconds();
             return new TimeSpan($day, $hours, $minutes, $seconds);
+        }
+
+
+        public function ticks()
+        {
+
+        }
+
+        public function timeOfDay()
+        {
+
+        }
+
+        public function toBinary()
+        {
+
+        }
+
+        /**
+         * Converts the value of this instance to an equivalent Boolean value using the specified culture-specific formatting information.
+         *
+         * @param \System\IFormatProvider $provider An System.IFormatProvider interface implementation that supplies culture-specific formatting information.
+         * @return \System\Boolean A Boolean value equivalent to the value of this instance.
+         */
+        public function toBoolean(IFormatProvider $provider = null)
+        {
+
+        }
+
+        /**
+         * Converts the value of this instance to an equivalent 8-bit unsigned integer using the specified culture-specific formatting information.
+         *
+         * @access public
+         * @param \System\IFormatProvider $provider An System.IFormatProvider interface implementation that supplies culture-specific formatting information.
+         * @return \System\Byte An 8-bit unsigned integer equivalent to the value of this instance.
+         */
+        public function toByte(IFormatProvider $provider = null)
+        {
+
+        }
+
+        /**
+         * Converts the value of this instance to an equivalent Unicode character using the specified culture-specific formatting information.
+         *
+         * @access public
+         * @param \System\IFormatProvider $provider An System.IFormatProvider interface implementation that supplies culture-specific formatting information.
+         * @return \System\Char A Unicode character equivalent to the value of this instance.
+         */
+        public function toChar(IFormatProvider $provider = null)
+        {
+
+        }
+
+        /**
+         * Converts the value of this instance to an equivalent System.DateAndTime using the specified culture-specific formatting information.
+         *
+         * @access public
+         * @param \System\IFormatProvider $provider An System.IFormatProvider interface implementation that supplies culture-specific formatting information.
+         * @return \System\DateTime A System.DateTime instance equivalent to the value of this instance.
+         */
+        public function toDateTime(IFormatProvider $provider = null)
+        {
+
         }
 
         /**
@@ -450,25 +598,76 @@ namespace System
             return $now->date();
         }
 
-
         /**
-         * Converts the specified string representation of a date and time to its DateTime equivalent.
+         * Converts the value of this instance to an equivalent System.Decimal number using the specified culture-specific formatting information.
+         *
          * @access public
-         * @static
-         * @param string $s A string containing a date and time to convert.
-         * @param \System\DateTime $result When this method returns, contains the DateTime value equivalent to the date and time contained in s, if the conversion succeeded, or MinValue if the conversion failed. The conversion fails if the s parameter is a null reference, or does not contain a valid string representation of a date and time. This parameter is passed uninitialized.
-         * @return bool
+         * @param \System\IFormatProvider $provider An System.IFormatProvider interface implementation that supplies culture-specific formatting information.
+         * @return Decimal A System.Decimal number equivalent to the value of this instance.
          */
-        public static function tryParse($s, &$result) {
-            try 
-            {
-                $result = self::parse($s);
-                return true;
-            } catch (\Exception $e) {
-                return false;
-            }
+        public function toDecimal(IFormatProvider $provider = null)
+        {
+
         }
 
+        /**
+         * Converts the value of this instance to an equivalent double-precision floating-point number using the specified culture-specific formatting information.
+         *
+         * @access public
+         * @param \System\IFormatProvider $provider An System.IFormatProvider interface implementation that supplies culture-specific formatting information.
+         * @return \System\Double A double-precision floating-point number equivalent to the value of this instance.
+         */
+        public function toDouble(IFormatProvider $provider = null)
+        {
+
+        }
+
+
+        public function toFileTime()
+        {
+
+        }
+
+        public function toFileTimeUtc()
+        {
+
+        }
+
+        /**
+         * Converts the value of this instance to an equivalent 16-bit signed integer using the specified culture-specific formatting information.
+         *
+         * @access public
+         * @param \System\IFormatProvider $provider An System.IFormatProvider interface implementation that supplies culture-specific formatting information.
+         * @return \System\Int16 An 16-bit signed integer equivalent to the value of this instance.
+         */
+        public function toInt16(IFormatProvider $provider = null)
+        {
+
+        }
+
+        /**
+         * Converts the value of this instance to an equivalent 32-bit signed integer using the specified culture-specific formatting information.
+         *
+         * @access public
+         * @param \System\IFormatProvider $provider An System.IFormatProvider interface implementation that supplies culture-specific formatting information.
+         * @return \System\Int32 An 32-bit signed integer equivalent to the value of this instance.
+         */
+        public function toInt32(IFormatProvider $provider = null)
+        {
+
+        }
+
+        /**
+         * Converts the value of this instance to an equivalent 64-bit signed integer using the specified culture-specific formatting information.
+         *
+         * @access public
+         * @param \System\IFormatProvider $provider An System.IFormatProvider interface implementation that supplies culture-specific formatting information.
+         * @return \System\Int64 An 64-bit signed integer equivalent to the value of this instance.
+         */
+        public function toInt64(IFormatProvider $provider = null)
+        {
+
+        }
 
         /**
          * Converts the value of the current DateTime object to local time.
@@ -497,15 +696,18 @@ namespace System
             return $this->toString("h:i:s A");
         }
 
-
         /**
-         * Converts the value of this instance to the equivalent OLE Automation date.
+         * Converts the value of this instance to an equivalent 8-bit signed integer using the specified culture-specific formatting information.
+         *
          * @access public
-         * @return string A double-precision floating-point number that contains an OLE Automation date equivalent to the value of this instance. 
+         * @param \System\IFormatProvider $provider An System.IFormatProvider interface implementation that supplies culture-specific formatting information.
+         * @return \System\SByte An 8-bit signed integer equivalent to the value of this instance.
          */
-        public function toOADate() {
-            throw new \Exception();
+        public function toSByte(IFormatProvider $provider = null)
+        {
+
         }
+
 
         /**
          * Converts the value of this instance to its equivalent short date string representation.
@@ -525,27 +727,124 @@ namespace System
             return $this->toString("H:m");
         }
 
+        /**
+         * Converts the value of this instance to an equivalent single-precision floating-point number using the specified culture-specific formatting information.
+         *
+         * @access public
+         * @param \System\IFormatProvider $provider An System.IFormatProvider interface implementation that supplies culture-specific formatting information.
+         * @return \System\Single A single-precision floating-point number equivalent to the value of this instance.
+         */
+        public function toSingle(IFormatProvider $provider = null)
+        {
+
+        }
+
+        /**
+         * Converts the value of the current System.DateTime object to its equivalent string representation.
+         *
+         * @access public
+         * @param string $format A format string.
+         * @return string A string representation of value of this instance as specified by format.
+         */
+        public function toString($format = "", IFormatProvider $provider = null) 
+        {
+            if (strlen($format) > 0) return date($format, mktime($this->hours, $this->minutes, $this->seconds, $this->month, $this->day, $this->year));
+            return $this->year . "-" . $this->month . "-" . $this->day . " " . $this->hours . ":" . $this->minutes . ":" . $this->seconds;
+        }
+
+        /**
+         * Converts the value of the current System.DateTime object to its equivalent string representation.
+         *
+         * @access public
+         * @return string A string representation of value of this instance as specified by format.
+         */
+        public function __toString() {
+            return $this->toString();
+        }
+
+        /**
+         * Converts the value of this instance to an System.Object of the specified System.Type that has an equivalent value, using the specified culture-specific formatting information.
+         *
+         * @access public
+         * @param \System\Type $conversionType The System.Type to which the value of this instance is converted.
+         * @param \System\IFormatProvider $provider An System.IFormatProvider interface implementation that supplies culture-specific formatting information.
+         * @return Type An System.Object instance of type conversionType whose value is equivalent to the value of this instance.
+         */
+        public function toType(Type $conversionType, IFormatProvider $provider)
+        {
+
+        }
+
+        /**
+         * Converts the value of this instance to an equivalent 16-bit unsigned integer using the specified culture-specific formatting information.
+         *
+         * @access public
+         * @param \System\IFormatProvider $provider An System.IFormatProvider interface implementation that supplies culture-specific formatting information.
+         * @return \System\UInt16 An 16-bit unsigned integer equivalent to the value of this instance.
+         */
+        public function toUInt16(IFormatProvider $provider = null)
+        {
+
+        }
+
+        /**
+         * Converts the value of this instance to an equivalent 32-bit unsigned integer using the specified culture-specific formatting information.
+         *
+         * @access public
+         * @param \System\IFormatProvider $provider An System.IFormatProvider interface implementation that supplies culture-specific formatting information.
+         * @return \System\UInt32 An 32-bit unsigned integer equivalent to the value of this instance.
+         */
+        public function toUInt32(IFormatProvider $provider = null)
+        {
+            
+        }
+
+        /**
+         * Converts the value of this instance to an equivalent 64-bit unsigned integer using the specified culture-specific formatting information.
+         *
+         * @access public
+         * @param \System\IFormatProvider $provider An System.IFormatProvider interface implementation that supplies culture-specific formatting information.
+         * @return \System\UInt64 An 64-bit unsigned integer equivalent to the value of this instance.
+         */
+        public function toUInt64(IFormatProvider $provider = null)
+        {
+            
+        }
 
         /**
          * Converts the value of the current DateTime object to Coordinated Universal Time (UTC).
          * @access public
          * @return \System\DateTime A DateTime object whose Kind property is Utc, and whose value is the UTC equivalent to the value of the current DateTime object, or MaxValue if the converted value is too large to be represented by a DateTime object, or MinValue if the converted value is too small to be represented by a DateTime object.
          */
-        public function toUniversalTime() {
+        public function toUniversalTime() 
+        {
             return $this->utcNow();
         }
 
-
         /**
-         * Converts the value of the current System.DateTime object to its equivalent string representation.
+         * Converts the specified string representation of a date and time to its DateTime equivalent.
          * @access public
-         * @param string $format A format string.
-         * @return string A string representation of value of this instance as specified by format.
+         * @static
+         * @param string $s A string containing a date and time to convert.
+         * @param \System\DateTime $result When this method returns, contains the DateTime value equivalent to the date and time contained in s, if the conversion succeeded, or MinValue if the conversion failed. The conversion fails if the s parameter is a null reference, or does not contain a valid string representation of a date and time. This parameter is passed uninitialized.
+         * @return bool
          */
-        public function toString($format = "") {
-            if (strlen($format) > 0) return date($format, mktime($this->hours, $this->minutes, $this->seconds, $this->month, $this->day, $this->year));
-            return $this->year . "-" . $this->month . "-" . $this->day . " " . $this->hours . ":" . $this->minutes . ":" . $this->seconds;
+        public static function tryParse($s, &$result) {
+            try 
+            {
+                $result = self::parse($s);
+                return true;
+            } catch (\Exception $e) {
+                return false;
+            }
         }
+
+
+        public function tryParseExact()
+        {
+
+        }
+        
 
         /**
          * Gets a DateTime object that is set to the current date and time on this computer, expressed as the Coordinated Universal Time (UTC).
@@ -568,13 +867,7 @@ namespace System
             return $this->year;
         }
 
-        /**
-         * Override method __toString
-         * @return string
-         */
-        public function __toString() {
-            return $this->toString();
-        }
+        
 
         //PRIVATE METHODS
 
@@ -602,9 +895,9 @@ namespace System
          * @param int $year Year to be validate
          * @return Boolean true if date is valid or false;
          */
-        private function isValidYear($year) {
-            if ($year > 2037 || $year < 1902) return false;
-            return true;
+        private function isValidYear($year) 
+        {
+            return $year >= 1902 and $year <= 2037;
         }
 
         /**

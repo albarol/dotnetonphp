@@ -8,26 +8,37 @@ use \System\DateTimeKind as DateTimeKind;
 /**
  * @group core
 */
-class DateTimeTestCase extends PHPUnit_Framework_TestCase {
-
+class DateTimeTestCase extends PHPUnit_Framework_TestCase 
+{
     
     /**
      * @test
      * @expectedException \System\ArgumentOutOfRangeException
     */
-    public function Construct_ThrowsExceptionWhenInputInvalidDay() {
-        
+    public function Construct_ThrowsExceptionWhenYearIsGreaterThanMaxValue() 
+    {
         # Arrange:
         # Act:
-        new DateTime(2010, 02, 31);
+        new DateTime(2038, 02, 05);
     }
 
     /**
      * @test
      * @expectedException \System\ArgumentOutOfRangeException
     */
-    public function Construct_ThrowsExceptionWhenInputInvalidMonth() {
-        
+    public function Construct_ThrowsExceptionWhenYearIsLessThanMinValue() 
+    {
+        # Arrange:
+        # Act:
+        new DateTime(1901, 02, 05);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentOutOfRangeException
+    */
+    public function Construct_ThrowsExceptionWhenMonthIsGreaterThanMaxValue() 
+    {
         # Arrange:
         # Act:
         new DateTime(2010, 13, 05);
@@ -37,18 +48,106 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
      * @test
      * @expectedException \System\ArgumentOutOfRangeException
     */
-    public function Construct_ThrowsExceptionWhenInputInvalidYear() {
-        
+    public function Construct_ThrowsExceptionWhenMonthIsLessThanMinValue() 
+    {
         # Arrange:
         # Act:
-        new DateTime(9999, 02, 05);
+        new DateTime(2010, -01, 05);
     }
 
     /**
      * @test
+     * @expectedException \System\ArgumentOutOfRangeException
     */
-    public function Construct_ShouldCreateDateTimeWithoutTime() {
-        
+    public function Construct_ThrowsExceptionWhenDayIsGreaterThanMaxValue() 
+    {
+        # Arrange:
+        # Act:
+        new DateTime(2010, 02, 32);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentOutOfRangeException
+    */
+    public function Construct_ThrowsExceptionWhenDayIsLessThanMinValue() 
+    {
+        # Arrange:
+        # Act:
+        new DateTime(2010, 02, -01);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentOutOfRangeException
+    */
+    public function Construct_ThrowsExceptionWhenHourIsGreaterThanMaxValue() 
+    {
+        # Arrange:
+        # Act:
+        new DateTime(2010, 02, 01, 24);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentOutOfRangeException
+    */
+    public function Construct_ThrowsExceptionWhenHourIsLessThanMinValue() 
+    {
+        # Arrange:
+        # Act:
+        new DateTime(2010, 02, 01, -01);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentOutOfRangeException
+    */
+    public function Construct_ThrowsExceptionWhenMinuteIsGreaterThanMaxValue() 
+    {
+        # Arrange:
+        # Act:
+        new DateTime(2010, 02, 01, 12, 60);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentOutOfRangeException
+    */
+    public function Construct_ThrowsExceptionWhenMinuteIsLessThanMinValue() 
+    {
+        # Arrange:
+        # Act:
+        new DateTime(2010, 02, 01, 12, -01);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentOutOfRangeException
+    */
+    public function Construct_ThrowsExceptionWhenSecondIsGreaterThanMaxValue() 
+    {
+        # Arrange:
+        # Act:
+        new DateTime(2010, 02, 01, 12, 12, -01);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentOutOfRangeException
+    */
+    public function Construct_ThrowsExceptionWhenSecondIsLessThanMinValue() 
+    {
+        # Arrange:
+        # Act:
+        new DateTime(2010, 02, 01, 12, 12, 60);
+    }
+    
+    /**
+     * @test
+    */
+    public function Construct_ShouldCreateDateTimeWithoutTime() 
+    {
         # Arrange:
         # Act:
         $datetime = new DateTime(2010, 01, 01);
@@ -60,21 +159,22 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function Construct_ShouldCreateDateTimeWithTime() {
-        
+    public function Construct_ShouldCreateDateTimeWithTime() 
+    {
         # Arrange:
         # Act:
         $datetime = new DateTime(2010, 01, 01, 23, 59, 59);
     
         # Assert:
-        $this->assertEquals(23, $datetime->hours());
+        $this->assertEquals(23, $datetime->hour());
     }
 
 
     /**
      * @test
     */
-    public function Day_ShouldGetDayFromDateTime() {
+    public function Day_ShouldGetDayFromDateTime() 
+    {
         
         # Arrange:
         # Act:
@@ -87,8 +187,8 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function Month_ShouldGetMonthFromDateTime() {
-        
+    public function Month_ShouldGetMonthFromDateTime() 
+    {
         # Arrange:
         # Act:
         $datetime = new DateTime(2010, 01, 01, 23, 59, 59);
@@ -100,7 +200,8 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function Year_ShouldGetYearFromDateTime() {
+    public function Year_ShouldGetYearFromDateTime() 
+    {
         
         # Arrange:
         # Act:
@@ -113,46 +214,50 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function Hour_ShouldGetHourFromDateTime() {
+    public function Hour_ShouldGetHourFromDateTime() 
+    {
         
         # Arrange:
         # Act:
         $datetime = new DateTime(2010, 01, 01, 23, 59, 59);
     
         # Assert:
-        $this->assertEquals(23, $datetime->hours());
+        $this->assertEquals(23, $datetime->hour());
     }
 
     /**
      * @test
     */
-    public function Minutes_ShouldGetMinuteFromDateTime() {
+    public function Minutes_ShouldGetMinuteFromDateTime() 
+    {
         
         # Arrange:
         # Act:
         $datetime = new DateTime(2010, 01, 01, 23, 59, 59);
     
         # Assert:
-        $this->assertEquals(59, $datetime->minutes());
+        $this->assertEquals(59, $datetime->minute());
     }
 
     /**
      * @test
     */
-    public function Seconds_ShouldGetSecondsFromDateTime() {
+    public function Seconds_ShouldGetSecondsFromDateTime() 
+    {
         
         # Arrange:
         # Act:
         $datetime = new DateTime(2010, 01, 01, 23, 59, 59);
     
         # Assert:
-        $this->assertEquals(59, $datetime->seconds());
+        $this->assertEquals(59, $datetime->second());
     }
 
     /**
      * @test
     */
-    public function Add_ShouldIncreaseOneDayWhenAddTimeSpan() {
+    public function Add_ShouldIncreaseOneDayWhenAddTimeSpan() 
+    {
         
         # Arrange:
         $timespan = TimeSpan::fromDays(1);
@@ -168,7 +273,8 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function Add_ShouldIncreaseOneHourWhenAddTimeSpan() {
+    public function Add_ShouldIncreaseOneHourWhenAddTimeSpan() 
+    {
         
         # Arrange:
         $timespan = TimeSpan::fromHours(1);
@@ -184,7 +290,8 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function Add_ShouldDecreaseOneDayWhenAddNegativeTimeSpan() {
+    public function Add_ShouldDecreaseOneDayWhenAddNegativeTimeSpan() 
+    {
         
         # Arrange:
         $timespan = TimeSpan::fromDays(1);
@@ -202,7 +309,8 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
      * @test
      * @expectedException \System\ArgumentOutOfRangeException
     */
-    public function AddDays_ThrowsExceptionWhenAddGreaterThanMaxValue() {
+    public function AddDays_ThrowsExceptionWhenAddGreaterThanMaxValue() 
+    {
         
         # Arrange:
         # Act:
@@ -216,7 +324,8 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
      * @test
      * @expectedException \System\ArgumentOutOfRangeException
     */
-    public function AddDays_ThrowsExceptionWhenAddLesserThanMinValue() {
+    public function AddDays_ThrowsExceptionWhenAddLesserThanMinValue() 
+    {
         
         # Arrange:
         # Act:
@@ -229,7 +338,8 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function AddDays_ShouldAddOneDay() {
+    public function AddDays_ShouldAddOneDay() 
+    {
         
         # Arrange:
         $date = new DateTime(2010, 8, 19);
@@ -244,7 +354,8 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function AddDays_ShouldAddOneDayInLastDayOfMonth() {
+    public function AddDays_ShouldAddOneDayInLastDayOfMonth() 
+    {
         
         # Arrange:
         $date = new DateTime(2010, 8, 31);
@@ -260,7 +371,8 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function AddDays_ShouldAddOneDayInLastDayOfYear() {
+    public function AddDays_ShouldAddOneDayInLastDayOfYear() 
+    {
         
         # Arrange:
         $date = new DateTime(2010, 12, 31);
@@ -277,7 +389,8 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function AddDays_ShouldRemoveOneDay() {
+    public function AddDays_ShouldRemoveOneDay() 
+    {
         
         # Arrange:
         $date = new DateTime(2010, 8, 19);
@@ -292,7 +405,8 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function AddDays_ShouldRemoveOneDayInFirstDayOfMonth() {
+    public function AddDays_ShouldRemoveOneDayInFirstDayOfMonth() 
+    {
         
         # Arrange:
         $date = new DateTime(2010, 9, 1);
@@ -308,7 +422,8 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function AddDays_ShouldAddRemoveDayInLastDayOfYear() {
+    public function AddDays_ShouldAddRemoveDayInLastDayOfYear() 
+    {
         
         # Arrange:
         $date = new DateTime(2010, 1, 1);
@@ -325,7 +440,8 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function AddHours_CanAddHours() {
+    public function AddHours_CanAddHours() 
+    {
         
         # Arrange:
         $date = new DateTime(2011, 1, 1, 0, 0, 0);
@@ -334,7 +450,7 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
         $date->addHours(11);
 
         # Assert:
-        $this->assertEquals(11, $date->hours());
+        $this->assertEquals(11, $date->hour());
     }
 
     /**
@@ -349,14 +465,15 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
         $date->addHours(2);
 
         # Assert:
-        $this->assertEquals(1, $date->hours());
+        $this->assertEquals(1, $date->hour());
         $this->assertEquals(2, $date->day());
     }
 
     /**
      * @test
     */
-    public function AddHours_CanAddTwentyFourHours() {
+    public function AddHours_CanAddTwentyFourHours() 
+    {
         
         # Arrange:
         $date = new DateTime(2011, 1, 1);
@@ -366,7 +483,7 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
 
         # Assert:
         $this->assertEquals(2, $date->day());
-        $this->assertEquals(0, $date->hours());
+        $this->assertEquals(0, $date->hour());
     }
 
     /**
@@ -382,13 +499,14 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
         
         # Assert:
         $this->assertEquals(1, $date->day());
-        $this->assertEquals(0, $date->hours());
+        $this->assertEquals(0, $date->hour());
     }
 
     /**
      * @test
     */
-    public function AddHours_CanRemoveHourWhenFirstHourOfDay() {
+    public function AddHours_CanRemoveHourWhenFirstHourOfDay() 
+    {
         
         # Arrange:
         $date = new DateTime(2011, 1, 1);
@@ -398,13 +516,14 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
         
         # Assert:
         $this->assertEquals(31, $date->day());
-        $this->assertEquals(23, $date->hours());
+        $this->assertEquals(23, $date->hour());
     }
 
     /**
      * @test
     */
-    public function AddHours_CanRemove24Hours() {
+    public function AddHours_CanRemove24Hours() 
+    {
         
         # Arrange:
         $date = new DateTime(2011, 1, 2, 0, 0, 0);
@@ -414,13 +533,14 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
 
         # Assert:
         $this->assertEquals(1, $date->day());
-        $this->assertEquals(0, $date->hours());
+        $this->assertEquals(0, $date->hour());
     }
     
     /**
      * @test
      */
-    public function AddMinutes_CanAddMinutes() {
+    public function AddMinutes_CanAddMinutes() 
+    {
         
         # Arrange:
         $date = new DateTime(2011, 01, 01, 23, 59);
@@ -430,13 +550,14 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
         
         # Assert:
         $this->assertEquals(2, $date->day());
-        $this->assertEquals(0, $date->hours());
+        $this->assertEquals(0, $date->hour());
     }
 
     /**
      * @test
      */
-    public function AddMinutes_CanAddSixtyMinutes() {
+    public function AddMinutes_CanAddSixtyMinutes() 
+    {
         
         # Arrange:
         $date = new DateTime(2011, 1, 1, 0, 0, 0);
@@ -445,13 +566,14 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
         $date->addMinutes(60);
         
         # Assert:
-        $this->assertEquals(1, $date->hours());
+        $this->assertEquals(1, $date->hour());
     }
 
     /**
      * @test
      */
-    public function AddMinutes_CanRemoveMinutes() {
+    public function AddMinutes_CanRemoveMinutes() 
+    {
         
         # Arrange:
         $date = new DateTime(2011, 1, 2, 0, 0, 0);
@@ -461,13 +583,14 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
         
         # Assert:
         $this->assertEquals(1, $date->day());
-        $this->assertEquals(23, $date->hours());
+        $this->assertEquals(23, $date->hour());
     }
 
     /**
      * @test
      */
-    public function AddMinutes_CanRemoveSixtyMinutes() {
+    public function AddMinutes_CanRemoveSixtyMinutes() 
+    {
         
         # Arrange:
         $date = new DateTime(2011, 1, 2, 23, 59, 59);
@@ -477,14 +600,15 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
         
         # Assert:
         $this->assertEquals(2, $date->day());
-        $this->assertEquals(22, $date->hours());
+        $this->assertEquals(22, $date->hour());
     }
 
 
     /**
      * @test
      */
-    public function AddMonth_CanAddMonth() {
+    public function AddMonth_CanAddMonth() 
+    {
 
         # Arrange:
         $date = new DateTime(2010, 7, 19);
@@ -499,7 +623,8 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
      */
-    public function AddMonth_CanAdd12Months() {
+    public function AddMonth_CanAdd12Months() 
+    {
         
         # Arrange:
         $date = new DateTime(2010, 07, 19);
@@ -515,7 +640,8 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
      */
-    public function AddMonth_CanAddOneMonthWithDifferentQuantityOfDays() {
+    public function AddMonth_CanAddOneMonthWithDifferentQuantityOfDays() 
+    {
         
         # Arrange:
         $date = new DateTime(2010, 01, 31);
@@ -531,7 +657,8 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
      */
-    public function AddMonth_RemoveMonth() {
+    public function AddMonth_RemoveMonth() 
+    {
         
         # Arrange:
         $date = new DateTime(2010, 8, 19);
@@ -546,7 +673,8 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
      */
-    public function AddMonth_CanRemove12Months() {
+    public function AddMonth_CanRemove12Months() 
+    {
         
         # Arrange:
         $date = new DateTime(2010, 07, 19);
@@ -562,7 +690,8 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
      */
-    public function AddMonth_CanRemoveOneMonthWithDifferentQuantityOfDays() {
+    public function AddMonth_CanRemoveOneMonthWithDifferentQuantityOfDays() 
+    {
         
         # Arrange:
         $date = new DateTime(2010, 3, 31);
@@ -578,7 +707,8 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
      */
-    public function AddSeconds_CanAddSeconds() {
+    public function AddSeconds_CanAddSeconds() 
+    {
         
         # Arrange:
         $date = new DateTime(2010, 3, 31, 23);
@@ -588,13 +718,14 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
         
         # Arrange:
         $this->assertEquals(4, $date->month());
-        $this->assertEquals(0, $date->hours());
+        $this->assertEquals(0, $date->hour());
     }
 
     /**
      * @test
      */
-    public function AddSeconds_CanRemoveSeconds() {
+    public function AddSeconds_CanRemoveSeconds() 
+    {
         
         # Arrange:
         $date = new DateTime(2010, 3, 31, 23);
@@ -603,13 +734,14 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
         $date->addSeconds(-3600);
         
         # Assert:
-        $this->assertEquals(22, $date->hours());
+        $this->assertEquals(22, $date->hour());
     }
 
     /**
      * @test
      */
-    public function AddYear_CanAddOneYear() {
+    public function AddYear_CanAddOneYear() 
+    {
         
         # Arrange:
         $date = new DateTime(2010, 3, 31);
@@ -624,7 +756,8 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
      */
-    public function AddYears_CanAddWhenLeapYear() {
+    public function AddYears_CanAddWhenLeapYear() 
+    {
         
         # Arrange:
         $date = new DateTime(2004, 2, 29);
@@ -641,7 +774,8 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
      */
-    public function AddYears_CanRemoveYear() {
+    public function AddYears_CanRemoveYear() 
+    {
         
         # Arrange:
         $date = new DateTime(2010, 3, 31);
@@ -656,7 +790,8 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function ShouldGetUtcFromSpecifyKind() {
+    public function ShouldGetUtcFromSpecifyKind() 
+    {
         
         # Arrange:
         date_default_timezone_set("America/Sao_Paulo");
@@ -666,20 +801,22 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
         $utc = DateTime::specifyKind($now, DateTimeKind::utc());
     
         # Assert:
-        $this->assertEquals(23, $utc->hours());
+        $this->assertEquals(23, $utc->hour());
     }
 
-    /**
-     * @test
-    */
-    public function ShouldGetLocalFromSpecifyKind() {
-        $this->markTestIncomplete('NotImplemented TimeZoneInfo');
-    }
+    // /**
+    //  * @test
+    // */
+    // public function ShouldGetLocalFromSpecifyKind() 
+    // {
+    //     $this->markTestIncomplete('NotImplemented TimeZoneInfo');
+    // }
 
     /**
      * @test
      */
-    public function Subtract_WhenSubtractDateShouldBeTimeSpanWithOneDay() {
+    public function Subtract_WhenSubtractDateShouldBeTimeSpanWithOneDay() 
+    {
        
        # Arrange:
        $date = new DateTime(2010, 1, 5);
@@ -695,7 +832,8 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
      */
-    public function Subtract_WhenSubtractFromTimeSpanShouldBeEqualToThreeDays() {
+    public function Subtract_WhenSubtractFromTimeSpanShouldBeEqualToThreeDays() 
+    {
         
         # Arrange:
         $date = new DateTime(2010, 9, 8);
@@ -710,7 +848,8 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
      */
-    public function Compare_ShouldBeZeroWhenEqualAnother() {
+    public function Compare_ShouldBeZeroWhenEqualAnother() 
+    {
         
         # Arrange:
         $first_date = new DateTime(2010, 1, 1);
@@ -726,7 +865,8 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
      */
-    public function Compare_ShouldBeOneWhenGreaterThanAnother() {
+    public function Compare_ShouldBeOneWhenGreaterThanAnother() 
+    {
         
         # Arrange:
         $first_date = new DateTime(2010, 1, 2);
@@ -742,7 +882,8 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
      */
-    public function Compare_ShouldBeMinusOneWhenGreaterThanAnother() {
+    public function Compare_ShouldBeMinusOneWhenGreaterThanAnother() 
+    {
         
         # Arrange:
         $first_date = new DateTime(2010, 1, 1);
@@ -759,7 +900,8 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
      */
-    public function DaysInMonth_GetDaysInFebruaryWhenLeapYear() {
+    public function DaysInMonth_GetDaysInFebruaryWhenLeapYear() 
+    {
         
         # Arrange:
         # Act:
@@ -772,7 +914,8 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
      */
-    public function DaysInMonth_GetDaysInFebruaryWhenNormalYear() {
+    public function DaysInMonth_GetDaysInFebruaryWhenNormalYear() 
+    {
         
         # Arrange:
         # Act:
@@ -785,7 +928,8 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
      */
-    public function DaysInMonth_GetDaysInJanuary() {
+    public function DaysInMonth_GetDaysInJanuary() 
+    {
         
         # Arrange:
         # Act:
@@ -798,7 +942,8 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
      */
-    public function GetDateAndTimeFormats_CanGetParameters() {
+    public function GetDateAndTimeFormats_CanGetParameters() 
+    {
         
         # Arrange:
         $date = new DateTime(2004, 2, 3, 23, 59, 59);
@@ -813,7 +958,8 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
      */
-    public function IsDayLightSavingTime_ShouldBeTrueIfTimezoneHasDaylight() {
+    public function IsDayLightSavingTime_ShouldBeTrueIfTimezoneHasDaylight() 
+    {
         
         # Arrange:
         date_default_timezone_set("America/Sao_Paulo");
@@ -830,7 +976,8 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
      */
-    public function IsDaylightSavingTime_ShouldBeFalseWhenTimezoneDontHaveDaylight() {
+    public function IsDaylightSavingTime_ShouldBeFalseWhenTimezoneDontHaveDaylight() 
+    {
         
         # Arrange:
         date_default_timezone_set("America/Sao_Paulo");
@@ -847,7 +994,8 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
      */
-    public function IsLeapYear_ShouldBeTrueWhenYearIsLeap() {
+    public function IsLeapYear_ShouldBeTrueWhenYearIsLeap() 
+    {
         
         # Arrange:
         # Act:
@@ -860,7 +1008,8 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
      */
-    public function IsLeapYear_ShouldBeFalseWhenYearIsOdd() {
+    public function IsLeapYear_ShouldBeFalseWhenYearIsOdd() 
+    {
         
         # Arrange:
         # Act:
@@ -874,7 +1023,8 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
      * @test
      * @expectedException \System\ArgumentNullException
      */
-    public function Parse_ThrowsExceptionWhenInputIsNull() {
+    public function Parse_ThrowsExceptionWhenInputIsNull() 
+    {
         
         # Arrange:
         $format = null;
@@ -887,7 +1037,8 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
      * @test
      * @expectedException \System\FormatException
      */
-    public function Parse_ThrowsExceptionWhenInvalidDateFormat() {
+    public function Parse_ThrowsExceptionWhenInvalidDateFormat() 
+    {
         
         # Arrange:
         $format = "10.30.2999";
@@ -899,7 +1050,8 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
      */
-    public function Parse_CanParseDateTime() {
+    public function Parse_CanParseDateTime() 
+    {
         
         # Arrange:
         $format = "2011.8.12 11:39";
@@ -909,13 +1061,14 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
         
         # Assert:
         $this->assertEquals(2011, $date->year());
-        $this->assertEquals(11, $date->hours());
+        $this->assertEquals(11, $date->hour());
     }
 
     /**
      * @test
      */
-    public function DayOfWeek_CanGetDayOfWeek() {
+    public function DayOfWeek_CanGetDayOfWeek() 
+    {
         
         # Arrange:
         $date = new DateTime(2010, 9, 04);
@@ -930,7 +1083,8 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
      */
-    public function DayOfYear_CanGetFirstDayOfYear() {
+    public function DayOfYear_CanGetFirstDayOfYear() 
+    {
         
         # Arrange:
         $date = new DateTime(2010, 1, 1);
@@ -945,7 +1099,8 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
      */
-    public function DayOfYear_CanGetLastDayOfYear() {
+    public function DayOfYear_CanGetLastDayOfYear() 
+    {
         
         # Arrange:
         $date = new DateTime(2010, 12, 31);
@@ -960,7 +1115,8 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
      */
-    public function DayOfYear_CanGetLastDayOfYearWhenIsLeapYear() {
+    public function DayOfYear_CanGetLastDayOfYearWhenIsLeapYear() 
+    {
         
         # Arrange:
         $date = new DateTime(2004, 12, 31);
@@ -975,7 +1131,8 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
      */
-    public function Now_ShouldGetNow() {
+    public function Now_ShouldGetNow() 
+    {
         
         # Arrange:
         $date = getdate();
@@ -987,15 +1144,16 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
         $this->assertEquals($date["year"], $now->year());
         $this->assertEquals($date["mon"], $now->month());
         $this->assertEquals($date["mday"], $now->day());
-        $this->assertEquals($date["hours"], $now->hours());
-        $this->assertEquals($date["minutes"], $now->minutes());
-        $this->assertEquals($date["seconds"], $now->seconds());
+        $this->assertEquals($date["hours"], $now->hour());
+        $this->assertEquals($date["minutes"], $now->minute());
+        $this->assertEquals($date["seconds"], $now->second());
     }
 
     /**
      * @test
      */
-    public function Today_CanGetToday() {
+    public function Today_CanGetToday() 
+    {
         
         # Arrange:
         $date = getdate();
@@ -1007,8 +1165,8 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase {
         $this->assertEquals($date["year"], $now->year());
         $this->assertEquals($date["mon"], $now->month());
         $this->assertEquals($date["mday"], $now->day());
-        $this->assertEquals(0, $now->hours());
-        $this->assertEquals(0, $now->minutes());
-        $this->assertEquals(0, $now->seconds());
+        $this->assertEquals(0, $now->hour());
+        $this->assertEquals(0, $now->minute());
+        $this->assertEquals(0, $now->second());
     }
 }
