@@ -16,9 +16,7 @@ namespace System
         private $year;
         private $month;
         private $day;
-        private $hours;
-        private $minutes;
-        private $seconds;
+        private $timespan;
         protected $kind;
 
         /**
@@ -68,17 +66,17 @@ namespace System
             $this->year = $year;
             $this->month = $month;
             $this->day = $day;
-            $this->hours = $hours;
-            $this->minutes = $minutes;
-            $this->seconds = $seconds;
+            $this->timespan = new TimeSpan(0, $hours, $minutes, $seconds);
             $this->kind = DateTimeKind::unespecified();
         }
 
         /**
          * Adds the value of the specified System.TimeSpan to the value of this instance.
+         *
          * @access public
-         * @param TimeSpan $value A System.TimeSpan object that represents a positive or negative time interval.
-         * @return DateTime A System.DateTime whose value is the sum of the date and time represented by this instance and the time interval represented by value.
+         * @throws \System\ArgumentOutOfRangeException The resulting DateTime is less than MinValue or greater than MaxValue.
+         * @param \System\TimeSpan $value A TimeSpan object that represents a positive or negative time interval.
+         * @return \System\DateTime A DateTime whose value is the sum of the date and time represented by this instance and the time interval represented by value.
          */
         public function add(TimeSpan $value) 
         {
@@ -87,36 +85,46 @@ namespace System
             $time->addHours($value->hours());
             $time->addMinutes($value->minutes());
             $time->addSeconds($value->seconds());
+            $time->addMilliseconds($value->milliseconds());
             return $time;
         }
 
 
         /**
          * Adds the specified number of days to the value of this instance.
+         *
          * @access public
+         * @throws \System\ArgumentOutOfRangeException The resulting DateTime is less than MinValue or greater than MaxValue.
          * @param float $value A number of whole and fractional days. The value parameter can be negative or positive.
-         * @return DateTime A System.DateTime whose value is the sum of the date and time represented by this instance and the number of days represented by value.
+         * @return \System\DateTime A System.DateTime whose value is the sum of the date and time represented by this instance and the number of days represented by value.
          */
-        public function addDays($value) {
-            $this->calculateDate($value, $this->day);
+        public function addDays($value) 
+        {
+            $this->addDate($this->year, $this->month, $this->day + $value);
             return $this;
         }
 
         /**
          * Adds the specified number of hours to the value of this instance.
+         *
          * @access public
+         * @throws \System\ArgumentOutOfRangeException The resulting DateTime is less than MinValue or greater than MaxValue.
          * @param float $value A number of whole and fractional hours. The value parameter can be negative or positive.
-         * @return DateTime A System.DateTime whose value is the sum of the date and time represented by this instance and the number of hours represented by value.
+         * @return \System\DateTime A System.DateTime whose value is the sum of the date and time represented by this instance and the number of hours represented by value.
          */
-        public function addHours($value) {
-            $this->calculateDate($value, $this->hours);
+        public function addHours($value) 
+        {
+            $this->addTime(TimeSpan::fromHours($value));
+            $this->addDate($this->year, $this->month, $this->day);
             return $this;
         }
 
 
-        public function addMilliseconds()
+        public function addMilliseconds($value)
         {
-
+            $this->addTime(TimeSpan::fromMilliseconds($value));
+            $this->addDate($this->year, $this->month, $this->day);
+            return $this;
         }
 
         /**
@@ -125,8 +133,10 @@ namespace System
          * @param float $value A number of whole and fractional minutes. The value parameter can be negative or positive.
          * @return DateTime A System.DateTime whose value is the sum of the date and time represented by this instance and the number of minutes represented by value.
          */
-        public function addMinutes($value) {
-            $this->calculateDate($value, $this->minutes);
+        public function addMinutes($value) 
+        {
+            $this->addTime(TimeSpan::fromMinutes($value));
+            $this->addDate($this->year, $this->month, $this->day);
             return $this;
         }
 
@@ -137,8 +147,9 @@ namespace System
          * @param float $value A number of months. The months parameter can be negative or positive.
          * @return DateTime A System.DateTime whose value is the sum of the date and time represented by this instance and months.
          */
-        public function addMonths($value) {
-            $this->calculateDate($value, $this->month);
+        public function addMonths($value) 
+        {
+            $this->addDate($this->year, $this->month+$value, $this->day);
             return $this;
         }
 
@@ -148,8 +159,10 @@ namespace System
          * @param float $value A number of whole and fractional seconds. The value parameter can be negative or positive.
          * @return DateTime A System.DateTime whose value is the sum of the date and time represented by this instance and the number of seconds represented by value.
          */
-        public function addSeconds($value) {
-            $this->calculateDate($value, $this->seconds);
+        public function addSeconds($value) 
+        {
+            $this->addTime(TimeSpan::fromSeconds($value));
+            $this->addDate($this->year, $this->month, $this->day);
             return $this;
         }
 
@@ -164,8 +177,9 @@ namespace System
          * @param float $value A number of years. The value parameter can be negative or positive.
          * @return DateTime A System.DateTime whose value is the sum of the date and time represented by this instance and the number of years represented by value.
          */
-        public function addYears($value) {
-            $this->calculateDate($value, $this->year);
+        public function addYears($value) 
+        {
+            $this->addDate($value+$this->year, $this->month, $this->day);
             return $this;
         }
 
@@ -316,7 +330,7 @@ namespace System
             array_push($formats, $this->toString("h:i A"));
             array_push($formats, $this->toString("H:i:s"));
             array_push($formats, $this->toString("h:i:s A"));
-            array_push($formats, gmdate("Y-m-d H:i", mktime($this->hours, $this->minutes, $this->seconds, $this->month, $this->day, $this->year)) . " GMT");
+            array_push($formats, gmdate("Y-m-d H:i", mktime($this->timespan->hours(), $this->timespan->minutes(), $this->timespan->seconds(), $this->month, $this->day, $this->year)) . " GMT");
             return $formats;
         }
 
@@ -350,7 +364,7 @@ namespace System
          */
         public function hour() 
         {
-            return $this->hours;
+            return $this->timespan->hours();
         }
 
 
@@ -393,7 +407,7 @@ namespace System
 
         public function millisecond()
         {
-
+            return $this->timespan->milliseconds();
         }
 
         public function minValue()
@@ -408,7 +422,7 @@ namespace System
          * @return int The minute component, expressed as a value between 0 and 59.
          */
         public function minute() {
-            return $this->minutes;
+            return $this->timespan->minutes();
         }
 
         /**
@@ -464,8 +478,9 @@ namespace System
         * @access public
         * @return int The seconds, between 0 and 59.
         */
-        public function second() {
-            return $this->seconds;
+        public function second() 
+        {
+            return $this->timespan->seconds();
         }
 
         /**
@@ -504,7 +519,8 @@ namespace System
             }
         }
 
-        private function subtractDate($value) {
+        private function subtractDate($value) 
+        {
             $year = $this->year() - $value->year();
             $month = $this->month() - $value->month();
             $day = $this->day() - $value->day();
@@ -748,8 +764,11 @@ namespace System
          */
         public function toString($format = "", IFormatProvider $provider = null) 
         {
-            if (strlen($format) > 0) return date($format, mktime($this->hours, $this->minutes, $this->seconds, $this->month, $this->day, $this->year));
-            return $this->year . "-" . $this->month . "-" . $this->day . " " . $this->hours . ":" . $this->minutes . ":" . $this->seconds;
+            if (strlen($format) > 0) 
+            {
+                return date($format, mktime($this->timespan->hours(), $this->timespan->minutes(), $this->timespan->seconds(), $this->month, $this->day, $this->year));
+            }
+            return $this->year . "-" . $this->month . "-" . $this->day . " " . $this->timespan->hours() . ":" . $this->timespan->minutes() . ":" . $this->timespan->seconds();
         }
 
         /**
@@ -863,30 +882,48 @@ namespace System
          * @access public
          * @return int The year, between 1970 and 9999.
          */
-        public function year() {
+        public function year() 
+        {
             return $this->year;
         }
 
-        
-
         //PRIVATE METHODS
 
-        /**
-         * Method to calculate date like substract and add
-         * @access private
-         * @param string $value Value to used for calculate
-         * @param object $parameter Parameter to be calculate
-         */
-        private function calculateDate($value, &$parameter) {
-            $parameter += $value;
-            $date = mktime($this->hours, $this->minutes, $this->seconds, $this->month, $this->day, $this->year);
+        private function addTime(TimeSpan $timespan)
+        {
+            $this->timespan->add($timespan);
+            $days = $this->timespan->days();
+            if ($days != 0)
+            {
+                $this->addDays($days);
+                $this->timespan = new TimeSpan(
+                    0, 
+                    $this->timespan->hours(), 
+                    $this->timespan->minutes(),
+                    $this->timespan->seconds(),
+                    $this->timespan->milliseconds()
+                );
+            }
+        }
+
+        private function addDate($year, $month, $day)
+        {
+            $date = mktime($this->timespan->hours(), $this->timespan->minutes(), $this->timespan->seconds(), $month, $day, $year);
             
             if (!$this->isValidYear(date("Y", $date))) 
             {
                 throw new ArgumentOutOfRangeException("The resulting System.DateTime is less than System.DateTime.MinValue or greater than System.DateTime.MaxValue.");
             }
-            
-            $this->changeValueOfAttributes($date);
+
+            $this->year = date("Y", $date);
+            $this->month = date("m", $date);
+            $this->day = date("d", $date);
+
+            $hour = date("H", $date);
+            $minute = date("i", $date);
+            $second = date("s", $date);
+            $millisecond = $this->millisecond();
+            $this->timespan = new TimeSpan(0, $hour, $minute, $second, $millisecond);
         }
 
         /**
@@ -898,20 +935,6 @@ namespace System
         private function isValidYear($year) 
         {
             return $year >= 1902 and $year <= 2037;
-        }
-
-        /**
-         * Method to reorganize object when any cal occours
-         * @access private
-         * @param string $date value in format string of date
-         */
-        private function changeValueOfAttributes($date) {
-            $this->year = date("Y", $date);
-            $this->month = date("m", $date);
-            $this->day = date("d", $date);
-            $this->hours = date("H", $date);
-            $this->minutes = date("i", $date);
-            $this->seconds = date("s", $date);
         }
     }
 }

@@ -1,14 +1,15 @@
 <?php
 
-namespace System {
-
+namespace System
+{
     /**
      * The exception that is thrown when a non-fatal application error occurs.
      * @access public
      * @package System
      * @name ApplicationException
      */
-    class ApplicationException extends \Exception {
+    class ApplicationException extends \Exception
+    {
        
         /**
          * Initializes a new instance of the System.ApplicationException class with a specified error message and a reference to the inner exception that is the cause of this exception.

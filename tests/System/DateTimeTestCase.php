@@ -169,140 +169,194 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase
         $this->assertEquals(23, $datetime->hour());
     }
 
-
     /**
      * @test
+     * @expectedException \System\ArgumentOutOfRangeException
     */
-    public function Day_ShouldGetDayFromDateTime() 
+    public function Add_ThrowsExceptionWhenValueIsLessThanMinValue() 
     {
-        
         # Arrange:
-        # Act:
-        $datetime = new DateTime(2010, 01, 01, 23, 59, 59);
+        $timespan = TimeSpan::fromDays(-1);
+        $datetime = new DateTime(1902, 01, 01);
     
-        # Assert:
-        $this->assertEquals(01, $datetime->day());
+        # Act:
+        $datetime->add($timespan);
     }
 
     /**
      * @test
+     * @expectedException \System\ArgumentOutOfRangeException
     */
-    public function Month_ShouldGetMonthFromDateTime() 
+    public function Add_ThrowsExceptionWhenValueIsGreaterThanMaxValue() 
     {
-        # Arrange:
-        # Act:
-        $datetime = new DateTime(2010, 01, 01, 23, 59, 59);
-    
-        # Assert:
-        $this->assertEquals(01, $datetime->month());
-    }
-
-    /**
-     * @test
-    */
-    public function Year_ShouldGetYearFromDateTime() 
-    {
-        
-        # Arrange:
-        # Act:
-        $datetime = new DateTime(2010, 01, 01, 23, 59, 59);
-    
-        # Assert:
-        $this->assertEquals(2010, $datetime->year());
-    }
-
-    /**
-     * @test
-    */
-    public function Hour_ShouldGetHourFromDateTime() 
-    {
-        
-        # Arrange:
-        # Act:
-        $datetime = new DateTime(2010, 01, 01, 23, 59, 59);
-    
-        # Assert:
-        $this->assertEquals(23, $datetime->hour());
-    }
-
-    /**
-     * @test
-    */
-    public function Minutes_ShouldGetMinuteFromDateTime() 
-    {
-        
-        # Arrange:
-        # Act:
-        $datetime = new DateTime(2010, 01, 01, 23, 59, 59);
-    
-        # Assert:
-        $this->assertEquals(59, $datetime->minute());
-    }
-
-    /**
-     * @test
-    */
-    public function Seconds_ShouldGetSecondsFromDateTime() 
-    {
-        
-        # Arrange:
-        # Act:
-        $datetime = new DateTime(2010, 01, 01, 23, 59, 59);
-    
-        # Assert:
-        $this->assertEquals(59, $datetime->second());
-    }
-
-    /**
-     * @test
-    */
-    public function Add_ShouldIncreaseOneDayWhenAddTimeSpan() 
-    {
-        
         # Arrange:
         $timespan = TimeSpan::fromDays(1);
+        $datetime = new DateTime(2037, 12, 31);
+    
+        # Act:
+        $datetime->add($timespan);
+    }
+
+    /**
+     * @test
+    */
+    public function Add_ShouldIncreaseDays() 
+    {
+        
+        # Arrange:
+        $timespan = TimeSpan::fromDays(2);
         $datetime = new DateTime(2010, 01, 01);
     
         # Act:
         $new_date = $datetime->add($timespan);
     
         # Assert:
-        $this->assertEquals(02, $new_date->day());
+        $this->assertEquals(3, $new_date->day());
     }
 
     /**
      * @test
     */
-    public function Add_ShouldIncreaseOneHourWhenAddTimeSpan() 
+    public function Add_ShouldDecreaseDays() 
     {
         
         # Arrange:
-        $timespan = TimeSpan::fromHours(1);
-        $datetime = new DateTime(2010, 01, 01, 23, 0, 0);
-    
-        # Act:
-        $new_date = $datetime->add($timespan);
-    
-        # Assert:
-        $this->assertEquals(02, $new_date->day());
-    }
-
-    /**
-     * @test
-    */
-    public function Add_ShouldDecreaseOneDayWhenAddNegativeTimeSpan() 
-    {
-        
-        # Arrange:
-        $timespan = TimeSpan::fromDays(1);
-        $timespan = $timespan->negate();
+        $timespan = TimeSpan::fromDays(-1);
         $datetime = new DateTime(2010, 01, 01);
     
         # Act:
         $new_date = $datetime->add($timespan);
     
         # Assert:
-        $this->assertEquals(2009, $new_date->year());
+        $this->assertEquals(31, $new_date->day());
+    }
+
+    /**
+     * @test
+    */
+    public function Add_ShouldIncreaseHours() 
+    {
+        # Arrange:
+        $timespan = TimeSpan::fromHours(12);
+        $datetime = new DateTime(2010, 01, 01);
+    
+        # Act:
+        $new_date = $datetime->add($timespan);
+    
+        # Assert:
+        $this->assertEquals(12, $new_date->hour());
+    }
+
+    /**
+     * @test
+    */
+    public function Add_ShouldDecreaseHours() 
+    {
+        # Arrange:
+        $timespan = TimeSpan::fromHours(-1);
+        $datetime = new DateTime(2010, 01, 02, 12, 0, 0);
+    
+        # Act:
+        $new_date = $datetime->add($timespan);
+    
+        # Assert:
+        $this->assertEquals(11, $new_date->hour());
+    }
+
+    /**
+     * @test
+    */
+    public function Add_ShouldIncreaseMinutes() 
+    {
+        # Arrange:
+        $timespan = TimeSpan::fromMinutes(12);
+        $datetime = new DateTime(2010, 01, 01);
+    
+        # Act:
+        $new_date = $datetime->add($timespan);
+    
+        # Assert:
+        $this->assertEquals(12, $new_date->minute());
+    }
+
+    /**
+     * @test
+    */
+    public function Add_ShouldDecreaseMinutes() 
+    {
+        # Arrange:
+        $timespan = TimeSpan::fromMinutes(-1);
+        $datetime = new DateTime(2010, 01, 02, 12, 12, 0);
+    
+        # Act:
+        $new_date = $datetime->add($timespan);
+    
+        # Assert:
+        $this->assertEquals(11, $new_date->minute());
+    }
+
+    /**
+     * @test
+    */
+    public function Add_ShouldIncreaseSeconds() 
+    {
+        # Arrange:
+        $timespan = TimeSpan::fromSeconds(12);
+        $datetime = new DateTime(2010, 01, 01);
+    
+        # Act:
+        $new_date = $datetime->add($timespan);
+    
+        # Assert:
+        $this->assertEquals(12, $new_date->second());
+    }
+
+    /**
+     * @test
+    */
+    public function Add_ShouldDecreaseSeconds() 
+    {
+        # Arrange:
+        $timespan = TimeSpan::fromSeconds(-1);
+        $datetime = new DateTime(2010, 01, 02, 12, 12, 12);
+    
+        # Act:
+        $new_date = $datetime->add($timespan);
+    
+        # Assert:
+        $this->assertEquals(11, $new_date->second());
+    }
+
+    /**
+     * @test
+    */
+    public function Add_ShouldIncreaseMilliseconds() 
+    {
+        # Arrange:
+        $timespan = TimeSpan::fromMilliseconds(12);
+        $datetime = new DateTime(2010, 01, 01);
+    
+        # Act:
+        $new_date = $datetime->add($timespan);
+    
+        # Assert:
+        $this->assertEquals(12, $new_date->millisecond());
+    }
+
+    /**
+     * @test
+    */
+    public function Add_ShouldDecreaseMilliseconds() 
+    {
+        # Arrange:
+        $timespan = TimeSpan::fromMilliseconds(-1);
+        $datetime = new DateTime(2010, 01, 02, 12, 12, 12);
+    
+        # Act:
+        $new_date = $datetime->add($timespan);
+    
+        # Assert:
+        $this->assertEquals(999, $new_date->millisecond());
     }
 
     /**
@@ -439,6 +493,34 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @expectedException \System\ArgumentOutOfRangeException
+    */
+    public function AddHours_ThrowsExceptionWhenValueIsGreaterThanMaxValue() 
+    {
+        # Arrange:
+        # Act:
+        $date = new DateTime(2037, 12, 31);
+    
+        # Assert:
+        $date->addHours(24);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentOutOfRangeException
+    */
+    public function AddHours_ThrowsExceptionWhenValueIsLessThanMinValue() 
+    {
+        # Arrange:
+        # Act:
+        $date = new DateTime(1902, 01, 01);
+    
+        # Assert:
+        $date->addHours(-24);
+    }
+
+    /**
+     * @test
     */
     public function AddHours_CanAddHours() 
     {
@@ -456,7 +538,8 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase
     /**
      * @test
     */
-    public function AddHours_CanAddHourWhenLastHourOfDay(){
+    public function AddHours_CanAddHourWhenLastHourOfDay()
+    {
         
         # Arrange:
         $date = new DateTime(2011, 1, 1, 23, 0, 0);
@@ -507,7 +590,6 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase
     */
     public function AddHours_CanRemoveHourWhenFirstHourOfDay() 
     {
-        
         # Arrange:
         $date = new DateTime(2011, 1, 1);
         
@@ -535,6 +617,93 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase
         $this->assertEquals(1, $date->day());
         $this->assertEquals(0, $date->hour());
     }
+
+    /**
+     * @test
+    */
+    public function Day_ShouldGetDayFromDateTime() 
+    {
+        # Arrange:
+        # Act:
+        $datetime = new DateTime(2010, 01, 01, 23, 59, 59);
+    
+        # Assert:
+        $this->assertEquals(01, $datetime->day());
+    }
+
+    /**
+     * @test
+    */
+    public function Month_ShouldGetMonthFromDateTime() 
+    {
+        # Arrange:
+        # Act:
+        $datetime = new DateTime(2010, 01, 01, 23, 59, 59);
+    
+        # Assert:
+        $this->assertEquals(01, $datetime->month());
+    }
+
+    /**
+     * @test
+    */
+    public function Year_ShouldGetYearFromDateTime() 
+    {
+        
+        # Arrange:
+        # Act:
+        $datetime = new DateTime(2010, 01, 01, 23, 59, 59);
+    
+        # Assert:
+        $this->assertEquals(2010, $datetime->year());
+    }
+
+    /**
+     * @test
+    */
+    public function Hour_ShouldGetHourFromDateTime() 
+    {
+        
+        # Arrange:
+        # Act:
+        $datetime = new DateTime(2010, 01, 01, 23, 59, 59);
+    
+        # Assert:
+        $this->assertEquals(23, $datetime->hour());
+    }
+
+    /**
+     * @test
+    */
+    public function Minutes_ShouldGetMinuteFromDateTime() 
+    {
+        
+        # Arrange:
+        # Act:
+        $datetime = new DateTime(2010, 01, 01, 23, 59, 59);
+    
+        # Assert:
+        $this->assertEquals(59, $datetime->minute());
+    }
+
+    /**
+     * @test
+    */
+    public function Seconds_ShouldGetSecondsFromDateTime() 
+    {
+        
+        # Arrange:
+        # Act:
+        $datetime = new DateTime(2010, 01, 01, 23, 59, 59);
+    
+        # Assert:
+        $this->assertEquals(59, $datetime->second());
+    }
+
+
+    
+
+    
     
     /**
      * @test
@@ -895,7 +1064,6 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase
         # Assert:
         $this->assertEquals(-1, $result);
     }
-
     
     /**
      * @test
