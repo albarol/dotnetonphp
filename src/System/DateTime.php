@@ -179,11 +179,6 @@ namespace System
             return $this;
         }
 
-        public function addTicks()
-        {
-
-        }
-
         /**
          * Adds the specified number of years to the value of this instance.
          *
@@ -194,70 +189,83 @@ namespace System
          */
         public function addYears($value) 
         {
-            $this->addDate($value+$this->year, $this->month, $this->day);
+            $this->addDate($this->year+$value, $this->month, $this->day);
             return $this;
         }
 
         /**
          * Compares two instances of System.DateTime and returns an integer that indicates whether the first instance is earlier than, the same as, or later than the second instance.
+         *
          * @access public
          * @static
-         * @param DateTime $t1 The first System.DateTime.
-         * @param DateTime $t2 The second System.DateTime.
-         * @return Boolean A signed number indicating the relative values of t1 and t2. Less than zero t1 is earlier than t2. Zero t1 is the same as t2. Greater than zero t1 is later than t2.
+         * @param \System\DateTime $t1 The first System.DateTime.
+         * @param \System\DateTime $t2 The second System.DateTime.
+         * @return int A signed number indicating the relative values of t1 and t2. Less than zero t1 is earlier than t2. Zero t1 is the same as t2. Greater than zero t1 is later than t2.
          */
-        public static function compare(DateTime $t1, DateTime $t2) {
+        public static function compare(DateTime $t1, DateTime $t2) 
+        {
             return $t1->compareTo($t2);
         }
 
         /**
          * Compares the value of this instance to a specified object that contains a specified System.DateTime value, and returns an integer that indicates whether this instance is earlier than, the same as, or later than the specified System.DateTime value.
+         *
          * @access public
          * @param object $value A boxed System.DateTime object to compare, or null.
-         * @return Boolean A signed number indicating the relative values of t1 and t2. Less than zero This instance is earlier than value. Zero This instance is the same as value. Greater than zero  This instance is later than value, or value is null.
+         * @return int A signed number indicating the relative values of t1 and t2. Less than zero This instance is earlier than value. Zero This instance is the same as value. Greater than zero  This instance is later than value, or value is null.
          */
-        public function compareTo($value) {
-            if (!($value instanceOf DateTime)):
+        public function compareTo($value) 
+        {
+            if (!($value instanceOf DateTime))
+            {
                 return 1;
-            endif;
-
-            $first = strtotime($this->toString());
-            $second = strtotime($value->toString());
+            }
+                
+            $t1 = strtotime($this->toString());
+            $t2 = strtotime($value->toString());
             
-            if($first == $second):
+            if($t1 == $t2)
+            {
                 return 0;
-            endif;
+            }
 
-            return $first > $second ? 1 : -1;
+            return $t1 > $t2 ? 1 : -1;
         }
 
         /**
          * Gets the date component of this instance.
+         *
          * @access public
-         * @return DateTime A new System.DateTime with the same date as this instance, and the time value set to 12:00:00 midnight (00:00:00).
+         * @return \System\DateTime A new System.DateTime with the same date as this instance, and the time value set to 12:00:00 midnight (00:00:00).
          */
-        public function date() {
+        public function date() 
+        {
             return new DateTime($this->year(), $this->month(), $this->day());
         }
 
 
         /**
          * Gets the day of the month represented by this instance.
+         *
          * @access public
          * @return int The day component, expressed as a value between 1 and 31.
          */
-        public function day() {
+        public function day() 
+        {
             return $this->day;
         }
 
         /**
          * Gets the day of the week represented by this instance.
+         *
          * @access public
          * @return DayOfWeek A System.DayOfWeek enumerated constant that indicates the day of the week of this System.DateTime value.
          */
-        public function dayOfWeek() {
+        public function dayOfWeek() 
+        {
             $dayOfWeek = $this->toString('w');
-            switch ($dayOfWeek) {
+            switch ($dayOfWeek) 
+            {
                 case 0:
                     return DayOfWeek::sunday();
                 case 1:
@@ -277,35 +285,63 @@ namespace System
 
         /**
          * Gets the day of the week represented by this instance.
+         *
          * @access public
          * @return int The day of the year, expressed as a value between 1 and 366.
          */
-        public function dayOfYear() {
+        public function dayOfYear() 
+        {
             return $this->toString('z') + 1;
         }
 
 
         /**
          * Returns the number of days in the specified month and year.
+         *
          * @access public
          * @static
          * @param int $year The year.
          * @param int $month The month (a number ranging from 1 to 12).
          * @return int The number of days in month for the specified year.
          */
-        public static function daysInMonth($year, $month) {
+        public static function daysInMonth($year, $month) 
+        {
             $date = new DateTime($year, $month, 1);
             return $date->toString("t");
         }
 
-        public function equals($other)
+        /**
+         * Returns a value indicating whether this instance is equal to a specified object.
+         *
+         * @access public
+         * @param object $value The object to compare to this instance.
+         * @return bool true if value is an instance of DateTime and equals the value of this instance; otherwise, false.
+        */
+        public function equals($value)
         {
-
+            return $this == $value;
         }
 
-        public function fromBinary()
+        /**
+         * Deserializes a 64-bit binary value and recreates an original serialized DateTime object.
+         *
+         * @access public
+         * @static
+         * @throws \System\ArgumentOutOfRangeException dateData is less than MinValue or greater than MaxValue.
+         * @param float $dateData A 64-bit signed integer that encodes the Kind property in a 2-bit field and the Ticks property in a 62-bit field.
+         * @return \System\DateTime A DateTime object that is equivalent to the DateTime object that was serialized by the ToBinary method.
+        */
+        public static function fromBinary($dateData)
         {
-
+            $date = getdate($dateData);
+            return new DateTime(
+                $date["year"],
+                $date["mon"],
+                $date["mday"],
+                $date["hours"],
+                $date["minutes"],
+                $date["seconds"]
+            );
         }
 
         public function fromFileTime()
@@ -567,7 +603,7 @@ namespace System
 
         public function toBinary()
         {
-
+            return mktime($this->timespan->hours(), $this->timespan->minutes(), $this->timespan->seconds(), $this->month, $this->day, $this->year);
         }
 
         /**
@@ -922,20 +958,22 @@ namespace System
 
         private function addDate($year, $month, $day)
         {
-            $date = mktime($this->timespan->hours(), $this->timespan->minutes(), $this->timespan->seconds(), $month, $day, $year);
+            $ticks = mktime($this->timespan->hours(), $this->timespan->minutes(), $this->timespan->seconds(), $month, $day, $year);
             
-            if ($date === false || !$this->isValidYear(date("Y", $date))) 
+            if ($ticks === false || !$this->isValidYear(date("Y", $ticks))) 
             {
                 throw new ArgumentOutOfRangeException("The resulting System.DateTime is less than System.DateTime.MinValue or greater than System.DateTime.MaxValue.");
             }
 
-            $this->year = intval(date("Y", $date));
-            $this->month = intval(date("m", $date));
-            $this->day = intval(date("d", $date));
+            $new_date = getdate($ticks);
 
-            $hour = intval(date("H", $date));
-            $minute = intval(date("i", $date));
-            $second = intval(date("s", $date));
+            $this->year = intval($new_date["year"]);
+            $this->month = intval($new_date["mon"]);
+            $this->day = intval($new_date["mday"]);
+
+            $hour = intval($new_date["hours"]);
+            $minute = intval($new_date["minutes"]);
+            $second = intval($new_date["seconds"]);
             $millisecond = $this->millisecond();
             $this->timespan = new TimeSpan(0, $hour, $minute, $second, $millisecond);
         }

@@ -877,7 +877,7 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function AddMonth_ShouldDecreaseOneYear() 
+    public function AddMonths_ShouldDecreaseOneYear() 
     {
         
         # Arrange:
@@ -922,15 +922,535 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @expectedException \System\ArgumentOutOfRangeException
+    */
+    public function AddSeconds_ThrowsExceptionWhenValueIsGreaterThanMaxValue() 
+    {
+        # Arrange:
+        $date = new DateTime(2037, 12, 31);
+    
+        # Act:
+        $date->addSeconds(24*60*60);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentOutOfRangeException
+    */
+    public function AddSeconds_ThrowsExceptionWhenValueIsLessThanMinValue() 
+    {
+        # Arrange:
+        $date = new DateTime(1902, 01, 01);
+    
+        # Act:
+        $date->addSeconds(-24*60*60);
+    }
+
+    /**
+     * @test
+     */
+    public function AddSeconds_ShouldIncreaseFewSeconds() 
+    {
+        # Arrange:
+        $date = new DateTime(2010, 3, 31, 23);
+        
+        # Act:
+        $date->addSeconds(3600);
+        
+        # Arrange:
+        $this->assertEquals(0, $date->hour());
+    }
+
+    /**
+     * @test
+     */
+    public function AddSeconds_ShouldDecreaseFewSeconds() 
+    {
+        # Arrange:
+        $date = new DateTime(2010, 3, 31, 23);
+        
+        # Act:
+        $date->addSeconds(-3600);
+        
+        # Assert:
+        $this->assertEquals(22, $date->hour());
+    }
+
+    /**
+     * @test
+    */
+    public function AddSeconds_ShouldIncreaseOneMinute() 
+    {
+        # Arrange:
+        $date = new DateTime(2010, 3, 31, 23, 0, 0);
+        
+        # Act:
+        $date->addSeconds(60);
+        
+        # Assert:
+        $this->assertEquals(1, $date->minute());
+    }
+
+    /**
+     * @test
+    */
+    public function AddSeconds_ShouldDecreaseOneMinute() 
+    {
+        # Arrange:
+        $date = new DateTime(2010, 3, 31, 23, 1, 0);
+        
+        # Act:
+        $date->addSeconds(-60);
+        
+        # Assert:
+        $this->assertEquals(0, $date->minute());
+    }
+
+    /**
+     * @test
+    */
+    public function AddSeconds_ShouldIncreaseOneHour() 
+    {
+        # Arrange:
+        $date = new DateTime(2010, 3, 31, 22, 0, 0);
+        
+        # Act:
+        $date->addSeconds(3600);
+        
+        # Assert:
+        $this->assertEquals(23, $date->hour());
+    }
+
+    /**
+     * @test
+    */
+    public function AddSeconds_ShouldDecreaseOneHour() 
+    {
+        # Arrange:
+        $date = new DateTime(2010, 3, 31, 22, 0, 0);
+        
+        # Act:
+        $date->addSeconds(-3600);
+        
+        # Assert:
+        $this->assertEquals(21, $date->hour());
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentOutOfRangeException
+    */
+    public function AddYears_ThrowsExceptionWhenValueIsGreaterThanMaxValue() 
+    {
+        # Arrange:
+        $date = new DateTime(2037, 12, 31);
+    
+        # Act:
+        $date->addYears(1);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentOutOfRangeException
+    */
+    public function AddYears_ThrowsExceptionWhenValueIsLessThanMinValue() 
+    {
+        # Arrange:
+        $date = new DateTime(1902, 01, 01);
+    
+        # Act:
+        $date->addYears(-1);
+    }
+
+    /**
+     * @test
+    */
+    public function AddYears_ShouldIncreaseFewYears() 
+    {
+        # Arrange:
+        $date = new DateTime(2010, 10, 10);
+        
+        # Act:
+        $date->addYears(1);
+        
+        # Assert:
+        $this->assertEquals(2011, $date->year());
+    }
+
+    /**
+     * @test
+    */
+    public function AddYears_ShouldDecreaseFewYears() 
+    {
+        # Arrange:
+        $date = new DateTime(2010, 10, 10);
+        
+        # Act:
+        $date->addYears(-1);
+        
+        # Assert:
+        $this->assertEquals(2009, $date->year());
+    }
+
+    /**
+     * @test
+    */
+    public function AddYears_ShouldIncreaseYearWhenIsLeapYear() 
+    {
+        # Arrange:
+        $date = new DateTime(2012, 2, 29);
+        
+        # Act:
+        $date->addYears(1);
+        
+        # Assert:
+        $this->assertEquals(1, $date->day());
+    }
+
+    /**
+     * @test
+    */
+    public function AddYears_ShouldIncreaseYearToLeapYear() 
+    {
+        # Arrange:
+        $date = new DateTime(2011, 2, 28);
+        
+        # Act:
+        $date->addYears(1);
+        
+        # Assert:
+        $this->assertEquals(28, $date->day());
+    }
+
+    /**
+     * @test
+     */
+    public function Compare_ShouldBeZeroWhenEqualAnother() 
+    {
+        # Arrange:
+        $t1 = new DateTime(2010, 1, 1);
+        $t2 = new DateTime(2010, 1, 1);
+
+        # Act:
+        $result = DateTime::compare($t1, $t2);
+
+        # Assert:
+        $this->assertEquals(0, $result);
+    }
+
+    /**
+     * @test
+     */
+    public function Compare_ShouldBeOneWhenGreaterThanAnother() 
+    {
+        # Arrange:
+        $t1 = new DateTime(2010, 1, 2);
+        $t2 = new DateTime(2010, 1, 1);
+
+        # Act:
+        $result = DateTime::compare($t1, $t2);
+
+        # Assert:
+        $this->assertEquals(1, $result);
+    }
+
+    /**
+     * @test
+     */
+    public function Compare_ShouldBeMinusOneWhenGreaterThanAnother() 
+    {
+        # Arrange:
+        $t1 = new DateTime(2010, 1, 1);
+        $t2 = new DateTime(2010, 1, 2);
+
+        # Act:
+        $result = DateTime::compare($t1, $t2);
+
+        # Assert:
+        $this->assertEquals(-1, $result);
+    }
+
+    /**
+     * @test
+    */
+    public function CompareTo_ShouldBePositiveWhenObjectIsNotInstanceOfDateTime() 
+    {
+        # Arrange:
+        $t1 = DateTime::now();
+    
+        # Act:
+        $result = $t1->compareTo(null);
+    
+        # Assert:
+        $this->assertEquals(1, $result);
+    }
+
+    /**
+     * @test
+    */
+    public function CompareTo_ShouldBePositiveWhenInstanceIsGreaterThanValue() 
+    {
+        # Arrange:
+        $t1 = new DateTime(2010, 10, 10);
+        $t2 = new DateTime(2010, 10, 9);
+    
+        # Act:
+        $result = $t1->compareTo($t2);
+    
+        # Assert:
+        $this->assertEquals(1, $result);
+    }
+
+    /**
+     * @test
+    */
+    public function CompareTo_ShouldBeZeroWhenInstanceIsEqualToValue() 
+    {
+        # Arrange:
+        $t1 = new DateTime(2010, 10, 10);
+        $t2 = new DateTime(2010, 10, 10);
+    
+        # Act:
+        $result = $t1->compareTo($t2);
+    
+        # Assert:
+        $this->assertEquals(0, $result);
+    }
+
+    /**
+     * @test
+    */
+    public function CompareTo_ShouldBeNegativeWhenInstanceIsLessThanValue() 
+    {
+        # Arrange:
+        $t1 = new DateTime(2010, 10, 9);
+        $t2 = new DateTime(2010, 10, 10);
+    
+        # Act:
+        $result = $t1->compareTo($t2);
+    
+        # Assert:
+        $this->assertEquals(-1, $result);
+    }
+
+    /**
+     * @test
+    */
+    public function Date_ShouldGetOnlyDateFromDateTime() 
+    {
+        # Arrange:
+        $date = new DateTime(2010, 10, 10, 23, 59, 59);
+    
+        # Act:
+        $new_date = $date->date();
+    
+        # Assert:
+        $this->assertEquals(0, $new_date->hour());
+    }
+
+    /**
+     * @test
     */
     public function Day_ShouldGetDayFromDateTime() 
     {
         # Arrange:
         # Act:
-        $datetime = new DateTime(2010, 01, 01, 23, 59, 59);
+        $datetime = new DateTime(2010, 1, 1, 23, 59, 59);
     
         # Assert:
-        $this->assertEquals(01, $datetime->day());
+        $this->assertEquals(1, $datetime->day());
+    }
+
+    /**
+     * @test
+    */
+    public function DayOfWeek_ShouldGetSaturday() 
+    {
+        # Arrange:
+        $date = new DateTime(2010, 1, 2, 23, 59, 59);
+
+        # Act:
+        $weekDay = $date->dayOfWeek();
+    
+        # Assert:
+        $this->assertEquals(DayOfWeek::saturday(), $weekDay);
+    }
+
+    /**
+     * @test
+    */
+    public function DayOfWeek_ShouldGetSunday() 
+    {
+        # Arrange:
+        $date = new DateTime(2010, 1, 3, 23, 59, 59);
+
+        # Act:
+        $weekDay = $date->dayOfWeek();
+    
+        # Assert:
+        $this->assertEquals(DayOfWeek::sunday(), $weekDay);
+    }
+
+    /**
+     * @test
+     */
+    public function DayOfYear_ShouldGetFirstDayOfYear() 
+    {
+        
+        # Arrange:
+        $date = new DateTime(2010, 1, 1);
+
+        # Act:
+        $day = $date->dayOfYear();
+
+        # Assert:
+        $this->assertEquals(1, $day);
+    }
+
+    /**
+     * @test
+     */
+    public function DayOfYear_ShouldGetLastDayOfYear() 
+    {
+        
+        # Arrange:
+        $date = new DateTime(2010, 12, 31);
+
+        # Act:
+        $day = $date->dayOfYear();
+
+        # Assert:
+        $this->assertEquals(365, $day);
+    }
+
+    /**
+     * @test
+     */
+    public function DayOfYear_ShouldGetLastDayOfYearWhenIsLeapYear() 
+    {
+        
+        # Arrange:
+        $date = new DateTime(2004, 12, 31);
+    
+        # Act:
+        $day = $date->dayOfYear();
+    
+        # Assert:
+        $this->assertEquals(366, $day);
+    }
+
+    /**
+     * @test
+     */
+    public function DaysInMonth_GetDaysInJanuary() 
+    {
+        
+        # Arrange:
+        # Act:
+        $result = DateTime::daysInMonth(2010, 01);
+    
+        # Assert:
+        $this->assertEquals(31, $result);
+    }
+
+    /**
+     * @test
+     */
+    public function DaysInMonth_GetDaysInFebruaryWhenNormalYear() 
+    {
+        
+        # Arrange:
+        # Act:
+        $result = DateTime::daysInMonth(2010, 02);
+    
+        # Assert:
+        $this->assertEquals(28, $result);
+    }
+
+    /**
+     * @test
+     */
+    public function DaysInMonth_GetDaysInFebruaryWhenLeapYear() 
+    {
+        
+        # Arrange:
+        # Act:
+        $result = DateTime::daysInMonth(2012, 02);
+    
+        # Assert:
+        $this->assertEquals(29, $result);
+    }
+
+    /**
+     * @test
+    */
+    public function Equals_ShouldBeTrueWhenHaveSameValue() 
+    {
+        # Arrange:
+        $t1 = new DateTime(2010, 11, 11);
+        $t2 = new DateTime(2010, 11, 11);
+    
+        # Act:
+        $result = $t1->equals($t2);
+    
+        # Assert:
+        $this->assertTrue($result);
+    }
+
+    /**
+     * @test
+    */
+    public function Equals_ShouldBeFalseWhenHaveDifferentValue() 
+    {
+        # Arrange:
+        $t1 = new DateTime(2010, 11, 11);
+        $t2 = new DateTime(2010, 11, 12);
+    
+        # Act:
+        $result = $t1->equals($t2);
+    
+        # Assert:
+        $this->assertFalse($result);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentOutOfRangeException
+    */
+    public function FromBinary_ThrowsExceptionWhenValueIsLessThanMinValue() 
+    {
+        # Arrange:
+        $binary = mktime(11, 11, 11, 1, 2, 2038);
+    
+        # Act:
+        $date = DateTime::fromBinary($binary);
+    }
+
+    /**
+     * @test
+    */
+    public function FromBinary_ThrowsExceptionWhenValueIsGreaterThanMaxValue() 
+    {
+        # Arrange:
+        $binary = mktime(11, 11, 11, 1, 2, 1901);
+    
+        # Act:
+        $date = DateTime::fromBinary($binary);
+    }
+
+    /**
+     * @test
+    */
+    public function FromBinary_ShouldDeserializeObjectFromBinary() 
+    {
+        # Arrange:
+        $binary = mktime(11, 11, 11, 1, 2, 1935);
+
+        # Act:
+        $date = DateTime::fromBinary($binary);
+    
+        # Assert:
+        $this->assertEquals(1935, $date->year());
     }
 
     /**
@@ -1012,38 +1532,7 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase
 
     
 
-    /**
-     * @test
-     */
-    public function AddSeconds_CanAddSeconds() 
-    {
-        
-        # Arrange:
-        $date = new DateTime(2010, 3, 31, 23);
-        
-        # Act:
-        $date->addSeconds(3600);
-        
-        # Arrange:
-        $this->assertEquals(4, $date->month());
-        $this->assertEquals(0, $date->hour());
-    }
-
-    /**
-     * @test
-     */
-    public function AddSeconds_CanRemoveSeconds() 
-    {
-        
-        # Arrange:
-        $date = new DateTime(2010, 3, 31, 23);
-        
-        # Act:
-        $date->addSeconds(-3600);
-        
-        # Assert:
-        $this->assertEquals(22, $date->hour());
-    }
+    
 
     /**
      * @test
@@ -1153,98 +1642,9 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase
         $this->assertEquals(3, $time->days());
     }
 
-    /**
-     * @test
-     */
-    public function Compare_ShouldBeZeroWhenEqualAnother() 
-    {
-        
-        # Arrange:
-        $first_date = new DateTime(2010, 1, 1);
-        $second_date = new DateTime(2010, 1, 1);
-
-        # Act:
-        $result = DateTime::compare($first_date, $second_date);
-
-        # Assert:
-        $this->assertEquals(0, $result);
-    }
-
-    /**
-     * @test
-     */
-    public function Compare_ShouldBeOneWhenGreaterThanAnother() 
-    {
-        
-        # Arrange:
-        $first_date = new DateTime(2010, 1, 2);
-        $second_date = new DateTime(2010, 1, 1);
-
-        # Act:
-        $result = DateTime::compare($first_date, $second_date);
-
-        # Assert:
-        $this->assertEquals(1, $result);
-    }
-
-    /**
-     * @test
-     */
-    public function Compare_ShouldBeMinusOneWhenGreaterThanAnother() 
-    {
-        
-        # Arrange:
-        $first_date = new DateTime(2010, 1, 1);
-        $second_date = new DateTime(2010, 1, 2);
-
-        # Act:
-        $result = DateTime::compare($first_date, $second_date);
-
-        # Assert:
-        $this->assertEquals(-1, $result);
-    }
     
-    /**
-     * @test
-     */
-    public function DaysInMonth_GetDaysInFebruaryWhenLeapYear() 
-    {
-        
-        # Arrange:
-        # Act:
-        $result = DateTime::daysInMonth(2004, 02);
     
-        # Assert:
-        $this->assertEquals(29, $result);
-    }
-
-    /**
-     * @test
-     */
-    public function DaysInMonth_GetDaysInFebruaryWhenNormalYear() 
-    {
-        
-        # Arrange:
-        # Act:
-        $result = DateTime::daysInMonth(2005, 02);
     
-        # Assert:
-        $this->assertEquals(28, $result);
-    }
-
-    /**
-     * @test
-     */
-    public function DaysInMonth_GetDaysInJanuary() 
-    {
-        
-        # Arrange:
-        # Act:
-        $result = DateTime::daysInMonth(2005, 01);
-    
-        # Assert:
-        $this->assertEquals(31, $result);
-    }
 
     /**
      * @test
@@ -1371,69 +1771,7 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase
         $this->assertEquals(11, $date->hour());
     }
 
-    /**
-     * @test
-     */
-    public function DayOfWeek_CanGetDayOfWeek() 
-    {
-        
-        # Arrange:
-        $date = new DateTime(2010, 9, 04);
-
-        # Act:
-        $day_of_week = $date->dayOfWeek();
-        
-        # Assert:
-        $this->assertEquals(DayOfWeek::saturday(), $day_of_week);
-    }
-
-    /**
-     * @test
-     */
-    public function DayOfYear_CanGetFirstDayOfYear() 
-    {
-        
-        # Arrange:
-        $date = new DateTime(2010, 1, 1);
-
-        # Act:
-        $day_of_year = $date->dayOfYear();
-
-        # Assert:
-        $this->assertEquals(1, $day_of_year);
-    }
-
-    /**
-     * @test
-     */
-    public function DayOfYear_CanGetLastDayOfYear() 
-    {
-        
-        # Arrange:
-        $date = new DateTime(2010, 12, 31);
-
-        # Act:
-        $day_of_year = $date->dayOfYear();
-
-        # Assert:
-        $this->assertEquals(365, $day_of_year);
-    }
-
-    /**
-     * @test
-     */
-    public function DayOfYear_CanGetLastDayOfYearWhenIsLeapYear() 
-    {
-        
-        # Arrange:
-        $date = new DateTime(2004, 12, 31);
     
-        # Act:
-        $day_of_year = $date->dayOfYear();
-    
-        # Assert:
-        $this->assertEquals(366, $day_of_year);
-    }
 
     /**
      * @test
