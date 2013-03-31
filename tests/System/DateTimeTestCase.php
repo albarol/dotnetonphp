@@ -572,8 +572,8 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase
     /**
      * @test
     */
-    public function AddHours_CanRemoveHour()  {
-        
+    public function AddHours_CanRemoveHour()  
+    {
         # Arrange:
         $date = new DateTime(2011, 1, 1, 23);
         
@@ -616,6 +616,308 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase
         # Assert:
         $this->assertEquals(1, $date->day());
         $this->assertEquals(0, $date->hour());
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentOutOfRangeException
+    */
+    public function AddMilliseconds_ThrowsExceptionWhenValueIsGreaterThanMaxValue() 
+    {
+        # Arrange:
+        # Act:
+        $day_millisecond = TimeSpan::TicksPerDay/TimeSpan::TicksPerMillisecond;
+        $date = new DateTime(2037, 12, 31);
+    
+        # Assert:
+        $date->addMilliseconds($day_millisecond);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentOutOfRangeException
+    */
+    public function AddMilliseconds_ThrowsExceptionWhenValueIsLessThanMinValue() 
+    {
+        # Arrange:
+        # Act:
+        $day_millisecond = TimeSpan::TicksPerDay/TimeSpan::TicksPerMillisecond;
+        $date = new DateTime(1902, 01, 01);
+    
+        # Assert:
+        $date->addMilliseconds(-$day_millisecond);
+    }
+
+    /**
+     * @test
+    */
+    public function AddMilliseconds_ShouldIncreseOneDay() 
+    {
+        # Arrange:
+        $day_millisecond = TimeSpan::TicksPerDay/TimeSpan::TicksPerMillisecond;
+        $date = new DateTime(2010, 10, 10);    
+    
+        # Act:
+        $result = $date->addMilliseconds($day_millisecond);
+    
+        # Assert:
+        $this->assertEquals(11, $result->day());
+    }
+
+    /**
+     * @test
+    */
+    public function AddMilliseconds_ShouldDecreaseOneDay() 
+    {
+        # Arrange:
+        $day_millisecond = -1*TimeSpan::TicksPerDay/TimeSpan::TicksPerMillisecond;
+        $date = new DateTime(2010, 10, 10);    
+    
+        # Act:
+        $result = $date->addMilliseconds($day_millisecond);
+    
+        # Assert:
+        $this->assertEquals(9, $result->day());
+    }
+
+    /**
+     * @test
+    */
+    public function AddMilliseconds_ShouldIncreaseFewSeconds() 
+    {
+        # Arrange:
+        $milliseconds = 3300;
+        $date = new DateTime(2010, 10, 10);    
+    
+        # Act:
+        $result = $date->addMilliseconds($milliseconds);
+    
+        # Assert:
+        $this->assertEquals(3, $result->second());
+    }
+
+    /**
+     * @test
+    */
+    public function AddMilliseconds_ShouldIncreaseFewMilliseconds() 
+    {
+        # Arrange:
+        $milliseconds = 3300;
+        $date = new DateTime(2010, 10, 10);    
+    
+        # Act:
+        $result = $date->addMilliseconds($milliseconds);
+    
+        # Assert:
+        $this->assertEquals(300, $result->millisecond());
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentOutOfRangeException
+    */
+    public function AddMinutes_ThrowsExceptionWhenValueIsGreaterThanMaxValue() 
+    {
+        # Arrange:
+        $date = new DateTime(2037, 12, 31);
+    
+        # Act:
+        $date->addMinutes(24*60);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentOutOfRangeException
+    */
+    public function AddMinutes_ThrowsExceptionWhenValueIsLessThanMinValue() 
+    {
+        # Arrange:
+        $date = new DateTime(1902, 01, 01);
+    
+        # Act:
+        $date->addMinutes(-24*60);
+    }
+
+    /**
+     * @test
+     */
+    public function AddMinutes_ShouldIncreaseOneDay() 
+    {
+        
+        # Arrange:
+        $date = new DateTime(2011, 01, 01, 23, 59);
+        
+        # Act:
+        $date->addMinutes(1);
+        
+        # Assert:
+        $this->assertEquals(2, $date->day());
+    }
+
+    /**
+     * @test
+     */
+    public function AddMinutes_ShouldDecreaseOneDay() 
+    {
+        
+        # Arrange:
+        $date = new DateTime(2011, 1, 2, 0, 0, 0);
+        
+        # Act:
+        $date->addMinutes(-1);
+        
+        # Assert:
+        $this->assertEquals(1, $date->day());
+    }
+
+    /**
+     * @test
+     */
+    public function AddMinutes_ShouldIncreaseOneHour() 
+    {
+        
+        # Arrange:
+        $date = new DateTime(2011, 1, 1, 0, 0, 0);
+        
+        # Act:
+        $date->addMinutes(60);
+        
+        # Assert:
+        $this->assertEquals(1, $date->hour());
+    }
+
+    /**
+     * @test
+     */
+    public function AddMinutes_ShouldDecreaseOneHour() 
+    {
+        # Arrange:
+        $date = new DateTime(2011, 1, 2, 23, 59, 59);
+        
+        # Act:
+        $date->addMinutes(-60);
+        
+        # Assert:
+        $this->assertEquals(22, $date->hour());
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentOutOfRangeException
+    */
+    public function AddMonths_ThrowsExceptionWhenValueIsGreaterThanMaxValue() 
+    {
+        # Arrange:
+        $date = new DateTime(2037, 12, 31);
+    
+        # Act:
+        $date->addMonths(1);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentOutOfRangeException
+    */
+    public function AddMonths_ThrowsExceptionWhenValueIsLessThanMinValue() 
+    {
+        # Arrange:
+        $date = new DateTime(1902, 01, 01);
+    
+        # Act:
+        $date->addMonths(-1);
+    }
+
+    /**
+     * @test
+     */
+    public function AddMonths_ShouldAddFewMonths() 
+    {
+        # Arrange:
+        $date = new DateTime(2010, 7, 19);
+        
+        # Act:
+        $date->addMonths(2);
+        
+        # Assert:
+        $this->assertEquals(9, $date->month());
+    }
+
+    /**
+     * @test
+     */
+    public function AddMonths_ShouldDecreaseFewMonths() 
+    {
+        
+        # Arrange:
+        $date = new DateTime(2010, 8, 19);
+        
+        # Act:
+        $date->addMonths(-2);
+        
+        # Assert:
+        $this->assertEquals(6, $date->month());
+    }
+
+    /**
+     * @test
+     */
+    public function AddMonths_ShouldIncreaseOneYear() 
+    {
+        
+        # Arrange:
+        $date = new DateTime(2010, 07, 19);
+        
+        # Act:
+        $date->addMonths(12);
+        
+        # Assert:
+        $this->assertEquals($date->year(), 2011);
+    }
+
+    /**
+     * @test
+     */
+    public function AddMonth_ShouldDecreaseOneYear() 
+    {
+        
+        # Arrange:
+        $date = new DateTime(2010, 07, 19);
+        
+        # Act:
+        $date->addMonths(-12);
+        
+        # Assert:
+        $this->assertEquals(2009, $date->year());
+    }
+
+    /**
+     * @test
+     */
+    public function AddMonths_ShouldIncreaseWithDifferentNumberOfDays() 
+    {
+        # Arrange:
+        $date = new DateTime(2010, 01, 31);
+        
+        # Act:
+        $date->addMonths(1);
+        
+        # Assert:
+        $this->assertEquals(3, $date->month());
+    }
+
+    /**
+     * @test
+     */
+    public function AddMonths_ShouldDecreaseWithDifferentNumberOfDays() 
+    {
+        # Arrange:
+        $date = new DateTime(2010, 3, 31);
+        
+        # Act:
+        $date->addMonths(-2);
+        
+        # Assert:
+        $this->assertEquals(1, $date->month());
     }
 
     /**
@@ -705,173 +1007,10 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase
 
     
     
-    /**
-     * @test
-     */
-    public function AddMinutes_CanAddMinutes() 
-    {
-        
-        # Arrange:
-        $date = new DateTime(2011, 01, 01, 23, 59);
-        
-        # Act:
-        $date->addMinutes(1);
-        
-        # Assert:
-        $this->assertEquals(2, $date->day());
-        $this->assertEquals(0, $date->hour());
-    }
-
-    /**
-     * @test
-     */
-    public function AddMinutes_CanAddSixtyMinutes() 
-    {
-        
-        # Arrange:
-        $date = new DateTime(2011, 1, 1, 0, 0, 0);
-        
-        # Act:
-        $date->addMinutes(60);
-        
-        # Assert:
-        $this->assertEquals(1, $date->hour());
-    }
-
-    /**
-     * @test
-     */
-    public function AddMinutes_CanRemoveMinutes() 
-    {
-        
-        # Arrange:
-        $date = new DateTime(2011, 1, 2, 0, 0, 0);
-        
-        # Act:
-        $date->addMinutes(-1);
-        
-        # Assert:
-        $this->assertEquals(1, $date->day());
-        $this->assertEquals(23, $date->hour());
-    }
-
-    /**
-     * @test
-     */
-    public function AddMinutes_CanRemoveSixtyMinutes() 
-    {
-        
-        # Arrange:
-        $date = new DateTime(2011, 1, 2, 23, 59, 59);
-        
-        # Act:
-        $date->addMinutes(-60);
-        
-        # Assert:
-        $this->assertEquals(2, $date->day());
-        $this->assertEquals(22, $date->hour());
-    }
-
-
-    /**
-     * @test
-     */
-    public function AddMonth_CanAddMonth() 
-    {
-
-        # Arrange:
-        $date = new DateTime(2010, 7, 19);
-        
-        # Act:
-        $date->addMonths(1);
-        
-        # Assert:
-        $this->assertEquals($date->month(), 8);
-    }
-
-    /**
-     * @test
-     */
-    public function AddMonth_CanAdd12Months() 
-    {
-        
-        # Arrange:
-        $date = new DateTime(2010, 07, 19);
-        
-        # Act:
-        $date->addMonths(12);
-        
-        # Assert:
-        $this->assertEquals($date->month(), 7);
-        $this->assertEquals($date->year(), 2011);
-    }
-
-    /**
-     * @test
-     */
-    public function AddMonth_CanAddOneMonthWithDifferentQuantityOfDays() 
-    {
-        
-        # Arrange:
-        $date = new DateTime(2010, 01, 31);
-        
-        # Act:
-        $date->addMonths(1);
-        
-        # Assert:
-        $this->assertEquals(3, $date->month());
-        $this->assertEquals(3, $date->day());
-    }
     
-    /**
-     * @test
-     */
-    public function AddMonth_RemoveMonth() 
-    {
-        
-        # Arrange:
-        $date = new DateTime(2010, 8, 19);
-        
-        # Act:
-        $date->addMonths(-1);
-        
-        # Assert:
-        $this->assertEquals(7, $date->month());
-    }
 
-    /**
-     * @test
-     */
-    public function AddMonth_CanRemove12Months() 
-    {
-        
-        # Arrange:
-        $date = new DateTime(2010, 07, 19);
-        
-        # Act:
-        $date->addMonths(-12);
-        
-        # Assert:
-        $this->assertEquals(7, $date->month());
-        $this->assertEquals(2009, $date->year());
-    }
 
-    /**
-     * @test
-     */
-    public function AddMonth_CanRemoveOneMonthWithDifferentQuantityOfDays() 
-    {
-        
-        # Arrange:
-        $date = new DateTime(2010, 3, 31);
-        
-        # Act:
-        $date->addMonths(-1);
-        
-        # Assert:
-        $this->assertEquals(3, $date->month());
-        $this->assertEquals(3, $date->day());
-    }
+    
 
     /**
      * @test

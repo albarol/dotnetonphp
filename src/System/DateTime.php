@@ -119,7 +119,14 @@ namespace System
             return $this;
         }
 
-
+        /**
+         * Adds the specified number of milliseconds to the value of this instance.
+         *
+         * @access public
+         * @throws \System\ArgumentOutOfRangeException The resulting DateTime is less than MinValue or greater than MaxValue.
+         * @param float $value A number of whole and fractional milliseconds. The value parameter can be negative or positive. Note that this value is rounded to the nearest integer.
+         * @return \System\DateTime A DateTime whose value is the sum of the date and time represented by this instance and the number of milliseconds represented by value.
+        */
         public function addMilliseconds($value)
         {
             $this->addTime(TimeSpan::fromMilliseconds($value));
@@ -129,9 +136,11 @@ namespace System
 
         /**
          * Adds the specified number of minutes to the value of this instance.
+         *
          * @access public
+         * @throws \System\ArgumentOutOfRangeException The resulting DateTime is less than MinValue or greater than MaxValue.
          * @param float $value A number of whole and fractional minutes. The value parameter can be negative or positive.
-         * @return DateTime A System.DateTime whose value is the sum of the date and time represented by this instance and the number of minutes represented by value.
+         * @return \System\DateTime A System.DateTime whose value is the sum of the date and time represented by this instance and the number of minutes represented by value.
          */
         public function addMinutes($value) 
         {
@@ -143,9 +152,11 @@ namespace System
 
         /**
          * Adds the specified number of months to the value of this instance.
+         *
          * @access public
+         * @throws \System\ArgumentOutOfRangeException The resulting DateTime is less than MinValue or greater than MaxValue.
          * @param float $value A number of months. The months parameter can be negative or positive.
-         * @return DateTime A System.DateTime whose value is the sum of the date and time represented by this instance and months.
+         * @return \System\DateTime A System.DateTime whose value is the sum of the date and time represented by this instance and months.
          */
         public function addMonths($value) 
         {
@@ -155,9 +166,11 @@ namespace System
 
         /**
          * Adds the specified number of seconds to the value of this instance.
+         *
          * @access public
+         * @throws \System\ArgumentOutOfRangeException The resulting DateTime is less than MinValue or greater than MaxValue.
          * @param float $value A number of whole and fractional seconds. The value parameter can be negative or positive.
-         * @return DateTime A System.DateTime whose value is the sum of the date and time represented by this instance and the number of seconds represented by value.
+         * @return \System\DateTime A System.DateTime whose value is the sum of the date and time represented by this instance and the number of seconds represented by value.
          */
         public function addSeconds($value) 
         {
@@ -173,9 +186,11 @@ namespace System
 
         /**
          * Adds the specified number of years to the value of this instance.
+         *
          * @access public
+         * @throws \System\ArgumentOutOfRangeException The resulting DateTime is less than MinValue or greater than MaxValue.
          * @param float $value A number of years. The value parameter can be negative or positive.
-         * @return DateTime A System.DateTime whose value is the sum of the date and time represented by this instance and the number of years represented by value.
+         * @return \System\DateTime A System.DateTime whose value is the sum of the date and time represented by this instance and the number of years represented by value.
          */
         public function addYears($value) 
         {
@@ -862,8 +877,7 @@ namespace System
         public function tryParseExact()
         {
 
-        }
-        
+        }        
 
         /**
          * Gets a DateTime object that is set to the current date and time on this computer, expressed as the Coordinated Universal Time (UTC).
@@ -910,18 +924,18 @@ namespace System
         {
             $date = mktime($this->timespan->hours(), $this->timespan->minutes(), $this->timespan->seconds(), $month, $day, $year);
             
-            if (!$this->isValidYear(date("Y", $date))) 
+            if ($date === false || !$this->isValidYear(date("Y", $date))) 
             {
                 throw new ArgumentOutOfRangeException("The resulting System.DateTime is less than System.DateTime.MinValue or greater than System.DateTime.MaxValue.");
             }
 
-            $this->year = date("Y", $date);
-            $this->month = date("m", $date);
-            $this->day = date("d", $date);
+            $this->year = intval(date("Y", $date));
+            $this->month = intval(date("m", $date));
+            $this->day = intval(date("d", $date));
 
-            $hour = date("H", $date);
-            $minute = date("i", $date);
-            $second = date("s", $date);
+            $hour = intval(date("H", $date));
+            $minute = intval(date("i", $date));
+            $second = intval(date("s", $date));
             $millisecond = $this->millisecond();
             $this->timespan = new TimeSpan(0, $hour, $minute, $second, $millisecond);
         }
