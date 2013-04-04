@@ -30,8 +30,9 @@ namespace System
          * @param int $hours The hours (0 through 23).
          * @param int $minutes The minutes (0 through 59).
          * @param int $seconds The seconds (0 through 59).
+         * @param \System\DateTimeKind One of the enumeration values that indicates whether year, month, day, hour, minute, second, and millisecond specify a local time, Coordinated Universal Time (UTC), or neither.
          */
-        public function  __construct($year, $month, $day, $hours = 0, $minutes = 0, $seconds = 0) 
+        public function  __construct($year, $month, $day, $hours = 0, $minutes = 0, $seconds = 0, DateTimeKind $kind = null) 
         {
             if(!$this->isValidYear($year))
             {
@@ -67,7 +68,7 @@ namespace System
             $this->month = $month;
             $this->day = $day;
             $this->timespan = new TimeSpan(0, $hours, $minutes, $seconds);
-            $this->kind = DateTimeKind::unespecified();
+            $this->kind = is_null($kind) ? DateTimeKind::unespecified() : $kind;
         }
 
         /**
@@ -344,22 +345,15 @@ namespace System
             );
         }
 
-        public function fromFileTime()
-        {
-
-        }
-
-        public function fromFileTimeUtc()
-        {
-
-        }
-
         /**
-         * Converts the value of this instance to all the string representations supported by the standard System.DateTime format specifiers.
+         * Converts the value of this instance to all the string representations supported by the standard DateTime format specifiers and the specified culture-specific formatting information.
+         *
          * @access public
+         * @param \System\IFormatProvider $provider An IFormatProvider that supplies culture-specific formatting information about this instance.
          * @return array A string array where each element is the representation of the value of this instance formatted with one of the standard System.DateTime formatting specifiers.
          */
-        public function getDateAndTimeFormats() {
+        public function getDateTimeFormats(IFormatProvider $provider=null) 
+        {
             $formats = array();
             array_push($formats, $this->toString("Y-n-j"));
             array_push($formats, $this->toString("y-n-j"));
@@ -398,18 +392,20 @@ namespace System
 
         }
 
-        public function getType()
-        {
-
-        }
-
+        /**
+         * Returns the TypeCode for value type DateTime.
+         *
+         * @access public
+         * @return \System\TypeCode The enumerated constant, TypeCode.DateTime.  
+        */
         public function getTypeCode()
         {
-
+            return TypeCode::datetime();
         }
 
         /**
          * Gets the hour component of the date represented by this instance.
+         *
          * @access public
          * @return int The hour component, expressed as a value between 0 and 23.
          */
@@ -421,16 +417,23 @@ namespace System
 
         /**
          * Indicates whether this instance of System.DateTime is within the Daylight Saving Time range for the current time zone.
+         *
          * @access public
          * @return bool true if System.DateTime.Kind is System.DateTimeKind.Local or System.DateTimeKind.Unspecified and the value of this instance of System.DateTime is within the Daylight Saving Time range for the current time zone. false if System.DateTime.Kind is System.DateTimeKind.Utc.
          */
         public function isDaylightSavingTime() 
         {
+            if ($this->kind == DateTimeKind::utc())
+            {
+                return false;
+            }
+
             return $this->toString("I") == 1;
         }
 
         /**
          * Returns an indication whether the specified year is a leap year.
+         *
          * @access public
          * @static
          * @param int $year A 4-digit year.
@@ -444,10 +447,12 @@ namespace System
 
         /**
          * Gets a value that indicates whether the time represented by this instance is based on local time, Coordinated Universal Time (UTC), or neither.
+         *
          * @access public
          * @return \System\DateTimeKind One of the DateTimeKind values. The default is Unspecified.
          */
-        public function kind() {
+        public function kind() 
+        {
             return $this->kind;
         }
 
@@ -536,6 +541,8 @@ namespace System
 
         /**
          * Creates a new DateTime object that represents the same time as the specified DateTime, but is designated in either local time, Coordinated Universal Time (UTC), or neither, as indicated by the specified DateTimeKind value.
+         *
+         * @access public
          * @static
          * @param DateTime $value
          * @param \System\DateTimeKind $kind
@@ -924,7 +931,13 @@ namespace System
         {
             $current_date = strtotime($this->toString("Y-m-d H:m:s"));
             $utc_date = getdate(strtotime(gmdate("Y-m-d H:m:s", $current_date)));
-            return new DateTime($utc_date["year"], $utc_date["mon"], $utc_date["mday"], $utc_date["hours"], $utc_date["minutes"], $utc_date["seconds"]);
+            return new DateTime($utc_date["year"], 
+                                     $utc_date["mon"], 
+                                     $utc_date["mday"], 
+                                     $utc_date["hours"], 
+                                     $utc_date["minutes"], 
+                                     $utc_date["seconds"],
+                                     DateTimeKind::utc());
         }
 
         /**

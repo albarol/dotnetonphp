@@ -10,7 +10,12 @@ use \System\DateTimeKind as DateTimeKind;
 */
 class DateTimeTestCase extends PHPUnit_Framework_TestCase 
 {
-    
+    public function setUp()
+    {
+        date_default_timezone_set('America/Sao_Paulo');
+    }
+
+
     /**
      * @test
      * @expectedException \System\ArgumentOutOfRangeException
@@ -1456,6 +1461,143 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase
     /**
      * @test
     */
+    public function GetDateTimeFormats_ShouldGetBasicFormats() 
+    {
+        # Arrange:
+        $date = DateTime::now();
+    
+        # Act:
+        $formats = $date->getDateTimeFormats();
+    
+        # Assert:
+        $this->assertTrue(sizeof($formats) > 0);
+    }
+
+    /**
+     * @test
+    */
+    public function GetTypeCode_CanGetTypeCode() 
+    {
+        # Arrange:
+        $type = "\\System\\TypeCode";
+        $date = DateTime::now();
+    
+        # Act:
+        $typeCode = $date->getTypeCode();
+    
+        # Assert:
+        $this->assertInstanceOf($type, $typeCode);
+    }
+
+    /**
+     * @test
+    */
+    public function Hour_ShouldGetHourFromDateTime() 
+    {
+        # Arrange:
+        # Act:
+        $datetime = new DateTime(2010, 01, 01, 23, 59, 59);
+    
+        # Assert:
+        $this->assertEquals(23, $datetime->hour());
+    }
+
+    /**
+     * @test
+     */
+    public function IsDayLightSavingTime_ShouldBeTrueIfTimezoneHasDaylight() 
+    {
+        # Arrange:
+        $date = new DateTime(2004, 1, 3, 23, 59, 59);
+    
+        # Act:
+        $result = $date->isDaylightSavingTime();
+    
+        # Assert:
+        $this->assertTrue($result);
+    }
+
+    /**
+     * @test
+    */
+    public function IsDaylightSavingTime_ShouldBeFalseWhenKindIsUtc() 
+    {
+        # Arrange:
+        $date = new DateTime(2004, 10, 3, 23, 59, 59);
+        $utc = DateTime::specifyKind($date, DateTimeKind::utc());
+    
+        # Act:
+        $result = $utc->isDaylightSavingTime();
+    
+        # Assert:
+        $this->assertFalse($result);
+    }
+
+    /**
+     * @test
+     */
+    public function IsDaylightSavingTime_ShouldBeFalseWhenTimezoneDontHaveDaylight() 
+    {
+        # Arrange:
+        $date = new DateTime(2004, 10, 3, 23, 59, 59);
+    
+        # Act:
+        $result = $date->isDaylightSavingTime();
+    
+        # Assert:
+        $this->assertFalse($result);
+    }
+
+    /**
+     * @test
+    */
+    public function Kind_ShouldGetUnespecified() 
+    {
+        # Arrange:
+        $date = DateTime::now();
+    
+        # Act:
+        $kind = $date->kind();
+    
+        # Assert:
+        $this->assertEquals(DateTimeKind::unespecified(), $kind);
+    }
+
+    /**
+     * @test
+    */
+    public function Kind_ShouldGetLocal() 
+    {
+        # Arrange:
+        $date = DateTime::now();
+        $local = DateTime::specifyKind($date, DateTimeKind::local());
+    
+        # Act:
+        $kind = $local->kind();
+    
+        # Assert:
+        $this->assertEquals(DateTimeKind::local(), $kind);
+    }
+
+    /**
+     * @test
+    */
+    public function Kind_ShouldGetUtc() 
+    {
+        # Arrange:
+        $date = DateTime::now();
+        $utc = DateTime::specifyKind($date, DateTimeKind::utc());
+    
+        # Act:
+        $kind = $utc->kind();
+    
+        # Assert:
+        $this->assertEquals(DateTimeKind::utc(), $kind);
+    }
+
+    /**
+     * @test
+    */
     public function Month_ShouldGetMonthFromDateTime() 
     {
         # Arrange:
@@ -1480,19 +1622,7 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase
         $this->assertEquals(2010, $datetime->year());
     }
 
-    /**
-     * @test
-    */
-    public function Hour_ShouldGetHourFromDateTime() 
-    {
-        
-        # Arrange:
-        # Act:
-        $datetime = new DateTime(2010, 01, 01, 23, 59, 59);
     
-        # Assert:
-        $this->assertEquals(23, $datetime->hour());
-    }
 
     /**
      * @test
@@ -1520,68 +1650,6 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase
     
         # Assert:
         $this->assertEquals(59, $datetime->second());
-    }
-
-
-    
-
-    
-    
-    
-
-
-    
-
-    
-
-    /**
-     * @test
-     */
-    public function AddYear_CanAddOneYear() 
-    {
-        
-        # Arrange:
-        $date = new DateTime(2010, 3, 31);
-        
-        # Act:
-        $date->addYears(1);
-        
-        # Assert:
-        $this->assertEquals(2011, $date->year());
-    }
-
-    /**
-     * @test
-     */
-    public function AddYears_CanAddWhenLeapYear() 
-    {
-        
-        # Arrange:
-        $date = new DateTime(2004, 2, 29);
-        
-        # Act:
-        $date->addYears(1);
-        
-        # Assert:
-        $this->assertEquals(1, $date->day());
-        $this->assertEquals(3, $date->month());
-        $this->assertEquals(2005, $date->year());
-    }
-
-    /**
-     * @test
-     */
-    public function AddYears_CanRemoveYear() 
-    {
-        
-        # Arrange:
-        $date = new DateTime(2010, 3, 31);
-        
-        # Act:
-        $date->addYears(-1);
-        
-        # Assert:
-        $this->assertEquals(2009, $date->year());
     }
 
     /**
@@ -1643,59 +1711,6 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase
     }
 
     
-    
-    
-
-    /**
-     * @test
-     */
-    public function GetDateAndTimeFormats_CanGetParameters() 
-    {
-        
-        # Arrange:
-        $date = new DateTime(2004, 2, 3, 23, 59, 59);
-
-        # Act:
-        $formats = $date->getDateAndTimeFormats();
-
-        # Assert:
-        $this->assertTrue(sizeof($formats) > 0);
-    }
-
-    /**
-     * @test
-     */
-    public function IsDayLightSavingTime_ShouldBeTrueIfTimezoneHasDaylight() 
-    {
-        
-        # Arrange:
-        date_default_timezone_set("America/Sao_Paulo");
-        $date = new DateTime(2004, 1, 3, 23, 59, 59);
-    
-        # Act:
-        $result = $date->isDaylightSavingTime();
-    
-        # Assert:
-        $this->assertTrue($result);
-    
-    }
-
-    /**
-     * @test
-     */
-    public function IsDaylightSavingTime_ShouldBeFalseWhenTimezoneDontHaveDaylight() 
-    {
-        
-        # Arrange:
-        date_default_timezone_set("America/Sao_Paulo");
-        $date = new DateTime(2004, 10, 3, 23, 59, 59);    
-    
-        # Act:
-        $result = $date->isDaylightSavingTime();
-    
-        # Assert:
-        $this->assertFalse($result);
-    }
 
     
     /**
