@@ -456,49 +456,77 @@ namespace System
             return $this->kind;
         }
 
-        public function maxValue()
+        /**
+         * Represents the largest possible value of DateTime. This field is read-only.
+         * 
+         * @static
+         * @access public
+         * @return \System\DateTime The value of this constant is equivalent to 23:59:59.9999999, December 31, 2037.
+        */
+        public static function maxValue()
         {
-
+            $date = new DateTime(2037, 12, 31, 23, 59, 59);
+            $date->addMilliseconds(999);
+            return $date;
         }
 
+        /**
+         * Gets the milliseconds component of the date represented by this instance.
+         *
+         * @access public
+         * @return int The milliseconds component, expressed as a value between 0 and 999.
+        */
         public function millisecond()
         {
             return $this->timespan->milliseconds();
         }
 
-        public function minValue()
+        /**
+         * Represents the smallest possible value of DateTime. This field is read-only.
+         *
+         * @static
+         * @access public
+         * @return \System\DateTime The value of this constant is equivalent to 00:00:00.0000000, January 1, 1902.
+        */
+        public static function minValue()
         {
-
+            $date = new DateTime(1902, 1, 1);
+            return $date;
         }
 
 
         /**
          * Gets the minute component of the date represented by this instance.
+         *
          * @access public
          * @return int The minute component, expressed as a value between 0 and 59.
          */
-        public function minute() {
+        public function minute() 
+        {
             return $this->timespan->minutes();
         }
 
         /**
          * Gets the month component of the date represented by this instance.
+         *
          * @access public
          * @return int The month component, expressed as a value between 1 and 12.
          */
-        public function month() {
+        public function month() 
+        {
             return $this->month;
         }
 
         /**
-         * Gets a System.DateTime object that is set to the current date and time on this computer, expressed as the local time.
+         * Gets a DateTime object that is set to the current date and time on this computer, expressed as the local time.
+         *
          * @access public
-         * @return DateTime A System.DateTime whose value is the current local date and time.
+         * @return \System\DateTime A DateTime whose value is the current local date and time.
          */
         public static function now() 
         {
             $date = getdate();
-            return new DateTime($date["year"], $date["mon"], $date["mday"], $date["hours"], $date["minutes"], $date["seconds"]);
+            return new DateTime($date["year"], $date["mon"], $date["mday"], $date["hours"], $date["minutes"], $date["seconds"], DateTimeKind::local());
         }
 
 

@@ -1554,7 +1554,7 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase
     public function Kind_ShouldGetUnespecified() 
     {
         # Arrange:
-        $date = DateTime::now();
+        $date = new DateTime(2010, 1, 1);
     
         # Act:
         $kind = $date->kind();
@@ -1598,6 +1598,61 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase
     /**
      * @test
     */
+    public function MaxValue_GetDateTimeWithMaxValue() 
+    {
+        # Arrange:
+        # Act:
+        $date = DateTime::maxValue();
+    
+        # Assert:
+        $this->assertEquals(2037, $date->year());
+    }
+
+    /**
+     * @test
+    */
+    public function Millisecond_ShouldGetMillisecondFromDateTime() 
+    {
+        # Arrange:
+        $date = DateTime::maxValue();
+    
+        # Act:
+        $millisecond = $date->millisecond();
+    
+        # Assert:
+        $this->assertEquals(999, $millisecond);
+    }
+
+    /**
+     * @test
+    */
+    public function MinValue_GetDateTimeWithMinValue() 
+    {
+        # Arrange:
+        # Act:
+        $date = DateTime::minValue();
+    
+        # Assert:
+        $this->assertEquals(1902, $date->year());
+    }
+
+    /**
+     * @test
+    */
+    public function Minute_ShouldGetMinuteFromDateTime() 
+    {
+        
+        # Arrange:
+        # Act:
+        $datetime = new DateTime(2010, 01, 01, 23, 59, 59);
+    
+        # Assert:
+        $this->assertEquals(59, $datetime->minute());
+    }
+
+    /**
+     * @test
+    */
     public function Month_ShouldGetMonthFromDateTime() 
     {
         # Arrange:
@@ -1606,6 +1661,26 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase
     
         # Assert:
         $this->assertEquals(01, $datetime->month());
+    }
+
+    /**
+     * @test
+     */
+    public function Now_ShouldGetDateTimeWithLocalDate() 
+    {
+        # Arrange:
+        $local = getdate();
+
+        # Act:
+        $now = DateTime::now();
+
+        # Assert:
+        $this->assertEquals($local["year"], $now->year());
+        $this->assertEquals($local["mon"], $now->month());
+        $this->assertEquals($local["mday"], $now->day());
+        $this->assertEquals($local["hours"], $now->hour());
+        $this->assertEquals($local["minutes"], $now->minute());
+        $this->assertEquals($local["seconds"], $now->second());
     }
 
     /**
@@ -1624,19 +1699,7 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase
 
     
 
-    /**
-     * @test
-    */
-    public function Minutes_ShouldGetMinuteFromDateTime() 
-    {
-        
-        # Arrange:
-        # Act:
-        $datetime = new DateTime(2010, 01, 01, 23, 59, 59);
     
-        # Assert:
-        $this->assertEquals(59, $datetime->minute());
-    }
 
     /**
      * @test
@@ -1788,26 +1851,7 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase
 
     
 
-    /**
-     * @test
-     */
-    public function Now_ShouldGetNow() 
-    {
-        
-        # Arrange:
-        $date = getdate();
-
-        # Act:
-        $now = DateTime::now();
-
-        # Assert:
-        $this->assertEquals($date["year"], $now->year());
-        $this->assertEquals($date["mon"], $now->month());
-        $this->assertEquals($date["mday"], $now->day());
-        $this->assertEquals($date["hours"], $now->hour());
-        $this->assertEquals($date["minutes"], $now->minute());
-        $this->assertEquals($date["seconds"], $now->second());
-    }
+    
 
     /**
      * @test
