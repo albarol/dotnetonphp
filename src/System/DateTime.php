@@ -81,13 +81,12 @@ namespace System
          */
         public function add(TimeSpan $value) 
         {
-            $time = clone $this;
-            $time->addDays($value->days());
-            $time->addHours($value->hours());
-            $time->addMinutes($value->minutes());
-            $time->addSeconds($value->seconds());
-            $time->addMilliseconds($value->milliseconds());
-            return $time;
+            $this->addDays($value->days());
+            $this->addHours($value->hours());
+            $this->addMinutes($value->minutes());
+            $this->addSeconds($value->seconds());
+            $this->addMilliseconds($value->milliseconds());
+            return $this;
         }
 
 
@@ -354,29 +353,29 @@ namespace System
          */
         public function getDateTimeFormats(IFormatProvider $provider=null) 
         {
-            $formats = array();
-            array_push($formats, $this->toString("Y-n-j"));
-            array_push($formats, $this->toString("y-n-j"));
-            array_push($formats, $this->toString("Y-m-d"));
-            array_push($formats, $this->toString("y-m-d"));
-            array_push($formats, $this->toString("Y.n.j"));
-            array_push($formats, $this->toString("y.n.j"));
-            array_push($formats, $this->toString("Y.m.d"));
-            array_push($formats, $this->toString("y.m.d"));
-            array_push($formats, $this->toString("l, j F Y"));
-            array_push($formats, $this->toString("j F Y"));
-            array_push($formats, $this->toString("Y-n-j H:i"));
-            array_push($formats, $this->toString("y-n-j H:i"));
-            array_push($formats, $this->toString("Y-m-d H:i"));
-            array_push($formats, $this->toString("y-m-d H:i"));
-            array_push($formats, $this->toString("d F"));
-            array_push($formats, $this->toString("r"));
-            array_push($formats, $this->toString("H:i"));
-            array_push($formats, $this->toString("h:i A"));
-            array_push($formats, $this->toString("H:i:s"));
-            array_push($formats, $this->toString("h:i:s A"));
-            array_push($formats, gmdate("Y-m-d H:i", mktime($this->timespan->hours(), $this->timespan->minutes(), $this->timespan->seconds(), $this->month, $this->day, $this->year)) . " GMT");
-            return $formats;
+            return array(
+                $this->toString("Y-n-j"),
+                $this->toString("y-n-j"),
+                $this->toString("Y-m-d"),
+                $this->toString("y-m-d"),
+                $this->toString("Y.n.j"),
+                $this->toString("y.n.j"),
+                $this->toString("Y.m.d"),
+                $this->toString("y.m.d"),
+                $this->toString("l, j F Y"),
+                $this->toString("j F Y"),
+                $this->toString("Y-n-j H:i"),
+                $this->toString("y-n-j H:i"),
+                $this->toString("Y-m-d H:i"),
+                $this->toString("y-m-d H:i"),
+                $this->toString("d F"),
+                $this->toString("r"),
+                $this->toString("H:i"),
+                $this->toString("h:i A"),
+                $this->toString("H:i:s"),
+                $this->toString("h:i:s A"),
+                gmdate("Y-m-d H:i", mktime($this->timespan->hours(), $this->timespan->minutes(), $this->timespan->seconds(), $this->month, $this->day, $this->year)) . " GMT"
+            );
         }
 
         /**
@@ -532,33 +531,39 @@ namespace System
 
         /**
          * Converts the specified string representation of a date and time to its DateTime equivalent.
+         *
          * @access public
          * @static
          * @throws \System\ArgumentNullException s is null.
-         * @throws \System\FormatException Format is invalid.
+         * @throws \System\FormatException format is invalid.
          * @param string $s A string containing a date and time to convert.
-         * @return DateTime An object that is equivalent to the date and time contained in s.
+         * @return \System\DateTime An object that is equivalent to the date and time contained in s.
          */
-        public static function parse($s) {
-            if ($s == null):
-                throw new ArgumentNullException("s is null.");
-            endif;
-            
-            $dateTime = date_parse(str_replace(".", "-", $s));
-            if ($dateTime["error_count"] > 1):
-                throw new FormatException("Format is invalid.");
-            endif;
-
-            return new DateTime($dateTime["year"], $dateTime["month"], $dateTime["day"], $dateTime["hour"], $dateTime["minute"], $dateTime["second"]);
-        }
-
-        public function parseExact()
+        public static function parse($s) 
         {
+            if (is_null($s))
+            {
+                throw new ArgumentNullException("s is null.");
+            }
+            
+            $binary = strtotime($s);
+            if ($binary === false)
+            {
+                throw new FormatException("format is invalid.");
+            }
 
+            $date = getdate($binary);
+            return new DateTime($date["year"], 
+                                $date["mon"], 
+                                $date["mday"], 
+                                $date["hours"], 
+                                $date["minutes"], 
+                                $date["seconds"]);
         }
 
         /**
         * Gets the seconds component of the date represented by this instance.
+        *
         * @access public
         * @return int The seconds, between 0 and 59.
         */
@@ -572,8 +577,8 @@ namespace System
          *
          * @access public
          * @static
-         * @param DateTime $value
-         * @param \System\DateTimeKind $kind
+         * @param \System\DateTime $value A DateTime object.
+         * @param \System\DateTimeKind $kind One of the DateTimeKind values.
          * @return \System\DateTime A new DateTime object consisting of the same time represented by the value parameter and the DateTimeKind value specified by the kind parameter.
          */
         public static function specifyKind(DateTime $value, DateTimeKind $kind) 
@@ -585,8 +590,10 @@ namespace System
 
         /**
          * Subtracts the specified date and time from this instance.
+         *
          * @access public
-         * @param \System\DateTime $value An instance of System.DateTime. -or- An instance of System.TimeSpan
+         * @throws \System\ArgumentOutOfRangeException The result is less than MinValue or greater than MaxValue.
+         * @param object $value An instance of System.DateTime. -or- An instance of System.TimeSpan
          * @return \System\TimeSpan A System.TimeSpan interval equal to the date and time represented by this instance minus the date and time represented by value.
          */
         public function subtract($value) 
@@ -597,11 +604,7 @@ namespace System
             }
             elseif ($value instanceof TimeSpan)
             {
-                return $this->subtractTimeSpan($value);
-            }
-            else
-            {
-                return null;
+                return $this->subtractFromTimeSpan($value);
             }
         }
 
@@ -617,19 +620,12 @@ namespace System
             return new TimeSpan($day, $hours, $minutes, $seconds);
         }
 
-        private function subtractTimeSpan($value) {
-            $day = $this->day() - $value->days();
-            $hours = $this->hour() - $value->hours();
-            $minutes = $this->minute() - $value->minutes();
-            $seconds = $this->second() - $value->seconds();
-            return new TimeSpan($day, $hours, $minutes, $seconds);
-        }
-
-
-        public function ticks()
+        private function subtractFromTimeSpan(TimeSpan $value) 
         {
-
+            $this->add($value->negate());
+            return $this;
         }
+
 
         public function timeOfDay()
         {

@@ -1550,6 +1550,32 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase
 
     /**
      * @test
+     */
+    public function IsLeapYear_ShouldBeTrueWhenYearIsLeap() 
+    {
+        # Arrange:
+        # Act:
+        $result = DateTime::isLeapYear(2004);
+    
+        # Assert:
+        $this->assertTrue($result);
+    }
+
+    /**
+     * @test
+     */
+    public function IsLeapYear_ShouldBeFalseWhenYearIsOdd() 
+    {
+        # Arrange:
+        # Act:
+        $result = DateTime::isLeapYear(2005);
+    
+        # Assert:
+        $this->assertFalse($result);
+    }
+
+    /**
+     * @test
     */
     public function Kind_ShouldGetUnespecified() 
     {
@@ -1641,7 +1667,6 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase
     */
     public function Minute_ShouldGetMinuteFromDateTime() 
     {
-        
         # Arrange:
         # Act:
         $datetime = new DateTime(2010, 01, 01, 23, 59, 59);
@@ -1685,132 +1710,10 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase
 
     /**
      * @test
-    */
-    public function Year_ShouldGetYearFromDateTime() 
-    {
-        
-        # Arrange:
-        # Act:
-        $datetime = new DateTime(2010, 01, 01, 23, 59, 59);
-    
-        # Assert:
-        $this->assertEquals(2010, $datetime->year());
-    }
-
-    
-
-    
-
-    /**
-     * @test
-    */
-    public function Seconds_ShouldGetSecondsFromDateTime() 
-    {
-        
-        # Arrange:
-        # Act:
-        $datetime = new DateTime(2010, 01, 01, 23, 59, 59);
-    
-        # Assert:
-        $this->assertEquals(59, $datetime->second());
-    }
-
-    /**
-     * @test
-    */
-    public function ShouldGetUtcFromSpecifyKind() 
-    {
-        
-        # Arrange:
-        date_default_timezone_set("America/Sao_Paulo");
-        $now = new DateTime(2010, 05, 05, 20, 0, 0);
-    
-        # Act:
-        $utc = DateTime::specifyKind($now, DateTimeKind::utc());
-    
-        # Assert:
-        $this->assertEquals(23, $utc->hour());
-    }
-
-    // /**
-    //  * @test
-    // */
-    // public function ShouldGetLocalFromSpecifyKind() 
-    // {
-    //     $this->markTestIncomplete('NotImplemented TimeZoneInfo');
-    // }
-
-    /**
-     * @test
-     */
-    public function Subtract_WhenSubtractDateShouldBeTimeSpanWithOneDay() 
-    {
-       
-       # Arrange:
-       $date = new DateTime(2010, 1, 5);
-       $date_to_remove = new DateTime(2010, 1, 4);
-       
-       # Act:
-       $time = $date->subtract($date_to_remove);
-       
-       # Assert:
-       $this->assertEquals(1, $time->days());
-    }
-
-    /**
-     * @test
-     */
-    public function Subtract_WhenSubtractFromTimeSpanShouldBeEqualToThreeDays() 
-    {
-        
-        # Arrange:
-        $date = new DateTime(2010, 9, 8);
-        
-        # Act:
-        $time = $date->subtract(new TimeSpan(5));
-        
-        # Assert:
-        $this->assertEquals(3, $time->days());
-    }
-
-    
-
-    
-    /**
-     * @test
-     */
-    public function IsLeapYear_ShouldBeTrueWhenYearIsLeap() 
-    {
-        
-        # Arrange:
-        # Act:
-        $result = DateTime::isLeapYear(2004);
-    
-        # Assert:
-        $this->assertTrue($result);
-    }
-
-    /**
-     * @test
-     */
-    public function IsLeapYear_ShouldBeFalseWhenYearIsOdd() 
-    {
-        
-        # Arrange:
-        # Act:
-        $result = DateTime::isLeapYear(2005);
-    
-        # Assert:
-        $this->assertFalse($result);
-    }
-
-    /**
-     * @test
      * @expectedException \System\ArgumentNullException
      */
     public function Parse_ThrowsExceptionWhenInputIsNull() 
     {
-        
         # Arrange:
         $format = null;
 
@@ -1824,7 +1727,6 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase
      */
     public function Parse_ThrowsExceptionWhenInvalidDateFormat() 
     {
-        
         # Arrange:
         $format = "10.30.2999";
 
@@ -1834,12 +1736,42 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase
 
     /**
      * @test
+    */
+    public function Parse_ShouldParseDate() 
+    {
+        # Arrange:
+        $format = "2010-10-10";
+
+        # Act:
+        $date = DateTime::parse($format);
+    
+        # Assert:
+        $this->assertEquals(2010, $date->year());
+    }
+
+    /**
+     * @test
+    */
+    public function Parse_ShouldParseTime() 
+    {
+        # Arrange:
+        $format = "23:59:59";
+    
+        # Act:
+        $date = DateTime::parse($format);
+    
+        # Assert:
+        $this->assertEquals(23, $date->hour());
+    }
+
+    /**
+     * @test
      */
-    public function Parse_CanParseDateTime() 
+    public function Parse_ShouldParseCompleteFormat()
     {
         
         # Arrange:
-        $format = "2011.8.12 11:39";
+        $format = "2011-8-12 11:39";
         
         # Act:
         $date = DateTime::parse($format);
@@ -1849,9 +1781,124 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase
         $this->assertEquals(11, $date->hour());
     }
 
+    /**
+     * @test
+    */
+    public function Second_ShouldGetSecondsFromDateTime() 
+    {
+        # Arrange:
+        # Act:
+        $datetime = new DateTime(2010, 01, 01, 23, 59, 59);
     
+        # Assert:
+        $this->assertEquals(59, $datetime->second());
+    }
 
+    /**
+     * @test
+    */
+    public function SpecifyKind_ShouldSpecifyLocalKind() 
+    {
+        # Arrange:
+        $date = DateTime::now();
+        $kind = DateTimeKind::local();
     
+        # Act:
+        $new_date = DateTime::specifyKind($date, $kind);
+    
+        # Assert:
+        $this->assertEquals($new_date->kind(), $kind);
+    }
+
+    /**
+     * @test
+    */
+    public function SpecifyKind_ShouldSpecifyUnspecifiedKind() 
+    {
+        # Arrange:
+        $date = DateTime::now();
+        $kind = DateTimeKind::unespecified();
+    
+        # Act:
+        $new_date = DateTime::specifyKind($date, $kind);
+    
+        # Assert:
+        $this->assertEquals($new_date->kind(), $kind);
+    }
+
+    /**
+     * @test
+    */
+    public function SpecifyKind_ShouldSpecifyUtcKind() 
+    {
+        # Arrange:
+        $date = DateTime::now();
+        $kind = DateTimeKind::utc();
+    
+        # Act:
+        $new_date = DateTime::specifyKind($date, $kind);
+    
+        # Assert:
+        $this->assertEquals($new_date->kind(), $kind);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentOutOfRangeException
+    */
+    public function Subtract_ThrowsExceptionWhenDateTimeHasMaxValue() 
+    {
+        # Arrange:
+        $date = DateTime::maxValue();
+        $ts = TimeSpan::fromDays(-10);
+    
+        # Act:
+        $date->subtract($ts);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentOutOfRangeException
+    */
+    public function Subtract_ThrowsExceptionWhenDateTimeHasMinValue() 
+    {
+        # Arrange:
+        $date = DateTime::minValue();
+        $ts = TimeSpan::fromDays(10);
+    
+        # Act:
+        $date->subtract($ts);
+    }    
+
+    /**
+     * @test
+     */
+    public function Subtract_ShouldSubtractTenDays() 
+    {
+       # Arrange:
+       $date = new DateTime(2010, 10, 11);
+       $ts = TimeSpan::fromDays(10);
+       
+       # Act:
+       $date->subtract($ts);
+       
+       # Assert:
+       $this->assertEquals(1, $date->day());
+    }
+
+    /**
+     * @test
+    */
+    public function Year_ShouldGetYearFromDateTime() 
+    {
+        
+        # Arrange:
+        # Act:
+        $datetime = new DateTime(2010, 01, 01, 23, 59, 59);
+    
+        # Assert:
+        $this->assertEquals(2010, $datetime->year());
+    }
 
     /**
      * @test
