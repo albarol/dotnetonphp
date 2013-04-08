@@ -15,7 +15,6 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase
         date_default_timezone_set('America/Sao_Paulo');
     }
 
-
     /**
      * @test
      * @expectedException \System\ArgumentOutOfRangeException
@@ -1888,36 +1887,226 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase
 
     /**
      * @test
+     */
+    public function Subtract_ShouldSubtractFiveDays() 
+    {
+        # Arrange:
+        $d1 = new DateTime(2010, 10, 10);
+        $d2 = new DateTime(2010, 10, 5);
+    
+        # Act:
+        $ts = $d1->subtract($d2);
+    
+        # Assert:
+        $this->assertEquals(5, $ts->totalDays());
+    }
+
+    /**
+     * @test
+     */
+    public function TimeOfDay_ShouldGetTimespanFromDay()
+    {
+        # Arrange:
+        $date = new DateTime(2010, 10, 10, 23, 59, 59);
+
+        # Act:
+        $ts = $date->timeOfDay();
+    
+        # Assert:
+        $this->assertEquals(23, $ts->hours());
+    }
+
+    /**
+     * @test
+     */
+    public function ToBinary_ShouldConvertDateTimeToBinary() 
+    {
+        # Arrange:
+        $date = new Datetime(2010, 10, 10, 23, 59, 59);
+        $binary = mktime(23, 59, 59, 10, 10, 2010);
+    
+        # Act:
+        $result = $date->toBinary();
+    
+        # Assert:
+        $this->assertEquals($binary, $result);
+    }
+
+    /**
+     * @test
+     */
+    public function Today_ShouldGetDateTimeWithoutTime() 
+    {
+        # Arrange:
+        # Act:
+        $date = DateTime::today();
+    
+        # Assert:
+        $this->assertEquals(0, $date->hour());
+        $this->assertTrue($date->year() > 1902);
+    }
+
+    /**
+     * @test
+     */
+    public function ToLongDateString_ShouldGetLongDateString() 
+    {
+        # Arrange:
+        $date = new DateTime(2010, 10, 10);
+    
+        # Act:
+        $result = $date->toLongDateString();
+    
+        # Assert:
+        $this->assertEquals("Sunday, Oct 10, 2010", $result);
+    }
+
+    /**
+     * @test
+     */
+    public function ToLongTimeString_ShouldGetLongTimeString() 
+    {
+        # Arrange:
+        $date = new DateTime(2010, 10, 10, 23, 59, 59);
+    
+        # Act:
+        $result = $date->toLongTimeString();
+    
+        # Assert:
+        $this->assertEquals("11:59:59 PM", $result);
+    }
+
+    /**
+     * @test
+     */
+    public function ToShortDateString_ShouldGetShortDateString() 
+    {
+        # Arrange:
+        $date = new DateTime(2010, 10, 10);
+    
+        # Act:
+        $result = $date->toShortDateString();
+    
+        # Assert:
+        $this->assertEquals('2010-10-10', $result);
+    }
+
+    /**
+     * @test
+     */
+    public function ToShortTimeString_ShouldGetShortTimeString() 
+    {
+        # Arrange:
+        $date = new DateTime(2010, 10, 10, 23, 59, 59);
+    
+        # Act:
+        $result = $date->toShortTimeString();
+    
+        # Assert:
+        $this->assertEquals('23:59', $result);
+    }
+
+    /**
+     * @test
+     */
+    public function ToString_ShouldGetBasicStringFormat() 
+    {
+        # Arrange:
+        $date = new DateTime(2010, 10, 10, 23, 59, 59);
+    
+        # Act:
+        $result = $date->toString();
+    
+        # Assert:
+        $this->assertEquals('2010-10-10 23:59:59', $result);
+    }
+
+    /**
+     * @test
+     */
+    public function ToString_ShouldGetStringWithFormat() 
+    {
+        # Arrange:
+        $date = new DateTime(2010, 10, 10, 23, 59, 59);
+    
+        # Act:
+        $result = $date->toString("Y-m-d");
+    
+        # Assert:
+        $this->assertEquals('2010-10-10', $result);
+    }
+
+    /**
+     * @test
+     */
+    public function ToUniversalTime_ShouldGetCurrentDateInUtcFormat() 
+    {
+        # Arrange:
+        $date = new DateTime(2010, 10, 10, 7, 0, 0);
+    
+        # Act:
+        $result = $date->toUniversalTime();
+    
+        # Assert:
+        $this->assertEquals(10, $result->hour());
+    }
+
+    /**
+     * @test
+     */
+    public function TryParse_ShouldBeFalseWhenParseIsInvalid() 
+    {
+        # Arrange:
+        $format = "invalid_format";
+    
+        # Act:
+        $result = DateTime::tryParse($format);
+    
+        # Assert:
+        $this->assertFalse($result['result']);
+    
+    }
+
+     /**
+     * @test
+     */
+    public function TryParse_ShouldBeTrueWhenParseIsValid() 
+    {
+        # Arrange:
+        $format = "23:50:50";
+    
+        # Act:
+        $result = DateTime::tryParse($format);
+    
+        # Assert:
+        $this->assertTrue($result['result']);
+    }
+
+    /**
+     * @test
+     */
+    public function UtcNow_ShouldGetCurrentDateTimeInUtcFormat() 
+    {
+        # Arrange:
+        $date = new DateTime(2010, 10, 10, 7, 0, 0);
+    
+        # Act:
+        $result = $date->utcNow();
+    
+        # Assert:
+        $this->assertEquals(10, $result->hour());
+    }
+
+    /**
+     * @test
     */
     public function Year_ShouldGetYearFromDateTime() 
     {
-        
         # Arrange:
         # Act:
         $datetime = new DateTime(2010, 01, 01, 23, 59, 59);
     
         # Assert:
         $this->assertEquals(2010, $datetime->year());
-    }
-
-    /**
-     * @test
-     */
-    public function Today_CanGetToday() 
-    {
-        
-        # Arrange:
-        $date = getdate();
-
-        # Act:
-        $now = DateTime::today();
-
-        # Assert:
-        $this->assertEquals($date["year"], $now->year());
-        $this->assertEquals($date["mon"], $now->month());
-        $this->assertEquals($date["mday"], $now->day());
-        $this->assertEquals(0, $now->hour());
-        $this->assertEquals(0, $now->minute());
-        $this->assertEquals(0, $now->second());
     }
 }

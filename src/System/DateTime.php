@@ -600,7 +600,7 @@ namespace System
         {
             if ($value instanceof DateTime)
             {
-                return $this->subtractDate($value);
+                return $this->subtractFromDateTime($value);
             }
             elseif ($value instanceof TimeSpan)
             {
@@ -608,7 +608,7 @@ namespace System
             }
         }
 
-        private function subtractDate($value) 
+        private function subtractFromDateTime($value) 
         {
             $year = $this->year() - $value->year();
             $month = $this->month() - $value->month();
@@ -626,12 +626,23 @@ namespace System
             return $this;
         }
 
-
+        /**
+         * Gets the time of day for this instance.
+         *
+         * @access public
+         * @return \System\TimeSpan A time interval that represents the fraction of the day that has elapsed since midnight.
+        */
         public function timeOfDay()
         {
-
+            return clone $this->timespan;
         }
 
+        /**
+         * Serializes the current DateTime object to a 64-bit binary value that subsequently can be used to recreate the DateTime object.
+         *
+         * @access public
+         * @return int A 64-bit signed integer that encodes the Kind and Ticks properties. 
+        */
         public function toBinary()
         {
             return mktime($this->timespan->hours(), $this->timespan->minutes(), $this->timespan->seconds(), $this->month, $this->day, $this->year);
@@ -640,12 +651,13 @@ namespace System
         /**
          * Converts the value of this instance to an equivalent Boolean value using the specified culture-specific formatting information.
          *
+         * @access public
          * @param \System\IFormatProvider $provider An System.IFormatProvider interface implementation that supplies culture-specific formatting information.
          * @return \System\Boolean A Boolean value equivalent to the value of this instance.
          */
         public function toBoolean(IFormatProvider $provider = null)
         {
-
+            throw new InvalidCastException("This conversion is not supported.");
         }
 
         /**
@@ -657,7 +669,7 @@ namespace System
          */
         public function toByte(IFormatProvider $provider = null)
         {
-
+            throw new InvalidCastException("This conversion is not supported.");
         }
 
         /**
@@ -669,7 +681,7 @@ namespace System
          */
         public function toChar(IFormatProvider $provider = null)
         {
-
+            throw new InvalidCastException("This conversion is not supported.");
         }
 
         /**
@@ -681,11 +693,12 @@ namespace System
          */
         public function toDateTime(IFormatProvider $provider = null)
         {
-
+            return clone $this;
         }
 
         /**
          * Gets the current date.
+         *
          * @access public
          * @static
          * @return \System\DateTime A System.DateTime set to today's date, with the time component set to 00:00:00.
@@ -705,7 +718,7 @@ namespace System
          */
         public function toDecimal(IFormatProvider $provider = null)
         {
-
+            throw new InvalidCastException("This conversion is not supported.");
         }
 
         /**
@@ -717,18 +730,7 @@ namespace System
          */
         public function toDouble(IFormatProvider $provider = null)
         {
-
-        }
-
-
-        public function toFileTime()
-        {
-
-        }
-
-        public function toFileTimeUtc()
-        {
-
+            throw new InvalidCastException("This conversion is not supported.");
         }
 
         /**
@@ -740,7 +742,7 @@ namespace System
          */
         public function toInt16(IFormatProvider $provider = null)
         {
-
+            throw new InvalidCastException("This conversion is not supported.");
         }
 
         /**
@@ -752,7 +754,7 @@ namespace System
          */
         public function toInt32(IFormatProvider $provider = null)
         {
-
+            throw new InvalidCastException("This conversion is not supported.");
         }
 
         /**
@@ -764,33 +766,29 @@ namespace System
          */
         public function toInt64(IFormatProvider $provider = null)
         {
-
+            throw new InvalidCastException("This conversion is not supported.");
         }
-
-        /**
-         * Converts the value of the current DateTime object to local time.
-         * @access public
-         * @return \System\DateTime A DateTime object whose Kind property is Local, and whose value is the local time equivalent to the value of the current DateTime object, or MaxValue if the converted value is too large to be represented by a DateTime object, or MinValue if the converted value is too small to be represented as a DateTime object.
-         */
-        public function toLocalTime() {
-            throw new \Exception();
-        }
-
 
         /**
          * Converts the value of this instance to its equivalent long date string representation. 
+         *
+         * @access public
          * @return string A string containing the name of the day of the week, the name of the month, the numeric day of the month, and the year equivalent to the date value of this instance. 
          */
-        public function toLongDateString() {
+        public function toLongDateString() 
+        {
             return $this->toString("l, M d, Y");
         }
 
 
         /**
          * Converts the value of this instance to its equivalent long time string representation. 
+         *
+         * @access public
          * @return string A string containing the name of the day of the week, the name of the month, the numeric day of the hours, minutes, and seconds equivalent to the time value of this instance. 
          */
-        public function toLongTimeString() {
+        public function toLongTimeString() 
+        {
             return $this->toString("h:i:s A");
         }
 
@@ -803,26 +801,30 @@ namespace System
          */
         public function toSByte(IFormatProvider $provider = null)
         {
-
+            throw new InvalidCastException("This conversion is not supported.");
         }
 
 
         /**
          * Converts the value of this instance to its equivalent short date string representation.
+         *
          * @access public
          * @return string A string containing the numeric month, the numeric day of the month, and the year equivalent to the date value of this instance.
          */
-        public function toShortDateString() {
+        public function toShortDateString() 
+        {
             return $this->toString("Y-m-d");
         }
 
         /**
          * Converts the value of this instance to its equivalent short time string representation.
+         *
          * @access public
          * @return string A string containing the name of the day of the week, the name of the month, the numeric day of the hours, minutes, and seconds equivalent to the time value of this instance.
          */
-        public function toShortTimeString() {
-            return $this->toString("H:m");
+        public function toShortTimeString() 
+        {
+            return $this->toString("H:i");
         }
 
         /**
@@ -834,7 +836,7 @@ namespace System
          */
         public function toSingle(IFormatProvider $provider = null)
         {
-
+            throw new InvalidCastException("This conversion is not supported.");
         }
 
         /**
@@ -846,11 +848,11 @@ namespace System
          */
         public function toString($format = "", IFormatProvider $provider = null) 
         {
-            if (strlen($format) > 0) 
+            if (!empty($format)) 
             {
-                return date($format, mktime($this->timespan->hours(), $this->timespan->minutes(), $this->timespan->seconds(), $this->month, $this->day, $this->year));
+                return date($format, $this->toBinary());
             }
-            return $this->year . "-" . $this->month . "-" . $this->day . " " . $this->timespan->hours() . ":" . $this->timespan->minutes() . ":" . $this->timespan->seconds();
+            return date("Y-m-d H:i:s", $this->toBinary());
         }
 
         /**
@@ -885,7 +887,7 @@ namespace System
          */
         public function toUInt16(IFormatProvider $provider = null)
         {
-
+            throw new InvalidCastException("This conversion is not supported.");
         }
 
         /**
@@ -897,7 +899,7 @@ namespace System
          */
         public function toUInt32(IFormatProvider $provider = null)
         {
-            
+            throw new InvalidCastException("This conversion is not supported.");
         }
 
         /**
@@ -909,11 +911,12 @@ namespace System
          */
         public function toUInt64(IFormatProvider $provider = null)
         {
-            
+            throw new InvalidCastException("This conversion is not supported.");
         }
 
         /**
          * Converts the value of the current DateTime object to Coordinated Universal Time (UTC).
+         *
          * @access public
          * @return \System\DateTime A DateTime object whose Kind property is Utc, and whose value is the UTC equivalent to the value of the current DateTime object, or MaxValue if the converted value is too large to be represented by a DateTime object, or MinValue if the converted value is too small to be represented by a DateTime object.
          */
@@ -924,32 +927,35 @@ namespace System
 
         /**
          * Converts the specified string representation of a date and time to its DateTime equivalent.
+         *
          * @access public
          * @static
          * @param string $s A string containing a date and time to convert.
-         * @param \System\DateTime $result When this method returns, contains the DateTime value equivalent to the date and time contained in s, if the conversion succeeded, or MinValue if the conversion failed. The conversion fails if the s parameter is a null reference, or does not contain a valid string representation of a date and time. This parameter is passed uninitialized.
-         * @return bool
+         * @return bool true if the s parameter was converted successfully; otherwise, false.
          */
-        public static function tryParse($s, &$result) {
+        public static function tryParse($s) 
+        {
             try 
             {
-                $result = self::parse($s);
-                return true;
-            } catch (\Exception $e) {
-                return false;
+                return array(
+                    'object' => self::parse($s),
+                    'result' => true
+                );
+            } 
+            catch (\Exception $e) 
+            {
+                return array(
+                    'object' => null, 
+                    'result' => false
+                );
             }
         }
 
-
-        public function tryParseExact()
-        {
-
-        }        
-
         /**
          * Gets a DateTime object that is set to the current date and time on this computer, expressed as the Coordinated Universal Time (UTC).
+         *
          * @access public
-         * @return DateTime
+         * @return \System\DateTime A DateTime whose value is the current UTC date and time.
          */
         public function utcNow() 
         {
@@ -966,6 +972,7 @@ namespace System
 
         /**
          * Gets the year component of the date represented by this instance.
+         *
          * @access public
          * @return int The year, between 1970 and 9999.
          */
