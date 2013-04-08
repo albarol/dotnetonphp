@@ -262,13 +262,13 @@ namespace System {
     * @param $value A signed number.
     * @return int A number indicating the sign of value.
     */
-    public static function sign($value) {
-      if(is_numeric($value)):
-        if($value < 0) return -1;
-        if($value > 0) return 1;
-      endif;
-
-      return 0;
+    public static function sign($value) 
+    {
+        if(is_numeric($value))
+        {
+            return $value / abs($value);
+        }
+        return 0;
     }
 
     /**
@@ -276,8 +276,9 @@ namespace System {
     * @param $d An angle, measured in radians.
     * @return float The hyperbolic sine of value. If value is equal to System.Double.NegativeInfinity, System.Double.PositiveInfinity, or System.Double.NaN, this method returns a System.Double equal to value.
     */
-    public static function sinh($d) {
-      return sinh($d);
+    public static function sinh($d) 
+    {
+        return sinh($d);
     }
 
     /**

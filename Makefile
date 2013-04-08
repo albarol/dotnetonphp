@@ -21,3 +21,6 @@ xml:
 
 coverage:
 	vendor/bin/phpunit --configuration=./tests/configs/phpunit-coverage.xml
+
+doc:
+	phpdoc -d src/ -t docs/
