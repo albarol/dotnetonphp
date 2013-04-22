@@ -320,4 +320,125 @@ class LinkedListTestCase extends PHPUnit_Framework_TestCase
         # Assert:
         $this->assertEquals(2, $l1->last()->value());
     }
+
+    /**
+     * @test
+     */
+    public function Clear_RemoveAllElements() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+        $l1->add(1);
+        $l1->addLast(2);
+    
+        # Act:
+        $l1->clear();
+    
+        # Assert:
+        $this->assertEquals(0, $l1->count());
+    }
+
+    /**
+     * @test
+     */
+    public function Contains_ShouldBeTrueWhenValueIsFoundedInLinkedList() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+        $l1->add(1);
+    
+        # Act:
+        $result = $l1->contains(1);
+    
+        # Assert:
+        $this->assertTrue($result);
+    }
+
+    /**
+     * @test
+     */
+    public function Contains_ShouldBeFalseWhenValueNotExistsInLinkedList() 
+    {
+        #  Arrange:
+        $l1 = new LinkedList;
+        $l1->add(1);
+    
+        # Act:
+        $result = $l1->contains(2);
+    
+        # Assert:
+        $this->assertFalse($result);
+    }
+
+    /**
+     * @test
+     */
+    public function Contains_ShouldBeTrueWhenListContainsManyValues() 
+    {
+        #  Arrange:
+        $l1 = new LinkedList;
+        $l1->add(1);
+        $l1->add(2);
+        $l1->add(3);
+        $l1->add(4);
+        $l1->add(5);
+        $l1->add(6);
+        $l1->add(7);
+    
+        # Act:
+        $result = $l1->contains(5);
+    
+        # Assert:
+        $this->assertTrue($result);
+    }
+
+    /**
+     * @test
+     */
+    public function Contains_ShouldBeFalseWhenListContainsManyValues() 
+    {
+        #  Arrange:
+        $l1 = new LinkedList;
+        $l1->add(1);
+        $l1->add(2);
+        $l1->add(3);
+        $l1->add(4);
+        $l1->add(5);
+        $l1->add(6);
+        $l1->add(7);
+    
+        # Act:
+        $result = $l1->contains('a');
+    
+        # Assert:
+        $this->assertFalse($result);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentOutOfRangeException
+     */
+    public function CopyTo_ThrowsExceptionWhenIndexIsGreaterThanValue() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+        $l1->add(1);
+    
+        # Act:
+        $array = $l1->copyTo(2);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentOutOfRangeException
+     */
+    public function CopyTo_ThrowsExceptionWhenIndexIsLessThanZero() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+        $l1->add(1);
+    
+        # Act:
+        $array = $l1->copyTo(-1);
+    }
 }

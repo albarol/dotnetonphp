@@ -4,6 +4,7 @@ namespace System\Collections\Generic
 {
     
     use System\InvalidOperationException as InvalidOperationException;
+    use System\ArgumentOutOfRangeException as ArgumentOutOfRangeException;
 
     use System\Collections\ICollection as ICollection;
     use System\Collections\IEnumerable as IEnumerable;
@@ -16,6 +17,7 @@ namespace System\Collections\Generic
 
     /**
      * Represents a doubly linked list.
+     *
      * @access public
      * @name LinkedList
      * @package System
@@ -29,6 +31,7 @@ namespace System\Collections\Generic
 
         /**
          * Initializes a new instance of the LinkedList class that contains elements copied from the specified IEnumerable and has sufficient capacity to accommodate the number of elements copied.
+         *
          * @access public
          * @param \System\Collections\IEnumerable $collection The IEnumerable whose elements are copied to the new LinkedList.
          * 
@@ -47,6 +50,7 @@ namespace System\Collections\Generic
 
         /**
          * Adds an item at the end of the ICollection.
+         *
          * @access public
          * @param object $value The value to add at the end of the ICollection.
         */
@@ -57,6 +61,7 @@ namespace System\Collections\Generic
 
         /**
          * Adds the specified new node after the specified existing node in the LinkedList.
+         *
          * @access public
          * @throws \System\InvalidOperationException node is not in the current LinkedList. -or- newNode belongs to another LinkedList.
          * @param \System\Collections\Generic\LinkedListNode $node The LinkedListNode after which to insert newNode.
@@ -87,6 +92,7 @@ namespace System\Collections\Generic
 
         /**
          * Adds the specified new node before the specified existing node in the LinkedList.
+         *
          * @access public
          * @throws \System\InvalidOperationException node is not in the current LinkedList. -or- newNode belongs to another LinkedList.
          * @param \System\Collections\Generic\LinkedListNode $node The LinkedListNode after which to insert newNode.
@@ -117,6 +123,7 @@ namespace System\Collections\Generic
 
         /**
          * Adds a new node containing the specified value at the start of the LinkedList.
+         *
          * @access public
          * @param object $value The value to add at the start of the LinkedList.
          * @return \System\Collections\Generic\LinkedListNode The new LinkedListNode containing value.
@@ -149,6 +156,7 @@ namespace System\Collections\Generic
 
         /**
          * Adds a new node containing the specified value at the end of the LinkedList.
+         *
          * @access public
          * @param object $value The value to add at the end of the LinkedList.
          * @return \System\Collections\Generic\LinkedListNode The new LinkedListNode containing value.
@@ -180,34 +188,70 @@ namespace System\Collections\Generic
 
         /**
          * Removes all nodes from the LinkedList.
+         *
          * @access public
         */
         public function clear()
         {
-
+            unset($this->first);
+            unset($this->last);
         }
 
         /**
-         * The value to locate in the LinkedList. The value can be a null reference
+         * Determines whether a value is in the LinkedList.
+         *
          * @access public
+         * @param object The value to locate in the LinkedList. The value can be a null reference
          * @return bool true if value is found in the LinkedList; otherwise, false.
         */
-        public function contains() 
+        public function contains($value) 
         {
+            $current = $this->first;
+            $exists = false;
 
+            while($current != null and !$exists)
+            {
+                $exists = $current->value() == $value;
+                $current = $current->next();
+            }
+
+            return $exists;
         }
 
         /**
          * Copies the entire LinkedList to a compatible one-dimensional Array, starting at the specified index of the target array.
+         *
          * @access public
-         * @throws \System\ArgumentNullException array is null.
          * @throws \System\ArgumentOutOfRangeException index is less than zero. -or- index greater than size of list
          * @param int $index The zero-based index in array at which copying begins.
          * @return array The one-dimensional array that is the destination of the elements copied from ICollection. The array must have zero-based indexing.
          */
         public function copyTo($index = 0) 
         {
+            if ($index < 0) 
+            {
+                 throw new ArgumentOutOfRangeException("index is less than zero.");
+            }
 
+            $array = array();
+            $total = 0;
+            $current = $this->first();
+
+            
+            while($current != null) 
+            {
+                array_push($array, $current->value());
+                $total++;
+                $current = $current->next();
+            }
+
+            if ($total < $index) 
+            {
+                throw new ArgumentOutOfRangeException("index greater than size of list");
+            }
+
+
+            return $array;
         }
 
         /**
