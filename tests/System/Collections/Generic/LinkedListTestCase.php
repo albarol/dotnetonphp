@@ -441,4 +441,36 @@ class LinkedListTestCase extends PHPUnit_Framework_TestCase
         # Act:
         $array = $l1->copyTo(-1);
     }
+
+    /**
+     * @test
+     */
+    public function Equals_ShouldBeTrueWhenInstanceIsTheSame() 
+    {
+        # Arrange:
+        $linkedList = new LinkedList;
+
+        # Act:
+        $result = $linkedList->equals($linkedList);
+    
+        # Assert:
+        $this->assertTrue($result);
+    }
+
+    /**
+     * @test
+     */
+    public function Equals_ShouldBeFalseWhenInstanceIsAnother() 
+    {
+        # Arrange:
+        $linkedList = new LinkedList;
+
+        # Act:
+        $result = $linkedList->equals(1);
+    
+        # Assert:
+        $this->assertFalse($result);
+    }
+
+
 }

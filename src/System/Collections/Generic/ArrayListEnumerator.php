@@ -13,7 +13,7 @@ namespace System\Collections\Generic {
 	 * @package System
 	 * @subpackage Collections\Generic
 	 */
-	final class ArrayListEnumerator extends BaseEnumerator ]
+	final class ArrayListEnumerator extends BaseEnumerator 
 	{
 	    public function __construct(ArrayList $arrayList) 
 	    {

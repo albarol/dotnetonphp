@@ -256,12 +256,13 @@ namespace System\Collections\Generic
 
         /**
          * Gets the number of elements contained in the ICollection.
+         *
          * @access public
          * @return int The number of elements contained in the ICollection.
         */
         public function count()
         {
-            if (is_null($this->first()))
+            if (!isset($this->first))
             {
                 return 0;
             }
@@ -280,13 +281,14 @@ namespace System\Collections\Generic
 
         /**
          * Determines whether the specified object is equal to the current object.
+         *
          * @access public
          * @param object $obj The Object to compare with the current Object. 
          * @return bool true if the specified Object is equal to the current Object; otherwise, false.
         */
         public function equals($obj)
         {
-
+            return $this === $obj;
         }
 
         /**
