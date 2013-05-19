@@ -354,6 +354,7 @@ namespace System\Collections\Generic
 
         /**
          * Gets the first node of the LinkedList.
+         *
          * @access public
          * @return \System\Collections\Generic\LinkedListNode The first LinkedListNode of the LinkedList.
         */
@@ -364,6 +365,7 @@ namespace System\Collections\Generic
 
         /**
          * Returns an enumerator that iterates through the LinkedList.
+         *
          * @access public
          * @return \System\Collection\Generic\IEnumerator An LinkedList.Enumerator for the LinkedList. 
         */
@@ -388,6 +390,7 @@ namespace System\Collections\Generic
 
         /**
          * Implements the \System\Runtime\Serialization\ISerializable interface and returns the data needed to serialize the LinkedList instance.
+         *
          * @access public
          * @throws \System\ArgumentNullException info is a null reference
          * @param \System\Runtime\Serialization\SerializationInfo $info A SerializationInfo object that contains the information required to serialize the LinkedList instance.
@@ -395,11 +398,12 @@ namespace System\Collections\Generic
         */
         public function getObjectData($info, $context)
         {
-
+            
         }
 
         /**
          * Gets the Type of the current instance
+         *
          * @access public
          * @return \System\Type The Type instance that represents the exact runtime type of the current instance.
         */
@@ -410,6 +414,7 @@ namespace System\Collections\Generic
 
         /**
          * Gets the last node of the LinkedList.
+         *
          * @access public
          * @return \System\Collections\Generic\LinkedListNode The last LinkedListNode of the LinkedList.
         */
@@ -420,6 +425,7 @@ namespace System\Collections\Generic
 
         /**
          * Implements the \System\Runtime\Serialization\ISerializable interface and raises the deserialization event when the deserialization is complete.
+         *
          * @access public
          * @throws \System\Runtime\Serialization\SerializationException The SerializationInfo object associated with the current LinkedList instance is invalid.
          * @param object $sender The source of the deserialization event.
@@ -431,23 +437,58 @@ namespace System\Collections\Generic
 
         /**
          * Removes the first occurrence of a node or value from the LinkedList.
+         *
          * @access public
          * @param object $value The value to remove from the LinkedList.
          * @return bool true if the element containing value is successfully removed; otherwise, false. This method also returns false if value was not found in the original LinkedList.
          */
         public function remove($value) 
         {
+            $removed = false;
+            $current = $this->first();
             
+            if (is_null($current)) 
+            {
+                return $removed;
+            }
+
+            if ($current->value() == $value)
+            {
+                $this->removeFirst();
+                return true;
+            }
+
+            
+            do {
+                $current = $current->next();
+
+                if(!is_null($this->first) and $current->value() == $value)
+                {
+                    $current->previous()->next($current->next());
+                    $current->next()->previous($current->previous());
+                    $removed = true;
+                    unset($current);
+                }
+            }
+            while(isset($current) and !$removed); 
+
+            return $removed;
         }
 
         /**
          * Removes the node at the start of the LinkedList.
+         *
          * @access public
          * @throws \System\InvalidOperationException The LinkedList is empty.
          */
         public function removeFirst() 
         {
-
+            if (!is_null($this->first))
+            {
+                $first = $this->first;
+                $this->first = $this->first->next();
+                unset($first);
+            }
         }
 
         /**

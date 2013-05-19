@@ -575,5 +575,76 @@ class LinkedListTestCase extends PHPUnit_Framework_TestCase
         $this->assertNull($result);
     }
 
+    /**
+     * @test
+     */
+    public function GetEnumerator_ShouldGetEnumerator() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+        $l1->add(1);
+        $l1->add(2);
+        $l1->add(3);
+        $l1->add(4);
 
+        # Act:
+        $enumerator = $l1->getEnumerator();
+    
+        # Assert:
+        $this->assertInstanceOf('\System\Collections\Generic\BaseEnumerator', $enumerator);
+    }
+
+    /**
+     * @test
+     */
+    public function Remove_ShouldFirstRemoveElementFromList() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+        $l1->add(1);
+        $l1->add(1);
+        $l1->add(1);
+        $l1->add(1);
+
+        # Act:
+        $l1->remove(1);
+    
+        # Assert:
+        $this->assertEquals(3, $l1->count());
+    }
+
+    /**
+     * @test
+     */
+    public function Remove_ShouldRemoveElementFromList() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+        $l1->add(1);
+        $l1->add(2);
+        $l1->add(3);
+        $l1->add(4);
+
+        # Act:
+        $l1->remove(2);
+        $result = $l1->find(1);
+    
+        # Assert:
+        $this->assertEquals(3, $result->next()->value());
+    }
+
+    /**
+     * @test
+     */
+    public function Remove_ShouldReturnFalseWhenListIsEmpty() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+
+        # Act:
+        $result = $l1->remove(1);
+    
+        # Assert:
+        $this->assertFalse($result);
+    }
 }
