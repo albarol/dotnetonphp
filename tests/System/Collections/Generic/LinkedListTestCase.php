@@ -523,4 +523,57 @@ class LinkedListTestCase extends PHPUnit_Framework_TestCase
         $this->assertNull($result);
     }
 
+    /**
+     * @test
+     */
+    public function FindLast_ShouldFindElementInLinkedList() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+        $l1->add(1);
+        $l1->add(2);
+        $l1->add(3);
+        $l1->add(2);
+
+        # Act:
+        $result = $l1->findLast(2);
+    
+        # Assert:
+        $this->assertEquals(3, $result->previous()->value());
+    }
+
+    /**
+     * @test
+     */
+    public function FindLast_ShouldReturnNullWhenNotFound() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+        $l1->add(1);
+        $l1->add(2);
+        $l1->add(3);
+
+        # Act:
+        $result = $l1->findLast(4);
+    
+        # Assert:
+        $this->assertNull($result);
+    }
+
+    /**
+     * @test
+     */
+    public function FindLast_ShouldReturnNullWhenListIsEmpty() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+
+        # Act:
+        $result = $l1->findLast(4);
+    
+        # Assert:
+        $this->assertNull($result);
+    }
+
+
 }

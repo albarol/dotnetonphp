@@ -323,13 +323,33 @@ namespace System\Collections\Generic
 
         /**
          * Finds the last node that contains the specified value.
+         *
          * @access public
          * @param object $value The value to locate in the LinkedList.
          * @return \System\Collections\Generic\LinkedListNode The last LinkedListNode that contains the specified value, if found; otherwise, a null reference
          */
         public function findLast($value) 
         {
-            
+            if (!isset($this->first))
+            {
+                return null;
+            }
+
+            $current = $this->first();
+            $finded = null;
+
+            do
+            {
+                if ($current->value() == $value) 
+                {
+                    $finded = $current;
+                }
+
+                $current = $current->next();
+            } while(!is_null($current));
+
+            return $finded;
+
         }
 
         /**
