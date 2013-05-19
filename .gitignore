@@ -9,3 +9,8 @@ vendor/
 tests/logs/
 tests/coverage/
 composer.phar
+
+#######
+# VIM #
+#######
+*.swp 

@@ -293,13 +293,32 @@ namespace System\Collections\Generic
 
         /**
          * Finds the first node that contains the specified value.
+         *
          * @access public
          * @param object $value The value to locate in the LinkedList.
          * @return \System\Collections\Generic\LinkedListNode The first LinkedListNode that contains the specified value, if found; otherwise, a null reference
          */
         public function find($value) 
         {
-            
+            if (!isset($this->first))
+            {
+                return null;
+            }
+
+            $current = $this->first();
+
+            do
+            {
+                if ($current->value() == $value) 
+                {
+                    return $current;
+                }
+
+                $current = $current->next();
+            } while(!is_null($current));
+
+            return null;
+
         }
 
         /**

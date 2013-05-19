@@ -472,5 +472,55 @@ class LinkedListTestCase extends PHPUnit_Framework_TestCase
         $this->assertFalse($result);
     }
 
+    /**
+     * @test
+     */
+    public function Find_ShouldFindElementInLinkedList() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+        $l1->add(1);
+        $l1->add(2);
+        $l1->add(3);
+
+        # Act:
+        $result = $l1->find(2);
+    
+        # Assert:
+        $this->assertNotNull($result);
+    }
+
+    /**
+     * @test
+     */
+    public function Find_ShouldReturnNullWhenNotFound() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+        $l1->add(1);
+        $l1->add(2);
+        $l1->add(3);
+
+        # Act:
+        $result = $l1->find(4);
+    
+        # Assert:
+        $this->assertNull($result);
+    }
+
+    /**
+     * @test
+     */
+    public function Find_ShouldReturnNullWhenListIsEmpty() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+
+        # Act:
+        $result = $l1->find(4);
+    
+        # Assert:
+        $this->assertNull($result);
+    }
 
 }
