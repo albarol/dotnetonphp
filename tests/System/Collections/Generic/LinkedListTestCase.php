@@ -1,144 +1,753 @@
 <?php
 
 use \System\Collections\Generic\LinkedList as LinkedList;
+use \System\Collections\Generic\LinkedListNode as LinkedListNode;
 
 class LinkedListTestCase extends PHPUnit_Framework_TestCase 
 {
-    public function testCanAddFirstToLinkedList() {
-        $linked = new LinkedList();
-        $linked->addFirst("Alexandre");
-
-        $this->assertEquals(1, $linked->count());
-        $this->assertEquals("Alexandre", $linked->first()->value());
-
-        $linked->addFirst("Barbieri");
-        $this->assertEquals(2, $linked->count());
-        $this->assertEquals("Barbieri", $linked->first()->value());
-        $this->assertEquals("Alexandre", $linked->first()->next()->value());
-        $this->assertEquals(null, $linked->last()->next());
-        $this->assertEquals(null, $linked->first()->previous());
+    
+    /**
+     * @test
+     */
+    public function Construct_ShouldConstructLinkedList() 
+    {
+        # Arrange:
+        # Act:
+        $linkedList = new LinkedList;
+    
+        # Assert:
+        $this->assertNotNull($linkedList);
     }
 
-    public function testCanAddLastToLinkedList() {
-        $linked = new LinkedList();
-        $linked->addLast("Alexandre");
+    /**
+     * @test
+     */
+    public function Construct_ShouldConstructLinkedListFromCollection() 
+    {
+        # Arrange:
+        $linkedList = new LinkedList;
+        $linkedList->add(1);
 
-        $this->assertEquals(1, $linked->count());
-        $this->assertEquals("Alexandre", $linked->last()->value());
-        $linked->addLast("Barbieri");
-        $this->assertEquals(2, $linked->count());
-        $this->assertEquals("Barbieri", $linked->last()->value());
-        $this->assertEquals("Alexandre", $linked->last()->previous()->value());
-        $this->assertEquals("Alexandre", $linked->first()->value());
-        $this->assertEquals("Barbieri", $linked->first()->next()->value());
-        $this->assertEquals(null, $linked->last()->next());
-        $this->assertEquals(null, $linked->first()->previous());
+        # Act:
+        $new_linkedlist = new LinkedList($linkedList);
+    
+        # Assert:
+        $this->assertEquals($linkedList->count(), $new_linkedlist->count());
     }
 
-    public function testCanAddFirstAndLastElement() {
-        $linked = new LinkedList();
-        $linked->addFirst("Alexandre");
-        $linked->addLast("Barbieri");
-
-        $this->assertEquals(2, $linked->count());
-        $this->assertEquals("Alexandre", $linked->first()->value());
-        $this->assertEquals("Barbieri", $linked->last()->value());
-        $this->assertEquals("Alexandre", $linked->last()->previous()->value());
-        $this->assertEquals("Barbieri", $linked->first()->next()->value());
-        $this->assertEquals(null, $linked->last()->next());
-        $this->assertEquals(null, $linked->first()->previous());
+    /**
+     * @test
+     */
+    public function Add_ShouldAppendLinkedListNode()
+    { 
+        # Arrange:
+        $linkedList = new LinkedList;
+    
+        # Act:
+        $linkedList->add(1);
+    
+        # Assert:
+        $this->assertEquals(1, $linkedList->count());
     }
 
-    public function testCanAddBeforeElement() {
-        $linked = new LinkedList();
-        $linked->addFirst("Alexandre");
-        $linked->addBefore(0, "Programmer");
 
-        $this->assertEquals(2, $linked->count());
-        $this->assertEquals("Programmer", $linked->first()->value());
-
-        $linked->addBefore(1, "Php");
-        $this->assertEquals("Php", $linked->first()->next()->value());
+    /**
+     * @test
+     */
+    public function Add_ShouldAppendLinkedListNodeInLastPosition() 
+    {
+        # Arrange:
+        $linkedList = new LinkedList;
+    
+        # Act:
+        $linkedList->add(1);
+        $linkedList->add(2);
+    
+        # Assert:
+        $this->assertEquals(2, $linkedList->last()->value());
     }
 
-    public function testCanAddAfterElement() {
-        $linked = new LinkedList();
-        $linked->addFirst("Alexandre");
-        $linked->addAfter(0, "Programmer");
-
-        $this->assertEquals(2, $linked->count());
-        // $this->assertEquals("Programmer", $linked->get(1)->value());
-
-        $linked->addAfter(5, "Php");
-        $this->assertEquals("Php", $linked->last()->value());
-        $this->assertEquals("Programmer", $linked->last()->previous()->value());
+    /**
+     * @test
+     */
+    public function Add_ShouldBeFirstWhenLinkedListIsEmpty() 
+    {
+        # Arrange:
+        $linkedList = new LinkedList;
+    
+        # Act:
+        $linkedList->add(1);
+    
+        # Assert:
+        $this->assertEquals(1, $linkedList->first()->value());
     }
 
-    public function testCanFindFirstElement() {
-        $linked = new LinkedList();
-        $linked->addFirst("Alexandre");
-        $linked->addAfter(0, "Programmer");
-        $linked->addAfter(5, "Php");
-        $linked->addLast("Programmer");
-
-        $find = $linked->find("Programmer");
-        $this->assertEquals("Programmer", $find->value());
-        $this->assertEquals("Alexandre", $find->previous()->value());
+    /**
+     * @test
+     */
+    public function Add_ShouldBeLastWhenLinkedListIsEmpty() 
+    {
+        # Arrange:
+        $linkedList = new LinkedList;
+    
+        # Act:
+        $linkedList->add(1);
+    
+        # Assert:
+        $this->assertEquals(1, $linkedList->last()->value());
     }
 
-    public function testCanFindLastElement() {
-        $linked = new LinkedList();
-        $linked->addFirst("Alexandre");
-        $linked->addAfter(0, "Programmer");
-        $linked->addAfter(5, "Php");
-        $linked->addLast("Programmer");
-
-        $find = $linked->findLast("Programmer");
-        $this->assertEquals("Programmer", $find->value());
-        $this->assertEquals("Php", $find->previous()->value());
+    /**
+     * @test
+     * @expectedException \System\InvalidOperationException
+     */
+    public function AddAfter_ThrowsExceptionWhenNodeNotBelongsToLinkedList() 
+    {
+        # Arrange:
+        $node = new LinkedListNode(1);
+        $linkedList = new LinkedList;
+    
+        # Act:
+        $linkedList->addAfter($node, new LinkedListNode(1));
     }
 
-    public function testCantFindElement() {
-        $linked = new LinkedList();
-        $linked->addFirst("Alexandre");
-        $linked->addAfter(0, "Programmer");
-        $linked->addAfter(5, "Php");
-        $find = $linked->find("Domingues");
-        $this->assertEquals(null, $find);
-        $findLast = $linked->findLast("Domingues");
-        $this->assertEquals(null, $findLast);
+     /**
+     * @test
+     * @expectedException \System\InvalidOperationException
+     */
+    public function AddAfter_ThrowsExceptionWhenNewNodeBelongsToAnotherLinkedList() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+        $l1->add(1);
+        $l2 = new LinkedList;
+        $l2->add(2);
+        
+        # Act:
+        $l1->addAfter($l1->first(), $l2->first());
     }
 
-    public function testCanRemoveElements() {
-        $linked = new LinkedList();
-        $linked->addFirst("Alexandre");
-        $linked->addAfter(0, "Programmer");
-        $linked->addAfter(5, "Php");
-        $linked->removeFirst("Programmer");
-        $this->assertEquals(2, $linked->count());
-        $linked->addAfter(0, "Programmer");
-        $this->assertEquals(3, $linked->count());
-        $linked->addLast("Programmer");
-        $linked->removeLast("Programmer");
-        $this->assertEquals(3, $linked->count());
+    /**
+     * @test
+     */
+    public function AddAfter_CanAddElementAfterSpecificNode() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+        $l1->add(1);
+    
+        # Act:
+        $l1->addAfter($l1->first(), new LinkedListNode(2));
+    
+        # Assert:
+        $afterNode = $l1->first()->next();
+        $this->assertEquals(2, $afterNode->value());
     }
 
-    public function testCanRemoveFirstElement() {
-        $linked = new LinkedList();
-        $linked->addFirst("Alexandre");
-        $this->assertEquals(1, $linked->count());
-        $linked->remove(0);
-        $this->assertEquals(0, $linked->count());
+    /**
+     * @test
+     */
+    public function AddAfter_ShouldChangeLastWhenNodeInsertAfterLast() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+        $l1->add(1);
+    
+        # Act:
+        $l1->addAfter($l1->last(), new LinkedListNode(2));
+    
+        # Assert:
+        $this->assertEquals(2, $l1->last()->value());
     }
 
-    public function testCanClearElements(){
-        $linked = new LinkedList();
-        $linked->addFirst("Alexandre");
-        $linked->addFirst("Programmer");
-        $linked->addFirst("Php");
-        $linked->addFirst("Alexandre");
-        $this->assertEquals(4, $linked->count());
-        $linked->clear();
-        $this->assertEquals(0, $linked->count());
+    /**
+     * @test
+     * @expectedException \System\InvalidOperationException
+     */
+    public function AddBefore_ThrowsExceptionWhenNodeNotBelongsToLinkedList() 
+    {
+        # Arrange:
+        $node = new LinkedListNode(1);
+        $linkedList = new LinkedList;
+    
+        # Act:
+        $linkedList->addBefore($node, new LinkedListNode(1));
     }
+
+    /**
+     * @test
+     * @expectedException \System\InvalidOperationException
+     */
+    public function AddBefore_ThrowsExceptionWhenNewNodeBelongsToAnotherLinkedList() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+        $l1->add(1);
+        $l2 = new LinkedList;
+        $l2->add(2);
+        
+        # Act:
+        $l1->AddBefore($l1->first(), $l2->first());
+    }
+
+    /**
+     * @test
+     */
+    public function AddBefore_CanAddElementAfterSpecificNode() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+        $l1->add(1);
+    
+        # Act:
+        $l1->addBefore($l1->last(), new LinkedListNode(2));
+    
+        # Assert:
+        $beforeNode = $l1->last()->previous();
+        $this->assertEquals(2, $beforeNode->value());
+    }
+
+    /**
+     * @test
+     */
+    public function AddBefore_ShouldChangeFirstWhenNodeInsertBeforeFirst() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+        $l1->add(1);
+    
+        # Act:
+        $l1->addBefore($l1->first(), new LinkedListNode(2));
+    
+        # Assert:
+        $this->assertEquals(2, $l1->first()->value());
+    }
+
+    /**
+     * @test
+     */
+    public function AddFirst_ShouldAddElementWhenListIsEmpty() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+
+        # Act:
+        $l1->addFirst(1);
+    
+        # Assert:
+        $this->assertEquals(1, $l1->first()->value());
+    }
+
+    /**
+     * @test
+     */
+    public function AddFirst_ShouldAddElementWhenListContainsFirstElement() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+        $l1->add(1);
+
+        # Act:
+        $l1->addFirst(2);
+    
+        # Assert:
+        $this->assertEquals(2, $l1->first()->value());
+    }
+
+    /**
+     * @test
+     */
+    public function AddFirst_ShouldAddElementsInSequence() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+    
+        # Act:
+        for($i = 0; $i < 10; $i++)
+        {
+            $l1->addFirst($i);
+        }
+    
+        # Assert:
+        $this->assertEquals(9, $l1->first()->value());
+    }
+
+    /**
+     * @test
+     */
+    public function AddFirst_ShouldCountWhenAddElementsInSequence() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+    
+        # Act:
+        for($i = 0; $i < 10; $i++)
+        {
+            $l1->addFirst($i);
+        }
+    
+        # Assert:
+        $this->assertEquals(10, $l1->count());
+    }
+
+    /**
+     * @test
+     */
+    public function AddLast_ShouldAddElementWhenListIsEmpty() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+
+        # Act:
+        $l1->addLast(1);
+    
+        # Assert:
+        $this->assertEquals(1, $l1->last()->value());
+    }
+
+    /**
+     * @test
+     */
+    public function AddLast_ShouldAddElementWhenListContainsLastElement() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+        $l1->add(1);
+
+        # Act:
+        $l1->addLast(2);
+    
+        # Assert:
+        $this->assertEquals(2, $l1->last()->value());
+    }
+
+    /**
+     * @test
+     */
+    public function Clear_RemoveAllElements() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+        $l1->add(1);
+        $l1->addLast(2);
+    
+        # Act:
+        $l1->clear();
+    
+        # Assert:
+        $this->assertEquals(0, $l1->count());
+    }
+
+    /**
+     * @test
+     */
+    public function Contains_ShouldBeTrueWhenValueIsFoundedInLinkedList() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+        $l1->add(1);
+    
+        # Act:
+        $result = $l1->contains(1);
+    
+        # Assert:
+        $this->assertTrue($result);
+    }
+
+    /**
+     * @test
+     */
+    public function Contains_ShouldBeFalseWhenValueNotExistsInLinkedList() 
+    {
+        #  Arrange:
+        $l1 = new LinkedList;
+        $l1->add(1);
+    
+        # Act:
+        $result = $l1->contains(2);
+    
+        # Assert:
+        $this->assertFalse($result);
+    }
+
+    /**
+     * @test
+     */
+    public function Contains_ShouldBeTrueWhenListContainsManyValues() 
+    {
+        #  Arrange:
+        $l1 = new LinkedList;
+        $l1->add(1);
+        $l1->add(2);
+        $l1->add(3);
+        $l1->add(4);
+        $l1->add(5);
+        $l1->add(6);
+        $l1->add(7);
+    
+        # Act:
+        $result = $l1->contains(5);
+    
+        # Assert:
+        $this->assertTrue($result);
+    }
+
+    /**
+     * @test
+     */
+    public function Contains_ShouldBeFalseWhenListContainsManyValues() 
+    {
+        #  Arrange:
+        $l1 = new LinkedList;
+        $l1->add(1);
+        $l1->add(2);
+        $l1->add(3);
+        $l1->add(4);
+        $l1->add(5);
+        $l1->add(6);
+        $l1->add(7);
+    
+        # Act:
+        $result = $l1->contains('a');
+    
+        # Assert:
+        $this->assertFalse($result);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentOutOfRangeException
+     */
+    public function CopyTo_ThrowsExceptionWhenIndexIsGreaterThanValue() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+        $l1->add(1);
+    
+        # Act:
+        $array = $l1->copyTo(2);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentOutOfRangeException
+     */
+    public function CopyTo_ThrowsExceptionWhenIndexIsLessThanZero() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+        $l1->add(1);
+    
+        # Act:
+        $array = $l1->copyTo(-1);
+    }
+
+    /**
+     * @test
+     */
+    public function Equals_ShouldBeTrueWhenInstanceIsTheSame() 
+    {
+        # Arrange:
+        $linkedList = new LinkedList;
+
+        # Act:
+        $result = $linkedList->equals($linkedList);
+    
+        # Assert:
+        $this->assertTrue($result);
+    }
+
+    /**
+     * @test
+     */
+    public function Equals_ShouldBeFalseWhenInstanceIsAnother() 
+    {
+        # Arrange:
+        $linkedList = new LinkedList;
+
+        # Act:
+        $result = $linkedList->equals(1);
+    
+        # Assert:
+        $this->assertFalse($result);
+    }
+
+    /**
+     * @test
+     */
+    public function Find_ShouldFindElementInLinkedList() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+        $l1->add(1);
+        $l1->add(2);
+        $l1->add(3);
+
+        # Act:
+        $result = $l1->find(2);
+    
+        # Assert:
+        $this->assertNotNull($result);
+    }
+
+    /**
+     * @test
+     */
+    public function Find_ShouldReturnNullWhenNotFound() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+        $l1->add(1);
+        $l1->add(2);
+        $l1->add(3);
+
+        # Act:
+        $result = $l1->find(4);
+    
+        # Assert:
+        $this->assertNull($result);
+    }
+
+    /**
+     * @test
+     */
+    public function Find_ShouldReturnNullWhenListIsEmpty() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+
+        # Act:
+        $result = $l1->find(4);
+    
+        # Assert:
+        $this->assertNull($result);
+    }
+
+    /**
+     * @test
+     */
+    public function FindLast_ShouldFindElementInLinkedList() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+        $l1->add(1);
+        $l1->add(2);
+        $l1->add(3);
+        $l1->add(2);
+
+        # Act:
+        $result = $l1->findLast(2);
+    
+        # Assert:
+        $this->assertEquals(3, $result->previous()->value());
+    }
+
+    /**
+     * @test
+     */
+    public function FindLast_ShouldReturnNullWhenNotFound() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+        $l1->add(1);
+        $l1->add(2);
+        $l1->add(3);
+
+        # Act:
+        $result = $l1->findLast(4);
+    
+        # Assert:
+        $this->assertNull($result);
+    }
+
+    /**
+     * @test
+     */
+    public function FindLast_ShouldReturnNullWhenListIsEmpty() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+
+        # Act:
+        $result = $l1->findLast(4);
+    
+        # Assert:
+        $this->assertNull($result);
+    }
+
+    /**
+     * @test
+     */
+    public function GetEnumerator_ShouldGetEnumerator() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+        $l1->add(1);
+        $l1->add(2);
+        $l1->add(3);
+        $l1->add(4);
+
+        # Act:
+        $enumerator = $l1->getEnumerator();
+    
+        # Assert:
+        $this->assertInstanceOf('\System\Collections\Generic\BaseEnumerator', $enumerator);
+    }
+
+    /**
+     * @test
+     */
+    public function Remove_ShouldFirstRemoveElementFromList() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+        $l1->add(1);
+        $l1->add(1);
+        $l1->add(1);
+        $l1->add(1);
+
+        # Act:
+        $l1->remove(1);
+    
+        # Assert:
+        $this->assertEquals(3, $l1->count());
+    }
+
+    /**
+     * @test
+     */
+    public function Remove_ShouldRemoveElementFromList() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+        $l1->add(1);
+        $l1->add(2);
+        $l1->add(3);
+        $l1->add(4);
+
+        # Act:
+        $l1->remove(2);
+        $result = $l1->find(1);
+    
+        # Assert:
+        $this->assertEquals(3, $result->next()->value());
+    }
+
+    /**
+     * @test
+     */
+    public function Remove_ShouldReturnFalseWhenListIsEmpty() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+
+        # Act:
+        $result = $l1->remove(1);
+    
+        # Assert:
+        $this->assertFalse($result);
+    }
+
+    /**
+     * @test
+     */
+    public function RemoveFirst_ShouldFirstRemoveElementFromList() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+        $l1->add(1);
+        $l1->add(1);
+        $l1->add(1);
+        $l1->add(1);
+
+        # Act:
+        $l1->removeFirst();
+    
+        # Assert:
+        $this->assertEquals(3, $l1->count());
+    }
+
+    /**
+     * @test
+     * @expectedException \System\InvalidOperationException
+     */
+    public function RemoveFirst_ThrowsExceptionWhenListIsEmpty() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+
+        # Act:
+        $l1->removeFirst();
+    }
+
+    /**
+     * @test
+     */
+    public function RemoveFirst_ShouldRemoveElementFromList() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+        $l1->add(1);
+        $l1->add(2);
+        $l1->add(3);
+        $l1->add(4);
+
+        # Act:
+        $l1->removeFirst();
+    
+        # Assert:
+        $this->assertEquals(2, $l1->first()->value());
+    }
+
+     /**
+     * @test
+     */
+    public function RemoveLast_ShouldRemoveLastElementFromList() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+        $l1->add(1);
+        $l1->add(1);
+        $l1->add(1);
+        $l1->add(2);
+
+        # Act:
+        $l1->removeLast();
+    
+        # Assert:
+        $this->assertEquals(3, $l1->count());
+    }
+
+    /**
+     * @test
+     */
+    public function RemoveLast_ShouldRemoveElementFromList() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+        $l1->add(1);
+        $l1->add(2);
+        $l1->add(3);
+        $l1->add(4);
+
+        # Act:
+        $l1->removeLast();
+    
+        # Assert:
+        $this->assertEquals(3, $l1->last()->value());
+    }
+
+     /**
+     * @test
+     * @expectedException \System\InvalidOperationException
+     */
+    public function RemoveLast_ThrowsExceptionWhenListIsEmpty() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+
+        # Act:
+        $l1->removeLast();
+   }
 }
+
