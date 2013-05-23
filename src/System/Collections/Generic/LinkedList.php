@@ -483,22 +483,30 @@ namespace System\Collections\Generic
          */
         public function removeFirst() 
         {
-            if (!is_null($this->first))
+            if (!isset($this->first))
             {
-                $first = $this->first;
-                $this->first = $this->first->next();
-                unset($first);
+                throw new InvalidOperationException("The LinkedList<T> is empty.");
             }
+
+            $this->first = $this->first->next();
+            $this->first->previous(null, true);
         }
 
         /**
          * Removes the node at the end of the LinkedList.
+         *
          * @access public
          * @throws \System\InvalidOperationException The LinkedList is empty.
          */
         public function removeLast() 
         {
-            
+            if (!isset($this->first))
+            {
+                throw new InvalidOperationException("The LinkedList<T> is empty.");
+            }
+
+            $this->last = $this->last->previous();
+            $this->last->next(null, true);
         }
     }
 }

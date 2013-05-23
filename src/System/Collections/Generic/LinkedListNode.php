@@ -5,6 +5,7 @@ namespace System\Collections\Generic
 
     /**
      * Represents a node in a LinkedList. This class cannot be inherited.
+     *
      * @access public
      * @name LinkedListNode
      * @package System
@@ -19,6 +20,7 @@ namespace System\Collections\Generic
 
         /**
          * Initializes a new instance of the LinkedListNode class, containing the specified value.
+         *
          * @access public
          * @param object $value The value to contain in the LinkedListNode.
         */
@@ -46,18 +48,26 @@ namespace System\Collections\Generic
             return $this->linkedList;
         }
 
-        public function next(LinkedListNode $node = null)
+        public function next(LinkedListNode $node = null, $removeSibling=false)
         {
-            if(!is_null($node))
+            if (!is_null($node))
+            {
+                $this->next = $node;
+            }
+            elseif ($removeSibling)
             {
                 $this->next = $node;
             }
             return $this->next;
         }
 
-        public function previous(LinkedListNode $node = null)
+        public function previous(LinkedListNode $node = null, $removeSibling=false)
         {
-            if(!is_null($node))
+            if (!is_null($node))
+            {
+                $this->previous = $node;
+            }
+            elseif ($removeSibling)
             {
                 $this->previous = $node;
             }

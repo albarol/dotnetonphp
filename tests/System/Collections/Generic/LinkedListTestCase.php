@@ -647,4 +647,107 @@ class LinkedListTestCase extends PHPUnit_Framework_TestCase
         # Assert:
         $this->assertFalse($result);
     }
+
+    /**
+     * @test
+     */
+    public function RemoveFirst_ShouldFirstRemoveElementFromList() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+        $l1->add(1);
+        $l1->add(1);
+        $l1->add(1);
+        $l1->add(1);
+
+        # Act:
+        $l1->removeFirst();
+    
+        # Assert:
+        $this->assertEquals(3, $l1->count());
+    }
+
+    /**
+     * @test
+     * @expectedException \System\InvalidOperationException
+     */
+    public function RemoveFirst_ThrowsExceptionWhenListIsEmpty() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+
+        # Act:
+        $l1->removeFirst();
+    }
+
+    /**
+     * @test
+     */
+    public function RemoveFirst_ShouldRemoveElementFromList() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+        $l1->add(1);
+        $l1->add(2);
+        $l1->add(3);
+        $l1->add(4);
+
+        # Act:
+        $l1->removeFirst();
+    
+        # Assert:
+        $this->assertEquals(2, $l1->first()->value());
+    }
+
+     /**
+     * @test
+     */
+    public function RemoveLast_ShouldRemoveLastElementFromList() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+        $l1->add(1);
+        $l1->add(1);
+        $l1->add(1);
+        $l1->add(2);
+
+        # Act:
+        $l1->removeLast();
+    
+        # Assert:
+        $this->assertEquals(3, $l1->count());
+    }
+
+    /**
+     * @test
+     */
+    public function RemoveLast_ShouldRemoveElementFromList() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+        $l1->add(1);
+        $l1->add(2);
+        $l1->add(3);
+        $l1->add(4);
+
+        # Act:
+        $l1->removeLast();
+    
+        # Assert:
+        $this->assertEquals(3, $l1->last()->value());
+    }
+
+     /**
+     * @test
+     * @expectedException \System\InvalidOperationException
+     */
+    public function RemoveLast_ThrowsExceptionWhenListIsEmpty() 
+    {
+        # Arrange:
+        $l1 = new LinkedList;
+
+        # Act:
+        $l1->removeLast();
+   }
 }
+
