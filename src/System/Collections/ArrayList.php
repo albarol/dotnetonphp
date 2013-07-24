@@ -27,19 +27,19 @@ namespace System\Collections {
          * @param int $value The ICollection whose elements are copied to the new list.
          */
         public function __construct($value = 10) {
-            if(is_numeric($value)):
+            if(is_numeric($value)) {
                 $this->constructFromNumber($value);
-            elseif($value instanceof ICollection):
+            } elseif($value instanceof ICollection) {
                 $this->constructFromCollection($value);
-            else:
+            } else {
                 throw new ArgumentNullException("value is null.");
-            endif;
+            }
         }
 
         private function constructFromNumber($value) {
-            if($value < 0):
+            if($value < 0) {
                 throw new ArgumentOutOfRangeException("capacity is less than zero.");
-            endif;
+            }
             $this->capacity = $value;
         }
 
@@ -72,9 +72,9 @@ namespace System\Collections {
          * @return int The ArrayList index at which the value has been added.
          */
         public function add($value) {
-            if(!$this->canWrite()):
+            if(!$this->canWrite()) {
                 throw new NotSupportedException("The \System\Collections\ArrayList is read-only. -or-  The \System\Collections\ArrayList has a fixed size.");
-            endif;
+            }
             array_push($this->elements, $value);
             return $this->count() - 1;
         }
@@ -86,9 +86,9 @@ namespace System\Collections {
          * @param \System\Collections\ICollection $c The \System\Collections\ICollection whose elements should be added to the end of the \System\Collections\ArrayList. The collection itself cannot be null, but it can contain elements that are null.
          */
         public function addRange(ICollection $c) {
-            if(!$this->canWrite()):
+            if(!$this->canWrite()) {
                 throw new NotSupportedException("The \System\Collections\ArrayList is read-only. -or-  The \System\Collections\ArrayList has a fixed size.");
-            endif;
+            }
             $this->addCollections($c);
         }
 
@@ -114,14 +114,14 @@ namespace System\Collections {
          * @return int The number of elements that the ArrayList can contain.
          */
         public function capacity($value=null) {
-            if(is_numeric($value)):
-                if($value < $this->count()):
+            if(is_numeric($value)) {
+                if($value < $this->count()) {
                     throw new ArgumentOutOfRangeException("capacity is set to a value that is less than \System\Collections\ArrayList.Count.");
-                endif;
+                } 
                 $this->capacity = $value;
-            elseif($this->capacity < $this->count()):
+            } elseif($this->capacity < $this->count()) {
                 $this->capacity = $this->count();
-            endif;
+            }
             return $this->capacity;
         }
 
@@ -142,9 +142,9 @@ namespace System\Collections {
          * @return void
          */
         public function clear() {
-            if(!$this->canWrite()):
+            if(!$this->canWrite()) {
                 throw new NotSupportedException("The ArrayList is read-only. -or-  The ArrayList has a fixed size.");
-            endif;
+            }
             unset($this->elements);
             $this->elements = array();
         }
@@ -213,9 +213,9 @@ namespace System\Collections {
          * @return object The element at the specified index.
          */
         public function get($index) {
-            if(!$this->isValidIndex($index)):
+            if(!$this->isValidIndex($index)) {
                 throw new ArgumentOutOfRangeException("index less than zero -or- index greater than max value.");
-            endif;
+            }
             return $this->elements[$index];
         }
 
@@ -275,9 +275,9 @@ namespace System\Collections {
                 $count = (($this->count() - 1) - $startIndex); // rearrange count if is null
             }
 
-            if(!$this->isValidRange($startIndex, $count)) :
+            if(!$this->isValidRange($startIndex, $count)) {
                 throw new ArgumentOutOfRangeException("startIndex and count do not specify a valid section in the \System\Collections\ArrayList");
-            endif;
+            }
 
             $index = -1;
             for($i = 0; $i <= $count && $index == -1; $i++) {
@@ -298,12 +298,12 @@ namespace System\Collections {
          * @return void
          */
         public function insert($index, $value) {
-            if(!$this->canWrite()):
+            if(!$this->canWrite()) {
                 throw new NotSupportedException("The \System\Collections\ArrayList is read-only. -or- The System\Collections\ArrayList has a fixed size.");
-            endif;
-            if(!$this->isValidIndex($index)):
+            }
+            if(!$this->isValidIndex($index)) {
                 throw new ArgumentOutOfRangeException("index less than zero -or- index greater than max value.");
-            endif;
+            }
             array_splice($this->elements, $index, 0, $value);
         }
 
@@ -318,12 +318,12 @@ namespace System\Collections {
          * @return void
          */
         public function insertRange($index, ICollection $c) {
-            if(!$this->canWrite()):
+            if(!$this->canWrite()) {
                 throw new NotSupportedException("The \System\Collections\ArrayList is read-only. -or-  The \System\Collections\ArrayList has a fixed size.");
-            endif;
-            if(!$this->isValidIndex($index)):
+            }
+            if(!$this->isValidIndex($index)) {
                 throw new ArgumentOutOfRangeException("Index less than zero -or- index greater than max value.");
-            endif;
+            }
             $enumerator = $c->getEnumerator();
             while($enumerator->moveNext()){
                 array_splice($this->elements, $index, 0, $enumerator->current());
@@ -360,17 +360,17 @@ namespace System\Collections {
          * @return The zero-based index of the last occurrence of value within the range of elements in the \System\Collections\ArrayList that contains count number of elements and ends at startIndex, if found; otherwise, -1.
          */
         public function lastIndexOf($value, $startIndex=null, $count=null) {
-            if(!$this->isValidIndex($startIndex)):
+            if(!$this->isValidIndex($startIndex)) {
                 throw new ArgumentOutOfRangeException("startIndex is outside the range of valid indexes for the \System\Collections\ArrayList. -or- count is less than zero.");
-            endif;
+            }
 
             if(is_null($count)) {
                 $count = ($this->count() - 1) - $startIndex;
             }
 
-            if(!$this->isValidRange($startIndex, $count)):
+            if(!$this->isValidRange($startIndex, $count)) {
                 throw new ArgumentOutOfRangeException("startIndex and count do not specify a valid section in the \System\Collections\ArrayList.");
-            endif;
+            }
 
             $index = -1;
             for($i = 0; $i <= $count; $i++) {
@@ -403,9 +403,9 @@ namespace System\Collections {
          * @return void
          */
         public function remove($value) {
-            if(!$this->canWrite()):
+            if(!$this->canWrite()) {
                 throw new NotSupportedException("The \System\Collections\ArrayList is read-only. -or- The \System\Collections\ArrayList has a fixed size.");
-            endif;
+            }
             $index = $this->indexOf($value);
             if($index >= 0)
                 $this->removeAt($index);
@@ -420,13 +420,13 @@ namespace System\Collections {
          * @return void
          */
         public function removeAt($index) {
-            if(!$this->canWrite()):
+            if(!$this->canWrite()) {
                 throw new NotSupportedException("The \System\Collections\ArrayList is read-only. -or- The \System\Collections\ArrayList has a fixed size.");
-            endif;
+            }
 
-            if(!$this->isValidIndex($index)):
+            if(!$this->isValidIndex($index)) {
                 throw new ArgumentOutOfRangeException("index is less than zero.-or- index is greater than count.");
-            endif;
+            }
             unset($this->elements[$index]);
             $this->elements = array_values($this->elements);
         }
@@ -442,15 +442,15 @@ namespace System\Collections {
          * @return void
          */
         public function removeRange($index, $count) {
-            if(!$this->canWrite()):
+            if(!$this->canWrite()) {
                 throw new NotSupportedException("The \System\Collections\ArrayList is read-only. -or- The \System\Collections\ArrayList has a fixed size.");
-            endif;
-            if(!$this->isValidIndex($index) || $count < 0):
+            }
+            if(!$this->isValidIndex($index) || $count < 0) {
                 throw new ArgumentOutOfRangeException("index less than zero -or- index greater than max value.");
-            endif;
-            if(!$this->isValidRange($index, $count)):
+            }
+            if(!$this->isValidRange($index, $count)) {
                 throw new ArgumentException("index and count do not denote a valid range of elements in the \System\Collections\ArrayList.");
-            endif;
+            }
             for($i = 0; $i <= $count; $i++)
                 unset($this->elements[$index + $i]);
             $this->elements = array_values($this->elements);
@@ -465,9 +465,9 @@ namespace System\Collections {
          * @return ArrayList An \System\Collections\ArrayList with count number of elements, all of which are copies of value.
          */
         public static function repeat($value, $count) {
-            if($count < 0):
+            if($count < 0) {
                 throw new ArgumentOutOfRangeException("count is less than zero.");
-            endif;
+            }
             $list = new ArrayList();
             for($i = 0; $i < $count; $i++)
                 $list->add($value);
@@ -485,9 +485,9 @@ namespace System\Collections {
          * @return void
          */
         public function reverse($index=null, $count=null) {
-            if($this->isReadOnly()):
+            if($this->isReadOnly()) {
                 throw new NotSupportedException("The \System\Collections\ArrayList is read-only.");
-            endif;
+            }
             if(is_null($index) || is_null($count)) {
                 $this->reverseAll();
             } else {
@@ -500,12 +500,12 @@ namespace System\Collections {
         }
 
         private function reverseRange($index, $count) {
-            if(!$this->isValidRange($index, $count)):
+            if(!$this->isValidRange($index, $count)) {
                 throw new ArgumentException("index and count do not denote a valid range of elements in the \System\Collections\ArrayList.");
-            endif;
-            if(!$this->isValidIndex($index) || !$this->isValidIndex($count)):
+            }
+            if(!$this->isValidIndex($index) || !$this->isValidIndex($count)) {
                 throw new ArgumentOutOfRangeException("index is less than zero. -or - count is less than zero.");
-            endif;
+            }
 
             $length = round(($index + $count)/ 2);
             for(; $index < $length;):
@@ -525,9 +525,9 @@ namespace System\Collections {
          * @return void
          */
         public function sort(IComparer $comparer=null) {
-            if($this->isReadOnly()):
+            if($this->isReadOnly()) {
                 throw new NotSupportedException("The \System\Collections\ArrayList is read-only.");
-            endif;
+            }
             if($comparer instanceof IComparer) {
                 $this->sortComparable($comparer);
             } else {
@@ -549,12 +549,12 @@ namespace System\Collections {
          * @return void
          */
         public function setRange($index, $c) {
-            if($this->isReadOnly()):
+            if($this->isReadOnly()) {
                 throw new NotSupportedException("The \System\Collections\ArrayList is read-only.");
-            endif;
-            if($index < 0 || ($index + $c->count()) > $this->count()):
+            }
+            if($index < 0 || ($index + $c->count()) > $this->count()) {
                 throw new ArgumentOutOfRangeException("index is less than zero. -or-  index plus the number of elements in c is greater than \System\Collections\ArrayList.Count.");
-            endif;
+            }
             $enumerator = $c->getEnumerator();
             while($enumerator->moveNext()) {
                 $this->elements[$index] = $enumerator->current();
@@ -578,9 +578,9 @@ namespace System\Collections {
          * @throws \System\NotSupportedException The ArrayList is read-only. -or- The ArrayList has a fixed size.
          */
         public function trimToSize() {
-            if(!$this->canWrite()):
+            if(!$this->canWrite()) {
                 throw new NotSupportedException("The ArrayList is read-only. -or- The ArrayList has a fixed size.");
-            endif;
+            }
             $this->capacity($this->count());
         }
 

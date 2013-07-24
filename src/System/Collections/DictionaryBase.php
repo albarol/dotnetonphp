@@ -2,6 +2,9 @@
 
 namespace System\Collections {
 
+    use \System\ArgumentException as ArgumentException;
+    use \System\ArgumentNullException as ArgumentNullException;
+
     use \System\Collections\IDictionary as IDictionary;
 
     /**
@@ -14,12 +17,26 @@ namespace System\Collections {
      */
     abstract class DictionaryBase implements IDictionary {
 
-        protected $elements;
-        protected $typeOf;
+        protected $elements = array();
 
-        protected function __construct($typeOf) {
-            $this->typeOf = $typeOf;
-        }
+       /**
+         * Adds an element with the provided key and value to the System.Collections.IDictionary object.
+         * @access public
+         * @throws \System\ArgumentNullException key is null.
+         * @throws \System\ArgumentException An element with the same key already exists in the DictionaryBase. 
+         * @throws \System\NotSupportedException The DictionaryBase is read-only. -or- The DictionaryBase has a fixed size.
+         * @param $key The System.Object to use as the key of the element to add.
+         * @param $value The System.Object to use as the value of the element to add.
+         */
+         public function add($key, $value) {
+            if (is_null($key)) {
+                throw new ArgumentNullException("key is null");
+            }
+            if ($this->contains($key)) {
+                throw new ArgumentException("An element with the same key already exists in the DictionaryBase.");
+            }
+            $this->elements[$key] = $value;
+         } 
 
         /**
          * Copies the elements of the System.Collections.ICollection to an System.Array, starting at a particular System.Array index.
@@ -29,7 +46,7 @@ namespace System\Collections {
          * @param int $index The zero-based index in array at which copying begins.
          * @return void
          */
-        public function copyTo(&$array, $index) {
+        public function copyTo($index = 0) {
             // TODO: Implement copyTo() method.
         }
 
@@ -39,19 +56,10 @@ namespace System\Collections {
          * @return int The number of elements contained in the System.Collections.ICollection.
          */
         public function count() {
-            // TODO: Implement count() method.
+            return sizeof($this->elements);
         }
 
-        /**
-         * Adds an element with the provided key and value to the System.Collections.IDictionary object.
-         * @access public
-         * @throws ArgumentNullException|ArgumentException|NotSupportedException
-         * @param $key The System.Object to use as the key of the element to add.
-         * @param $value The System.Object to use as the value of the element to add.
-         */
-        public function add($key, $value) {
-            // TODO: Implement add() method.
-        }
+        
 
         /**
          * Removes all elements from the System.Collections.IDictionary object.
@@ -70,7 +78,7 @@ namespace System\Collections {
          * @return boolean true if the System.Collections.IDictionary contains an element with the key; otherwise, false.
          */
         public function contains($key) {
-            // TODO: Implement contains() method.
+            return array_key_exists($key, $this->elements);
         }
 
         /**

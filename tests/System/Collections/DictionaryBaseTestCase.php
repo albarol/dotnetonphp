@@ -1,14 +1,54 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../../src/Autoloader.php';
-
 use \System\Collections\DictionaryBase as DictionaryBase;
+use \System\Collections\Dictionary as Dictionary;
 
+/**
+ * @group collections
+*/
 class DictionaryBaseFixture extends PHPUnit_Framework_TestCase {
 
-    public function test_Add_CanAddElement() {
-        $this->markTestIncomplete("Method not implemented");
+    /**
+     * @test
+    */
+    public function Add_CanAddElement() {
+        
+        # Arrange:
+        $dict = new Dictionary;
+
+        # Act:
+        $dict->add("name", "dotnetonphp");
+
+        # Assert:
+        $this->assertEquals(1, $dict->count());
     }
+
+    /**
+      * @test
+      * @expectedException \System\ArgumentNullException
+     */
+     public function Add_ThrowsExceptionWhenKeyIsNull() {
+
+         # Arrange:
+        $dict = new Dictionary;
+
+         # Act:
+        $dict->add(null, 1);
+     }
+
+     /**
+      * @test
+      * @expectedException \System\ArgumentException
+     */
+     public function Add_ThrowsExceptionWhenKeyExists() {
+
+         # Arrange:
+        $dict = new Dictionary;
+
+         # Act:
+        $dict->add("name", "dotnetonphp");
+        $dict->add("name", "php");
+     }
 
     /*public function testClearElements() {
         $dict = new Dictionary();
