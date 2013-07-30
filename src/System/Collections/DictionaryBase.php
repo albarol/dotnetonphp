@@ -21,6 +21,7 @@ namespace System\Collections {
 
        /**
          * Adds an element with the provided key and value to the System.Collections.IDictionary object.
+         *
          * @access public
          * @throws \System\ArgumentNullException key is null.
          * @throws \System\ArgumentException An element with the same key already exists in the DictionaryBase. 
@@ -39,9 +40,36 @@ namespace System\Collections {
          } 
 
         /**
-         * Copies the elements of the System.Collections.ICollection to an System.Array, starting at a particular System.Array index.
+         * Removes all elements from the System.Collections.IDictionary object.
          * @access public
-         * @throws ArgumentNullException|ArgumentOutOfRangeException|ArgumentException
+         * @throws \System\NotSupportedException The DictionaryBase is read-only.
+         */
+        public function clear() {
+            $this->elements = array();
+        }
+
+        /**
+         * Determines whether the System.Collections.IDictionary object contains an element with the specified key.
+         *
+         * @access public
+         * @throws \System\ArgumentNullException key is null.
+         * @param $key The key to locate in the System.Collections.IDictionary object.
+         * @return boolean true if the System.Collections.IDictionary contains an element with the key; otherwise, false.
+         */
+        public function contains($key) {
+            if (is_null($key)) {
+                throw new ArgumentNullException("key is null.");
+            }
+            return array_key_exists($key, $this->elements);
+        }
+
+        /**
+         * Copies the elements of the System.Collections.ICollection to an System.Array, starting at a particular System.Array index.
+         *
+         * @access public
+         * @throws \System\ArgumentNullException
+         * @throws \System\ArgumentOutOfRangeException
+         * @throws \System\ArgumentException
          * @param array $array The one-dimensional System.Array that is the destination of the elements copied from System.Collections.ICollection. The System.Array must have zero-based indexing.
          * @param int $index The zero-based index in array at which copying begins.
          * @return void
@@ -52,34 +80,13 @@ namespace System\Collections {
 
         /**
          * Gets the number of elements contained in the System.Collections.ICollection.
+         *
          * @access public
          * @return int The number of elements contained in the System.Collections.ICollection.
          */
         public function count() {
             return sizeof($this->elements);
-        }
-
-        
-
-        /**
-         * Removes all elements from the System.Collections.IDictionary object.
-         * @access public
-         * @throws NotSupportedException
-         */
-        public function clear() {
-            // TODO: Implement clear() method.
-        }
-
-        /**
-         * Determines whether the System.Collections.IDictionary object contains an element with the specified key.
-         * @access public
-         * @throws ArgumentNullException
-         * @param $key The key to locate in the System.Collections.IDictionary object.
-         * @return boolean true if the System.Collections.IDictionary contains an element with the key; otherwise, false.
-         */
-        public function contains($key) {
-            return array_key_exists($key, $this->elements);
-        }
+        } 
 
         /**
          * Removes the element with the specified key from the System.Collections.IDictionary object.

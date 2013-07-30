@@ -50,76 +50,109 @@ class DictionaryBaseFixture extends PHPUnit_Framework_TestCase {
         $dict->add("name", "php");
      }
 
-    /*public function testClearElements() {
-        $dict = new Dictionary();
-        $dict->add("name", "Alexandre");
-        $dict->add("age", 23);
-        $this->assertEquals(2, $dict->count());
-        $dict->clear();
-        $this->assertEquals(0, $dict->count());
-    }
+     /*
+      * @test
+     public function Add_ThrowsExceptionWhenDictionaryBaseIsReadOnly() {
+         
+         # Arrange:
+     
+         # Act:
+     
+         # Assert:
+     
+     }*/
 
-    public function testContainsKey() {
-        $dict = new Dictionary();
-        $dict->add("name", "Alexandre");
-        $dict->add("age", 23);
-        $this->assertEquals(2, $dict->count());
-        $this->assertEquals(true, $dict->containsKey("name"));
-        $this->assertEquals(false, $dict->containsKey("dateOfBirth"));
-    }
+     /**
+      * @test
+     */
+     public function Clear_ShouldClearAllElements() {
 
-    public function testContainsValue() {
-        $dict = new Dictionary();
-        $dict->add("name", "Alexandre");
-        $dict->add("age", 23);
-        $this->assertEquals(2, $dict->count());
-        $this->assertEquals(true, $dict->containsValue(23));
-        $this->assertEquals(false, $dict->containsValue(42));
-    }
+         # Arrange:
+         $dict = new Dictionary;
+         $dict->add("key", "value");
 
-    public function testCount() {
-        $dict = new Dictionary();
-        $dict->add("name", "Alexandre");
-        $dict->add("age", 23);
-        $this->assertEquals(2, $dict->count());
-    }
+         # Act:
+         $dict->clear();
 
-    public function testGetKeys() {
-        $dict = new Dictionary();
-        $dict->add("name", "Alexandre");
-        $dict->add("age", 23);
-        $this->assertEquals(2, $dict->count());
+         # Assert:
+         $this->assertEquals(0, $dict->count());
+     }
 
-        $keys = $dict->getKeys();
-        $this->assertEquals("name", $keys[0]);
-        $this->assertEquals("age", $keys[1]);
-    }
+     /*
+      * @test
+      * @expectedException \System\NotSupportedException
+     
+     public function Clear_ThrowsExceptionWhenDictionaryIsReadOnly() 
+     {
+         
+         # Arrange:
+     
+         # Act:
+     
+         # Assert:
+     
+     }
+     */
 
+     /**
+      * @test
+      * @expectedException \System\ArgumentNullException
+     */
+     public function Contains_ThrowsExceptionWhenKeyIsNull() {
+
+        # Arrange:
+        $dict = new Dictionary;
+
+        # Act:
+        $dict->contains(null);
+     }
+
+     /**
+      * @test
+     */
+     public function Contains_ShouldTrueIfElementExists() {
+
+        # Arrange:
+        $dict = new Dictionary;
+        $dict->add("key", "value");
+
+         # Act:
+        $result = $dict->contains("key");
+
+         # Assert:
+        $this->assertTrue($result);
+     }
+
+    /**
+     * @test
+    */
+    public function Contains_ShouldFalseIfElementDoesNotExists() {
     
-    public function testGetValues() {
-        $dict = new Dictionary();
-        $dict->add("name", "Alexandre");
-        $dict->add("age", 23);
-        $this->assertEquals(2, $dict->count());
+        # Arrange:
+        $dict = new Dictionary;
+        $dict->add("key", "value");
 
-        $values = $dict->getValues();
-        $this->assertEquals("Alexandre", $values[0]);
-        $this->assertEquals(23, $values[1]);
+        # Act:
+        $result = $dict->contains("value");
+
+        # Assert:
+        $this->assertFalse($result);
+
     }
 
-    public function testGetElement() {
-        $dict = new Dictionary();
-        $dict->add("name", "Alexandre");
-        $dict->add("age", 23);
-        $this->assertEquals(23, $dict->get("age"));
-    }
+     /**
+      * @test
+     */
+     public function Count_ShouldGetNumberOfElements() {
 
-    public function testCantGetElement() {
-        $this->setExpectedException("InvalidArgumentException");
+         # Arrange:
+        $dict = new Dictionary;
 
-        $dict = new Dictionary();
-        $dict->add("name", "Alexandre");
-        $dict->add("age", 23);
-        $this->assertEquals(23, $dict->get("dateOfBirth"));
-    }*/
+         # Act:
+        $dict->add("key", "value");
+
+         # Assert:
+        $this->assertEquals(1, $dict->count());
+     }
+
 }
