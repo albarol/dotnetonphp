@@ -1,12 +1,12 @@
 <?php
 
-namespace System\Collections 
-{
+namespace System\Collections {
 
     use \System\Collections\IEnumerable as IEnumerable;
 
     /**
      * Defines size, enumerators, and synchronization methods for all nongeneric collections.
+     *
      * @name ICollection
      * @interface
      * @package System
@@ -16,6 +16,7 @@ namespace System\Collections
     {
         /**
          * Copies the elements of the System.Collections.ICollection to an System.Array, starting at a particular System.Array index.
+         *
          * @access public
          * @throws \System\ArgumentNullException array is a null reference.
          * @throws \System\ArgumentOutOfRangeException index is less than zero. 

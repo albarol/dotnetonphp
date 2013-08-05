@@ -98,26 +98,26 @@ class DictionaryBaseFixture extends PHPUnit_Framework_TestCase {
       * @test
       * @expectedException \System\ArgumentNullException
      */
-     public function Contains_ThrowsExceptionWhenKeyIsNull() {
+     public function ContainsKey_ThrowsExceptionWhenKeyIsNull() {
 
         # Arrange:
         $dict = new Dictionary;
 
         # Act:
-        $dict->contains(null);
+        $dict->containsKey(null);
      }
 
      /**
       * @test
      */
-     public function Contains_ShouldTrueIfElementExists() {
+     public function ContainsKey_ShouldTrueIfElementExists() {
 
         # Arrange:
         $dict = new Dictionary;
         $dict->add("key", "value");
 
          # Act:
-        $result = $dict->contains("key");
+        $result = $dict->containsKey("key");
 
          # Assert:
         $this->assertTrue($result);
@@ -126,14 +126,14 @@ class DictionaryBaseFixture extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function Contains_ShouldFalseIfElementDoesNotExists() {
+    public function ContainsKey_ShouldFalseIfElementDoesNotExists() {
     
         # Arrange:
         $dict = new Dictionary;
         $dict->add("key", "value");
 
         # Act:
-        $result = $dict->contains("value");
+        $result = $dict->containsKey("value");
 
         # Assert:
         $this->assertFalse($result);

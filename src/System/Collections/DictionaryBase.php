@@ -34,7 +34,7 @@ namespace System\Collections {
             if (is_null($key)) {
                 throw new ArgumentNullException("key is null");
             }
-            if ($this->contains($key)) {
+            if ($this->containsKey($key)) {
                 throw new ArgumentException("An element with the same key already exists in the DictionaryBase.");
             }
             $this->elements[$key] = $value;
@@ -58,7 +58,7 @@ namespace System\Collections {
          * @param $key The key to locate in the \System\Collections\IDictionary object.
          * @return boolean true if the \System\Collections\IDictionary contains an element with the key; otherwise, false.
          */
-        public function contains($key) {
+        public function containsKey($key) {
             if (is_null($key)) {
                 throw new ArgumentNullException("key is null.");
             }
@@ -98,7 +98,8 @@ namespace System\Collections {
         /**
          * Removes the element with the specified key from the System.Collections.IDictionary object.
          * @access public
-         * @throws ArgumentNullException|NotSupportedException
+         * @throws \System\ArgumentNullException
+         * @throws \System\NotSupportedException
          * @param $key The key of the element to remove.
          */
         public function remove($key) {
