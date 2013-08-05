@@ -4,6 +4,7 @@ namespace System\Collections {
 
     use \System\ArgumentException as ArgumentException;
     use \System\ArgumentNullException as ArgumentNullException;
+    use \System\ArgumentOutOfRangeException as ArgumentOutOfRangeException;
 
     use \System\Collections\IDictionary as IDictionary;
 
@@ -41,6 +42,7 @@ namespace System\Collections {
 
         /**
          * Removes all elements from the System.Collections.IDictionary object.
+         *
          * @access public
          * @throws \System\NotSupportedException The DictionaryBase is read-only.
          */
@@ -53,8 +55,8 @@ namespace System\Collections {
          *
          * @access public
          * @throws \System\ArgumentNullException key is null.
-         * @param $key The key to locate in the System.Collections.IDictionary object.
-         * @return boolean true if the System.Collections.IDictionary contains an element with the key; otherwise, false.
+         * @param $key The key to locate in the \System\Collections\IDictionary object.
+         * @return boolean true if the \System\Collections\IDictionary contains an element with the key; otherwise, false.
          */
         public function contains($key) {
             if (is_null($key)) {
@@ -64,18 +66,23 @@ namespace System\Collections {
         }
 
         /**
-         * Copies the elements of the System.Collections.ICollection to an System.Array, starting at a particular System.Array index.
+         * Copies the elements of the \System\Collections\ICollection to an \System\Array, starting at a particular System.Array index.
          *
          * @access public
-         * @throws \System\ArgumentNullException
-         * @throws \System\ArgumentOutOfRangeException
-         * @throws \System\ArgumentException
-         * @param array $array The one-dimensional System.Array that is the destination of the elements copied from System.Collections.ICollection. The System.Array must have zero-based indexing.
+         * @throws \System\ArgumentOutOfRangeException index is less than zero.
+         * @throws \System\ArgumentException index is equal to or greater than the length of array.
+         * @param array $array The one-dimensional System.Array that is the destination of the elements copied from \System\Collections\ICollection. The \System\Array must have zero-based indexing.
          * @param int $index The zero-based index in array at which copying begins.
-         * @return void
+         * @return array Elements of the \System\Collections\ICollection
          */
         public function copyTo($index = 0) {
-            // TODO: Implement copyTo() method.
+            if ($index < 0) { 
+                throw new ArgumentOutOfRangeException("index is null");
+            }
+            if ($index >= $this->count()) {
+                throw new ArgumentException("index is equal to or greater than the length of array.");
+            }
+            return array_slice($this->elements, $index);
         }
 
         /**

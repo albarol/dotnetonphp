@@ -155,4 +155,79 @@ class DictionaryBaseFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals(1, $dict->count());
      }
 
+
+     /**
+      * @test
+      * @expectedException \System\ArgumentOutOfRangeException
+     */
+     public function CopyTo_ThrowsExceptionWhenIndexIsLessThanZero() {
+     
+         # Arrange:
+         $dict = new Dictionary;
+     
+         # Act:
+         $dict->copyTo(-1);
+     }
+
+     /**
+      * @test
+      * @expectedException \System\ArgumentException
+     */
+     public function CopyTo_ThrowsExceptionWhenIndexIsEqualLengthOfArray() {
+     
+         # Arrange:
+         $dict = new Dictionary;
+         $dict->add('key', 1);
+     
+         # Act:
+         $dict->copyTo(1);
+     }
+
+    /**
+      * @test
+      * @expectedException \System\ArgumentException
+     */
+     public function CopyTo_ThrowsExceptionWhenIndexIsGreatherLengthOfArray() {
+     
+         # Arrange:
+         $dict = new Dictionary;
+         $dict->add('key', 1);
+     
+         # Act:
+         $dict->copyTo(2);
+     }
+
+     /**
+      * @test
+     */
+     public function CopyTo_ShouldCopyAllElements() {
+     
+         # Arrange:
+         $dict = new Dictionary;
+         $dict->add('key', 'value');
+         $dict->add('value', 'key');
+     
+         # Act:
+         $el = $dict->copyTo();
+     
+         # Assert:
+         $this->assertEquals(2, sizeof($el));
+     }
+
+     /**
+      * @test
+     */
+     public function CopyTo_ShouldCopyPartOfElements() {
+     
+         # Arrange:
+         $dict = new Dictionary;
+         $dict->add('key', 'value');
+         $dict->add('value', 'key');
+     
+         # Act:
+         $el = $dict->copyTo(1);
+     
+         # Assert:
+         $this->assertEquals(1, sizeof($el));
+     }
 }
