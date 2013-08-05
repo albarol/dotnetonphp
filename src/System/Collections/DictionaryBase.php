@@ -24,11 +24,11 @@ namespace System\Collections {
          * Adds an element with the provided key and value to the System.Collections.IDictionary object.
          *
          * @access public
-         * @throws \System\ArgumentNullException key is null.
-         * @throws \System\ArgumentException An element with the same key already exists in the DictionaryBase. 
-         * @throws \System\NotSupportedException The DictionaryBase is read-only. -or- The DictionaryBase has a fixed size.
-         * @param $key The System.Object to use as the key of the element to add.
-         * @param $value The System.Object to use as the value of the element to add.
+         * @throws \System\ArgumentNullException key is a null reference
+         * @throws \System\ArgumentException An element with the same key already exists in the IDictionary.
+         * @throws \System\NotSupportedException The IDictionary is read-only.
+         * @param $key The \System\Object to use as the key of the element to add.
+         * @param $value The \System\Object to use as the value of the element to add.
          */
          public function add($key, $value) {
             if (is_null($key)) {
@@ -51,12 +51,12 @@ namespace System\Collections {
         }
 
         /**
-         * Determines whether the System.Collections.IDictionary object contains an element with the specified key.
+         * Determines whether the IDictionary object contains an element with the specified key.
          *
          * @access public
          * @throws \System\ArgumentNullException key is null.
-         * @param $key The key to locate in the \System\Collections\IDictionary object.
-         * @return boolean true if the \System\Collections\IDictionary contains an element with the key; otherwise, false.
+         * @param object $key The key to locate in the IDictionary object.
+         * @return boolean true if the IDictionary contains an element with the key; otherwise, false.
          */
         public function containsKey($key) {
             if (is_null($key)) {

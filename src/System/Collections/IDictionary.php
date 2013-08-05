@@ -38,26 +38,6 @@ namespace System\Collections
         function containsKey($key);
 
         /**
-         * Removes the element with the specified key from the System.Collections.IDictionary object.
-         * @access public
-         * @abstract
-         * @throws \System\ArgumentNullExceptionkey is a null reference 
-         * @throws \System\NotSupportedException The IDictionary is read-only.
-         * @param $key The key of the element to remove.
-         * @return true if the element is successfully removed; otherwise, false. This method also returns false if key was not found in the original IDictionary. 
-         */
-        function remove($key);
-
-        /**
-         * Gets an \System\Collections\ICollection containing the keys of the IDictionary. 
-         *
-         * @access public
-         * @abstract
-         * @return \System\Collections\ICollection An \System\Collections\ICollection object containing the keys of the \System\Collections\IDictionary object.
-         */
-        function keys();
-
-        /**
          * Gets the element with the specified key.
          *
          * @access public
@@ -69,6 +49,25 @@ namespace System\Collections
          */
         function get($key);
 
+        /**
+         * Gets an \System\Collections\ICollection containing the keys of the IDictionary. 
+         *
+         * @access public
+         * @abstract
+         * @return \System\Collections\ICollection An \System\Collections\ICollection object containing the keys of the \System\Collections\IDictionary object.
+         */
+        function keys();
+
+        /**
+         * Removes the element with the specified key from the System.Collections.IDictionary object.
+         * @access public
+         * @abstract
+         * @throws \System\ArgumentNullExceptionkey is a null reference 
+         * @throws \System\NotSupportedException The IDictionary is read-only.
+         * @param $key The key of the element to remove.
+         * @return true if the element is successfully removed; otherwise, false. This method also returns false if key was not found in the original IDictionary. 
+         */
+        function remove($key);
 
         /**
          * Gets the element with the specified key.
@@ -84,7 +83,6 @@ namespace System\Collections
          */
         function set($key, $value);
 
-
         /**
          * Gets an \System\Collections\ICollection object containing the values in the \System\Collections\IDictionary object.
          *
@@ -93,5 +91,7 @@ namespace System\Collections
          * @return \System\Collections\ICollection An \System\Collections\ICollection object containing the values in the \System\Collections\IDictionary object.
          */
          function values();
+
+
     }
 }
