@@ -7,6 +7,7 @@ namespace System\Collections {
     use \System\ArgumentOutOfRangeException as ArgumentOutOfRangeException;
 
     use \System\Collections\IDictionary as IDictionary;
+    use \System\Collections\KeyNotFoundException as KeyNotFoundException;
 
     /**
      * Provides the abstract base class for a strongly typed collection of key/value pairs.
@@ -93,7 +94,26 @@ namespace System\Collections {
          */
         public function count() {
             return sizeof($this->elements);
-        } 
+        }
+
+        /**
+         * Gets the element with the specified key.
+         *
+         * @access public
+         * @throws \System\ArgumentNullException key is a null reference
+         * @throws \System\KeyNotFoundException The property is retrieved and key is not found.
+         * @param $key The key of the element to get.
+         * @return object The element with the specified key.
+         */
+         public function get($key) {
+            if (is_null($key)) {
+                throw new ArgumentNullException("key is null.");
+            }
+            if (!$this->containsKey($key)) {
+                throw new KeyNotFoundException("The property is retrieved and key is not found.");
+            }
+            return $this->elements[$key];
+         }
 
         /**
          * Removes the element with the specified key from the System.Collections.IDictionary object.
@@ -125,35 +145,34 @@ namespace System\Collections {
         }
 
         /**
-         * Gets an System.Collections.ICollection object containing the keys of the System.Collections.IDictionary object.
+         * Gets an array containing the keys of the IDictionary. 
+         *
          * @access public
-         * @return ICollection An System.Collections.ICollection object containing the keys of the System.Collections.IDictionary object.
+         * @return array An array object containing the keys of the \System\Collections\IDictionary object.
          */
         public function keys() {
-            // TODO: Implement keys() method.
+            return array_keys($this->elements);
         }
 
         /**
-         * Gets the element with the specified key.
+         * Set the element with the specified key.
+         *
          * @access public
-         * @throws ArgumentNullException|NotSupportedException
-         * @param $key The key of the element to get or set.
-         * @return object The element with the specified key.
-         */
-        public function get($key) {
-            // TODO: Implement get() method.
-        }
-
-        /**
-         * Gets the element with the specified key.
-         * @access public
-         * @throws ArgumentNullException|NotSupportedException
-         * @param $key The key of the element to get or set.
+         * @throws \System\ArgumentNullException key is a null reference
+         * @throws \System\KeyNotFoundException The property is retrieved and key is not found.
+         * @throws \System\NotSupportedException The property is set and the IDictionary is read-only.
+         * @param $key The key of the element to set.
          * @param $value The element added
          * @return void
          */
         public function set($key, $value) {
-            // TODO: Implement set() method.
+           if (is_null($key)) {
+                throw new ArgumentNullException("key is null.");
+           }
+           if (!$this->containsKey($key)) {
+                throw new KeyNotFoundException("The property is retrieved and key is not found.");
+           }
+           $this->elements[$key] = $value;
         }
 
         /**

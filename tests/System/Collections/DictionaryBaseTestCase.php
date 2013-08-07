@@ -81,7 +81,7 @@ class DictionaryBaseFixture extends PHPUnit_Framework_TestCase {
      /*
       * @test
       * @expectedException \System\NotSupportedException
-     
+
      public function Clear_ThrowsExceptionWhenDictionaryIsReadOnly() 
      {
          
@@ -229,5 +229,107 @@ class DictionaryBaseFixture extends PHPUnit_Framework_TestCase {
      
          # Assert:
          $this->assertEquals(1, sizeof($el));
+     }
+
+
+     /**
+      * @test
+      * @expectedException \System\ArgumentNullException
+     */
+     public function Get_ThrowsExceptionWhenKeyIsNull() {
+     
+         # Arrange:
+         $dict = new Dictionary;
+     
+         # Act:
+         $dict->get(null);
+     }
+
+     /**
+      * @test
+      * @expectedException \System\Collections\KeyNotFoundException
+     */
+     public function Get_ThrowsExceptionWhenKeyNotFound() {
+     
+         # Arrange:
+         $dict = new Dictionary;
+     
+         # Act:
+         $dict->get('key');
+     }
+
+     /**
+      * @test
+     */
+     public function Get_ShouldReturnElement() {
+     
+         # Arrange:
+         $dict = new Dictionary;
+         $dict->add('key', 1);
+     
+         # Act:
+         $value = $dict->get('key');
+     
+         # Assert:
+         $this->assertEquals(1, $value);
+     }
+
+     /**
+      * @test
+     */
+     public function Keys_ShouldGetAllKeysFromDictionary() {
+     
+         # Arrange:
+         $dict = new Dictionary;
+         $dict->add('key', 'value');
+         $dict->add('key2', 'value2');
+     
+         # Act:
+         $keys = $dict->keys();
+
+         # Assert:
+         $this->assertEquals(2, sizeof($keys));
+     }
+
+     /**
+      * @test
+      * @expectedException \System\ArgumentNullException
+     */
+     public function Set_ThrowsExceptionWhenKeyIsNull() {
+     
+         # Arrange:
+         $dict = new Dictionary;
+
+         # Act:
+         $dict->set(null, 'value');
+     }
+
+     /**
+      * @test
+      * @expectedException \System\Collections\KeyNotFoundException
+     */
+     public function Set_ThrowsExceptionWhenKeyNotFound() {
+     
+         # Arrange:
+         $dict = new Dictionary;
+
+         # Act:
+         $dict->set('key', 'value');
+     }
+
+     /**
+      * @test
+     */
+     public function Set_ShouldReplaceValueInSpecificKey() {
+     
+         # Arrange:
+         $dict = new Dictionary;
+         $dict->add('key', 'value');
+     
+         # Act:
+         $dict->set('key', 1);
+     
+         # Assert:
+         $this->assertEquals(1, $dict->get('key'));
      }
 }

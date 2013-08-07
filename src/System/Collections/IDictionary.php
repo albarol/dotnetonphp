@@ -50,11 +50,11 @@ namespace System\Collections
         function get($key);
 
         /**
-         * Gets an \System\Collections\ICollection containing the keys of the IDictionary. 
+         * Gets an array containing the keys of the IDictionary. 
          *
          * @access public
          * @abstract
-         * @return \System\Collections\ICollection An \System\Collections\ICollection object containing the keys of the \System\Collections\IDictionary object.
+         * @return array An array object containing the keys of the \System\Collections\IDictionary object.
          */
         function keys();
 
