@@ -332,4 +332,62 @@ class DictionaryBaseFixture extends PHPUnit_Framework_TestCase {
          # Assert:
          $this->assertEquals(1, $dict->get('key'));
      }
+
+     /**
+      * @test
+      * @expectedException \System\ArgumentNullException
+     */
+     public function Remove_ThrowsExceptionWhenKeyIsNull() {
+     
+         # Arrange:
+         $dict = new Dictionary;
+     
+         # Act:
+         $dict->remove(null);
+     }
+
+     /*
+      * @test
+      * @expectedException \System\NotSupportedException
+
+     public function Remove_ThrowsExceptionWhenDictionaryIsReadOnly() {
+     
+         # Arrange:
+         $dict = new Dictionary;
+     
+         # Act:
+     }
+     */
+
+     /**
+      * @test
+     */
+     public function Remove_ShouldReturnTrueWhenElementWasRemoved() {
+     
+         # Arrange:
+         $dict = new Dictionary;
+         $dict->add('key', 'value');
+     
+         # Act:
+         $result = $dict->remove('key');
+     
+         # Assert:
+         $this->assertTrue($result);
+     }
+
+     /**
+      * @test
+     */
+     public function Remove_ShouldReturnFalseWhenElementNotRemoved() {
+     
+         # Arrange:
+         $dict = new Dictionary;
+         $dict->add('key', 'value');
+     
+         # Act:
+         $result = $dict->remove('value');
+     
+         # Assert:
+         $this->assertFalse($result);
+     }
 }

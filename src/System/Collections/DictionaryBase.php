@@ -117,14 +117,23 @@ namespace System\Collections {
 
         /**
          * Removes the element with the specified key from the System.Collections.IDictionary object.
+         * 
          * @access public
-         * @throws \System\ArgumentNullException
-         * @throws \System\NotSupportedException
+         * @throws \System\ArgumentNullException key is a null reference 
+         * @throws \System\NotSupportedException The IDictionary is read-only.
          * @param $key The key of the element to remove.
+         * @return true if the element is successfully removed; otherwise, false. This method also returns false if key was not found in the original IDictionary. 
          */
-        public function remove($key) {
-            // TODO: Implement remove() method.
-        }
+         public function remove($key) {
+            if (is_null($key)) {
+                throw new ArgumentNullException("key is null.");
+            }
+            if (!$this->containsKey($key)) {
+                return false;
+            }
+            unset($this->elements[$key]);
+            return true;
+         }
 
         /**
          * Gets a value indicating whether the System.Collections.IDictionary object has a fixed size.

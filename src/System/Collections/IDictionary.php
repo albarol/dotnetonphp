@@ -62,7 +62,7 @@ namespace System\Collections
          * Removes the element with the specified key from the System.Collections.IDictionary object.
          * @access public
          * @abstract
-         * @throws \System\ArgumentNullExceptionkey is a null reference 
+         * @throws \System\ArgumentNullException key is a null reference 
          * @throws \System\NotSupportedException The IDictionary is read-only.
          * @param $key The key of the element to remove.
          * @return true if the element is successfully removed; otherwise, false. This method also returns false if key was not found in the original IDictionary. 
@@ -70,7 +70,7 @@ namespace System\Collections
         function remove($key);
 
         /**
-         * Gets the element with the specified key.
+         * Set the element with the specified key.
          *
          * @access public
          * @abstract
