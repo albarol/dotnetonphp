@@ -35,7 +35,7 @@ namespace System\Collections
          * @param object $key The key to locate in the IDictionary object.
          * @return boolean true if the IDictionary contains an element with the key; otherwise, false.
          */
-        function containsKey($key);
+        function contains($key);
 
         /**
          * Gets the element with the specified key.
@@ -50,6 +50,24 @@ namespace System\Collections
         function get($key);
 
         /**
+         * Gets a value indicating whether the Dictionary object has a fixed size.
+         *
+         * @access public
+         * @abstract
+         * @return bool true if the IDictionary object has a fixed size; otherwise, false.
+        */
+        public function isFixedSize();
+
+        /**
+         * Gets a value indicating whether the Dictionary object is read-only.
+         *
+         * @access public
+         * @abstract
+         * @return bool true if the IDictionary object is read-only; otherwise, false.
+        */
+        public function isReadOnly();
+
+        /**
          * Gets an array containing the keys of the IDictionary. 
          *
          * @access public
@@ -60,6 +78,7 @@ namespace System\Collections
 
         /**
          * Removes the element with the specified key from the System.Collections.IDictionary object.
+         * 
          * @access public
          * @abstract
          * @throws \System\ArgumentNullException key is a null reference 
@@ -84,14 +103,12 @@ namespace System\Collections
         function set($key, $value);
 
         /**
-         * Gets an \System\Collections\ICollection object containing the values in the \System\Collections\IDictionary object.
+         * Gets an array containing the values in the \System\Collections\IDictionary object.
          *
          * @access public
          * @abstract
-         * @return \System\Collections\ICollection An \System\Collections\ICollection object containing the values in the \System\Collections\IDictionary object.
+         * @return array An array object containing the values in the \System\Collections\IDictionary object.
          */
          function values();
-
-
     }
 }

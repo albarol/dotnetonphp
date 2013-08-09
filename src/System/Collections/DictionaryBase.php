@@ -19,7 +19,9 @@ namespace System\Collections {
      */
     abstract class DictionaryBase implements IDictionary {
 
-        protected $elements = array();
+        protected $dictionary = array();
+        protected $isFixedSize = false;
+        protected $isReadOnly = false;
 
        /**
          * Adds an element with the provided key and value to the System.Collections.IDictionary object.
@@ -35,10 +37,10 @@ namespace System\Collections {
             if (is_null($key)) {
                 throw new ArgumentNullException("key is null");
             }
-            if ($this->containsKey($key)) {
+            if ($this->contains($key)) {
                 throw new ArgumentException("An element with the same key already exists in the DictionaryBase.");
             }
-            $this->elements[$key] = $value;
+            $this->dictionary[$key] = $value;
          } 
 
         /**
@@ -48,7 +50,7 @@ namespace System\Collections {
          * @throws \System\NotSupportedException The DictionaryBase is read-only.
          */
         public function clear() {
-            $this->elements = array();
+            $this->dictionary = array();
         }
 
         /**
@@ -59,11 +61,11 @@ namespace System\Collections {
          * @param object $key The key to locate in the IDictionary object.
          * @return boolean true if the IDictionary contains an element with the key; otherwise, false.
          */
-        public function containsKey($key) {
+        public function contains($key) {
             if (is_null($key)) {
                 throw new ArgumentNullException("key is null.");
             }
-            return array_key_exists($key, $this->elements);
+            return array_key_exists($key, $this->dictionary);
         }
 
         /**
@@ -83,7 +85,7 @@ namespace System\Collections {
             if ($index >= $this->count()) {
                 throw new ArgumentException("index is equal to or greater than the length of array.");
             }
-            return array_slice($this->elements, $index);
+            return array_slice($this->dictionary, $index);
         }
 
         /**
@@ -93,8 +95,28 @@ namespace System\Collections {
          * @return int The number of elements contained in the System.Collections.ICollection.
          */
         public function count() {
-            return sizeof($this->elements);
+            return sizeof($this->dictionary);
         }
+
+        /**
+         * Determines whether the specified Object is equal to the current Object.
+         *
+         * @access public
+         * @param object The object to compare with the current object
+         * @return bool  true if the specified Object is equal to the current Object; otherwise, false.
+        */
+        public function equals($obj) {
+            return $this === $obj;
+        }
+
+        /**
+         * Allows an Object to attempt to free resources and perform other cleanup operations before the Object is reclaimed by garbage collection. 
+         *
+         * @abstract
+         * @access protected
+         * @return void
+         */
+        protected abstract function finalize();
 
         /**
          * Gets the element with the specified key.
@@ -109,11 +131,100 @@ namespace System\Collections {
             if (is_null($key)) {
                 throw new ArgumentNullException("key is null.");
             }
-            if (!$this->containsKey($key)) {
+            if (!$this->contains($key)) {
                 throw new KeyNotFoundException("The property is retrieved and key is not found.");
             }
-            return $this->elements[$key];
+            $value = $this->dictionary[$key];
+            $this->onGet($key, $value);
+            return $value;
          }
+
+         /**
+          * Performs additional custom processes before clearing the contents of the DictionaryBase instance. 
+          *
+          * @abstract
+          * @access protected
+          */
+         protected abstract function onClear();
+
+
+         /**
+          * Performs additional custom processes after clearing the contents of the DictionaryBase instance. 
+          * 
+          * @abstract
+          * @access protected
+         */ 
+         protected abstract function onClearComplete();
+
+
+         /**
+          * Gets the element with the specified key and value in the DictionaryBase instance.
+          *
+          * @abstract
+          * @access protected
+         */
+         protected abstract function onGet($key, $currentValue);
+
+
+         /**
+          *  Performs additional custom processes before inserting a new element into the DictionaryBase instance. 
+          *
+          * @abstract
+          * @access protected
+         */
+         protected abstract function onInsert($key, $value);
+
+
+         /**
+          *  Performs additional custom processes after inserting a new element into the DictionaryBase instance. 
+          *
+          * @abstract
+          * @access protected
+         */
+         protected abstract function onInsertComplete($key, $value);
+
+
+         /**
+          * Performs additional custom processes before removing an element from the DictionaryBase instance.
+          *
+          * @abstract
+          * @access protected
+         */
+         protected abstract function onRemove($key, $value);
+
+
+         /**
+          * Performs additional custom processes after removing an element from the DictionaryBase instance. 
+          *
+          * @abstract
+          * @access protected
+         */
+         protected abstract function onRemoveComplete($key, $value);
+
+         /**
+          *  Performs additional custom processes before setting a value in the DictionaryBase instance. 
+          * 
+          * @abstract
+          * @access protected
+         */
+         protected abstract function onSet($key, $oldValue, $newValue);
+
+        /**
+         * Performs additional custom processes after setting a value in the DictionaryBase instance. 
+         *
+         * @abstract
+         * @access protected
+         */
+         protected abstract function onSetComplete($key, $oldValue, $newValue);
+
+         /**
+          * Performs additional custom processes when validating the element with the specified key and value. 
+          *
+          * @abstract
+          * @access protected
+         */
+         protected abstract function onValidate($key, $value);
+
 
         /**
          * Removes the element with the specified key from the System.Collections.IDictionary object.
@@ -128,29 +239,31 @@ namespace System\Collections {
             if (is_null($key)) {
                 throw new ArgumentNullException("key is null.");
             }
-            if (!$this->containsKey($key)) {
+            if (!$this->contains($key)) {
                 return false;
             }
-            unset($this->elements[$key]);
+            unset($this->dictionary[$key]);
             return true;
          }
 
         /**
          * Gets a value indicating whether the System.Collections.IDictionary object has a fixed size.
+         *
          * @access public
          * @return boolean true if the System.Collections.IDictionary object has a fixed size; otherwise, false.
          */
         public function isFixedSize() {
-            // TODO: Implement isFixedSize() method.
+            return $this->isFixedSize;
         }
 
         /**
          * Gets a value indicating whether the System.Collections.IDictionary object is read-only.
+         *
          * @access public
          * @return boolean true if the System.Collections.IDictionary object is read-only; otherwise, false.
          */
         public function isReadOnly() {
-            // TODO: Implement isReadOnly() method.
+            return $this->isReadOnly;
         }
 
         /**
@@ -160,7 +273,7 @@ namespace System\Collections {
          * @return array An array object containing the keys of the \System\Collections\IDictionary object.
          */
         public function keys() {
-            return array_keys($this->elements);
+            return array_keys($this->dictionary);
         }
 
         /**
@@ -178,19 +291,20 @@ namespace System\Collections {
            if (is_null($key)) {
                 throw new ArgumentNullException("key is null.");
            }
-           if (!$this->containsKey($key)) {
+           if (!$this->contains($key)) {
                 throw new KeyNotFoundException("The property is retrieved and key is not found.");
            }
-           $this->elements[$key] = $value;
+           $this->dictionary[$key] = $value;
         }
 
         /**
-         * Gets an System.Collections.ICollection object containing the values in the System.Collections.IDictionary object.
+         * Gets an array containing the values in the \System\Collections\IDictionary object.
+         *
          * @access public
-         * @return ICollection An System.Collections.ICollection object containing the values in the System.Collections.IDictionary object.
+         * @return array An array object containing the values in the \System\Collections\IDictionary object.
          */
         public function values() {
-            // TODO: Implement values() method.
+            return array_values($this->dictionary);
         }
 
         /**
@@ -200,6 +314,11 @@ namespace System\Collections {
          */
         public function getEnumerator() {
             // TODO: Implement getEnumerator() method.
+        }
+
+
+        public function toString() {
+            return get_class($this);
         }
     }
 }

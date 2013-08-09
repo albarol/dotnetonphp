@@ -1,0 +1,7 @@
+{
+	"folders":
+	[
+		{ "path": "src" },
+        { "path": "tests" }
+	]
+}

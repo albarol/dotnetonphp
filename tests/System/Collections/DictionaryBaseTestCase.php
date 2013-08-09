@@ -50,18 +50,6 @@ class DictionaryBaseFixture extends PHPUnit_Framework_TestCase {
         $dict->add("name", "php");
      }
 
-     /*
-      * @test
-     public function Add_ThrowsExceptionWhenDictionaryBaseIsReadOnly() {
-         
-         # Arrange:
-     
-         # Act:
-     
-         # Assert:
-     
-     }*/
-
      /**
       * @test
      */
@@ -78,46 +66,30 @@ class DictionaryBaseFixture extends PHPUnit_Framework_TestCase {
          $this->assertEquals(0, $dict->count());
      }
 
-     /*
-      * @test
-      * @expectedException \System\NotSupportedException
-
-     public function Clear_ThrowsExceptionWhenDictionaryIsReadOnly() 
-     {
-         
-         # Arrange:
-     
-         # Act:
-     
-         # Assert:
-     
-     }
-     */
-
      /**
       * @test
       * @expectedException \System\ArgumentNullException
      */
-     public function ContainsKey_ThrowsExceptionWhenKeyIsNull() {
+     public function Contains_ThrowsExceptionWhenKeyIsNull() {
 
         # Arrange:
         $dict = new Dictionary;
 
         # Act:
-        $dict->containsKey(null);
+        $dict->contains(null);
      }
 
      /**
       * @test
      */
-     public function ContainsKey_ShouldTrueIfElementExists() {
+     public function Contains_ShouldTrueIfElementExists() {
 
         # Arrange:
         $dict = new Dictionary;
         $dict->add("key", "value");
 
          # Act:
-        $result = $dict->containsKey("key");
+        $result = $dict->contains("key");
 
          # Assert:
         $this->assertTrue($result);
@@ -126,35 +98,19 @@ class DictionaryBaseFixture extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function ContainsKey_ShouldFalseIfElementDoesNotExists() {
+    public function Contains_ShouldFalseIfElementDoesNotExists() {
     
         # Arrange:
         $dict = new Dictionary;
         $dict->add("key", "value");
 
         # Act:
-        $result = $dict->containsKey("value");
+        $result = $dict->contains("value");
 
         # Assert:
         $this->assertFalse($result);
 
     }
-
-     /**
-      * @test
-     */
-     public function Count_ShouldGetNumberOfElements() {
-
-         # Arrange:
-        $dict = new Dictionary;
-
-         # Act:
-        $dict->add("key", "value");
-
-         # Assert:
-        $this->assertEquals(1, $dict->count());
-     }
-
 
      /**
       * @test
@@ -231,6 +187,51 @@ class DictionaryBaseFixture extends PHPUnit_Framework_TestCase {
          $this->assertEquals(1, sizeof($el));
      }
 
+     /**
+      * @test
+     */
+     public function Count_ShouldGetNumberOfElements() {
+
+         # Arrange:
+        $dict = new Dictionary;
+
+         # Act:
+        $dict->add("key", "value");
+
+         # Assert:
+        $this->assertEquals(1, $dict->count());
+     }
+
+     /**
+      * @test
+     */
+     public function Equals_ShouldReturnTrueIfObjectIsTheSame() {
+     
+         # Arrange:
+         $dict = new Dictionary;
+     
+         # Act:
+         $result = $dict->equals($dict);
+     
+         # Assert:
+         $this->assertTrue($result);
+     }
+
+     /**
+      * @test
+     */
+     public function Equals_ShouldReturnFalseWhenObjectIsDifferent() {
+     
+         # Arrange:
+         $dic1 = new Dictionary;
+         $dic2 = new Dictionary;
+     
+         # Act:
+         $result = $dic1->equals($dic2);
+     
+         # Assert:
+         $this->assertFalse($result);
+     }
 
      /**
       * @test
@@ -346,19 +347,6 @@ class DictionaryBaseFixture extends PHPUnit_Framework_TestCase {
          $dict->remove(null);
      }
 
-     /*
-      * @test
-      * @expectedException \System\NotSupportedException
-
-     public function Remove_ThrowsExceptionWhenDictionaryIsReadOnly() {
-     
-         # Arrange:
-         $dict = new Dictionary;
-     
-         # Act:
-     }
-     */
-
      /**
       * @test
      */
@@ -389,5 +377,21 @@ class DictionaryBaseFixture extends PHPUnit_Framework_TestCase {
      
          # Assert:
          $this->assertFalse($result);
+     }
+
+     /**
+      * @test
+     */
+     public function Values_ShouldGetValuesFromCollection() {
+     
+         # Arrange:
+         $dict = new Dictionary;
+         $dict->add('key', 'value');
+     
+         # Act:
+         $values = $dict->values();
+     
+         # Assert:
+        $this->assertEquals('value', $values[0]);
      }
 }
