@@ -40,7 +40,9 @@ namespace System\Collections {
             if ($this->contains($key)) {
                 throw new ArgumentException("An element with the same key already exists in the DictionaryBase.");
             }
+            $this->onInsert($key, $value);
             $this->dictionary[$key] = $value;
+            $this->onInsertComplete($key, $value);
          } 
 
         /**
@@ -50,7 +52,9 @@ namespace System\Collections {
          * @throws \System\NotSupportedException The DictionaryBase is read-only.
          */
         public function clear() {
+            $this->onClear();
             $this->dictionary = array();
+            $this->onClearComplete();
         }
 
         /**
@@ -242,7 +246,10 @@ namespace System\Collections {
             if (!$this->contains($key)) {
                 return false;
             }
+            $value = $this->dictionary[$key];
+            $this->onRemove($key, $value);
             unset($this->dictionary[$key]);
+            $this->onRemoveComplete($key, $value);
             return true;
          }
 
@@ -294,7 +301,10 @@ namespace System\Collections {
            if (!$this->contains($key)) {
                 throw new KeyNotFoundException("The property is retrieved and key is not found.");
            }
+           $oldValue = $this->dictionary[$key];
+           $this->onSet($key, $oldValue, $value);
            $this->dictionary[$key] = $value;
+           $this->onSetComplete($key, $oldValue, $value);
         }
 
         /**
