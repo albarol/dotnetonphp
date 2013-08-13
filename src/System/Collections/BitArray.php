@@ -85,19 +85,14 @@ namespace System\Collections {
 
         /**
          * Copies the elements of the System.Collections.ICollection to an System.Array, starting at a particular System.Array index.
+         *
          * @access public
-         * @throws \System\ArgumentNullException array is null.
          * @throws \System\ArgumentOutOfRangeException index is less than zero. -or- index greater than size of queue
          * @param int $index The zero-based index in array at which copying begins.
          * @return array The one-dimensional array that is the destination of the elements copied from ICollection. The array must have zero-based indexing.
          */
         public function copyTo($index = 0)
         {
-            if(is_null($array)) 
-            {
-                throw new ArgumentNullException("array is null.");
-            }
-
             if($index < 0 || $index > $this->count()) 
             {
                 throw new ArgumentOutOfRangeException("index is less than zero. -or- index greater than size of queue");

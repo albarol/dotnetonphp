@@ -128,7 +128,7 @@ namespace System
          * @param \System\IFormatProvider $provider An System.IFormatProvider interface implementation that supplies culture-specific formatting information.
          * @return Type An System.Object instance of type conversionType whose value is equivalent to the value of this instance.
          */
-        function toType(Type $conversionType, IFormatProvider $provider);
+        function toType(Type $conversionType, IFormatProvider $provider = null);
 
         /**
          * Converts the value of this instance to an equivalent 16-bit unsigned integer using the specified culture-specific formatting information.

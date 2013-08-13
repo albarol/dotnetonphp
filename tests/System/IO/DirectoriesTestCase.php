@@ -166,7 +166,8 @@ class DirectoriesTestCase extends PHPUnit_Framework_TestCase
         for($i = 0; $i < 3; $i++)
         {
             $file = $name.'/'.md5(rand(1, 10).rand(11, 20)).'txt';
-            fopen($file, 'w');
+            $fd = fopen($file, 'w');
+            fclose($fd);
         }
         
         # Act:

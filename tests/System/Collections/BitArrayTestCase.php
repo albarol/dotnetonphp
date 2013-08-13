@@ -102,19 +102,6 @@ class BitArrayTestCase extends PHPUnit_Framework_TestCase {
 
     /**
      * @test
-     * @expectedException \System\ArgumentNullException
-    */
-    public function CopyTo_ThrowsExceptionWhenArrayIsNull() {
-        
-        # Arrange:
-        $array = null;
-        
-        # Act:
-        $this->bit_array->copyTo($array, 0);
-    }
-
-    /**
-     * @test
      * @expectedException \System\ArgumentOutOfRangeException
     */
     public function CopyTo_ThrowsExceptionWhenIndexIsLessThanZero() {
@@ -123,7 +110,7 @@ class BitArrayTestCase extends PHPUnit_Framework_TestCase {
         $buffer = array();
         
         # Act:
-        $this->bit_array->copyTo($buffer, -1);
+        $this->bit_array->copyTo(-1);
     }
 
     /**
@@ -131,24 +118,16 @@ class BitArrayTestCase extends PHPUnit_Framework_TestCase {
      * @expectedException \System\ArgumentOutOfRangeException
     */
     public function CopyTo_ThrowsExceptionWhenIndexIsGreaterThanSizeOfQueue() {
-
-        # Arrange:
-        $buffer = array();
-        
         # Act:
-        $this->bit_array->copyTo($buffer, 7);
+        $this->bit_array->copyTo(7);
     }
 
     /**
      * @test
     */
     public function CopyTo_CanCopyBitArrayToArray() {
-        
-        # Arrange:
-        $buffer = array();
-        
         # Act:
-        $this->bit_array->copyTo($buffer, 0);
+        $buffer = $this->bit_array->copyTo(0);
         
         # Assert:
         $this->assertEquals(4, sizeof($buffer));
@@ -159,11 +138,8 @@ class BitArrayTestCase extends PHPUnit_Framework_TestCase {
     */
     public function CopyTo_CanCopyPartOfBitArrayToArray() {
 
-        # Arrange:
-        $buffer = array();
-        
         # Act:
-        $this->bit_array->copyTo($buffer, 1);
+        $buffer = $this->bit_array->copyTo(1);
         
         # Assert:
         $this->assertEquals(3, sizeof($buffer));

@@ -194,10 +194,9 @@ class HashtableTestCase extends PHPUnit_Framework_TestCase {
     {
         # Arrange:
         $hash = new Hashtable;
-        $array = array();
         
         # Act:
-        $hash->copyTo($array, -1);
+        $hash->copyTo(-1);
     }
 
     /**
@@ -208,13 +207,29 @@ class HashtableTestCase extends PHPUnit_Framework_TestCase {
         # Arrange:
         $hash = new Hashtable;
         $hash->add(1, "a");
-        $array = array();
         
         # Act:
-        $hash->copyTo($array);
+        $buffer = $hash->copyTo();
 
         # Assert:
-        $this->assertEquals(1, sizeof($array));
+        $this->assertEquals(1, sizeof($buffer));
+    }
+
+    /**
+     * @test
+     */
+    public function CopyTo_CanCopyPartOfElementsFromHashtable() 
+    {
+        # Arrange:
+        $hash = new Hashtable;
+        $hash->add(1, "a");
+        $hash->add(2, "b");
+        
+        # Act:
+        $buffer = $hash->copyTo(1);
+
+        # Assert:
+        $this->assertEquals(1, sizeof($buffer));
     }
 
     /**
