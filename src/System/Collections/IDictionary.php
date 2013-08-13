@@ -15,84 +15,99 @@ namespace System\Collections
     {
         /**
          * Adds an element with the provided key and value to the System.Collections.IDictionary object.
+         *
          * @access public
-         * @throws ArgumentNullException|ArgumentException|NotSupportedException
-         * @param $key The System.Object to use as the key of the element to add.
-         * @param $value The System.Object to use as the value of the element to add.
+         * @abstract
+         * @throws \System\ArgumentNullException key is a null reference
+         * @throws \System\ArgumentException An element with the same key already exists in the IDictionary.
+         * @throws \System\NotSupportedException The IDictionary is read-only.
+         * @param $key The \System\Object to use as the key of the element to add.
+         * @param $value The \System\Object to use as the value of the element to add.
          */
         function add($key, $value);
 
         /**
-         * Removes all elements from the System.Collections.IDictionary object.
-         * @access public
-         * @throws NotSupportedException
-         */
-        function clear();
-
-        /**
          * Determines whether the IDictionary object contains an element with the specified key.
+         *
          * @access public
-         * @throws \System\ArgumentNullException key is null.
          * @abstract
+         * @throws \System\ArgumentNullException key is null.
          * @param object $key The key to locate in the IDictionary object.
          * @return boolean true if the IDictionary contains an element with the key; otherwise, false.
          */
         function contains($key);
 
         /**
-         * Removes the element with the specified key from the System.Collections.IDictionary object.
-         * @access public
-         * @throws ArgumentNullException|NotSupportedException
-         * @param $key The key of the element to remove.
-         */
-        function remove($key);
-
-        /**
-         * Gets a value indicating whether the System.Collections.IDictionary object has a fixed size.
-         * @access public
-         * @return boolean true if the System.Collections.IDictionary object has a fixed size; otherwise, false.
-         */
-        function isFixedSize();
-
-        /**
-         * Gets a value indicating whether the System.Collections.IDictionary object is read-only.
-         * @access public
-         * @return boolean true if the System.Collections.IDictionary object is read-only; otherwise, false.
-         */
-        function isReadOnly();
-
-        /**
-         * Gets an System.Collections.ICollection object containing the keys of the System.Collections.IDictionary object.
-         * @access public
-         * @return ICollection An System.Collections.ICollection object containing the keys of the System.Collections.IDictionary object.
-         */
-        function keys();
-
-        /**
          * Gets the element with the specified key.
+         *
          * @access public
-         * @throws ArgumentNullException|NotSupportedException
-         * @param $key The key of the element to get or set.
+         * @abstract
+         * @throws \System\ArgumentNullException key is a null reference
+         * @throws \System\KeyNotFoundException The property is retrieved and key is not found.
+         * @param $key The key of the element to get.
          * @return object The element with the specified key.
          */
         function get($key);
 
+        /**
+         * Gets a value indicating whether the Dictionary object has a fixed size.
+         *
+         * @access public
+         * @abstract
+         * @return bool true if the IDictionary object has a fixed size; otherwise, false.
+        */
+        public function isFixedSize();
 
         /**
-         * Gets the element with the specified key.
+         * Gets a value indicating whether the Dictionary object is read-only.
+         *
          * @access public
-         * @throws ArgumentNullException|NotSupportedException
-         * @param $key The key of the element to get or set.
+         * @abstract
+         * @return bool true if the IDictionary object is read-only; otherwise, false.
+        */
+        public function isReadOnly();
+
+        /**
+         * Gets an array containing the keys of the IDictionary. 
+         *
+         * @access public
+         * @abstract
+         * @return array An array object containing the keys of the \System\Collections\IDictionary object.
+         */
+        function keys();
+
+        /**
+         * Removes the element with the specified key from the System.Collections.IDictionary object.
+         * 
+         * @access public
+         * @abstract
+         * @throws \System\ArgumentNullException key is a null reference 
+         * @throws \System\NotSupportedException The IDictionary is read-only.
+         * @param $key The key of the element to remove.
+         * @return true if the element is successfully removed; otherwise, false. This method also returns false if key was not found in the original IDictionary. 
+         */
+        function remove($key);
+
+        /**
+         * Set the element with the specified key.
+         *
+         * @access public
+         * @abstract
+         * @throws \System\ArgumentNullException key is a null reference
+         * @throws \System\KeyNotFoundException The property is retrieved and key is not found.
+         * @throws \System\NotSupportedException The property is set and the IDictionary is read-only.
+         * @param $key The key of the element to set.
          * @param $value The element added
          * @return void
          */
         function set($key, $value);
 
-
         /**
-         * Gets an System.Collections.ICollection object containing the values in the System.Collections.IDictionary object.
+         * Gets an array containing the values in the \System\Collections\IDictionary object.
+         *
          * @access public
-         * @return ICollection An System.Collections.ICollection object containing the values in the System.Collections.IDictionary object.
+         * @abstract
+         * @return array An array object containing the values in the \System\Collections\IDictionary object.
          */
          function values();
     }

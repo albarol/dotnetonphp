@@ -264,7 +264,7 @@ namespace System {
     */
     public static function sign($value) 
     {
-        if(is_numeric($value))
+        if(is_numeric($value) && $value != 0)
         {
             return $value / abs($value);
         }

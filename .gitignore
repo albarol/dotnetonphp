@@ -10,7 +10,8 @@ tests/logs/
 tests/coverage/
 composer.phar
 
-#######
-# VIM #
-#######
+###########
+# EDITORS #
+###########
+*.sublime-workspace
 *.swp 

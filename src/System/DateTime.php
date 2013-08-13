@@ -873,7 +873,7 @@ namespace System
          * @param \System\IFormatProvider $provider An System.IFormatProvider interface implementation that supplies culture-specific formatting information.
          * @return Type An System.Object instance of type conversionType whose value is equivalent to the value of this instance.
          */
-        public function toType(Type $conversionType, IFormatProvider $provider)
+        public function toType(Type $conversionType, IFormatProvider $provider = null)
         {
 
         }
