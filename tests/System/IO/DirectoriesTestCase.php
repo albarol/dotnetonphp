@@ -6,8 +6,7 @@ use \System\DateTime as DateTime;
 /**
  * @group io
 */
-class DirectoriesTestCase extends PHPUnit_Framework_TestCase
-{
+class DirectoriesTestCase extends PHPUnit_Framework_TestCase {
 
     private function generateName() 
     {

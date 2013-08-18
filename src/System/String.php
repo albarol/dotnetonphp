@@ -87,7 +87,11 @@ namespace System {
         public static function compareOrdinal($strA, $strB) {
             $first = ($strA instanceof String) ? $strA->value() : $strA;
             $second = ($strB instanceof String) ? $strB->value() : $strB;
-            return strcmp($first, $second);
+            $result = strcmp($first, $second);
+            if ($result == 0) {
+                return 0;
+            }
+            return $result > 0 ? 1 : -1;
         }
 
         /**
@@ -97,8 +101,7 @@ namespace System {
          * @return int An integer indicating the lexical relationship between the two comparands.
         */
         public function compareTo($strB) {
-            $first = ($strB instanceof String) ? $strB->value() : $strB;
-            return strcmp($this->value, $first);
+            return String::compareOrdinal($this, $strB);
         }
 
         /**

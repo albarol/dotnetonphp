@@ -1432,6 +1432,7 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @expectedException \System\ArgumentOutOfRangeException
     */
     public function FromBinary_ThrowsExceptionWhenValueIsGreaterThanMaxValue() 
     {

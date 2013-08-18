@@ -7,6 +7,7 @@ namespace System\IO {
 
     /**
      * Specifies how the operating system should open a file.
+     *
      * @access public
      * @name FileMode
      * @package System
