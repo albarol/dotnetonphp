@@ -123,8 +123,10 @@ namespace System\IO {
          * @return bool true if the stream supports writing; otherwise, false.
          */
         public function canWrite() {
-            return ($this->access != FileAccess::read()) &&
-                   ($this->mode != FileMode::open()) &&
+            $readAccess = 1; //read
+            $openMode = "r"; //open
+            return ($this->access->value() != $readAccess) &&
+                   ($this->mode->value() != $openMode) &&
                    isset($this->stream);
         }
 
@@ -144,6 +146,18 @@ namespace System\IO {
                 throw new IOException("An I/O error occurs.");
             }
         }
+
+        /**
+         * Gets a FileSecurity object that encapsulates the access control list (ACL) entries for the file described by the current FileStream object.
+         * 
+         * @access public
+         * @throws \System\ObjectDisposedException The file is closed.
+         * @throws \System\IO\IOException An I/O error occurred while opening the file.
+         * @throws \System\SystemException The file could not be found.
+         * @throws \System\UnauthorizedAccessException This operation is not supported on the current platform. -or- The caller does not have the required permission.
+         * @return \System\Security\AccessControl\FileSecurity Gets a FileSecurity object
+        */
+        public function getAccessControl() { return null; }
 
         /**
          * Gets the length in bytes of the stream
@@ -172,18 +186,26 @@ namespace System\IO {
          */
         public function position($value=null) {
             if(!is_null($value)) {
-                if($value < 0) throw new ArgumentOutOfRangeException("Attempted to set the position to a negative value.");
-                if(!$this->canSeek()) throw new NotSupportedException("The stream does not support seeking.");
+                
+                if($value < 0) {
+                    throw new ArgumentOutOfRangeException("Attempted to set the position to a negative value.");
+                }
+                
+                if(!$this->canSeek()) { 
+                    throw new NotSupportedException("The stream does not support seeking.");
+                }
+
                 try{
                     fseek($this->stream, $value);
                 } catch(Exception $e) {
                     throw new IOException("An I/O error occurred.");
                 }
-            }
-            try {
-                return ftell($this->stream);
-            } catch(\Exception $e) {
-                throw new IOException("An I/O error occurred.");
+            } else {
+                try {
+                    return ftell($this->stream);
+                } catch(\Exception $e) {
+                    throw new IOException("An I/O error occurred.");
+                }    
             }
         }
 
@@ -194,9 +216,7 @@ namespace System\IO {
          * @return void
          */
         public function lock() {
-            if(!isset($this->stream)) {
-                throw new ObjectDisposedException("The file is closed.");
-            }
+            $this->assertOpened();
             try {
                 flock($this->stream, LOCK_EX);
             } catch(Exception $e) {
@@ -232,7 +252,7 @@ namespace System\IO {
                 fseek($this->stream, $offset);
                 $content = fread($this->stream, $copySize);
                 foreach (str_split($content) as $item) {
-                    array_push($result, ord($item));
+                    array_push($result, $item);
                 }
                 return $result;
             } catch(\Exception $e) {
@@ -256,7 +276,7 @@ namespace System\IO {
                 return -1;
             }
                 
-            return ord(fgetc($this->stream));
+            return fgetc($this->stream);
         }
 
         /**
@@ -288,6 +308,19 @@ namespace System\IO {
                 throw new IOException("An I/O error ocurs.");
             }
         }
+
+        /**
+         * Applies access control list (ACL) entries described by a FileSecurity object to the file described by the current FileStream object.
+         *
+         * @access public
+         * @throws \System\ObjectDisposedException The file is closed.
+         * @throws \System\ArgumentNullException The fileSecurity parameter is null.
+         * @throws \System\SystemException The file could not be found.
+         * @throws \System\UnauthorizedAccessException This operation is not supported on the current platform. -or- The caller does not have the required permission.
+         * @param \System\Security\AccessControl\FileSecurity $fileSecurity A FileSecurity object that describes an ACL entry to apply to the current file.
+         * @return void 
+        */
+        public function setAccessControl($fileSecurity) { }
 
         /**
          * Sets the length of this stream to the given value.
@@ -328,36 +361,54 @@ namespace System\IO {
 
 
         /**
-         * When overridden in a derived class, writes a sequence of bytes to the current stream and advances the current position within this stream by the number of bytes written.
+         * Writes a block of bytes to this stream using data from a buffer.
+         *
          * @access public
          * @param array $array An array of bytes. This method copies count bytes from buffer to the current stream.
          * @param int $offset The zero-based byte offset in buffer at which to begin copying bytes to the current stream.
          * @param int $count The number of bytes to be written to the current stream.
          * @return void
          */
-        public function write($array, $offset, $count) {
-            $copyAreaSize = $offset+$count;
+        public function write($array, $offset=0, $count=null) {
+            
+            if (is_null($count)) {
+                $count = sizeof($array) - $offset;
+            }
 
-            if(is_null($array)) throw new ArgumentNullException("array is null.");
-            if($offset < 0 || $count < 0) throw new ArgumentOutOfRangeException("offset or count is negative.");
-            if(($copyAreaSize) > sizeof($array)) throw new ArgumentException("offset and count describe an invalid range in array.");
+            $writeSize = $count + $offset;
 
-            while(($offset < $copyAreaSize) && !feof($this->stream)) {
-                $this->writeByte($array[$offset]);
+            if(is_null($array)) {
+                throw new ArgumentNullException("array is null.");
+            }
+            
+            if($offset < 0 || $count < 0) { 
+                throw new ArgumentOutOfRangeException("offset or count is negative.");
+            }
+            
+            if($writeSize > sizeof($array)) {
+                throw new ArgumentException("offset and count describe an invalid range in array.");
+            }
+
+            $bytes = null;
+            while(($offset < $writeSize)) {
+                $bytes .= $array[$offset];
                 $offset++;
             }
+            fwrite($this->stream, $bytes);
         }
 
         /**
          * Writes a byte to the current position in the stream and advances the position within the stream by one byte.
+         *
          * @access public
-         * @throws IOException|NotSupportedException|ObjectDisposedException
+         * @throws \System\NotSupportedException The stream is closed. 
+         * @throws \System\ObjectDisposedException The stream does not support writing. 
          * @param $value The byte to write to the stream.
          * @return void
          */
         public function writeByte($value) {
             $this->assertOpened();
-            if(!$this->canWrite()) throw new NotSupportedException("The stream does not support writing.");
+            $this->assertWrite();
             fwrite($this->stream, $value);
         }
 
@@ -373,6 +424,12 @@ namespace System\IO {
         private function assertRead() {
             if (!$this->canRead()) {
                 throw new NotSupportedException("The stream does not support reading.");
+            }
+        }
+
+        private function assertWrite() {
+            if (!$this->canWrite()) {
+                throw new NotSupportedException("The stream does not support writing.");
             }
         }
     }

@@ -125,6 +125,7 @@ namespace System\IO {
 
         /**
          * Gets or sets a value, in miliseconds, that determines how long the stream will attempt to read before timing out.
+         *
          * @access public
          * @throws InvalidOperationException
          * @param int $value Set a value, in miliseconds, that determines how long the stream will attempt to read before timing out.
