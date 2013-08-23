@@ -19,21 +19,6 @@ class FilesFixture extends PHPUnit_Framework_TestCase {
         return $file_name;    
     }
 
-    // public function setUp() {
-    //     $this->files = array(
-    //         'fromFile' => dirname(__FILE__) . "/../../resources/system.io.fromFile.txt",
-    //         'toFile' => dirname(__FILE__) . "/../../resources/system.io.File.txt",
-    //         'streamWriter' => dirname(__FILE__) . "/../../resources/system.io.StreamWriter.txt"
-    //     );
-    // }
-
-    // public function tearDown() {
-    //     foreach($this->files as $k => $v) {
-    //         if(file_exists($v) && $k != "streamWriter")
-    //             unlink($v);
-    //     }
-    // }
-
     /**
      * @test
      * @expectedException \System\ArgumentNullException
@@ -97,28 +82,42 @@ class FilesFixture extends PHPUnit_Framework_TestCase {
     */
     public function Copy_ThrowsExceptionWhenFileNotFound() {
         # Arrange:
-        $fromFile = $this->generateFile();
+        $fromFile = $this->generateName();
         $toFile = $this->generateName();
 
         # Act:
         Files::copy($fromFile, $toFile);
     }
 
-    // /**
-    //  * @test
-    // */
-    // public function Copy_ThrowsExceptionWhenFileExists() {
-    //     $this->setExpectedException("\\System\\IO\\IOException");
-    //     Files::copy($this->files['streamWriter'], $this->files['streamWriter']);
-    // }
+    /**
+     * @test
+     * @expectedException \System\IO\IOException
+    */
+    public function Copy_ThrowsExceptionWhenFileExists() {
 
-    // /**
-    //  * @test
-    // */
-    // public function Copy_CanCopyFile() {
-    //     Files::copy($this->files['streamWriter'], $this->files['toFile']);
-    //     $this->fileExists($this->files['toFile']);
-    // }
+        # Arrange:
+        $fromFile = $this->generateFile();
+        $toFile = $this->generateFile();
+
+        Files::copy($fromFile, $toFile);
+
+    }
+
+    /**
+     * @test
+    */
+    public function Copy_CanCopyFile() {
+
+        # Arrange:
+        $fromFile = $this->generateFile();
+        $toFile = $this->generateName();
+
+        # Act:
+        Files::copy($fromFile, $toFile);
+
+        # Assert:
+        $this->assertFileExists($toFile);
+    }
 
     // /**
     //  * @test

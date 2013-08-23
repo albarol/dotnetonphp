@@ -51,6 +51,12 @@ namespace System\IO {
          *
          * @access public
          * @static
+         * @throws \System\UnauthorizedAccessException The caller does not have the required permission.
+         * @throws \System\ArgumentException path is a zero-length string, contains only white space, or contains one or more invalid characters as defined by InvalidPathChars. 
+         * @throws \System\ArgumentNullException path is null. 
+         * @throws \System\IO\PathTooLongException The specified path, file name, or both exceed the system-defined maximum length.For example, on Windows-based platforms, paths must be less than 248 characters, and file names must be less than 260 characters.
+         * @throws \System\IO\DirectoryNotFoundException The specified path is invalid (for example, it is on an unmapped drive). 
+         * @throws \System\NotSupportedException path is in an invalid format. 
          * @param string $path The path to the file to append to.
          * @return \System\IO\StreamWriter A StreamWriter that appends UTF-8 encoded text to an existing file. 
          */
@@ -75,15 +81,20 @@ namespace System\IO {
 
         /**
          * Copies an existing file to a new file. Overwriting a file of the same name is allowed.
+         *
+         * @access public
          * @static
-         * @throws IOException
+         * @throws \System\UnauthorizedAccessException The caller does not have the required permission.
+         * @throws \System\ArgumentException sourceFileName or destFileName is a zero-length string, contains only white space, or contains one or more invalid characters as defined by InvalidPathChars. -or- sourceFileName or destFileName specifies a directory. 
+         * @throws \System\IO\IOException destFileName is read-only, or destFileName exists and overwrite is false. -or- An I/O error has occurred.
          * @param string $sourceFileName The file to copy.
          * @param string $destFileName The name of the destination file. This cannot be a directory.
          * @return void
          */
-        public static function copy($sourceFileName, $destFileName) {
+        public static function copy($sourceFileName, $destFileName, $overwrite=false) {
+            self::assertFileExists($sourceFileName);
             $source = new FileInfo($sourceFileName);
-            $source->copyTo($destFileName, false);
+            $source->copyTo($destFileName, $overwrite);
         }
 
         /**
