@@ -1438,7 +1438,7 @@ class DateTimeTestCase extends PHPUnit_Framework_TestCase
     {
         # Arrange:
         $binary = mktime(11, 11, 11, 1, 2, 1901);
-    
+
         # Act:
         $date = DateTime::fromBinary($binary);
     }

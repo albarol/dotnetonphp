@@ -2,18 +2,15 @@
 
 namespace System\IO {
 
-use \System\ArgumentNullException as ArgumentNullException;
-
-use \System\IO\FileInfo as FileInfo;
-use \System\IO\StreamReader as StreamReader;
-use \System\IO\StreamWriter as StreamWriter;
+    use \System\ArgumentNullException as ArgumentNullException;
 
     /**
      * Provides static methods for the creation, copying, deletion, moving, and opening of files, and aids in the creation of System.IO.FileStream objects.
+     *
+     * @access public
      * @name File
      * @package System
      * @subpackage IO
-     * @access public
      */
     final class Files {
 
@@ -24,18 +21,26 @@ use \System\IO\StreamWriter as StreamWriter;
 
         /**
          * Opens a file, appends the specified string to the file, and then closes the file. If the file does not exist, this method creates a file, writes the specified string to the file, then closes the file.
+         *
          * @access public
          * @static
-         * @throws ArgumentNullException|ArgumentException|PathTooLongException
+         * @throws \System\ArgumentNullException path is null.
+         * @throws \System\ArgumentException path is a zero-length string, contains only white space, or contains one or more invalid characters as defined by System.IO.Path.InvalidPathChars.
+         * @throws \System\IO\PathTooLongException The specified path, file name, or both exceed the system-defined maximum length. For example, on Windows-based platforms, paths must be less than 248 characters, and file names must be less than 260 characters.
          * @param string $path The file to append the specified string to.
          * @param string $contents The string to append to the file.
-         * @param Encoding $encoding The character encoding to use.
+         * @param \System\Text\Encoding $encoding The character encoding to use.
          * @return void
          */
         public static function appendAllText($path, $contents, $encoding=null) {
-            if($path == null) throw new ArgumentNullException("path is null.");
-            if(strlen($path) == 0) throw new ArgumentException("path is a zero-length string, contains only white space, or contains one or more invalid characters as defined by System.IO.Path.InvalidPathChars.");
-            if(strlen($path) > self::MAX_LENGTH) throw new PathTooLongException("The specified path, file name, or both exceed the system-defined maximum length. For example, on Windows-based platforms, paths must be less than 248 characters, and file names must be less than 260 characters. ");
+
+            self::assertNullArgument($path);
+            self::assertPathName($path);
+
+            if(strlen($path) == 0) {
+                throw new ArgumentException("path is a zero-length string, contains only white space, or contains one or more invalid characters as defined by System.IO.Path.InvalidPathChars.");
+            }
+
             $writer = new StreamWriter($path);
             $writer->write($contents);
             $writer->close();
@@ -43,10 +48,11 @@ use \System\IO\StreamWriter as StreamWriter;
 
         /**
          * Creates a StreamWriter that appends UTF-8 encoded text to an existing file.
+         *
          * @access public
          * @static
          * @param string $path The path to the file to append to.
-         * @return StreamWriter A StreamWriter that appends UTF-8 encoded text to an existing file. 
+         * @return \System\IO\StreamWriter A StreamWriter that appends UTF-8 encoded text to an existing file. 
          */
         public static function appendText($path) {
             return new StreamWriter($path, true);
@@ -54,12 +60,13 @@ use \System\IO\StreamWriter as StreamWriter;
 
         /**
          * Creates or overwrites the specified file with the specified buffer size, file options, and file security.
+         *
          * @access public
          * @static
          * @param string $path The name of the file.
          * @param int $bufferSize The number of bytes buffered for reads and writes to the file. 
-         * @param string $options One of the FileOptions values that describes how to create or overwrite the file.
-         * @param string $fileSecurity One of the FileSecurity values that determines the access control and audit security for the file.
+         * @param \System\IO\FileOptions $options One of the FileOptions values that describes how to create or overwrite the file.
+         * @param \System\Security\AccessControl\FileSecurity $fileSecurity One of the FileSecurity values that determines the access control and audit security for the file.
          * @return void
          */
         public static function create($path, $bufferSize=null, $options=null, $fileSecurity=null) {
@@ -246,7 +253,6 @@ use \System\IO\StreamWriter as StreamWriter;
          * @return array A string array containing all lines of the file.
          */
         public static function readAllLines($path) {
-            self::validateOpen($path);
             $lines = array();
             $reader = new StreamReader($path);
             while(!$reader->endOfStream()) {
@@ -255,11 +261,22 @@ use \System\IO\StreamWriter as StreamWriter;
             return $lines;
         }
 
-        private static function validateOpen($path) {
-            if(is_null($path)) throw new ArgumentNullException("path is null.");
-            if(strlen($path) > self::MAX_LENGTH) throw new PathTooLongException("The specified path, file name, or both exceed the system-defined maximum length. For example, on Windows-based platforms, paths must be less than 248 characters, and file names must be less than 260 characters.");
-            if(!file_exists($path)) throw new FileNotFoundException("The file specified in path was not found.");
-            return true;
+        private static function assertNullArgument($path) {
+            if(is_null($path)) {
+                throw new ArgumentNullException("path is null.");
+            }
+        }
+
+        private static function assertPathName($path) {
+            if(strlen($path) > self::MAX_LENGTH) {
+                throw new PathTooLongException("The specified path, file name, or both exceed the system-defined maximum length. For example, on Windows-based platforms, paths must be less than 248 characters, and file names must be less than 260 characters.");
+            }
+        }
+
+        private static function assertFileExists($path) {
+            if(!file_exists($path)) {
+                throw new FileNotFoundException("The file specified in path was not found.");
+            }
         }
 
         public static function write($fileName) {

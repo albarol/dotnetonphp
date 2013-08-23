@@ -55,12 +55,22 @@ namespace System\IO {
         }
 
         /**
-         * Copies an existing file to a new file, allowing the overwriting of an existing file.
+         * Copies an existing file to a new file.
+         *
+         * @access public
+         * @throws \System\ArgumentException $destFileName is empty, contains only white spaces, or contains invalid characters.
+         * @throws \System\IO\IOException An error occurs, or the destination file already exists and overwrite is false.
+         * @throws \System\Security\SecurityException The caller does not have the required permission. 
+         * @throws \System\ArgumentNullException destFileName is null.
+         * @throws \System\IO\DirectoryNotFoundException The directory specified in destFileName does not exists.
+         * @throws \System\UnauthorizedAccessException A directory path is passed in, or the file is being moved to a different drive.
+         * @throws \System\IO\PathTooLongException The specified path, file name, or both exceed the system-defined maximum length.For example, on Windows-based platforms, paths must be less than 248 characters, and file names must be less than 260 characters.
+         * @throws \System\NotSupportedException destFilename contains a colon (:) in the middle of the string.
          * @param string $destFileName The name of the new file to copy to.
          * @param bool $overwrite true to allow an existing file to be overwritten; otherwise, false.
          * @return \System\FileInfo A new file, or an overwrite of an existing file if overwrite is true. If the file exists and overwrite is false, an IOException is thrown. 
          */
-        public function copyTo($destFileName, $overwrite=false){
+        public function copyTo($destFileName, $overwrite=false) {
             $this->validateFileName($destFileName);
             $newFile = $this->getRealPath($destFileName);
             if(!$this->fileCanBeCreated($newFile, $overwrite))
@@ -303,6 +313,12 @@ namespace System\IO {
             if (strlen($file_name) > 248) 
             {
                 throw new PathTooLongException("The specified path, file name, or both exceed the system-defined maximum length. For example, on Windows-based platforms, paths must be less than 248 characters, and file names must be less than 260 characters.");
+            }
+        }
+
+        private function assertFileExists($path) {
+            if (!file_exists($path)) {
+                throw new FileNotFoundException("");
             }
         }
     }
