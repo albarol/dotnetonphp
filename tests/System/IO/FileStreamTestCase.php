@@ -4,11 +4,11 @@ use \System\IO\FileStream as FileStream;
 use \System\IO\FileMode as FileMode;
 use \System\IO\FileAccess as FileAccess;
 use \System\IO\SeekOrigin as SeekOrigin;
- 
+
 /**
  * @group io
 */
-class FileStreamFixture extends PHPUnit_Framework_TestCase {
+class FileStreamTestCase extends PHPUnit_Framework_TestCase {
 
     private $filename;
 
@@ -269,7 +269,7 @@ class FileStreamFixture extends PHPUnit_Framework_TestCase {
      * @expectedException \System\NotSupportedException
     */
     public function Read_ThrowsExceptionIfStreamNotSupportRead() {
-        
+
         # Arrange:
         $fs = new FileStream($this->filename, FileMode::openOrCreate(), FileAccess::write());
 
@@ -309,7 +309,7 @@ class FileStreamFixture extends PHPUnit_Framework_TestCase {
      * @group implement
     */
     public function ReadByte_CanReadNextCharacter() {
-        
+
         # Arrange:
         $fs = new FileStream($this->filename, FileMode::open(), FileAccess::read());
         $letter = 'd';
@@ -327,7 +327,7 @@ class FileStreamFixture extends PHPUnit_Framework_TestCase {
     */
     public function ReadTimeOut_ThrowsExceptionInvalidOperation() {
 
-        # Arrange: 
+        # Arrange:
         $fs = new FileStream($this->filename, FileMode::append(), FileAccess::readWrite());
 
         # Act:
@@ -439,19 +439,26 @@ class FileStreamFixture extends PHPUnit_Framework_TestCase {
      * @expectedException \System\ArgumentNullException
     */
     public function Write_ThrowsExceptionWhenArrayIsNull() {
+
+        # Arrange:
         $fs = new FileStream($this->filename, FileMode::openOrCreate(), FileAccess::write());
+
+        # Act:
         $fs->write(null, 0, 10);
     }
 
-//     /**
-//  * @test
-// */
-// public function Write_ThrowsExceptionWhenOffsetIsInvalidRage() {
-//         $this->setExpectedException("\\System\\ArgumentException");
-//         $fs = new FileStream($this->filename, FileMode::openOrCreate(), FileAccess::write());
-//         $array = array('d', 'o', 't', 'n', 'e', 't', 'o', 'n', 'p', 'h', 'p');
-//         $fs->write($array, 55, 10);
-//     }
+    // /**
+    //  * @test
+    //  * @expectedException \System\ArgumentException
+    // */
+    // public function Write_ThrowsExceptionWhenOffsetIsInvalidRage() {
+
+    //     # Arrange:
+    //     $this->setExpectedException("\\System\\ArgumentException");
+    //     $fs = new FileStream($this->filename, FileMode::openOrCreate(), FileAccess::write());
+    //     $array = array('d', 'o', 't', 'n', 'e', 't', 'o', 'n', 'p', 'h', 'p');
+    //     $fs->write($array, 55, 10);
+    // }
 
 //     /**
 //  * @test
