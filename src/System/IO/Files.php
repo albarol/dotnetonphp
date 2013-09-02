@@ -99,18 +99,28 @@ namespace System\IO {
 
         /**
          * Deletes the specified file. An exception is not thrown if the specified file does not exist.
+         *
+         * @access public
          * @static
-         * @throws IOException
+         * @throws \System\ArgumentException path is a zero-length string, contains only white space, or contains one or more invalid characters as defined by InvalidPathChars. 
+         * @throws \System\ArgumentNullException path is a null reference
+         * @throws \System\IO\DirectoryNotFoundException The specified path is invalid, (for example, it is on an unmapped drive).
+         * @throws \System\IO\IOException The specified file is in use.
+         * @throws \System\NotSupportedException path is in an invalid format.
+         * @throws \System\IO\PathTooLongException The specified path, file name, or both exceed the system-defined maximum length. For example, on Windows-based platforms, paths must be less than 248 characters, and file names must be less than 260 characters.
+         * @throws \System\UnauthorizedAccessException The caller does not have the required permission. -or- path is a directory. -or- path specified a read-only file.
          * @param string $fileName The name of the file to be deleted.
          * @return void
          */
         public static function delete($fileName) {
+            self::assertFileExists($fileName);
             $fileInfo = new FileInfo($fileName);
             $fileInfo->delete();
         }
 
         /**
          * Determines whether the specified file exists.
+         *
          * @access public
          * @static
          * @param string $fileName The file to check.
@@ -122,10 +132,17 @@ namespace System\IO {
 
         /**
          * Returns the creation date and time of the specified file or directory.
+         *
          * @access public
          * @static
+         * @throws \System\UnauthorizedAccessException The caller does not have the required permission. 
+         * @throws \System\ArgumentException path is a zero-length string, contains only white space, or contains one or more invalid characters as defined by InvalidPathChars. 
+         * @throws \System\ArgumentNullException path is a null reference
+         * @throws \System\IO\PathTooLongException The specified path, file name, or both exceed the system-defined maximum length. For example, on Windows-based platforms, paths must be less than 248 characters, and file names must be less than 260 characters. 
+         * @throws \System\IO\IOException path was not found. 
+         * @throws \System\NotSupportedException path is in an invalid format. 
          * @param string $path The file or directory for which to obtain creation date and time information.
-         * @return DateTime A System.DateTime structure set to the creation date and time for the specified file or directory. This value is expressed in local time.
+         * @return \System\DateTime A DateTime structure set to the creation date and time for the specified file or directory. This value is expressed in local time.
          */
         public static function getCreationTime($path) {
             $fileInfo = new FileInfo($path);
@@ -134,10 +151,17 @@ namespace System\IO {
 
         /**
          * Returns the date and time the specified file or directory was last accessed.
+         *
          * @access public
          * @static
-         * @param string $path The file or directory for which to obtain access date and time information.
-         * @return DateTime A System.DateTime structure set to the date and time that the specified file or directory was last accessed. This value is expressed in local time.
+         * @throws \System\UnauthorizedAccessException The caller does not have the required permission. 
+         * @throws \System\ArgumentException path is a zero-length string, contains only white space, or contains one or more invalid characters as defined by InvalidPathChars. 
+         * @throws \System\ArgumentNullException path is a null reference
+         * @throws \System\IO\PathTooLongException The specified path, file name, or both exceed the system-defined maximum length. For example, on Windows-based platforms, paths must be less than 248 characters, and file names must be less than 260 characters. 
+         * @throws \System\IO\IOException path was not found. 
+         * @throws \System\NotSupportedException path is in an invalid format. 
+         * @param string $path The file or directory for which to obtain creation date and time information.
+         * @return \System\DateTime A DateTime structure set to the date and time that the specified file or directory was last accessed. This value is expressed in local time.
          */
         public static function getLastAccessTime($path) {
             $fileInfo = new FileInfo($path);
@@ -146,9 +170,16 @@ namespace System\IO {
 
         /**
          * Returns the date and time the specified file or directory was last written to.
+         *
          * @access public
          * @static
-         * @param string $path The file or directory for which to obtain write date and time information.
+         * @throws \System\UnauthorizedAccessException The caller does not have the required permission. 
+         * @throws \System\ArgumentException path is a zero-length string, contains only white space, or contains one or more invalid characters as defined by InvalidPathChars. 
+         * @throws \System\ArgumentNullException path is a null reference
+         * @throws \System\IO\PathTooLongException The specified path, file name, or both exceed the system-defined maximum length. For example, on Windows-based platforms, paths must be less than 248 characters, and file names must be less than 260 characters. 
+         * @throws \System\IO\IOException path was not found. 
+         * @throws \System\NotSupportedException path is in an invalid format. 
+         * @param string $path The file or directory for which to obtain creation date and time information.
          * @return DateTime A System.DateTime structure set to the date and time that the specified file or directory was last written to. This value is expressed in local time.
          */
         public static function getLastWriteTime($path) {

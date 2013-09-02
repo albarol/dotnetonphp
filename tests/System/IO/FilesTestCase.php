@@ -119,62 +119,107 @@ class FilesFixture extends PHPUnit_Framework_TestCase {
         $this->assertFileExists($toFile);
     }
 
-    // /**
-    //  * @test
-    // */
-    // public function Delete_ThrowsExceptionWhenFileNotFound() {
-    //     $this->setExpectedException("\\System\\IO\\FileNotFoundException");
-    //     Files::delete("../file_not_found.txt");
-    // }
+    /**
+     * @test
+     * @expectedException \System\IO\FileNotFoundException
+    */
+    public function Delete_ThrowsExceptionWhenFileNotFound() {
+        # Arrange:
+        # Act:
+        Files::delete("file_not_found.txt");
+    }
 
-    // /**
-    //  * @test
-    // */
-    // public function Delete_CanDeleteFile() {
-    //     Files::copy($this->files['streamWriter'], $this->files['toFile']);
-    //     Files::delete($this->files['toFile']);
-    //     $this->assertFalse(file_exists($this->files['toFile']));
-    // }
+    /**
+     * @test
+    */
+    public function Delete_CanDeleteFile() {
 
-    // /**
-    //  * @test
-    // */
-    // public function Exists_ShouldReturnTrueIfFileExists() {
-    //     $exists = Files::exists($this->files['streamWriter']);
-    //     $this->assertTrue($exists);
-    // }
+        # Arrange:
+        $tempfile = $this->generateFile();
 
-    // /**
-    //  * @test
-    // */
-    // public function Exists_ShouldReturnFalseIfFileExists() {
-    //     $exists = Files::exists($this->files['fromFile']);
-    //     $this->assertFalse($exists);
-    // }
+        # Act:
+        Files::delete($tempfile);
 
-    // /**
-    //  * @test
-    // */
-    // public function GetCreationTime_CanGetCreationTime() {
-    //     $creationTime = Files::getCreationTime($this->files['streamWriter']);
-    //     $this->assertGreaterThan(1999, $creationTime->year());
-    // }
+        # Assert:
+        $this->assertFileNotExists($tempfile);
+    }
 
-    // /**
-    //  * @test
-    // */
-    // public function GetLastAccessTime_CanGetLastAccessTime() {
-    //     $lastAccessTime = Files::getLastAccessTime($this->files['streamWriter']);
-    //     $this->assertGreaterThan(1999, $lastAccessTime->year());
-    // }
+    /**
+     * @test
+    */
+    public function Exists_ShouldReturnTrueIfFileExists() {
+        
+        # Arrange:
+        $tempfile = $this->generateFile();
 
-    // /**
-    //  * @test
-    // */
-    // public function GetLastWrite_CanGetLastWriteTime() {
-    //     $lastAccessTime = Files::getLastWriteTime($this->files['streamWriter']);
-    //     $this->assertGreaterThan(1999, $lastAccessTime->year());
-    // }
+        # Act:
+        $exists = Files::exists($tempfile);
+
+        # Assert:
+        $this->assertTrue($exists);
+    }
+
+    /**
+     * @test
+    */
+    public function Exists_ShouldReturnFalseIfFileExists() {
+        # Arrange:
+        $tempfile = $this->generateName();
+
+        # Act:
+        $exists = Files::exists($tempfile);
+
+        # Assert:
+        $this->assertFalse($exists);
+    }
+
+    /**
+     * @test
+    */
+    public function GetCreationTime_CanGetCreationTime() {
+
+        # Arrange:
+        $now = getdate();
+        $tempfile = $this->generateFile();
+
+        # Act:
+        $creationTime = Files::getCreationTime($tempfile);
+
+        # Act:
+        $this->assertEquals($now['year'], $creationTime->year());
+    }
+
+    /**
+     * @test
+    */
+    public function GetCreationTime_CanGetLastAccessTime() {
+
+        # Arrange:
+        $now = getdate();
+        $tempfile = $this->generateFile();
+
+        # Act:
+        $creationTime = Files::getLastAccessTime($tempfile);
+
+        # Act:
+        $this->assertEquals($now['year'], $creationTime->year());
+    }
+
+    /**
+     * @test
+    */
+    public function GetCreationTime_CanGetLastWriteTime() {
+
+        # Arrange:
+        $now = getdate();
+        $tempfile = $this->generateFile();
+
+        # Act:
+        $creationTime = Files::getLastWriteTime($tempfile);
+
+        # Act:
+        $this->assertEquals($now['year'], $creationTime->year());
+    }
 
     // /**
     //  * @test
