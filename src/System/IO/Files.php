@@ -189,14 +189,21 @@ namespace System\IO {
 
         /**
          * Moves a specified file to a new location, providing the option to specify a new file name.
+         *
          * @access public
          * @static
+         * @throws \System\IO\IOException The destination file already exists -or- sourceFileNameWasNotFound
+         * @throws \System\ArgumentNullException sourceFileName or destFileName is null.
+         * @throws \System\ArgumentException sourceFileName or destFileName is a zero-length string, contains only white space, or contains invalid characters as defined in InvalidPathChars. 
+         * @throws \System\UnauthorizedAccessException The caller does not have the required permission. 
          * @param string $sourceFileName The name of the file to move.
          * @param string $destFileName The new path for the file.
          * @return void
          */
         public static function move($sourceFileName, $destFileName) {
-            if(is_null($destFileName)) throw new ArgumentNullException("destFileName is null.");
+            self::assertNullArgument($sourceFileName);
+            self::assertNullArgument($destFileName);  
+            self::assertFileExists($sourceFileName);
             $fileInfo = new FileInfo($sourceFileName);
             $fileInfo->moveTo($destFileName);
         }

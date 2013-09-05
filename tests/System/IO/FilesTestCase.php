@@ -221,49 +221,72 @@ class FilesFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals($now['year'], $creationTime->year());
     }
 
-    // /**
-    //  * @test
-    // */
-    // public function Move_ThrowExceptionWhenDestinationExists() {
-    //     $this->setExpectedException("\\System\\IO\\IOException");
-    //     Files::move($this->files['streamWriter'], $this->files['streamWriter']);
-    // }
+    /**
+     * @test
+     * @expectedException \System\IO\IOException
+    */
+    public function Move_ThrowExceptionWhenDestinationExists() {
 
-    // /**
-    //  * @test
-    // */
-    // public function Move_ThrowsExceptionWhenSourceIsNull(){
-    //     $this->setExpectedException("\\System\\ArgumentNullException");
-    //     Files::move(null, $this->files['streamWriter']);
-    // }
+        # Arrange:
+        $fromFile = $this->generateFile();
+        $toFile = $this->generateFile();
 
-    // /**
-    //  * @test
-    // */
-    // public function Move_ThrowsExceptionWhenDestinationIsNull(){
-    //     $this->setExpectedException("\\System\\ArgumentNullException");
-    //     Files::move($this->files['streamWriter'], null);
-    // }
+        # Act:
+        # Assert:
+        Files::move($fromFile, $toFile);
+    }
 
-    // /**
-    //  * @test
-    // */
-    // public function Move_ThrowsExceptionWhenFileNotFound() {
-    //     $this->setExpectedException("\\System\\IO\\FileNotFoundException");
-    //     Files::move($this->files['streamWriter']."t", $this->files['streamWriter']);
-    // }
+    /**
+     * @test
+     * @expectedException \System\ArgumentNullException
+    */
+    public function Move_ThrowsExceptionWhenSourceIsNull() {
 
-    // /**
-    //  * @test
-    // */
-    // public function Move_CanMoveFile() {
-    //     $destination = dirname(__FILE__) . '/../../resources/system.io.FilesMove.txt';
-    //     $copyFile = dirname(__FILE__) . '/../../resources/system.io.FilesMove2.txt';
-    //     Files::copy($this->files['streamWriter'], $copyFile);
-    //     Files::move($copyFile, $destination);
-    //     $this->fileExists($destination);
-    //     Files::delete($destination);
-    // }
+        # Act:
+        # Assert:
+        Files::move(null, $this->generateName());
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentNullException
+    */
+    public function Move_ThrowsExceptionWhenDestinationIsNull() {
+
+        # Act:
+        # Assert:
+        Files::move($this->generateFile(), null);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\IO\FileNotFoundException
+    */
+    public function Move_ThrowsExceptionWhenFileNotFound() {
+        
+        # Arange:
+        $fromFile = $this->generateName();
+        $toFile = $this->generateName();
+
+        # Act:
+        Files::move($fromFile, $toFile);
+    }
+
+    /**
+     * @test
+    */
+    public function Move_CanMoveFile() {
+
+        # Arrange:
+        $fromFile = $this->generateFile();
+        $toFile = $this->generateName();
+
+        # Act:
+        Files::move($fromFile, $toFile);
+
+        # Assert:
+        $this->assertFileExists($toFile);
+    }
 
     // /**
     //  * @test
