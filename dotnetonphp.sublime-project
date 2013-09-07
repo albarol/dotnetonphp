@@ -2,7 +2,8 @@
     "folders":
     [
         { "path": "src" },
-        { "path": "tests" }
+        { "path": "tests" },
+        { "path": "examples" }
     ],
     "build_systems":
     [
