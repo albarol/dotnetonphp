@@ -12,6 +12,7 @@ namespace System\IO {
 
     /**
      * Creates a stream whose backing store is memory.
+     *
      * @access public
      * @name MemoryStream
      * @package System
@@ -27,6 +28,7 @@ namespace System\IO {
         /**
          * Initializes a new non-resizable instance of the System.IO.MemoryStream class based on the specified
          * region of a byte array, with the System.IO.MemoryStream.CanWrite property set as specified.
+         *
          * @access public
          * @throws \System\ArgumentException The sum of index and count is greater than the length of buffer.
          * @throws \System\ArgumentNullException buffer is null.
@@ -36,47 +38,38 @@ namespace System\IO {
          * @param int $count The length of the stream in bytes.
          * @param bool $writable The setting of the System.IO.MemoryStream.CanWrite property, which determines whether the stream supports writing.
          */
-        public function __construct($buffer=array(), $index=null, $count=null, $writable=true) 
+        public function __construct($buffer=array(), $index=0, $count=null, $writable=true)
         {
-            if(is_null($buffer)) 
+            if(is_null($buffer))
             {
                 throw new ArgumentNullException("buffer is null.");
             }
 
-            if($index < 0 || $count < 0) 
+            if($index < 0 || $count < 0)
             {
                 throw new ArgumentOutOfRangeException("index or count are negative.");
             }
+
             $this->createMemory($buffer, $index, $count);
             $this->writable = $writable;
         }
 
-        private function createMemory($buffer, $index, $count) 
+        private function createMemory($buffer, $index, $count)
         {
-            if(is_null($index)) 
-            {
-                $this->memory = $buffer;
-            } 
-            else 
-            {
-                $finalIndex = $index + $count;
-                
-                if($finalIndex > sizeof($buffer)) 
-                {
-                    throw new ArgumentException("The sum of index and count is greater than the length of buffer.");
-                }
+            $count = is_null($count) ? sizeof($buffer) - $index : $count;
 
-                for($i = $index; $i < $finalIndex; $i++)
-                {
-                    array_push($this->memory, $buffer[$i]);
-                }
+            if(($index + $count) > sizeof($buffer))
+            {
+                throw new ArgumentException("The sum of index and count is greater than the length of buffer.");
             }
-            
+
+            $this->memory = array_slice($buffer, $index, $count);
             $this->capacity = isset($this->memory) ? sizeof($this->memory) : 0;
         }
 
         /**
          * Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+         *
          * @access public
          * @return void
          */
@@ -85,7 +78,8 @@ namespace System\IO {
         }
 
         /**
-         * When overridden in a derived class, gets a value indicating whether the current stream supports reading.
+         * Gets a value indicating whether the current stream supports reading.
+         *
          * @access public
          * @return bool true if the stream supports reading; otherwise, false.
          */
@@ -94,7 +88,8 @@ namespace System\IO {
         }
 
         /**
-         * When overridden in a derived class, gets a value indicating whether the current stream supports seeking.
+         * Gets a value indicating whether the current stream supports seeking.
+         *
          * @access public
          * @return bool true if the stream supports seeking; otherwise, false.
          */
@@ -104,6 +99,7 @@ namespace System\IO {
 
         /**
          * Gets a value that determines whether the current stream can time out.
+         *
          * @access public
          * @return bool A value that determines whether the current stream can time out.
          */
@@ -112,7 +108,8 @@ namespace System\IO {
         }
 
         /**
-         * When overridden in a derived class, gets a value indicating whether the current stream supports writing.
+         * Gets a value indicating whether the current stream supports writing.
+         *
          * @access public
          * @return bool true if the stream supports writing; otherwise, false.
          */
@@ -123,6 +120,7 @@ namespace System\IO {
 
         /**
          * Gets or sets the number of bytes allocated for this stream.
+         *
          * @access public
          * @param int $value number of bytes
          * @return int The length of the usable portion of the buffer for the stream.
@@ -130,22 +128,24 @@ namespace System\IO {
         public function capacity($value=null) {
             if(!is_null($value)) {
                 $this->capacity = $value;
+                $this->memory = array_slice($this->memory, 0, $this->capacity);
             }
             return $this->capacity;
         }
 
         /**
-         * When overridden in a derived class, clears all buffers for this stream and causes any buffered data to be written to the underlying device.
+         * Overrides Stream.Flush so that no action is performed.
+         *
          * @access public
-         * @throws IOException
          * @return void
          */
         public function flush() {
-            $this->capacity(sizeof($this->memory));
+            return;
         }
 
         /**
-         * When overridden in a derived class, gets the length in bytes of the stream.
+         * Gets the length of the stream in bytes.
+         *
          * @access public
          * @return float A long value representing the length of the stream in bytes.
          */
@@ -154,13 +154,20 @@ namespace System\IO {
         }
 
         /**
-         * When overridden in a derived class, gets or sets the position within the current stream.
+         * Gets or sets the current position within the stream.
+         *
          * @access public
+         * @throws \System\ArgumentOutOfRangeException The position is set to a negative value or a value greater than MaxValue.
+         * @throws \System\ObjectDisposedException The stream is closed.
          * @param int $value Set the position
          * @return The current position within the stream.
          */
         public function position($value = null) {
-           if(!$this->canSeek()) throw new ObjectDisposedException("The stream does not support seeking.");
+
+            if(!$this->canSeek()) {
+                throw new ObjectDisposedException("The stream does not support seeking.");
+            }
+
             if(!is_null($value)) {
                 if($value < 0) throw new ArgumentOutOfRangeException("Attempted to set the position to a negative value.");
                 $this->position = $value;
@@ -169,35 +176,37 @@ namespace System\IO {
         }
 
         /**
-         * When overridden in a derived class, reads a sequence of bytes from the current stream and advances the position within the stream by the number of bytes read.
+         * Reads a block of bytes from the current stream and writes the data to buffer.
+         *
          * @access public
-         * @throws ArgumentException|ArgumentNullException|ArgumentOutOfRangeException|IOException|NotSupportedException|ObjectDisposedException
-         * @param array $buffer An array of bytes. When this method returns, the buffer contains the specified byte array with the values between offset and (offset + count - 1) replaced by the bytes read from the current source.
+         * @throws \System\ArgumentException offset subtracted from the buffer length is less than count.
+         * @throws \System\ArgumentOutOfRangeException offset or count is negative.
+         * @throws \System\ObjectDisposedException The current stream instance is closed.
          * @param int $offset The zero-based byte offset in buffer at which to begin storing the data read from the current stream.
          * @param int $count The maximum number of bytes to be read from the current stream.
-         * @return int The total number of bytes read into the buffer. This can be less than the number of bytes requested if that many bytes are not currently available, or zero (0) if the end of the stream has been reached.
+         * @return array The bytes written into the buffer.
          */
-        public function read(&$buffer, $offset, $count) {
-            $copyAreaSize = $offset + $count;
+        public function read($offset=0, $count=null) {
 
-            if(!$this->canRead()) throw new ObjectDisposedException("The current stream instance is closed.");
-            if(is_null($buffer)) throw new ArgumentNullException("buffer is null.");
-            if($offset < 0 || $count < 0) throw new ArgumentException("offset or count is negative.");
+            $this->assertOpened();
 
-            while(($offset < $copyAreaSize) && $this->position() < sizeof($this->memory)) {
-                array_push($buffer, $this->readByte());
-                $offset++;
+            if($offset < 0 || $count < 0) {
+                throw new ArgumentOutOfRangeException("offset or count is negative.");
             }
-            return $copyAreaSize - $offset;
+
+            return array_slice($this->memory, $offset, $count);
         }
 
         /**
          * Reads a byte from the stream and advances the position within the stream by one byte, or returns -1 if at the end of the stream.
+         *
          * @access public
+         * @throws \System\ObjectDisposedException The current stream instance is closed.
          * @return int The unsigned byte cast to an Int32, or -1 if at the end of the stream.
          */
         public function readByte() {
-            if(!$this->canRead()) throw new ObjectDisposedException("The current stream instance is closed.");
+
+            $this->assertOpened();
             return $this->memory[$this->position++];
         }
 
@@ -283,6 +292,15 @@ namespace System\IO {
             $this->memory[$this->position++] = $value;
         }
 
+
+        /***********************
+            ASSERT METHODS
+        ***********************/
+        private function assertOpened() {
+            if(!isset($this->memory)) {
+                throw new ObjectDisposedException("The current stream is closed.");
+            }
+        }
 
     }
 }
