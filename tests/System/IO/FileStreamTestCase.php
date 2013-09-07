@@ -135,11 +135,26 @@ class FileStreamTestCase extends PHPUnit_Framework_TestCase {
      * @test
     */
     public function CanWrite_ShouldBeTrueIfFileWasOpenedInWriteMode() {
+
         # Act:
         $fs = new FileStream($this->filename, FileMode::openOrCreate(), FileAccess::write());
 
         # Assert:
         $this->assertTrue($fs->canWrite());
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ObjectDisposedException
+    */
+    public function Flush_ThrowsExceptionWhenFileWasClosed() {
+
+        # Arrange:
+        $fs = new FileStream($this->filename, FileMode::openOrCreate(), FileAccess::readWrite());
+        $fs->close();
+
+        # Act:
+        $fs->flush();
     }
 
     /**
@@ -169,7 +184,7 @@ class FileStreamTestCase extends PHPUnit_Framework_TestCase {
 
     /**
      * @test
-     * @expectedException \System\IO\IOException
+     * @expectedException \System\ObjectDisposedException
     */
     public function Position_ThrowsExceptionWhenStreamIsClosed() {
         # Arrange:
@@ -306,7 +321,6 @@ class FileStreamTestCase extends PHPUnit_Framework_TestCase {
 
     /**
      * @test
-     * @group implement
     */
     public function ReadByte_CanReadNextCharacter() {
 
@@ -318,7 +332,7 @@ class FileStreamTestCase extends PHPUnit_Framework_TestCase {
         $result = $fs->readByte();
 
         # Assert:
-        $this->assertEquals(ord($letter), $result);
+        $this->assertEquals($letter, $result);
     }
 
     /**
@@ -447,78 +461,169 @@ class FileStreamTestCase extends PHPUnit_Framework_TestCase {
         $fs->write(null, 0, 10);
     }
 
-    // /**
-    //  * @test
-    //  * @expectedException \System\ArgumentException
-    // */
-    // public function Write_ThrowsExceptionWhenOffsetIsInvalidRage() {
+    /**
+     * @test
+     * @expectedException \System\ArgumentException
+    */
+    public function Write_ThrowsExceptionWhenOffsetIsInvalidRage() {
 
-    //     # Arrange:
-    //     $this->setExpectedException("\\System\\ArgumentException");
-    //     $fs = new FileStream($this->filename, FileMode::openOrCreate(), FileAccess::write());
-    //     $array = array('d', 'o', 't', 'n', 'e', 't', 'o', 'n', 'p', 'h', 'p');
-    //     $fs->write($array, 55, 10);
-    // }
+        # Arrange:
+        $fs = new FileStream($this->filename, FileMode::openOrCreate(), FileAccess::write());
+        $array = array('d', 'o', 't', 'n', 'e', 't', 'o', 'n', 'p', 'h', 'p');
 
-//     /**
-//  * @test
-// */
-// public function Write_ThrowsExceptionWhenOffsetIsNegative() {
-//         $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
-//         $fs = new FileStream($this->filename, FileMode::openOrCreate(), FileAccess::write());
-//         $array = array('d', 'o', 't', 'n', 'e', 't', 'o', 'n', 'p', 'h', 'p');
-//         $fs->write($array, -1, 10);
-//     }
+        # Act:
+        $fs->write($array, 55, 10);
+    }
 
-//     /**
-//  * @test
-// */
-// public function Write_CanWriteInRange() {
-//         $fs = new FileStream($this->filename, FileMode::openOrCreate(), FileAccess::readWrite());
-//         $array = array('d', 'o', 't', 'n', 'e', 't', 'o', 'n', 'p', 'h', 'p');
-//         $fs->write($array, 0, 3);
-//         $fs->seek(0);
-//         $this->assertEquals('d', $fs->readByte());
-//         $this->assertEquals('o', $fs->readByte());
-//         $this->assertEquals('t', $fs->readByte());
-//     }
+    /**
+     * @test
+     * @expectedException \System\ArgumentOutOfRangeException
+    */
+    public function Write_ThrowsExceptionWhenOffsetIsNegative() {
 
-//     /**
-//  * @test
-// */
-// public function WriteByte_ThrowsExceptionWhenFileIsOpenedInReadMode() {
-//         $this->setExpectedException("\\System\\NotSupportedException");
-//         $fs = new FileStream($this->filename, FileMode::openOrCreate(), FileAccess::read());
-//         $fs->writeByte('a');
-//     }
+        # Arrange:
+        $fs = new FileStream($this->filename, FileMode::openOrCreate(), FileAccess::write());
+        $array = array('d', 'o', 't', 'n', 'e', 't', 'o', 'n', 'p', 'h', 'p');
 
-//     /**
-//  * @test
-// */
-// public function WriteByte_ThrowsExceptionWhenFileWasDisposed() {
-//         $this->setExpectedException("\\System\\ObjectDisposedException");
-//         $fs = new FileStream($this->filename, FileMode::openOrCreate(), FileAccess::write());
-//         $fs->close();
-//         $fs->writeByte('a');
-//     }
+        # Act:
+        $fs->write($array, -1, 10);
+    }
 
-//     /**
-//  * @test
-// */
-// public function WriteByte_CanWriteByte() {
-//         $fs = new FileStream($this->filename, FileMode::openOrCreate(), FileAccess::readWrite());
-//         $fs->writeByte('a');
-//         $fs->seek(0);
-//         $this->assertEquals('a', $fs->readByte());
-//     }
+    /**
+     * @test
+     * @expectedException \System\NotSupportedException
+    */
+    public function Write_ThrowsExceptionWhenFileCantWrite() {
 
-//     /**
-//  * @test
-// */
-// public function WriteTimeOut_ThrowsExceptionInvalidOperation() {
-//         $this->setExpectedException("\\System\\InvalidOperationException");
-//         $fs = new FileStream($this->filename, FileMode::append(), FileAccess::readWrite());
-//         $fs->writeTimeout();
-//     }
+        # Arrange:
+        $fs = new FileStream($this->filename, FileMode::open(), FileAccess::read());
+        $content = array('dotnetonphp');
+
+        # Act:
+        $fs->write($content);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ObjectDisposedException
+    */
+    public function Write_ThrowsExceptionWhenFileWasDisposed() {
+
+        # Arrange:
+        $fs = new FileStream($this->filename, FileMode::openOrCreate(), FileAccess::write());
+        $fs->close();
+
+        # Act:
+        $fs->write('a');
+    }
+
+    /**
+     * @test
+    */
+    public function Write_CanWriteInRange() {
+
+        # Arrange:
+        $fs = new FileStream($this->filename, FileMode::openOrCreate(), FileAccess::readWrite());
+        $content = array('d', 'o', 't', 'n', 'e', 't', 'o', 'n', 'p', 'h', 'p');
+        $fs->setLength(0);
+
+        # Act:
+        $fs->write($content, 0, 3);
+        $fs->seek(0);
+        $this->assertEquals('dot', implode($fs->read()));
+    }
+
+    /**
+     * @test
+    */
+    public function Write_WriteString() {
+
+        # Arrange:
+        $fs = new FileStream($this->filename, FileMode::openOrCreate(), FileAccess::readWrite());
+        $content = ".NetOnPhp";
+        $fs->setLength(0);
+
+        # Act:
+        $fs->write($content);
+
+        # Assert:
+        $fs->seek(0);
+        $this->assertEquals('.NetOnPhp', implode($fs->read()));
+    }
+
+    /**
+     * @test
+    */
+    public function Write_HalfString() {
+
+        # Arrange:
+        $fs = new FileStream($this->filename, FileMode::openOrCreate(), FileAccess::readWrite());
+        $content = ".NetOnPhp";
+        $fs->setLength(0);
+
+        # Act:
+        $fs->write($content, 4);
+
+        # Assert:
+        $fs->seek(0);
+        $this->assertEquals('OnPhp', implode($fs->read()));
+    }
+
+    /**
+     * @test
+     * @expectedException \System\NotSupportedException
+    */
+    public function WriteByte_ThrowsExceptionWhenFileIsOpenedInReadMode() {
+
+        # Arrange:
+        $fs = new FileStream($this->filename, FileMode::openOrCreate(), FileAccess::read());
+
+        # Act:
+        $fs->writeByte(0xFFFFFF);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ObjectDisposedException
+    */
+    public function WriteByte_ThrowsExceptionWhenFileWasDisposed() {
+
+        # Arrange:
+        $fs = new FileStream($this->filename, FileMode::openOrCreate(), FileAccess::write());
+        $fs->close();
+
+        # Act:
+        $fs->writeByte('a');
+    }
+
+    /**
+     * @test
+    */
+    public function WriteByte_CanWriteByte() {
+
+        # Arrange:
+        $fs = new FileStream($this->filename, FileMode::openOrCreate(), FileAccess::readWrite());
+        $fs->setLength(0);
+
+        # Act:
+        $fs->writeByte('a');
+
+        # Assert:
+        $fs->seek(0);
+        $this->assertEquals('a', $fs->readByte());
+    }
+
+    /**
+     * @test
+     * @expectedException \System\InvalidOperationException
+    */
+    public function WriteTimeOut_ThrowsExceptionInvalidOperation() {
+
+        # Arrange:
+        $fs = new FileStream($this->filename, FileMode::append(), FileAccess::readWrite());
+
+        # Act:
+        $fs->writeTimeout();
+    }
 
 }

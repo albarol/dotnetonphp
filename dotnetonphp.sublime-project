@@ -1,7 +1,16 @@
 {
-	"folders":
-	[
-		{ "path": "src" },
+    "folders":
+    [
+        { "path": "src" },
         { "path": "tests" }
-	]
+    ],
+    "build_systems":
+    [
+        {
+            "name": "PhpUnit",
+            "cmd": ["vendor/bin/phpunit", "--colors", "$file"],
+            "working_dir": "${project_path:${folder:${file_path}}}",
+            "selector": "source.php"
+        }
+    ]
 }
