@@ -3,11 +3,13 @@
 use \System\IO\DirectoryInfo as DirectoryInfo;
 use \System\IO\SearchOption as SearchOption;
 
-
+/**
+ * group io
+*/
 class DirectoryInfoTestCase extends PHPUnit_Framework_TestCase
 {
 
-    private function generateName() 
+    private function generateName()
     {
         return '/tmp/' . md5(rand(1, 20).rand(21, 70).rand(71, 100));
     }
@@ -16,7 +18,7 @@ class DirectoryInfoTestCase extends PHPUnit_Framework_TestCase
      * @test
      * @expectedException \System\ArgumentNullException
     */
-    public function Construct_ThrowsExceptionWhenNameIsNull() 
+    public function Construct_ThrowsExceptionWhenNameIsNull()
     {
         # Arrange:
         # Act:
@@ -28,7 +30,7 @@ class DirectoryInfoTestCase extends PHPUnit_Framework_TestCase
      * @test
      * @expectedException \System\IO\PathTooLongException
     */
-    public function Construct_ThrowsExceptionWhenPathIsLong() 
+    public function Construct_ThrowsExceptionWhenPathIsLong()
     {
         # Arrange:
         $name = str_pad('a', 249);
@@ -41,14 +43,14 @@ class DirectoryInfoTestCase extends PHPUnit_Framework_TestCase
      * @test
     */
     public function Construct_ShouldGetObjectDirectoryInfo() {
-        
+
         # Arrange:
         $name = $this->generateName();
         mkdir($name);
-        
+
         # Act:
         $info = new DirectoryInfo($name);
-    
+
         # Assert:
         $this->assertNotNull($info);
     }
@@ -57,7 +59,7 @@ class DirectoryInfoTestCase extends PHPUnit_Framework_TestCase
      * @test
      * @expectedException \System\IO\IOException
     */
-    public function Create_ThrowsExceptionWhenCreateExistsDirectory() 
+    public function Create_ThrowsExceptionWhenCreateExistsDirectory()
     {
         # Arrange:
         $name = $this->generateName();
@@ -71,7 +73,7 @@ class DirectoryInfoTestCase extends PHPUnit_Framework_TestCase
     /**
      * @test
     */
-    public function Create_CanCreateDirectory() 
+    public function Create_CanCreateDirectory()
     {
         # Arrange:
         $name = $this->generateName();
@@ -88,7 +90,7 @@ class DirectoryInfoTestCase extends PHPUnit_Framework_TestCase
      * @test
      * @expectedException \System\IO\PathTooLongException
     */
-    public function CreateSubDirectory_ThrowsExceptionWhenPathIsLong() 
+    public function CreateSubDirectory_ThrowsExceptionWhenPathIsLong()
     {
         # Arrange:
         $name = $this->generateName();
@@ -103,7 +105,7 @@ class DirectoryInfoTestCase extends PHPUnit_Framework_TestCase
      * @test
      * @expectedException \System\ArgumentNullException
     */
-    public function CreateSubDirectory_ThrowsExceptionWhenNameIsNull() 
+    public function CreateSubDirectory_ThrowsExceptionWhenNameIsNull()
     {
         # Arrange:
         $name = $this->generateName();
@@ -132,17 +134,17 @@ class DirectoryInfoTestCase extends PHPUnit_Framework_TestCase
     /**
      * @test
     */
-    public function CreateSubDirectory_CanCreateSubDirectory() 
+    public function CreateSubDirectory_CanCreateSubDirectory()
     {
         # Arrange:
         $name = $this->generateName();
         $sub_name = md5(rand(1, 50).rand(51,99));
         $info = new DirectoryInfo($name);
         $info->create();
-    
+
         # Act:
         $child = $info->createSubDirectory($sub_name);
-    
+
         # Assert:
         $this->assertTrue(file_exists($child->fullName()));
     }
@@ -150,16 +152,16 @@ class DirectoryInfoTestCase extends PHPUnit_Framework_TestCase
     /**
      * @test
     */
-    public function CreateSubDirectory_ShouldCreateParentDirectoryWhenNotExists() 
+    public function CreateSubDirectory_ShouldCreateParentDirectoryWhenNotExists()
     {
         # Arrange:
         $name = $this->generateName();
         $sub_name = md5(rand(1, 50).rand(51,99));
         $info = new DirectoryInfo($name);
-    
+
         # Act:
         $info->createSubDirectory($sub_name);
-    
+
         # Assert:
         $this->assertTrue(file_exists($info->fullName()));
     }
@@ -168,7 +170,7 @@ class DirectoryInfoTestCase extends PHPUnit_Framework_TestCase
      * @test
      * @expectedException \System\IO\IOException
     */
-    public function Delete_ThrowsExceptionWhenHasChildren() 
+    public function Delete_ThrowsExceptionWhenHasChildren()
     {
         # Arrange:
         $name = $this->generateName();
@@ -176,7 +178,7 @@ class DirectoryInfoTestCase extends PHPUnit_Framework_TestCase
         mkdir($name);
         mkdir($sub_name);
         $info = new DirectoryInfo($name);
-    
+
         # Act:
         $info->delete();
     }
@@ -186,11 +188,11 @@ class DirectoryInfoTestCase extends PHPUnit_Framework_TestCase
      * @expectedException \System\IO\IOException
     */
     public function Delete_ThrowsExceptionWhenDirectoryNotExists() {
-        
+
         # Arrange:
         $name = $this->generateName();
         $info = new DirectoryInfo($name);
-    
+
         # Act:
         $info->delete();
     }
@@ -199,15 +201,15 @@ class DirectoryInfoTestCase extends PHPUnit_Framework_TestCase
      * @test
     */
     public function Delete_ShouldDeleteDirectory() {
-        
+
         # Arrange:
         $name = $this->generateName();
         mkdir($name);
         $info = new DirectoryInfo($name);
-    
+
         # Act:
         $info->delete();
-    
+
         # Assert:
         $this->assertFalse(file_exists($info->fullName()));
     }
@@ -215,19 +217,19 @@ class DirectoryInfoTestCase extends PHPUnit_Framework_TestCase
     /**
      * @test
     */
-    public function Delete_CanDeleteChildrenDirectories() 
+    public function Delete_CanDeleteChildrenDirectories()
     {
         # Arrange:
         $info = new DirectoryInfo($this->generateName());
-        for ($i = 0; $i < 3; $i++) 
-        { 
+        for ($i = 0; $i < 3; $i++)
+        {
             $sub_name = md5($i);
             $info->createSubDirectory($sub_name);
         }
-    
+
         # Act:
         $info->delete(true);
-    
+
         # Assert:
         $this->assertFalse(file_exists($info->fullName()));
     }
@@ -237,12 +239,12 @@ class DirectoryInfoTestCase extends PHPUnit_Framework_TestCase
      * @test
      * @expectedException \System\ArgumentNullException
     */
-    public function GetDirectories_ThrowsExceptionWhenPatternIsNull() 
+    public function GetDirectories_ThrowsExceptionWhenPatternIsNull()
     {
-        
+
         # Arrange:
         $info = new DirectoryInfo($this->generateName());
-    
+
         # Act:
         $info->getDirectories(null);
     }
@@ -250,12 +252,12 @@ class DirectoryInfoTestCase extends PHPUnit_Framework_TestCase
     /**
      * @test
     */
-    public function GetDirectories_CanGetChildrenDirectories() 
+    public function GetDirectories_CanGetChildrenDirectories()
     {
         # Arrange:
         $info = new DirectoryInfo($this->generateName());
-        for ($i = 0; $i < 3; $i++) 
-        { 
+        for ($i = 0; $i < 3; $i++)
+        {
             $sub_name = md5($i);
             $info->createSubDirectory($sub_name);
         }
@@ -273,12 +275,12 @@ class DirectoryInfoTestCase extends PHPUnit_Framework_TestCase
     /**
      * @test
     */
-    public function GetDirectories_CanFindChildrenDirectoriesTopLevel() 
+    public function GetDirectories_CanFindChildrenDirectoriesTopLevel()
     {
         # Arrange:
         $info = new DirectoryInfo($this->generateName());
-        for ($i = 0; $i < 3; $i++) 
-        { 
+        for ($i = 0; $i < 3; $i++)
+        {
             $sub_name = 'path_'.$i;
             $info->createSubDirectory($sub_name);
         }
@@ -297,13 +299,13 @@ class DirectoryInfoTestCase extends PHPUnit_Framework_TestCase
     /**
      * @test
     */
-    public function GetDirectories_CanFindChildrenRecursive() 
+    public function GetDirectories_CanFindChildrenRecursive()
     {
         # Arrange:
         $info = new DirectoryInfo($this->generateName());
         $sub = $info->createSubDirectory('children');
-        for ($i = 0; $i < 3; $i++) 
-        { 
+        for ($i = 0; $i < 3; $i++)
+        {
             $sub_name = 'path_'.$i;
             $sub = $sub->createSubDirectory($sub_name);
         }
@@ -322,7 +324,7 @@ class DirectoryInfoTestCase extends PHPUnit_Framework_TestCase
      * @test
      * @expectedException \System\ArgumentNullException
     */
-    public function GetFiles_ThrowsExceptionWhenPatternIsNull() 
+    public function GetFiles_ThrowsExceptionWhenPatternIsNull()
     {
         # Arrange:
         $info = new DirectoryInfo($this->generateName());
@@ -334,14 +336,14 @@ class DirectoryInfoTestCase extends PHPUnit_Framework_TestCase
     /**
      * @test
     */
-    public function GetFiles_CanGetFiles() 
+    public function GetFiles_CanGetFiles()
     {
         # Arrange:
         $info = new DirectoryInfo($this->generateName());
         $info->create();
 
-        for ($i = 0; $i < 3; $i++) 
-        { 
+        for ($i = 0; $i < 3; $i++)
+        {
             fopen($info->fullName().'/'.$i.'.txt', 'w');
         }
 
@@ -358,14 +360,14 @@ class DirectoryInfoTestCase extends PHPUnit_Framework_TestCase
     /**
      * @test
     */
-    public function GetFiles_CanFindChildrenFilesTopLevel() 
+    public function GetFiles_CanFindChildrenFilesTopLevel()
     {
         # Arrange:
         $info = new DirectoryInfo($this->generateName());
         $info->create();
 
-        for ($i = 0; $i < 3; $i++) 
-        { 
+        for ($i = 0; $i < 3; $i++)
+        {
             fopen($info->fullName().'/'.$i.'.txt', 'w');
         }
 
@@ -382,14 +384,14 @@ class DirectoryInfoTestCase extends PHPUnit_Framework_TestCase
     /**
      * @test
     */
-    public function GetFiles_CanFindChildrenFilesRecursive() 
+    public function GetFiles_CanFindChildrenFilesRecursive()
     {
         # Arrange:
         $info = new DirectoryInfo($this->generateName());
         $sub = $info->createSubDirectory('path');
 
-        for ($i = 0; $i < 3; $i++) 
-        { 
+        for ($i = 0; $i < 3; $i++)
+        {
             fopen($sub->fullName().'/'.$i.'.txt', 'w');
         }
 
@@ -406,13 +408,13 @@ class DirectoryInfoTestCase extends PHPUnit_Framework_TestCase
     /**
      * @test
     */
-    public function GetFileSystemInfos_CanGetFileAndDirectories() 
+    public function GetFileSystemInfos_CanGetFileAndDirectories()
     {
         # Arrange:
         $info = new DirectoryInfo($this->generateName());
 
-        for ($i = 0; $i < 3; $i++) 
-        { 
+        for ($i = 0; $i < 3; $i++)
+        {
             $info->createSubDirectory($i);
             fopen($info->fullName().'/'.$i.'.txt', 'w');
         }
@@ -431,13 +433,13 @@ class DirectoryInfoTestCase extends PHPUnit_Framework_TestCase
     /**
      * @test
     */
-    public function GetFileSystemInfos_CanFindFilesAndDirectories() 
+    public function GetFileSystemInfos_CanFindFilesAndDirectories()
     {
         # Arrange:
         $info = new DirectoryInfo($this->generateName());
 
-        for ($i = 0; $i < 3; $i++) 
-        { 
+        for ($i = 0; $i < 3; $i++)
+        {
             $info->createSubDirectory($i);
             fopen($info->fullName().'/'.$i.'.txt', 'w');
         }
@@ -457,10 +459,10 @@ class DirectoryInfoTestCase extends PHPUnit_Framework_TestCase
      * @expectedException \System\ArgumentNullException
     */
     public function MoveTo_ThrowsExceptionWhenPathIsNull() {
-        
+
         # Arrange:
         $info = new DirectoryInfo($this->generateName());
-    
+
         # Act:
         $info->moveTo(null);
     }
@@ -469,7 +471,7 @@ class DirectoryInfoTestCase extends PHPUnit_Framework_TestCase
      * @test
      * @expectedException \System\ArgumentException
     */
-    public function MoveTo_ThrowsExceptionWhenDestinationExists() 
+    public function MoveTo_ThrowsExceptionWhenDestinationExists()
     {
         # Arrange:
         $name = $this->generateName();
@@ -477,7 +479,7 @@ class DirectoryInfoTestCase extends PHPUnit_Framework_TestCase
         $info = new DirectoryInfo($this->generateName());
         mkdir($destination);
         mkdir($destination.'/'.$info->name());
-        
+
         # Act:
         $info->moveTo($destination);
     }
@@ -486,14 +488,14 @@ class DirectoryInfoTestCase extends PHPUnit_Framework_TestCase
      * @test
      * @expectedException \System\IO\DirectoryNotFoundException
     */
-    public function MoveTo_ThrowsExceptionWhenDirectoryWasNotCreated() 
+    public function MoveTo_ThrowsExceptionWhenDirectoryWasNotCreated()
     {
         # Arrange:
         $name = $this->generateName();
         $destination = $this->generateName();
         $info = new DirectoryInfo($name);
         $info->create();
-        
+
         # Act:
         $info->moveTo($destination);
     }
@@ -501,7 +503,7 @@ class DirectoryInfoTestCase extends PHPUnit_Framework_TestCase
     /**
      * @test
     */
-    public function MoveTo_CanMoveDirectoryWithoutChildren() 
+    public function MoveTo_CanMoveDirectoryWithoutChildren()
     {
         # Arrange:
         $name = $this->generateName();
@@ -509,7 +511,7 @@ class DirectoryInfoTestCase extends PHPUnit_Framework_TestCase
         $info = new DirectoryInfo($name);
         mkdir($destination);
         $info->create();
-        
+
         # Act:
         $info->moveTo($destination);
 
@@ -525,19 +527,19 @@ class DirectoryInfoTestCase extends PHPUnit_Framework_TestCase
     /**
      * @test
     */
-    public function MoveTo_CanMoveDirectoryWithChildren() 
+    public function MoveTo_CanMoveDirectoryWithChildren()
     {
         # Arrange:
         $name = $this->generateName();
         $destination = $this->generateName();
         $info = new DirectoryInfo($name);
         mkdir($destination);
-        
+
         for($i = 0; $i < 3; $i++)
         {
             $info->createSubDirectory($i);
         }
-        
+
         # Act:
         $info->moveTo($destination);
 
@@ -552,12 +554,12 @@ class DirectoryInfoTestCase extends PHPUnit_Framework_TestCase
     /**
      * @test
     */
-    public function Parent_GetParentDirectory() 
+    public function Parent_GetParentDirectory()
     {
         # Arrange:
         $name = $this->generateName();
         $info = new DirectoryInfo($name);
-        
+
         # Act:
         $parent = $info->parent();
 
@@ -569,12 +571,12 @@ class DirectoryInfoTestCase extends PHPUnit_Framework_TestCase
     /**
      * @test
     */
-    public function Root_CanGetRootPath() 
+    public function Root_CanGetRootPath()
     {
         # Arrange:
         $name = $this->generateName();
         $info = new DirectoryInfo($name);
-        
+
         # Act:
         $root = $info->root();
 

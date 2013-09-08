@@ -26,11 +26,11 @@ class ObjectTestCase extends PHPUnit_Framework_TestCase {
      * @test
     */
     public function HashCode_ShouldGenerateDiffHashCode() {
-        
+
         # Arrange:
         $objOne = new Object();
         $objTwo = new Object();
-    
+
         # Act:
         # Assert:
         $this->assertNotEquals($objOne->getHashCode(), $objTwo->getHashCode());
@@ -41,10 +41,10 @@ class ObjectTestCase extends PHPUnit_Framework_TestCase {
      * @test
     */
     public function Equals_ShouldBeTrueWhenCompareWithSameObject() {
-        
+
         # Arrange:
         $obj = new Object();
-        
+
         # Act:
         # Assert:
         $this->assertTrue($obj->equals($obj));
@@ -56,7 +56,7 @@ class ObjectTestCase extends PHPUnit_Framework_TestCase {
     public function Equals_ShouldBeFalseWhenCompareWithAnotherObject() {
         # Arrange:
         $obj = new Object();
-        
+
         # Act:
         # Assert:
         $this->assertFalse($obj->equals("obj"));
@@ -66,7 +66,7 @@ class ObjectTestCase extends PHPUnit_Framework_TestCase {
      * @test
     */
     public function ToString_ShouldGetNameOfClass() {
-        
+
         # Arrange:
         $obj = new Object();
 

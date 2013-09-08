@@ -4,7 +4,7 @@ use \System\IO\FileStream as FileStream;
 use \System\IO\FileMode as FileMode;
 use \System\IO\FileAccess as FileAccess;
 use \System\IO\SeekOrigin as SeekOrigin;
- 
+
 /**
  * @group io
 */
@@ -13,7 +13,7 @@ class FileStreamTestCase extends PHPUnit_Framework_TestCase {
     private $filename;
 
     private function generateName() {
-        return '/tmp/' . md5(rand(1, 20).rand(21, 70).rand(71, 100));
+        return '/tmp/' . md5(rand(1, 5).rand(20, 25).rand(30, 35)) . '.tmp';
     }
 
     private function generateFile() {
@@ -135,11 +135,26 @@ class FileStreamTestCase extends PHPUnit_Framework_TestCase {
      * @test
     */
     public function CanWrite_ShouldBeTrueIfFileWasOpenedInWriteMode() {
+
         # Act:
         $fs = new FileStream($this->filename, FileMode::openOrCreate(), FileAccess::write());
 
         # Assert:
         $this->assertTrue($fs->canWrite());
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ObjectDisposedException
+    */
+    public function Flush_ThrowsExceptionWhenFileWasClosed() {
+
+        # Arrange:
+        $fs = new FileStream($this->filename, FileMode::openOrCreate(), FileAccess::readWrite());
+        $fs->close();
+
+        # Act:
+        $fs->flush();
     }
 
     /**
@@ -169,7 +184,7 @@ class FileStreamTestCase extends PHPUnit_Framework_TestCase {
 
     /**
      * @test
-     * @expectedException \System\IO\IOException
+     * @expectedException \System\ObjectDisposedException
     */
     public function Position_ThrowsExceptionWhenStreamIsClosed() {
         # Arrange:
@@ -269,7 +284,7 @@ class FileStreamTestCase extends PHPUnit_Framework_TestCase {
      * @expectedException \System\NotSupportedException
     */
     public function Read_ThrowsExceptionIfStreamNotSupportRead() {
-        
+
         # Arrange:
         $fs = new FileStream($this->filename, FileMode::openOrCreate(), FileAccess::write());
 
@@ -306,10 +321,9 @@ class FileStreamTestCase extends PHPUnit_Framework_TestCase {
 
     /**
      * @test
-     * @group implement
     */
     public function ReadByte_CanReadNextCharacter() {
-        
+
         # Arrange:
         $fs = new FileStream($this->filename, FileMode::open(), FileAccess::read());
         $letter = 'd';
@@ -327,7 +341,7 @@ class FileStreamTestCase extends PHPUnit_Framework_TestCase {
     */
     public function ReadTimeOut_ThrowsExceptionInvalidOperation() {
 
-        # Arrange: 
+        # Arrange:
         $fs = new FileStream($this->filename, FileMode::append(), FileAccess::readWrite());
 
         # Act:
@@ -439,6 +453,7 @@ class FileStreamTestCase extends PHPUnit_Framework_TestCase {
      * @expectedException \System\ArgumentNullException
     */
     public function Write_ThrowsExceptionWhenArrayIsNull() {
+
         # Arrange:
         $fs = new FileStream($this->filename, FileMode::openOrCreate(), FileAccess::write());
 
@@ -455,7 +470,7 @@ class FileStreamTestCase extends PHPUnit_Framework_TestCase {
         # Arrange:
         $fs = new FileStream($this->filename, FileMode::openOrCreate(), FileAccess::write());
         $array = array('d', 'o', 't', 'n', 'e', 't', 'o', 'n', 'p', 'h', 'p');
-        
+
         # Act:
         $fs->write($array, 55, 10);
     }
@@ -465,6 +480,7 @@ class FileStreamTestCase extends PHPUnit_Framework_TestCase {
      * @expectedException \System\ArgumentOutOfRangeException
     */
     public function Write_ThrowsExceptionWhenOffsetIsNegative() {
+
         # Arrange:
         $fs = new FileStream($this->filename, FileMode::openOrCreate(), FileAccess::write());
         $array = array('d', 'o', 't', 'n', 'e', 't', 'o', 'n', 'p', 'h', 'p');
@@ -475,55 +491,100 @@ class FileStreamTestCase extends PHPUnit_Framework_TestCase {
 
     /**
      * @test
+     * @expectedException \System\NotSupportedException
     */
-    public function Write_CanWriteInRange() {
+    public function Write_ThrowsExceptionWhenFileCantWrite() {
 
         # Arrange:
-        $fs = new FileStream($this->filename, FileMode::openOrCreate(), FileAccess::readWrite());
-        $fs->setLength(0);
-        $array = array('p', 'h', 'p', 'a', 'n', 'd', 'n', 'e', 't');
+        $fs = new FileStream($this->filename, FileMode::open(), FileAccess::read());
+        $content = array('dotnetonphp');
 
         # Act:
-        $fs->write($array, 0, 3);
+        $fs->write($content);
+    }
 
-        # Assert:
-        $fs->seek(0);
-        $this->assertEquals(3, sizeof($fs->read()));
+    /**
+     * @test
+     * @expectedException \System\ObjectDisposedException
+    */
+    public function Write_ThrowsExceptionWhenFileWasDisposed() {
+
+        # Arrange:
+        $fs = new FileStream($this->filename, FileMode::openOrCreate(), FileAccess::write());
+        $fs->close();
+
+        # Act:
+        $fs->write('a');
     }
 
     /**
      * @test
     */
-    public function Write_CanWriteEntireArray() {
-    
+    public function Write_CanWriteInRange() {
+
         # Arrange:
         $fs = new FileStream($this->filename, FileMode::openOrCreate(), FileAccess::readWrite());
+        $content = array('d', 'o', 't', 'n', 'e', 't', 'o', 'n', 'p', 'h', 'p');
         $fs->setLength(0);
-        $array = array('p', 'h', 'p', 'a', 'n', 'd', 'n', 'e', 't');
-    
+
         # Act:
-        $fs->write($array);
-    
-        # Assert:
-        $this->assertEquals(9, sizeof($fs->read()));
+        $fs->write($content, 0, 3);
+        $fs->seek(0);
+        $this->assertEquals('dot', implode($fs->read()));
     }
 
+    /**
+     * @test
+    */
+    public function Write_WriteString() {
+
+        # Arrange:
+        $fs = new FileStream($this->filename, FileMode::openOrCreate(), FileAccess::readWrite());
+        $content = ".NetOnPhp";
+        $fs->setLength(0);
+
+        # Act:
+        $fs->write($content);
+
+        # Assert:
+        $fs->seek(0);
+        $this->assertEquals('.NetOnPhp', implode($fs->read()));
+    }
+
+    /**
+     * @test
+    */
+    public function Write_HalfString() {
+
+        # Arrange:
+        $fs = new FileStream($this->filename, FileMode::openOrCreate(), FileAccess::readWrite());
+        $content = ".NetOnPhp";
+        $fs->setLength(0);
+
+        # Act:
+        $fs->write($content, 4);
+
+        # Assert:
+        $fs->seek(0);
+        $this->assertEquals('OnPhp', implode($fs->read()));
+    }
 
     /**
      * @test
      * @expectedException \System\NotSupportedException
     */
     public function WriteByte_ThrowsExceptionWhenFileIsOpenedInReadMode() {
+
         # Arrange:
         $fs = new FileStream($this->filename, FileMode::openOrCreate(), FileAccess::read());
 
         # Act:
-        $fs->writeByte('a');
+        $fs->writeByte(0xFFFFFF);
     }
 
     /**
      * @test
-     * @expectedException \System\ObjectDisposedException 
+     * @expectedException \System\ObjectDisposedException
     */
     public function WriteByte_ThrowsExceptionWhenFileWasDisposed() {
 
@@ -545,11 +606,11 @@ class FileStreamTestCase extends PHPUnit_Framework_TestCase {
         $fs->setLength(0);
 
         # Act:
-        $fs->writeByte(0x1);
+        $fs->writeByte('a');
 
         # Assert:
         $fs->seek(0);
-        $this->assertEquals(0x1, $fs->readByte());
+        $this->assertEquals('a', $fs->readByte());
     }
 
     /**

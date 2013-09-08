@@ -7,14 +7,14 @@ namespace System\IO {
     use \System\ArgumentOutOfRangeException as ArgumentOutOfRangeException;
     use \System\NotSupportedException as NotSupportedException;
     use \System\ObjectDisposedException as ObjectDisposedException;
-    
+
     use \System\IO\FileAccess as FileAccess;
     use \System\IO\FileNotFoundException as FileNotFoundException;
     use \System\IO\FileMode as FileMode;
     use \System\IO\IOException as IOException;
     use \System\IO\SeekOrigin as SeekOrigin;
     use \System\IO\Stream as Stream;
-    
+
 
     /**
      * Exposes a Stream around a file, supporting both synchronous and asynchronous read and write operations.
@@ -40,7 +40,7 @@ namespace System\IO {
          * @throws \System\IO\FileNotFoundException
          * @throws \System\IO\IOException
          * @throws \System\Security\SecurityException
-         * @param string $path A relative or absolute path for the file that the current FileStream object will encapsulate. 
+         * @param string $path A relative or absolute path for the file that the current FileStream object will encapsulate.
          * @param string $mode A constant that determines how to open or create the file.
          * @param int $access A constant that determines how the file can be accessed by the FileStream object. This gets the CanRead and CanWrite properties of the FileStream object.
          */
@@ -52,7 +52,7 @@ namespace System\IO {
             if(strlen($path) == 0) {
                 throw new ArgumentException('path is an empty string (""), contains only white space, or contains one or more invalid characters.');
             }
-            
+
             if(is_null($mode)) {
                 $mode = FileMode::open();
             }
@@ -61,7 +61,7 @@ namespace System\IO {
                 $access = FileAccess::read();
             }
 
-            if($mode == FileMode::open() && !file_exists($path)) 
+            if($mode == FileMode::open() && !file_exists($path))
             {
                 throw new FileNotFoundException("The file cannot be found, such as when mode is FileMode.Truncate or FileMode.Open, and the file specified by path does not exist.");
             }
@@ -73,12 +73,13 @@ namespace System\IO {
             if(($mode == FileMode::openOrCreate()) && !file_exists($path)) {
                 $mode = FileMode::truncate();
             }
-                
+
             $this->stream = fopen($path, $mode->value()."b");
             $this->mode = $mode;
             $this->access = $access;
             $this->fileName = $path;
         }
+
 
         /**
          * Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
@@ -123,10 +124,8 @@ namespace System\IO {
          * @return bool true if the stream supports writing; otherwise, false.
          */
         public function canWrite() {
-            $readAccess = 1; //read
-            $openMode = "r"; //open
-            return ($this->access->value() != $readAccess) &&
-                   ($this->mode->value() != $openMode) &&
+            return ($this->access != FileAccess::read()) &&
+                   ($this->mode != FileMode::open()) &&
                    isset($this->stream);
         }
 
@@ -135,7 +134,7 @@ namespace System\IO {
          *
          * @access public
          * @throws \System\IOException An I/O error occurs.
-         * @throws \System\ObjectDisposedException The stream is closed. 
+         * @throws \System\ObjectDisposedException The stream is closed.
          * @return void
          */
         public function flush() {
@@ -149,15 +148,25 @@ namespace System\IO {
 
         /**
          * Gets a FileSecurity object that encapsulates the access control list (ACL) entries for the file described by the current FileStream object.
-         * 
+         *
          * @access public
          * @throws \System\ObjectDisposedException The file is closed.
          * @throws \System\IO\IOException An I/O error occurred while opening the file.
          * @throws \System\SystemException The file could not be found.
-         * @throws \System\UnauthorizedAccessException This operation is not supported on the current platform. -or- The caller does not have the required permission.
-         * @return \System\Security\AccessControl\FileSecurity Gets a FileSecurity object
+         * @throws \System\UnauthorizedAccessException This operation is not supported on the current platform.
+         * @return \System\Security\AccessControl\FileSecurity A FileSecurity object that encapsulates the access control settings for the file described by the current FileStream object.
         */
-        public function getAccessControl() { return null; }
+        public function getAccessControl() { }
+
+        /**
+         * Gets a value indicating whether the FileStream was opened asynchronously or synchronously.
+         *
+         * @access public
+         * @return bool  true if the FileStream was opened asynchronously; otherwise, false.
+        */
+        public function isAsync() {
+            return false;
+        }
 
         /**
          * Gets the length in bytes of the stream
@@ -179,19 +188,25 @@ namespace System\IO {
         }
 
         /**
-         * When overridden in a derived class, gets or sets the position within the current stream.
+         * Gets or sets the current position of this stream.
+         *
          * @access public
+         * @throws \System\NotSupportedException The stream does not support seeking.
+         * @throws \System\IO\IOException An I/O error occurs.
+         * @throws \System\ArgumentOutOfRangeException Attempted to set the position to a negative value.
          * @param int $value Set the position
          * @return The current position within the stream.
          */
         public function position($value=null) {
+            $this->assertOpened();
+
             if(!is_null($value)) {
-                
+
                 if($value < 0) {
                     throw new ArgumentOutOfRangeException("Attempted to set the position to a negative value.");
                 }
-                
-                if(!$this->canSeek()) { 
+
+                if(!$this->canSeek()) {
                     throw new NotSupportedException("The stream does not support seeking.");
                 }
 
@@ -200,12 +215,11 @@ namespace System\IO {
                 } catch(Exception $e) {
                     throw new IOException("An I/O error occurred.");
                 }
-            } else {
-                try {
-                    return ftell($this->stream);
-                } catch(\Exception $e) {
-                    throw new IOException("An I/O error occurred.");
-                }    
+            }
+            try {
+                return ftell($this->stream);
+            } catch(\Exception $e) {
+                throw new IOException("An I/O error occurred.");
             }
         }
 
@@ -213,6 +227,8 @@ namespace System\IO {
          * Prevents other processes from changing the FileStream.
          *
          * @access public
+         * @throws \System\ObjectDisposedException The file is closed.
+         * @throws \System\IO\IOException The process cannot access the file because another process has locked a portion of the file.
          * @return void
          */
         public function lock() {
@@ -228,10 +244,10 @@ namespace System\IO {
          * Reads a block of bytes from the stream and writes the data in a given buffer.
          *
          * @access public
-         * @throws \System\ArgumentOutOfRangeException offset or count is negative. 
+         * @throws \System\ArgumentOutOfRangeException offset or count is negative.
          * @throws \System\IO\IOException An I/O error occurred.
-         * @throws \System\NotSupportedException The stream does not support reading. 
-         * @throws \System\ObjectDisposedException Methods were called after the stream was closed. 
+         * @throws \System\NotSupportedException The stream does not support reading.
+         * @throws \System\ObjectDisposedException Methods were called after the stream was closed.
          * @param int $offset The zero-based byte offset in buffer at which to begin storing the data read from the current stream.
          * @param int $count The maximum number of bytes to be read from the current stream.
          * @return array Block of bytes from the stream
@@ -239,7 +255,7 @@ namespace System\IO {
         public function read($offset=0, $count=null) {
             $count = is_null($count) ? $this->length() : $count;
             $copySize = $offset + $count;
-            
+
             $this->assertOpened();
             $this->assertRead();
 
@@ -248,13 +264,9 @@ namespace System\IO {
             }
 
             try {
-                $result = array();
                 fseek($this->stream, $offset);
                 $content = fread($this->stream, $copySize);
-                foreach (str_split($content) as $item) {
-                    array_push($result, $item);
-                }
-                return $result;
+                return str_split($content);
             } catch(\Exception $e) {
                 throw new IOException("An I/O error occurred.");
             }
@@ -275,7 +287,7 @@ namespace System\IO {
             if(feof($this->stream)) {
                 return -1;
             }
-                
+
             return fgetc($this->stream);
         }
 
@@ -283,9 +295,9 @@ namespace System\IO {
          * Sets the current position of this stream to the given value.
          *
          * @access public
-         * @throws \System\IOException An I/O error occurs. 
-         * @throws \System\NotSupportedException The stream does not support seeking, such as if the FileStream is constructed from a pipe or console output. 
-         * @throws \SystemObjectDisposedException Methods were called after the stream was closed. 
+         * @throws \System\IOException An I/O error occurs.
+         * @throws \System\NotSupportedException The stream does not support seeking, such as if the FileStream is constructed from a pipe or console output.
+         * @throws \SystemObjectDisposedException Methods were called after the stream was closed.
          * @param int $offset A byte offset relative to the origin parameter.
          * @param int $origin A value of type SeekOrigin indicating the reference point used to obtain the new position.
          * @return float The new position within the current stream.
@@ -296,14 +308,14 @@ namespace System\IO {
             if (is_null($origin)) {
                 $origin = SeekOrigin::begin();
             }
-            
+
             if($origin == SeekOrigin::end()) {
                 $offset = $offset*-1;
             }
 
             try {
                 fseek($this->stream, $offset, $origin->value());
-            } 
+            }
             catch (\Exception $e) {
                 throw new IOException("An I/O error ocurs.");
             }
@@ -318,27 +330,27 @@ namespace System\IO {
          * @throws \System\SystemException The file could not be found.
          * @throws \System\UnauthorizedAccessException This operation is not supported on the current platform. -or- The caller does not have the required permission.
          * @param \System\Security\AccessControl\FileSecurity $fileSecurity A FileSecurity object that describes an ACL entry to apply to the current file.
-         * @return void 
+         * @return void
         */
-        public function setAccessControl($fileSecurity) { }
+        public function setAccessControl($fileSecurity){}
 
         /**
          * Sets the length of this stream to the given value.
          *
          * @access public
-         * @throws \System\IOException An I/O error has occurred. 
-         * @throws \System\NotSupportedException The stream does not support both writing and seeking. 
+         * @throws \System\IOException An I/O error has occurred.
+         * @throws \System\NotSupportedException The stream does not support both writing and seeking.
          * @throws \System\ArgumentOutOfRangeException Attempted to set the value parameter to less than 0.
          * @param int $value The desired length of the current stream in bytes.
          * @return void
          */
         public function setLength($value) {
 
-            if(!$this->canWrite() || !$this->canSeek()) { 
+            if(!$this->canWrite() || !$this->canSeek()) {
                 throw new NotSupportedException("The stream does not support both writing and seeking.");
             }
 
-            if($value < 0) { 
+            if($value < 0) {
                 throw new ArgumentOutOfRangeException("Attempted to set the value parameter to less than 0.");
             }
 
@@ -352,6 +364,7 @@ namespace System\IO {
 
         /**
          * Allows access by other processes to all or part of a file that was previously locked.
+         *
          * @access public
          * @return void
          */
@@ -364,59 +377,77 @@ namespace System\IO {
          * Writes a block of bytes to this stream using data from a buffer.
          *
          * @access public
-         * @param array $array An array of bytes. This method copies count bytes from buffer to the current stream.
+         * @throws \System\ArgumentNullException buffer is null.
+         * @throws \System\ArgumentException offset and count describe an invalid range in array.
+         * @throws \System\ArgumentOutOfRangeException offset or count is negative.
+         * @throws \System\IO\IOException An I/O error ocurrs.
+         * @throws \System\ObjectDisposedException The stream is closed.
+         * @throws \System\NotSupportedException The current stream instance does not support writing.
+         * @param array $buffer An array of bytes. This method copies count bytes from buffer to the current stream.
          * @param int $offset The zero-based byte offset in buffer at which to begin copying bytes to the current stream.
          * @param int $count The number of bytes to be written to the current stream.
          * @return void
          */
-        public function write($array, $offset=0, $count=null) {
-            
-            if (is_null($count)) {
-                $count = sizeof($array) - $offset;
+        public function write($buffer, $offset=0, $count=null) {
+
+            $this->assertOpened();
+            $this->assertWrite();
+
+            if (is_string($buffer)) {
+                $buffer = str_split($buffer);
             }
 
-            $writeSize = $count + $offset;
+            $count = is_null($count) ? sizeof($buffer) - $offset : $count;
+            $area = $offset + $count;
 
-            if(is_null($array)) {
-                throw new ArgumentNullException("array is null.");
+            if(is_null($buffer)) {
+                throw new ArgumentNullException("buffer is null.");
             }
-            
-            if($offset < 0 || $count < 0) { 
+
+            if($offset < 0 || $count < 0) {
                 throw new ArgumentOutOfRangeException("offset or count is negative.");
             }
-            
-            if($writeSize > sizeof($array)) {
+
+            if($area > sizeof($buffer)) {
                 throw new ArgumentException("offset and count describe an invalid range in array.");
             }
 
-            $bytes = null;
-            while(($offset < $writeSize)) {
-                $bytes .= $array[$offset];
-                $offset++;
+            try {
+                fwrite($this->stream, implode(array_slice($buffer, $offset, $count)));
             }
-            fwrite($this->stream, $bytes);
+            catch (\Exception $e) {
+                throw new IOException("An I/O error occours.");
+            }
+
         }
 
         /**
          * Writes a byte to the current position in the stream and advances the position within the stream by one byte.
          *
          * @access public
-         * @throws \System\NotSupportedException The stream is closed. 
-         * @throws \System\ObjectDisposedException The stream does not support writing. 
+         * @throws \System\IO\IOException An I/O error ocurrs.
+         * @throws \System\ObjectDisposedException The stream is closed.
+         * @throws \System\NotSupportedException The current stream instance does not support writing.
          * @param $value The byte to write to the stream.
          * @return void
          */
         public function writeByte($value) {
             $this->assertOpened();
             $this->assertWrite();
-            fwrite($this->stream, $value);
+
+            try {
+                fwrite($this->stream, $value);
+            }
+            catch (\Exception $e) {
+                throw new IOException("An I/O error occours.");
+            }
         }
 
         /***********************
             ASSERT METHODS
         ***********************/
         private function assertOpened() {
-            if(!isset($this->stream)) { 
+            if(!isset($this->stream)) {
                 throw new ObjectDisposedException("The stream is closed.");
             }
         }
@@ -429,7 +460,7 @@ namespace System\IO {
 
         private function assertWrite() {
             if (!$this->canWrite()) {
-                throw new NotSupportedException("The stream does not support writing.");
+                throw new NotSupportedException("The current stream instance does not supporte writing.");
             }
         }
     }

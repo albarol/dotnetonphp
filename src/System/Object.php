@@ -24,6 +24,7 @@ namespace System {
 
         /**
          * Serves as a hash function for a particular type.
+         *
          * @access public
          * @return Int32 A hash code for the current System.Object.
          */
@@ -59,7 +60,7 @@ namespace System {
         }
 
         public function  __get($property) {
-            if(array_key_exists($property, $this->properties)) 
+            if(array_key_exists($property, $this->properties))
                 return $this->properties[$property]['value'];
             return null;
         }
