@@ -13,7 +13,7 @@ class FileStreamTestCase extends PHPUnit_Framework_TestCase {
     private $filename;
 
     private function generateName() {
-        return '/tmp/' . md5(rand(1, 20).rand(21, 70).rand(71, 100));
+        return '/tmp/' . md5(rand(1, 5).rand(20, 25).rand(30, 35)) . '.tmp';
     }
 
     private function generateFile() {

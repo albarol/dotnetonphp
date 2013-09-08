@@ -8,22 +8,22 @@ use \System\DateTime as DateTime;
 */
 class DirectoriesTestCase extends PHPUnit_Framework_TestCase {
 
-    private function generateName() 
+    private function generateName()
     {
-        return '/tmp/' . md5(rand(1, 20).rand(21, 70).rand(71, 100));
+        return '/tmp/' . md5(rand(1, 10).rand(15, 19).rand(38, 44).rand(80, 89));
     }
 
     /**
      * @test
     */
     public function CreateDirectory_CanCreateDirectory() {
-        
+
         # Arrange:
         $name = $this->generateName();
 
         # Act:
         $info = Directories::createDirectory($name);
-        
+
         # Assert:
         $this->assertTrue(file_exists($name));
     }
@@ -31,7 +31,7 @@ class DirectoriesTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function Delete_CanDeleteDirectory() 
+    public function Delete_CanDeleteDirectory()
     {
         # Arrange:
         $name = $this->generateName();
@@ -47,7 +47,7 @@ class DirectoriesTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function Exists_ShouldBeTrueIfFileExists() 
+    public function Exists_ShouldBeTrueIfFileExists()
     {
         # Arrange:
         $name = $this->generateName();
@@ -78,7 +78,7 @@ class DirectoriesTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function GetCreationTime_ShouldGetCreationTime() 
+    public function GetCreationTime_ShouldGetCreationTime()
     {
         # Arrange:
         $name = $this->generateName();
@@ -94,7 +94,7 @@ class DirectoriesTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function GetCreationUtcTime_ShouldGetCreationTimeUtc() 
+    public function GetCreationUtcTime_ShouldGetCreationTimeUtc()
     {
         # Arrange:
         $name = $this->generateName();
@@ -110,7 +110,7 @@ class DirectoriesTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function GetCurrentDirectory_CanCurrentGetDirectory() 
+    public function GetCurrentDirectory_CanCurrentGetDirectory()
     {
         # Arrange:
         $repo_name = 'dotnetonphp';
@@ -125,7 +125,7 @@ class DirectoriesTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function GetDirectories_CanGetDirectories() 
+    public function GetDirectories_CanGetDirectories()
     {
         # Arrange:
         $name = $this->generateName();
@@ -141,11 +141,11 @@ class DirectoriesTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function GetDirectoryRoot_CanGetRoot() 
+    public function GetDirectoryRoot_CanGetRoot()
     {
         # Arrange:
         $name = $this->generateName();
-        
+
         # Act:
         $root = Directories::getDirectoryRoot($name);
 
@@ -156,7 +156,7 @@ class DirectoriesTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function GetFiles_CanGetFiles() 
+    public function GetFiles_CanGetFiles()
     {
         # Arrange:
         $name = $this->generateName();
@@ -168,7 +168,7 @@ class DirectoriesTestCase extends PHPUnit_Framework_TestCase {
             $fd = fopen($file, 'w');
             fclose($fd);
         }
-        
+
         # Act:
         $files = Directories::getFiles($name);
 
@@ -179,7 +179,7 @@ class DirectoriesTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function GetFileSystemEntries_CanGetFileSystemEntries() 
+    public function GetFileSystemEntries_CanGetFileSystemEntries()
     {
         # Arrange:
         $name = $this->generateName();
@@ -191,7 +191,7 @@ class DirectoriesTestCase extends PHPUnit_Framework_TestCase {
             fopen($file, 'w');
             mkdir($name.'/'.$i);
         }
-        
+
         # Act:
         $files = Directories::getFileSytemEntries($name);
 
@@ -202,7 +202,7 @@ class DirectoriesTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function GetLastAccessTime_CanGetLastAccessTime() 
+    public function GetLastAccessTime_CanGetLastAccessTime()
     {
         # Arrange:
         $name = $this->generateName();
@@ -219,12 +219,12 @@ class DirectoriesTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function GetLastAccessTimeUtc_CanGetLastAccessTimeUtc() 
+    public function GetLastAccessTimeUtc_CanGetLastAccessTimeUtc()
     {
         # Arrange:
         $name = $this->generateName();
         mkdir($name);
-        $utc = getdate(strtotime(gmdate('Y-m-d H:m:s', mktime())));
+        $utc = getdate(strtotime(gmdate('Y-m-d H:m:s', time())));
 
         # Act:
         $time = Directories::getLastAccessTimeUtc($name);
@@ -236,7 +236,7 @@ class DirectoriesTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function GetLastWriteTime_CanGetLastWriteTime() 
+    public function GetLastWriteTime_CanGetLastWriteTime()
     {
         # Arrange:
         $name = $this->generateName();
@@ -253,12 +253,12 @@ class DirectoriesTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function GetLastWriteTimeUtc_CanGetLastAccessTimeUtc() 
+    public function GetLastWriteTimeUtc_CanGetLastAccessTimeUtc()
     {
         # Arrange:
         $name = $this->generateName();
         mkdir($name);
-        $utc = getdate(strtotime(gmdate('Y-m-d H:m:s', mktime())));
+        $utc = getdate(strtotime(gmdate('Y-m-d H:m:s', time())));
 
         # Act:
         $time = Directories::getLastWriteTimeUtc($name);
@@ -271,7 +271,7 @@ class DirectoriesTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function GetParent_CanGetParent() 
+    public function GetParent_CanGetParent()
     {
         # Arrange:
         $name = $this->generateName();
@@ -287,7 +287,7 @@ class DirectoriesTestCase extends PHPUnit_Framework_TestCase {
     /**
      * @test
     */
-    public function Move_CanMovePath() 
+    public function Move_CanMovePath()
     {
         # Arrange:
         $name = $this->generateName();
@@ -298,9 +298,9 @@ class DirectoriesTestCase extends PHPUnit_Framework_TestCase {
 
         # Act:
         Directories::move($name, $destination);
-        
+
         # Assert:
-        
+
         $this->assertTrue(file_exists($complete_path));
     }
 }
