@@ -4,7 +4,6 @@
 
 all:
 	vendor/bin/phpunit --configuration=./tests/configs/phpunit.xml 
-	rm -rf /tmp/*
 
 collections:
 	vendor/bin/phpunit --group collections --configuration=./tests/configs/phpunit.xml
@@ -14,7 +13,6 @@ core:
 
 io:
 	vendor/bin/phpunit --group io --configuration=tests/configs/phpunit.xml
-	rm -rf /tmp/*
 
 xml:
 	vendor/bin/phpunit --group xml --configuration=./tests/configs/phpunit.xml

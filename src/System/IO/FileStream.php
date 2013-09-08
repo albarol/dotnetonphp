@@ -330,7 +330,7 @@ namespace System\IO {
          * @throws \System\SystemException The file could not be found.
          * @throws \System\UnauthorizedAccessException This operation is not supported on the current platform. -or- The caller does not have the required permission.
          * @param \System\Security\AccessControl\FileSecurity $fileSecurity A FileSecurity object that describes an ACL entry to apply to the current file.
-         * @return void 
+         * @return void
         */
         public function setAccessControl($fileSecurity){}
 
@@ -346,7 +346,7 @@ namespace System\IO {
          */
         public function setLength($value) {
 
-            if(!$this->canWrite() || !$this->canSeek()) { 
+            if(!$this->canWrite() || !$this->canSeek()) {
                 throw new NotSupportedException("The stream does not support both writing and seeking.");
             }
 
@@ -377,43 +377,43 @@ namespace System\IO {
          * Writes a block of bytes to this stream using data from a buffer.
          *
          * @access public
-         * @throws \System\ArgumentNullException array is null.
+         * @throws \System\ArgumentNullException buffer is null.
          * @throws \System\ArgumentException offset and count describe an invalid range in array.
          * @throws \System\ArgumentOutOfRangeException offset or count is negative.
          * @throws \System\IO\IOException An I/O error ocurrs.
          * @throws \System\ObjectDisposedException The stream is closed.
          * @throws \System\NotSupportedException The current stream instance does not support writing.
-         * @param array $array An array of bytes. This method copies count bytes from buffer to the current stream.
+         * @param array $buffer An array of bytes. This method copies count bytes from buffer to the current stream.
          * @param int $offset The zero-based byte offset in buffer at which to begin copying bytes to the current stream.
          * @param int $count The number of bytes to be written to the current stream.
          * @return void
          */
-        public function write($array, $offset=0, $count=null) {
+        public function write($buffer, $offset=0, $count=null) {
 
             $this->assertOpened();
             $this->assertWrite();
 
-            if (is_string($array)) {
-                $array = str_split($array);
+            if (is_string($buffer)) {
+                $buffer = str_split($buffer);
             }
 
-            $count = is_null($count) ? sizeof($array) - $offset : $count;
+            $count = is_null($count) ? sizeof($buffer) - $offset : $count;
             $area = $offset + $count;
 
-            if(is_null($array)) {
-                throw new ArgumentNullException("array is null.");
+            if(is_null($buffer)) {
+                throw new ArgumentNullException("buffer is null.");
             }
 
             if($offset < 0 || $count < 0) {
                 throw new ArgumentOutOfRangeException("offset or count is negative.");
             }
 
-            if($area > sizeof($array)) {
+            if($area > sizeof($buffer)) {
                 throw new ArgumentException("offset and count describe an invalid range in array.");
             }
 
             try {
-                fwrite($this->stream, implode(array_slice($array, $offset, $count)));
+                fwrite($this->stream, implode(array_slice($buffer, $offset, $count)));
             }
             catch (\Exception $e) {
                 throw new IOException("An I/O error occours.");
