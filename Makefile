@@ -1,9 +1,9 @@
 #
-# Makefile for nosetests
+# Makefile for phpunit
 #
 
 all:
-	vendor/bin/phpunit --configuration=./tests/configs/phpunit.xml 
+	vendor/bin/phpunit --configuration=./tests/configs/phpunit.xml
 
 collections:
 	vendor/bin/phpunit --group collections --configuration=./tests/configs/phpunit.xml
