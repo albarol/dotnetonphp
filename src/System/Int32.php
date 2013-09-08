@@ -1,7 +1,7 @@
 <?php
 
 namespace System {
-    
+
     use \System\ArgumentNullException as ArgumentNullException;
     use \System\FormatException as FormatException;
     use \System\TypeCode as TypeCode;
@@ -20,12 +20,12 @@ namespace System {
         /**
          * Represents the largest possible value of an System.Int32. This field is constant.
          */
-        const MAX_VALUE = 2147483647;
+        const MaxValue = 2147483647;
         
         /**
          * Represents the smallest possible value of System.Int32. This field is constant.
          */
-        const MIN_VALUE = -2147483647;
+        const MinValue = -2147483647;
 
         public function __construct($value) { 
              if(is_null($value)):
@@ -36,10 +36,10 @@ namespace System {
                 throw new FormatException("s is not in the correct format.");
             endif;
 
-            if($value < self::MIN_VALUE):
-                $value = self::MIN_VALUE;
-            elseif($value > self::MAX_VALUE):
-                $value = self::MAX_VALUE;
+            if($value < self::MinValue):
+                $value = self::MinValue;
+            elseif($value > self::MaxValue):
+                $value = self::MaxValue;
             endif;
 
             $this->value = $value;
@@ -52,7 +52,7 @@ namespace System {
          * @return \System\Int32 The value of this constant is 2,147,483,647; that is, hexadecimal 0x7FFFFFFF.
         */
         public static function maxValue() {
-            return new Int32(self::MAX_VALUE);
+            return new Int32(self::MaxValue);
         }
 
         /**
@@ -62,7 +62,7 @@ namespace System {
          * @return \System\Int32 The value of this constant is -2,147,483,648; that is, hexadecimal 0x80000000.
         */
         public static function minValue() {
-            return new Int32(self::MIN_VALUE);
+            return new Int32(self::MinValue);
         }
 
         /**
@@ -132,12 +132,17 @@ namespace System {
          * @param \System\Int32 result When this method returns, contains the 32-bit signed integer value equivalent to the number contained in s, if the conversion succeeded, or zero if the conversion failed
          * @return bool true if the conversion succeeded, otherwise false.
         */
-        public static function tryParse($s, &$result) {
+        public static function tryParse($s) {
             try {
-                $result = self::parse($s);
-                return true;
+                return array(
+                    'object' => self::parse($s),
+                    'result' => true
+                );
             } catch(\Exception $ex) {
-                return false;
+                return array(
+                    'object' => null,
+                    'result' => false
+                );
             }
         }
 

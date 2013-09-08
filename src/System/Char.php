@@ -3,7 +3,6 @@
 namespace System {
 
     use \System\IComparable as IComparable;
-    use \System\IConvertible as IConvertible;
     use \System\IEquatable as IEquatable;
 
     /**
@@ -12,12 +11,12 @@ namespace System {
      * @name Char
      * @package System
      */
-    final class Char implements IComparable, IConvertible, IEquatable {
+    final class Char implements IComparable, IEquatable {
 
         private $value;
 
-        const MIN_VALUE = 0x0000;
-        const MAX_VALUE = 0xFFFF;
+        const MinValue = 0x0000;
+        const MaxValue = 0xFFFF;
         
         public function __construct() { }
 
@@ -28,14 +27,14 @@ namespace System {
          * @param object $value A object to compare to this instance.
          * @return int A signed number indicating the relative values of this instance and the value parameter.
          */
-        public function compareTo($value) {
-            if ($this->value == $value):
+        public function compareTo($value) 
+        {
+            if ($this->value == $value)
+            {
                 return 0;
-            elseif($this->value < $value):
-                return -1;
-            elseif($this->value > $value):
-                return 1;
-            endif;
+            }
+
+            return ($this->value > $value) ? 1 : -1;
         }
 
         /**
@@ -55,7 +54,8 @@ namespace System {
          * @param object $obj A \System\Char value to compare to this instance.
          * @return bool true if obj has the same value as this instance; otherwise, false.
          */
-        public function equals($other) {
+        public function equals($other) 
+        {
             return $this->value() == $other;
         }
 
@@ -67,9 +67,10 @@ namespace System {
          * @final
          * @return \System\Char The value of this constant is hexadecimal 0xFFFF
          */
-        public static final function maxValue() {
+        public static final function maxValue() 
+        {
             $obj = new Char;
-            $obj->value(self::MAX_VALUE);
+            $obj->value(self::MaxValue);
             return $obj;
         }
 
@@ -82,7 +83,7 @@ namespace System {
          */
         public static final function minValue() {
             $obj = new Char;
-            $obj->value(self::MIN_VALUE);
+            $obj->value(self::MinValue);
             return $obj;
         }
 
@@ -92,87 +93,24 @@ namespace System {
          * @param char $value set char value
          * @return char char value
         */
-        public function value($value=null) {
-            if (is_null($value)):
+        public function value($value = null) 
+        {
+            if (is_null($value))
+            {
                 return $this->value;
-            endif;
-            if($value >= self::MIN_VALUE && $value <= self::MAX_VALUE):
+            }
+
+            if($value >= self::MinValue && $value <= self::MaxValue)
+            {
                 $this->value = $value;
-            endif;
+            }
+
             return $this->value; 
         }
 
-        
-
-        public function getTypeCode() {
+        public function getTypeCode() 
+        {
             return TypeCode::char();
-        }
-
-        public function toBoolean($provider) {
-
-        }
-
-        public function toByte($provider) {
-
-        }
-
-        public function toChar($provider) {
-
-        }
-
-        public function toDateTime($provider) {
-
-        }
-
-        public function toDecimal($provider) {
-
-        }
-
-        public function toDouble($provider) {
-
-        }
-
-        public function toInt16($provider) {
-
-        }
-
-        public function toInt32($provider) {
-
-        }
-
-        public function toInt64($provider)
-        {
-
-        }
-
-        public function toSByte($provider)
-        {
-
-        }
-
-        public function toSingle($provider)
-        {
-
-        }
-
-        public function toType($conversionType, $provider)
-        {
-
-        }
-
-        public function toUInt16($provider)
-        {
-
-        }
-
-        public function toUInt32($provider)
-        {
-
-        }
-
-        public function toUInt64($provider)
-        {
-
         }
     }
 }

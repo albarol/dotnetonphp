@@ -17,6 +17,7 @@ namespace System\IO {
 
         /**
          * Provides access to information on the specified drive.
+         *
          * @access public
          */
         public function __construct() {
@@ -26,25 +27,39 @@ namespace System\IO {
 
         /**
          * Indicates the amount of available free space on a drive.
+         *
          * @access public
          * @return float The amount of free space available on the drive, in bytes.
          */
         public function availableFreeSpace() {
-            return disk_free_space($this->directoryRoot->name());
+            return disk_free_space($this->directoryRoot->fullName());
         }
 
 
         /**
          * Gets the name of the file system, such as NTFS or FAT32.
+         *
+         * @access public
          * @return string
          */
         public function driveFormat() {
-            return PHP_OS;
+            return "";
+        }
+
+        /**
+         * Gets the drive type.
+         *
+         * @access public
+         * @return \System\IO\DriveType 
+        */
+        public function driveType() {
+            return DriveType::unknown();
         }
 
 
         /**
          * Gets the root directory of a drive.
+         *
          * @access public
          * @return DirectoryInfo A DirectoryInfo object that contains the root directory of the drive.
          */
@@ -54,12 +69,13 @@ namespace System\IO {
 
         /**
          * Gets the total size of storage space on a drive.
+         *
          * @access public
          * @return float The total size of the drive, in bytes.
          */
         public function totalSize() {
-            return disk_total_space($this->directoryRoot->name());
+           
+            return disk_total_space($this->directoryRoot->fullName());
         }
-
     }
 }

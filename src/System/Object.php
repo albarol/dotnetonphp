@@ -12,7 +12,6 @@ namespace System {
 
         protected $properties = array();
 
-
         /**
          * Determines whether the specified System.Object is equal to the current System.Object.
          * @access public
@@ -20,8 +19,7 @@ namespace System {
          * @return Boolean true if the specified System.Object is equal to the current System.Object; otherwise, false.
          */
         public function equals($obj) {
-            if($this == $obj && get_class($this) == get_class($obj)) return true;
-            return false;
+            return $this == $obj;
         }
 
         /**

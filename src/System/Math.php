@@ -134,15 +134,14 @@ namespace System {
     * @throws \System\DivideByZeroException b is zero.
     * @param int $a The int that contains the dividend.
     * @param int $b The int that contains the divisor.
-    * @param int $result The int that receives the remainder.
+    * @return int $result The int that receives the remainder.
     */
-    public static function divRem($a, $b, &$result) {
+    public static function divRem($a, $b) {
         if($b == 0):
             throw new DivideByZeroException("b is zero.");
         endif;
 
-        $result = $a % $b;
-
+        return $a % $b;
     }
 
     /**
@@ -176,9 +175,7 @@ namespace System {
     * @return int A number equal to x - (y Q), where Q is the quotient of x / y rounded to the nearest integer (if x / y falls halfway between two integers, the even integer is returned).
     */
     public static function ieeeReminder($x, $y) {
-      print ($y * self::round($x / $y));
       return $x - ($y * self::round($x / $y));
-
     }
 
     /**
@@ -265,13 +262,13 @@ namespace System {
     * @param $value A signed number.
     * @return int A number indicating the sign of value.
     */
-    public static function sign($value) {
-      if(is_numeric($value)):
-        if($value < 0) return -1;
-        if($value > 0) return 1;
-      endif;
-
-      return 0;
+    public static function sign($value) 
+    {
+        if(is_numeric($value) && $value != 0)
+        {
+            return $value / abs($value);
+        }
+        return 0;
     }
 
     /**
@@ -279,8 +276,9 @@ namespace System {
     * @param $d An angle, measured in radians.
     * @return float The hyperbolic sine of value. If value is equal to System.Double.NegativeInfinity, System.Double.PositiveInfinity, or System.Double.NaN, this method returns a System.Double equal to value.
     */
-    public static function sinh($d) {
-      return sinh($d);
+    public static function sinh($d) 
+    {
+        return sinh($d);
     }
 
     /**

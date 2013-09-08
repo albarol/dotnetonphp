@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../../system/io/StringReader.php';
+require_once dirname(__FILE__) . '/../../../src/Autoloader.php';
 
 use \System\IO\StringReader as StringReader;
 
@@ -46,13 +46,11 @@ class StringReaderFixture extends PHPUnit_Framework_TestCase {
     public function test_Read_ThrowsExceptionWhenStringReaderIsClosed() {
         $this->setExpectedException("\\System\\ObjectDisposedException");
         $this->reader->close();
-        $array = array();
-        $this->reader->read($array, 0, 1);
+        $this->reader->read(0, 1);
     }
 
     public function test_Read_CanReadBuffer() {
-        $array = array();
-        $this->reader->read($array, 0, 2);
+        $array = $this->reader->read(0, 2);
         $this->assertEquals(2, sizeof($array));
     }
 
@@ -61,8 +59,7 @@ class StringReaderFixture extends PHPUnit_Framework_TestCase {
     }
 
     public function test_ReadBlock_CanReadBuffer() {
-        $array = array();
-        $this->reader->readBlock($array, 0, 2);
+        $array = $this->reader->readBlock( 0, 2);
         $this->assertEquals(2, sizeof($array));
         $this->assertEquals("Do", implode($array, ""));
     }
@@ -78,4 +75,3 @@ class StringReaderFixture extends PHPUnit_Framework_TestCase {
         $this->assertEquals("D", $this->reader->peek());
     }
 }
-?>

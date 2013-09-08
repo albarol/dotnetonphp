@@ -1,13 +1,15 @@
 <?php
 
-namespace System\Collections {
+namespace System\Collections 
+{
 
     use \System\ArgumentOutOfRangeException as ArgumentOutOfRangeException;
     use \System\ArgumentNullException as ArgumentNullException;
+    use \System\InvalidOperationException as InvalidOperationException;
     use \System\ICloneable as ICloneable;
+    use \System\InvalidOperationException as InvalidOperationException;
 
     use \System\Collections\ICollection as ICollection;
-
     use \System\Collections\Generic\StackEnumerator as StackEnumerator;
 
     /**
@@ -17,8 +19,8 @@ namespace System\Collections {
      * @package System
      * @subpackage Collections
       */
-    class Stack implements ICollection, ICloneable {
-
+    class Stack implements ICollection, ICloneable 
+    {
         private $head = -1;
         private $capacity;
         private $stack;
@@ -30,16 +32,20 @@ namespace System\Collections {
          * @param object $value initialCapacity -or- ICollection
          */
         public function __construct($value=null) {
-            if(is_null($value)) $value = 10;
-            if(is_numeric($value)) {
+            if(is_null($value)):
+                $value = 10;
+            endif;
+            if(is_numeric($value)):
                 $this->constructFromNumber($value);
-            } else {
+            else:
                 $this->constructFromCollection($value);
-            }
+            endif;
         }
 
         private function constructFromNumber($initialCapacity) {
-            if($initialCapacity < 0) throw new ArgumentOutOfRangeException("initialCapacity is less than zero.");
+            if($initialCapacity < 0):
+                throw new ArgumentOutOfRangeException("initialCapacity is less than zero.");
+            endif;
             $this->capacity = $initialCapacity;
             $this->stack = array();
         }
@@ -69,7 +75,8 @@ namespace System\Collections {
          * @access public
          * @return Object A new object that is a copy of this instance.
          */
-        public function cloneObject() {
+        public function cloneObject() 
+        {
             return clone $this;
         }
 
@@ -79,30 +86,46 @@ namespace System\Collections {
          * @param object $obj The System.Object to locate in the System.Collections.Stack. The value can be null.
          * @return bool true, if obj is found in the System.Collections.Stack; otherwise, false.
          */
-        public function contains($obj) {
+        public function contains($obj) 
+        {
             $contains = false;
-            for($i = 0; $i < $this->count() && !$contains; $i++) {
+            for($i = 0; $i < $this->count() && !$contains; $i++) 
+            {
                 if($this->stack[$i] == $obj)
+                {
                     $contains = true;
+                }
+                    
             }
             return $contains;
         }
 
 
         /**
-         * Copies the elements of the System.Collections.ICollection to an System.Array, starting at a particular System.Array index.
-         * @access public
-         * @throws ArgumentNullException|ArgumentOutOfRangeException|ArgumentException
-         * @param array $array The one-dimensional System.Array that is the destination of the elements copied from System.Collections.ICollection. The System.Array must have zero-based indexing.
-         * @param int $index The zero-based index in array at which copying begins.
-         * @return void
-         */
-        public function copyTo(&$array, $index)
+       * Copies the elements of the System.Collections.ICollection to an System.Array, starting at a particular System.Array index.
+       * @access public
+       * @throws \System\ArgumentNullException array is a null reference.
+       * @throws \System\ArgumentOutOfRangeException index is less than zero. 
+       * @throws \System\ArgumentException array is multidimensional. -or- index is equal to or greater than the length of array. -or- The number of elements in the source ICollection is greater than the available space from index to the end of the destination array. 
+       * @param array $array The one-dimensional Array that is the destination of the elements copied from ICollection. The System.Array must have zero-based indexing.
+       * @param int $index The zero-based index in array at which copying begins.
+       * @return void
+       */
+        public function copyTo($index = 0)
         {
-            if(is_null($array)) throw new ArgumentNullException("array is null.");
-            if($index < 0 || $index > $this->count()) throw new ArgumentOutOfRangeException("index is less than zero. -or- index greater than size of queue");
-            for($i = $index; $i < $this->count(); $i++)
+            $array = array();
+
+            if($index < 0 || $index > $this->count())
+            {
+                throw new ArgumentOutOfRangeException("index is less than zero. -or- index greater than size of queue");
+            }
+            
+            for($i = $index; $i < $this->count(); $i++) 
+            {
                 $array[] = $this->stack[$i];
+            }
+
+            return $array;
         }
 
         /**
@@ -110,27 +133,33 @@ namespace System\Collections {
          * @access public
          * @return int The number of elements contained in the System.Collections.ICollection.
          */
-        public function count() {
+        public function count() 
+        {
             return sizeof($this->stack);
         }
 
         /**
          * Returns an enumerator that iterates through a collection.
          * @access public
-         * @return IEnumerator An System.Collections.IEnumerator object that can be used to iterate through the collection.
+         * @return \System\Collections\IEnumerator An System.Collections.IEnumerator object that can be used to iterate through the collection.
          */
-        public function getEnumerator() {
+        public function getEnumerator() 
+        {
             return new StackEnumerator($this);
         }
 
         /**
          * Returns the object at the top of the System.Collections.Stack without removing it.2
          * @access public
-         * @throws InvalidOperationException
+         * @throws \System\InvalidOperationException The System.Collections.Stack is empty.
          * @return object The System.Object at the top of the System.Collections.Stack.
          */
-        public function peek() {
-            if($this->count() == 0) throw new InvalidOperationException("The System.Collections.Stack is empty.");
+        public function peek()
+        {
+            if($this->count() == 0)
+            {
+                throw new InvalidOperationException("The System.Collections.Stack is empty.");
+            }
             return $this->stack[$this->head];
         }
 
@@ -141,7 +170,11 @@ namespace System\Collections {
          * @return object The System.Object removed from the top of the System.Collections.Stack.
          */
         public function pop() {
-            if($this->count() == 0) throw new InvalidOperationException("The System.Collections.Stack is empty.");
+            if($this->count() == 0)
+            {
+                throw new InvalidOperationException("The System.Collections.Stack is empty.");
+            }
+
             $this->head--;
             return array_pop($this->stack);
         }
@@ -153,8 +186,10 @@ namespace System\Collections {
           * @param object $obj The System.Object to push onto the System.Collections.Stack. The value can be null.
           * @return void
           */
-        public function push($obj){
-            if($this->count() < $this->capacity){
+        public function push($obj)
+        {
+            if($this->count() < $this->capacity) 
+            {
                 array_push($this->stack, $obj);
                 $this->head++;
             }
@@ -165,7 +200,8 @@ namespace System\Collections {
          * @access public
          * @return array A new array containing copies of the elements of the System.Collections.Stack.
          */
-        public function toArray() {
+        public function toArray() 
+        {
             return array_values($this->stack);
         }
     }

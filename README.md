@@ -1,8 +1,47 @@
-# DOTNETONPHP - .NET Framework implemented in native PHP language
+[![Build Status](https://travis-ci.org/fakeezz/dotnetonphp.png?branch=master)](https://travis-ci.org/fakeezz/dotnetonphp)
+
+## .NETonPHP - .NET Framework implemented in PHP language
 
 Author: Alexandre Barbieri (fakeezz)
 
 ## About
-Study project based on .NET Framework. The main idea is transform functions PHP in objects which represent encapsulated classes of .NET Framework.
+This project try encapsulate many functions scattered in cohesive objects. 
+With this objects you can programming easier. 
 
-Performance questions will not be considered now, since the project is only for study.
+Follows some example:
+
+
+## General Libraries
+
+### Old-style
+
+```php
+$date = strtotime("+7 day", $date);
+echo date('M d, Y', $date);
+```
+
+### New-style
+
+```php
+$dateTime = DateTime::now();
+echo $dateTime->addDays(7);
+```
+
+## IO
+
+```php
+$reader = new StreamReader("file.txt");
+while(!$reader->endOfStream())
+{
+    echo $reader->read();
+}
+```
+
+
+## Collections
+
+```php
+$queue = new Queue();
+$queue->enqueue('dot');
+echo $queue->dequeue();
+```

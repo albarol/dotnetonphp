@@ -1,0 +1,32 @@
+﻿<phpunit 
+   backupGlobals="true"
+   backupStaticAttributes="false"
+   cacheTokens="true"
+   convertErrorsToExceptions="true"
+   convertNoticesToExceptions="true"
+   convertWarningsToExceptions="true"
+   forceCoversAnnotation="false"
+   mapTestClassNameToCoveredClassName="false"
+   printerClass="PHPUnit_TextUI_ResultPrinter"
+   processIsolation="false"
+   stopOnError="false"
+   stopOnFailure="false"
+   stopOnIncomplete="false"
+   stopOnSkipped="false"
+   testSuiteLoaderClass="PHPUnit_Runner_StandardTestSuiteLoader"
+   strict="false"
+   verbose="false">
+	<testsuites>
+		<testsuite name="dotnetonphp">
+			<directory suffix="TestCase.php">../System</directory>
+		</testsuite>	
+	</testsuites>
+	<filter>
+	  <whitelist addUncoveredFilesFromWhitelist="true">
+		<directory suffix="TestCase.php">../../System</directory>
+	  </whitelist>
+	</filter>	
+	<logging>
+		<log type="junit" target="../logs/phpunit.xml" logIncompleteSkipped="false" />
+	</logging>
+</phpunit>

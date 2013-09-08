@@ -59,7 +59,9 @@ namespace {
          * @static
          * @return A \System\TimeZone object that represents the current local time zone.
          */
-        public static function currentTimeZone() { }
+        public static function currentTimeZone() { 
+            
+        }
 
         /**
          * Gets the daylight saving time zone name.

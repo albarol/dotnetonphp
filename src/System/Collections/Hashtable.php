@@ -19,113 +19,104 @@ namespace System\Collections {
      * @package System
      * @subpackage Collections
      */
-    class Hashtable implements ICloneable, IDictionary, ISerializable, IDeserializationCallback  {
-
+    class Hashtable implements ICloneable, IDictionary, ISerializable, IDeserializationCallback  
+    {
         private $elements = array();
+        private $isFixedSize = false;
+        private $isReadOnly = false;
 
-        public function __construct($d=null) {
-            if($d instanceof IDictionary){
-                foreach($d->keys() as $key)
-                    $this->elements[$key] = $d->get($key);
+        /**
+         * Initializes a new, empty instance of the Hashtable class using the default initial capacity, load factor, hash code provider, and comparer.
+         * @access public
+         * @param object $value The IDictionary object to copy to a new Hashtable object.
+         * @param \System\Collections\IEqualityComparer The IEqualityComparer object that defines the hash code provider and the comparer to use with the Hashtable object.
+        */
+        public function __construct($value = null, IEqualityComparer $equalityComparer = null) 
+        {
+            if($value instanceof IDictionary)
+            {
+                foreach($value->keys() as $key)
+                {
+                    $this->elements[$key] = $value->get($key);
+                }
+                
+                $this->isFixedSize = $value->isFixedSize();
+                $this->isReadOnly = $value->isReadOnly();
             }
         }
 
         /**
          * Adds an element with the provided key and value to the System.Collections.IDictionary object.
          * @access public
-         * @throws ArgumentNullException|ArgumentException|NotSupportedException
+         * @throws \System\ArgumentNullException key is null.
+         * @throws \System\ArgumentException An element with the same key already exists in the System.Collections.Hashtable.
          * @param object $key The System.Object to use as the key of the element to add.
          * @param object $value The System.Object to use as the value of the element to add.
          */
-        public function add($key, $value) {
-            if(is_null($key)) throw new ArgumentNullException("key is null.");
-            if($this->containsKey($key)) throw new ArgumentException("An element with the same key already exists in the System.Collections.Hashtable.");
+        public function add($key, $value) 
+        {
+            if(is_null($key)) 
+            {
+                throw new ArgumentNullException("key is null.");
+            }
+            
+            if($this->containsKey($key)) 
+            {
+                throw new ArgumentException("An element with the same key already exists in the System.Collections.Hashtable.");
+            }
+
             $this->elements[$key] = $value;
+        }
+
+        /**
+         * Removes all elements from the System.Collections.IDictionary object.
+         * @access public
+         * @return void
+         */
+        public function clear() 
+        {
+            unset($this->elements);
+            $this->elements = array();
         }
 
 
         /**
          * Creates a new object that is a copy of the current instance.
          * @access public
-         * @return Object A new object that is a copy of this instance.
+         * @return \System\Hashtable A new object that is a copy of this instance.
          */
-        public function cloneObject() {
+        public function cloneObject() 
+        {
             return clone $this;
         }
 
         /**
-         * Copies the elements of the System.Collections.ICollection to an System.Array, starting at a particular System.Array index.
+         * Determines whether the IDictionary object contains an element with the specified key.
          * @access public
-         * @throws ArgumentNullException
-         * @throws ArgumentOutOfRangeException
-         * @throws ArgumentException
-         * @param array $array The one-dimensional System.Array that is the destination of the elements copied from System.Collections.ICollection. The System.Array must have zero-based indexing.
-         * @param int $index The zero-based index in array at which copying begins.
-         * @return void
+         * @throws \System\ArgumentNullException key is null.
+         * @abstract
+         * @param object $key The key to locate in the IDictionary object.
+         * @return boolean true if the IDictionary contains an element with the key; otherwise, false.
          */
-        public function copyTo(array &$array, $index=0) {
-            if($index < 0):
-                throw new ArgumentOutOfRangeException("index is less than zero.");
-            endif;
+        public function contains($key)
+        {
             
-            $current = 0;
-
-            foreach(array_keys($this->elements) as $key) {
-                if($current >= $index)
-                    $array[$key] = $this->elements[$key];
-                $current++;
-            }
-        }
-
-        /**
-         * Gets the number of elements contained in the System.Collections.ICollection.
-         * @access public
-         * @return int The number of elements contained in the System.Collections.ICollection.
-         */
-        public function count() {
-            return sizeof($this->elements);
-        }
-
-        /**
-         * Runs when the entire object graph has been deserialized.
-         * @param $sender The object that initiated the callback. The functionality for this parameter is not currently implemented.
-         * @return void
-         */
-        public function onDeserialization($sender) {
-            // TODO: Implement onDeserialization() method.
-        }
-
-
-        /**
-         * Removes all elements from the System.Collections.IDictionary object.
-         * @access public
-         * @throws NotSupportedException
-         */
-        public function clear() {
-            unset($this->elements);
-            $this->elements = array();
         }
 
         /**
          * Determines whether the System.Collections.IDictionary object contains an element with the specified key.
          * @access public
-         * @throws \System\ArgumentNullException
-         * @param object $key The key to locate in the System.Collections.IDictionary object.
-         * @return bool true if the System.Collections.IDictionary contains an element with the key; otherwise, false.
-         */
-        public function contains($key) {
-            return $this->containsKey($key);
-        }
-
-        /**
-         * Determines whether the System.Collections.Hashtable contains a specific key.
-         * @access public
-         * @throws \System\ArgumentNullException
+         * @throws \System\ArgumentNullException key is null.
          * @param $key The key to locate in the System.Collections.Hashtable.
          * @return bool true if the System.Collections.Hashtable contains an element with the specified key; otherwise, false.
          */
-        public function containsKey($key) {
-            if(is_null($key)) throw new ArgumentNullException("key is null.");
+        public function containsKey($key) 
+        {
+            if(is_null($key)) 
+            {
+                throw new ArgumentNullException("key is null.");
+            }
+
             return array_key_exists($key, $this->elements);
         }
 
@@ -135,78 +126,84 @@ namespace System\Collections {
          * @param $value The value to locate in the System.Collections.Hashtable. The value can be null.
          * @return bool true if the System.Collections.Hashtable contains an element with the specified value; otherwise, false.
          */
-        public function containsValue($value) {
-            $exists = false;
-            for($i = 0; $i < $this->count() && !$exists; $i++)
-                $exists = $this->elements[$i] == $value;
-            return $exists;
+        public function containsValue($value) 
+        {
+            return array_search($value, $this->elements) !== FALSE;
         }
 
         /**
-         * Removes the element with the specified key from the System.Collections.IDictionary object.
+         * Copies the elements of the \System\Collections\ICollection to an \System\Array, starting at a particular \System\Array index.
          * @access public
-         * @throws ArgumentNullException|NotSupportedException
-         * @param object $key The key of the element to remove.
-         * @return void
+         * @throws \System\ArgumentNullException array is null.
+         * @throws \System\ArgumentOutOfRangeException index is less than zero. -or- index greater than size of list
+         * @param int $index The zero-based index in array at which copying begins.
+         * @return array The one-dimensional array that is the destination of the elements copied from ICollection. The array must have zero-based indexing.
          */
-        public function remove($key) {
-            if(is_null($key)) throw new ArgumentNullException("key is null.");
-            unset($this->elements[$key]);
+        public function copyTo($index = 0) 
+        {
+            if($index < 0)
+            {
+                throw new ArgumentOutOfRangeException("index is less than zero.");
+            }
+            
+            $current = 0;
+            $array = array();
+
+            foreach($this->keys() as $key) 
+            {
+                if($current >= $index)
+                {
+                    $array[$key] = $this->elements[$key];    
+                }
+                $current++;
+            }
+            return $array;
         }
 
         /**
-         * Gets a value indicating whether the System.Collections.IDictionary object has a fixed size.
+         * Gets the number of elements contained in the System.Collections.ICollection.
          * @access public
-         * @return boolean true if the System.Collections.IDictionary object has a fixed size; otherwise, false.
+         * @return int The number of elements contained in the System.Collections.ICollection.
          */
-        public function isFixedSize() {
-            // TODO: Implement isFixedSize() method.
+        public function count() 
+        {
+            return sizeof($this->elements);
         }
 
         /**
-         * Gets a value indicating whether the System.Collections.IDictionary object is read-only.
+         * Determines whether the specified object is equal to the current object.
          * @access public
-         * @return boolean true if the System.Collections.IDictionary object is read-only; otherwise, false.
+         * @param object $obj The object to compare with the current object
+         * @return Boolean true if the specified object is equal to the current object; otherwise, false.
          */
-        public function isReadOnly() {
-            // TODO: Implement isReadOnly() method.
-        }
-
-        /**
-         * Gets an System.Collections.ICollection object containing the keys of the System.Collections.IDictionary object.
-         * @access public
-         * @return ICollection An System.Collections.ICollection object containing the keys of the System.Collections.IDictionary object.
-         */
-        public function keys() {
-            return array_keys($this->elements);
+        public function equals($obj)
+        {
+            return $this == $obj;
         }
 
         /**
          * Gets or sets the element with the specified key.
          * @access public
-         * @throws ArgumentNullException|NotSupportedException
-         * @param object $key The key of the element to get or set.
+         * @throws \System\ArgumentNullException key is null.
+         * @param object $key The key of the element to get
          * @return object The element with the specified key.
          */
-        public function get($key) {
+        public function get($key) 
+        {
+            if (is_null($key))
+            {
+                throw new ArgumentNullException("key is null.");
+            }
            return $this->elements[$key];
-        }
-
-        /**
-         * Gets an System.Collections.ICollection object containing the values in the System.Collections.IDictionary object.
-         * @access public
-         * @return ICollection An System.Collections.ICollection object containing the values in the System.Collections.IDictionary object.
-         */
-        public function values() {
-            return array_values($this->elements);
         }
 
         /**
          * Returns an enumerator that iterates through a collection.
          * @access public
-         * @return IEnumerator An System.Collections.IEnumerator object that can be used to iterate through the collection.
+         * @return \System\Collections\IEnumerator An IEnumerator object that can be used to iterate through the collection.
          */
-        public function getEnumerator() {
+        public function getEnumerator() 
+        {
             return new DictionaryEnumerator($this);
         }
 
@@ -217,19 +214,99 @@ namespace System\Collections {
          * @param SerializationInfo $info The System.Runtime.Serialization.SerializationInfo to populate with data.
          * @param StreamingContext $context The destination for this serialization.
          */
-        public function getObjectData($info, $context) {
+        public function getObjectData($info, $context) 
+        {
             // TODO: Implement getObjectData() method.
         }
 
+        public function getType()
+        {
+
+        }
+
         /**
-         * Gets the element with the specified key.
+         * Gets a value indicating whether the System.Collections.IDictionary object has a fixed size.
          * @access public
-         * @throws ArgumentNullException|NotSupportedException
-         * @param object $key The key of the element to get or set.
+         * @return boolean true if the System.Collections.IDictionary object has a fixed size; otherwise, false.
+         */
+        public function isFixedSize()
+        {
+            return $this->isFixedSize;
+        }
+
+        /**
+         * Gets a value indicating whether the System.Collections.IDictionary object is read-only.
+         * @access public
+         * @return boolean true if the System.Collections.IDictionary object is read-only; otherwise, false.
+         */
+        public function isReadOnly()
+        {
+            return $this->isReadOnly;
+        }
+
+        /**
+         * Gets an \System\Collections\ICollection object containing the keys of the System.Collections.IDictionary object.
+         * @access public
+         * @return \System\Collections\ICollection An ICollection object containing the keys of the \System\Collections\IDictionary object.
+         */
+        public function keys() 
+        {
+            return array_keys($this->elements);
+        }
+
+        /**
+         * Runs when the entire object graph has been deserialized.
+         * @access public
+         * @param $sender The object that initiated the callback. The functionality for this parameter is not currently implemented.
+         * @return void
+         */
+        public function onDeserialization($sender) 
+        {
+            // TODO: Implement onDeserialization() method.
+        }
+
+        /**
+         * Removes the element with the specified key from the System.Collections.IDictionary object.
+         * @access public
+         * @throws \System\ArgumentNullException
+         * @param object $key The key of the element to remove.
+         * @return void
+         */
+        public function remove($key) 
+        {
+            if(is_null($key)) 
+            {
+                throw new ArgumentNullException("key is null.");
+            }
+            
+            unset($this->elements[$key]);
+        }        
+
+        /**
+         * Gets an System.Collections.ICollection object containing the values in the System.Collections.IDictionary object.
+         * @access public
+         * @return \System\ICollection An System.Collections.ICollection object containing the values in the System.Collections.IDictionary object.
+         */
+        public function values() 
+        {
+            return array_values($this->elements);
+        }
+
+        /**
+         * Set the element with the specified key.
+         * @access public
+         * @throws \System\ArgumentNullException key is null.
+         * @param object $key The key of the element to set.
          * @param $value The element added
          * @return void
          */
-        public function set($key, $value) {
+        public function set($key, $value) 
+        {
+            if (is_null($key))
+            {
+                throw new ArgumentNullException("key is null.");
+            }
+
             $this->elements[$key] = $value;
         }
     }

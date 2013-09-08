@@ -10,9 +10,11 @@ namespace System {
      * @name DayOfWeek
      * @package System
      */
-    class DayOfWeek extends Enum {
+    class DayOfWeek extends Enum 
+    {
 
-        private function __construct($name, $value) {
+        private function __construct($name, $value) 
+        {
             $this->name = $name;
             $this->value = $value;
         }
@@ -22,7 +24,8 @@ namespace System {
          * @access public
          * @return \System\DayOfWeek
          */
-        public static function sunday() {
+        public static function sunday() 
+        {
             return new DayOfWeek("Sunday", 0);
         }
 

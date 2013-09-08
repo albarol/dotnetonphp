@@ -1,6 +1,17 @@
-#################
-## PHP STORM
-#################
+
+#######
+# PHP #
+#######
 
 .idea/
 docs/
+vendor/
+tests/logs/
+tests/coverage/
+composer.phar
+
+###########
+# EDITORS #
+###########
+*.sublime-workspace
+*.swp 
