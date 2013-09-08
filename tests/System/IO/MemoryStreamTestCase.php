@@ -8,12 +8,6 @@ use \System\IO\SeekOrigin as SeekOrigin;
 */
 class MemoryStreamTestCase extends PHPUnit_Framework_TestCase {
 
-    protected $memoryStream;
-
-    public function setUp() {
-        $this->memoryStream = new MemoryStream(array('d', 'o', 't', 'n', 'e', 't', 'o', 'n', 'p', 'h', 'p'));
-    }
-
     /**
      * @test
      * @expectedException \System\ArgumentNullException
@@ -372,6 +366,7 @@ class MemoryStreamTestCase extends PHPUnit_Framework_TestCase {
      * @test
     */
     public function Read_CanReadBlockOfBuffer() {
+
         # Arrange:
         $buffer = array('d', 'o', 't', 'n', 'e', 't', 'o', 'n', 'p', 'h', 'p');
         $ms = new MemoryStream($buffer);
@@ -383,179 +378,438 @@ class MemoryStreamTestCase extends PHPUnit_Framework_TestCase {
         $this->assertEquals('net', implode($content));
     }
 
-    // /**
-    //  * @test
-    // */
-    // public function ReadByte_ThrowsExceptionWhenStreamIsClosed() {
-    //     $this->setExpectedException("\\System\\ObjectDisposedException");
-    //     $this->memoryStream->close();
-    //     $this->memoryStream->readByte();
-    // }
+    /**
+     * @test
+     * @expectedException \System\ObjectDisposedException
+    */
+    public function ReadByte_ThrowsExceptionWhenStreamIsClosed() {
 
-    // /**
-    //  * @test
-    // */
-    // public function ReadByte_CanReadNextCharacter() {
-    //     $this->assertNotNull($this->memoryStream->readByte());
-    // }
+        # Arrange:
+        $buffer = array('d', 'o', 't', 'n', 'e', 't', 'o', 'n', 'p', 'h', 'p');
+        $ms = new MemoryStream($buffer);
+        $ms->close();
 
-    // /**
-    //  * @test
-    // */
-    // public function Seek_ThrowsExceptionWhenStreamIsClosed() {
-    //     $this->setExpectedException("\\System\\ObjectDisposedException");
-    //     $this->memoryStream->close();
-    //     $this->memoryStream->seek(2);
-    // }
+        # Act:
+        $ms->readByte();
+    }
 
-    // /**
-    //  * @test
-    // */
-    // public function Seek_PositionShouldBeEqualTwo() {
-    //     $this->memoryStream->seek(2, SeekOrigin::Begin);
-    //     $this->assertEquals(2, $this->memoryStream->position());
-    // }
+    /**
+     * @test
+    */
+    public function ReadByte_CanReadNextCharacter() {
 
-    // /**
-    //  * @test
-    // */
-    // public function Seek_PositionShouldBeEqualFour() {
-    //     $this->memoryStream->seek(2, SeekOrigin::Begin);
-    //     $this->memoryStream->seek(2, SeekOrigin::Current);
-    //     $this->assertEquals(4, $this->memoryStream->position());
-    // }
+        # Arrange:
+        $buffer = array('d', 'o', 't', 'n', 'e', 't', 'o', 'n', 'p', 'h', 'p');
+        $ms = new MemoryStream($buffer);
 
-    // /**
-    //  * @test
-    // */
-    // public function Seek_PositionShouldBeEqualFortyThree() {
-    //     $this->memoryStream->seek(0, SeekOrigin::End);
-    //     $this->assertEquals(11, $this->memoryStream->position());
-    // }
+        # Act:
+        # Assert:
+        $this->assertEquals('d', $ms->readByte());
+        $this->assertEquals('o', $ms->readByte());
+    }
 
-    // /**
-    //  * @test
-    // */
-    // public function SetLength_ThrowsExceptionWhenSizeIsGreaterThanCapacity() {
-    //     $this->setExpectedException("\\System\\NotSupportedException");
-    //     $this->memoryStream->setLength(30);
-    // }
+    /**
+     * @test
+     * @expectedException \System\ObjectDisposedException
+    */
+    public function Seek_ThrowsExceptionWhenStreamIsClosed() {
 
-    // /**
-    //  * @test
-    // */
-    // public function SetLength_ThrowsExceptionWhenStreamIsNotWritable() {
-    //     $this->setExpectedException("\\System\\NotSupportedException");
-    //     $ms = new MemoryStream(array('dotnetonphp'), 0, 1, false);
-    //     $ms->setLength(1);
-    // }
+        # Arrange:
+        $buffer = array('d', 'o', 't', 'n', 'e', 't', 'o', 'n', 'p', 'h', 'p');
+        $ms = new MemoryStream($buffer);
+        $ms->close();
 
-    // /**
-    //  * @test
-    // */
-    // public function SetLength_ThrowsExceptionWhenValueIsLessThanZero() {
-    //     $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
-    //     $this->memoryStream->setLength(-1);
-    // }
+        # Act:
+        # Assert:
+        $ms->seek(0);
+    }
 
-    // /**
-    //  * @test
-    // */
-    // public function SetLength_CanTruncateMemoryStream() {
-    //     $this->memoryStream->setLength(2);
-    //     $this->assertEquals(2, $this->memoryStream->length());
-    // }
+    /**
+     * @test
+     * @expectedException \System\IO\IOException
+    */
+    public function Seek_ThrowsExceptionWhenValueIsBeforeBeginOfStream() {
 
-    // /**
-    //  * @test
-    // */
-    // public function ToArray_ShouldReturnEmptyWhenStreamIsClosed() {
-    //     $this->memoryStream->close();
-    //     $this->assertEquals(array(), $this->memoryStream->toArray());
-    // }
+        # Arrange:
+        $buffer = array('d', 'o', 't', 'n', 'e', 't', 'o', 'n', 'p', 'h', 'p');
+        $ms = new MemoryStream($buffer);
 
-    // /**
-    //  * @test
-    // */
-    // public function ToArray_ShouldReturnBuffer() {
-    //     $this->memoryStream->close();
-    //     $buffer = $this->memoryStream->toArray();
-    //     $this->assertNotNull($buffer);
-    // }
+        # Act:
+        # Assert:
+        $ms->seek(-1);
+    }
 
-    // /**
-    //  * @test
-    // */
-    // public function Write_ThrowsExceptionWhenArrayIsNull() {
-    //     $this->setExpectedException("\\System\\ArgumentNullException");
-    //     $this->memoryStream->write(null, 0, 10);
-    // }
+    /**
+     * @test
+    */
+    public function Seek_CanSetPositionFromBegin() {
 
-    // /**
-    //  * @test
-    // */
-    // public function Write_ThrowsExceptionWhenOffsetIsInvalidRage() {
-    //     $this->setExpectedException("\\System\\ArgumentException");
-    //     $array = array('d', 'o', 't', 'n', 'e', 't', 'o', 'n', 'p', 'h', 'p');
-    //     $this->memoryStream->write($array, 55, 10);
-    // }
+        # Arrange:
+        $buffer = array('d', 'o', 't', 'n', 'e', 't', 'o', 'n', 'p', 'h', 'p');
+        $ms = new MemoryStream($buffer);
 
-    // /**
-    //  * @test
-    // */
-    // public function Write_ThrowsExceptionWhenOffsetIsNegative() {
-    //     $this->setExpectedException("\\System\\ArgumentOutOfRangeException");
-    //     $array = array('d', 'o', 't', 'n', 'e', 't', 'o', 'n', 'p', 'h', 'p');
-    //     $this->memoryStream->write($array, -1, 10);
-    // }
+        # Act:
+        $ms->seek(2, SeekOrigin::begin());
 
-    // /**
-    //  * @test
-    // */
-    // public function Write_CanWriteInRange() {
-    //     $array = array('d', 'o', 't', 'n', 'e', 't', 'o', 'n', 'p', 'h', 'p');
-    //     $this->memoryStream->write($array, 0, 3);
-    //     $this->memoryStream->seek(0, SeekOrigin::Begin);
-    //     $this->assertEquals('d', $this->memoryStream->readByte());
-    //     $this->assertEquals('o', $this->memoryStream->readByte());
-    //     $this->assertEquals('t', $this->memoryStream->readByte());
-    // }
+        # Assert:
+        $this->assertEquals('t', $ms->readByte());
+    }
 
-    // /**
-    //  * @test
-    // */
-    // public function WriteByte_ThrowsExceptionWhenMemoryIsReadOnly() {
-    //     $this->setExpectedException("\\System\\NotSupportedException");
-    //     $ms = new MemoryStream(array('d', 'o', 't', 'n', 'e', 't', 'o', 'n', 'p', 'h', 'p'), 0, 1, false);
-    //     $ms->writeByte('a');
-    // }
+    /**
+     * @test
+    */
+    public function Seek_CanSetPositionFromCurrent() {
 
-    // /**
-    //  * @test
-    // */
-    // public function WriteByte_ThrowsExceptionWhenMemoryWasDisposed() {
-    //     $this->setExpectedException("\\System\\ObjectDisposedException");
-    //     $ms = new MemoryStream(array('d', 'o', 't', 'n', 'e', 't', 'o', 'n', 'p', 'h', 'p'));
-    //     $ms->close();
-    //     $ms->writeByte('a');
-    // }
+        # Arrange:
+        $buffer = array('d', 'o', 't', 'n', 'e', 't', 'o', 'n', 'p', 'h', 'p');
+        $ms = new MemoryStream($buffer);
+        $ms->seek(2, SeekOrigin::begin());
 
-    // /**
-    //  * @test
-    // */
-    // public function WriteByte_WhenWriteThePositionShouldBeMoved() {
-    //     $ms = new MemoryStream(array('d', 'o', 't', 'n', 'e', 't', 'o', 'n', 'p', 'h', 'p'));
-    //     $ms->writeByte('a');
-    //     $this->assertEquals(1, $ms->position());
-    // }
+        # Act:
+        $ms->seek(2, SeekOrigin::current());
 
-    // /**
-    //  * @test
-    // */
-    // public function WriteByte_CanWriteByte() {
-    //     $ms = new MemoryStream(array('d', 'o', 't', 'n', 'e', 't', 'o', 'n', 'p', 'h', 'p'));
-    //     $ms->writeByte('a');
-    //     $ms->position(0);
-    //     $this->assertEquals('a', $ms->readByte());
-    // }
+        # Assert:
+        $this->assertEquals('e', $ms->readByte());
+    }
+
+    /**
+     * @test
+    */
+    public function Seek_PositionShouldBeEqualFortyThree() {
+
+        # Arrange:
+        $buffer = array('d', 'o', 't', 'n', 'e', 't', 'o', 'n', 'p', 'h', 'p');
+        $ms = new MemoryStream($buffer);
+
+        # Act:
+        $ms->seek(2, SeekOrigin::end());
+
+        # Assert:
+        $this->assertEquals('h', $ms->readByte());
+    }
+
+    /**
+     * @test
+     * @expectedException \System\NotSupportedException
+    */
+    public function SetLength_ThrowsExceptionWhenSizeIsGreaterThanCapacity() {
+
+        # Arrange:
+        $buffer = array('d', 'o', 't', 'n', 'e', 't', 'o', 'n', 'p', 'h', 'p');
+        $ms = new MemoryStream($buffer);
+
+        # Act:
+        $ms->setLength(30);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\NotSupportedException
+    */
+    public function SetLength_ThrowsExceptionWhenStreamIsNotWritable() {
+
+        # Arrange:
+        $buffer = array('d', 'o', 't', 'n', 'e', 't', 'o', 'n', 'p', 'h', 'p');
+        $ms = new MemoryStream($buffer, 0, 11, false);
+
+        # Act:
+        $ms->setLength(1);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentOutOfRangeException
+    */
+    public function SetLength_ThrowsExceptionWhenValueIsLessThanZero() {
+
+        # Arrange:
+        $buffer = array('d', 'o', 't', 'n', 'e', 't', 'o', 'n', 'p', 'h', 'p');
+        $ms = new MemoryStream($buffer);
+
+        # Act:
+        $ms->setLength(-1);
+    }
+
+    /**
+     * @test
+    */
+    public function SetLength_CanTruncateMemoryStream() {
+
+        # Arrange:
+        $buffer = array('d', 'o', 't', 'n', 'e', 't', 'o', 'n', 'p', 'h', 'p');
+        $ms = new MemoryStream($buffer);
+
+        # Act:
+        $ms->setLength(2);
+
+        # Assert:
+        $this->assertEquals(2, $ms->length());
+    }
+
+    /**
+     * @test
+    */
+    public function ToArray_ShouldReturnEmptyWhenStreamIsClosed() {
+
+        # Arrange:
+        $buffer = array('d', 'o', 't', 'n', 'e', 't', 'o', 'n', 'p', 'h', 'p');
+        $ms = new MemoryStream($buffer);
+        $ms->close();
+
+        # Act:
+        # Assert:
+        $this->assertEquals(array(), $ms->toArray());
+    }
+
+    /**
+     * @test
+    */
+    public function ToArray_ShouldReturnBuffer() {
+
+        # Arrange:
+        $buffer = array('d', 'o', 't', 'n', 'e', 't', 'o', 'n', 'p', 'h', 'p');
+        $ms = new MemoryStream($buffer);
+
+        # Act:
+        $content = $ms->toArray();
+
+        # Assert:
+        $this->assertEquals('dotnetonphp', implode($content));
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentNullException
+    */
+    public function Write_ThrowsExceptionWhenArrayIsNull() {
+
+        # Arrange:
+        $ms = new MemoryStream();
+
+        # Act:
+        $ms->write(null);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\NotSupportedException
+    */
+    public function Write_ThrowsExceptionWhenStreamIsReadOnly() {
+
+        # Arrange:
+        $ms = new MemoryStream(array('dot'), 0, 0, false);
+
+        # Act:
+        $ms->write('netonphp');
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentException
+    */
+    public function Write_ThrowsExceptionWhenOffsetIsInvalidRage() {
+
+        # Arrange:
+        $buffer = array('d', 'o', 't', 'n', 'e', 't', 'o', 'n', 'p', 'h', 'p');
+        $ms = new MemoryStream();
+
+        # Act:
+        $ms->write($buffer, 15, 10);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentOutOfRangeException
+    */
+    public function Write_ThrowsExceptionWhenOffsetIsNegative() {
+
+        # Arrange:
+        $buffer = array('d', 'o', 't', 'n', 'e', 't', 'o', 'n', 'p', 'h', 'p');
+        $ms = new MemoryStream();
+
+        # Act:
+        $ms->write($buffer, -1);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentOutOfRangeException
+    */
+    public function Write_ThrowsExceptionWhenCountIsNegative() {
+
+        # Arrange:
+        $buffer = array('d', 'o', 't', 'n', 'e', 't', 'o', 'n', 'p', 'h', 'p');
+        $ms = new MemoryStream();
+
+        # Act:
+        $ms->write($buffer, 0, -1);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ObjectDisposedException
+    */
+    public function Write_ThrowsExceptionWhenStreamIsClosed() {
+
+        # Arrange:
+        $buffer = array('d', 'o', 't', 'n', 'e', 't', 'o', 'n', 'p', 'h', 'p');
+        $ms = new MemoryStream();
+        $ms->close();
+
+        # Act:
+        $ms->write($buffer);
+    }
+
+    /**
+     * @test
+    */
+    public function Write_FillStreamWithBuffer() {
+
+        # Arrange:
+        $buffer = array('d', 'o', 't', 'n', 'e', 't', 'o', 'n', 'p', 'h', 'p');
+        $ms = new MemoryStream();
+
+        # Act:
+        $ms->write($buffer);
+
+        # Arrange:
+        $this->assertEquals(11, $ms->position());
+    }
+
+    /**
+     * @test
+    */
+    public function Write_StartFromOffset() {
+
+        # Arrange:
+        $buffer = array('d', 'o', 't', 'n', 'e', 't', 'o', 'n', 'p', 'h', 'p');
+        $ms = new MemoryStream();
+
+        # Act:
+        $ms->write($buffer, 5);
+
+        # Arrange:
+        $this->assertEquals(6, $ms->position());
+    }
+
+    /**
+     * @test
+    */
+    public function Write_CountNumberOfItems() {
+
+        # Arrange:
+        $buffer = array('d', 'o', 't', 'n', 'e', 't', 'o', 'n', 'p', 'h', 'p');
+        $ms = new MemoryStream();
+
+        # Act:
+        $ms->write($buffer, 5, 3);
+
+        # Arrange:
+        $this->assertEquals(3, $ms->position());
+    }
+
+    /**
+     * @test
+     * @expectedException \System\NotSupportedException
+    */
+    public function WriteByte_ThrowsExceptionWhenMemoryIsReadOnly() {
+
+        # Arrange:
+        $ms = new MemoryStream(array(), 0, 0, false);
+
+        # Act:
+        $ms->writeByte('a');
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ObjectDisposedException
+    */
+    public function WriteByte_ThrowsExceptionWhenMemoryWasDisposed() {
+
+        # Arrange:
+        $ms = new MemoryStream();
+        $ms->close();
+
+        # Act:
+        $ms->writeByte('a');
+    }
+
+    /**
+     * @test
+    */
+    public function WriteByte_WhenWriteThePositionShouldBeMoved() {
+
+        # Arrange:
+        $ms = new MemoryStream();
+
+        # Act:
+        $ms->writeByte('a');
+
+        # Assert:
+        $this->assertEquals(1, $ms->position());
+    }
+
+    /**
+     * @test
+    */
+    public function WriteByte_CanWrite() {
+
+        # Arrange:
+        $ms = new MemoryStream();
+
+        # Act:
+        $ms->writeByte('a');
+
+        # Assert:
+        $ms->seek(0);
+        $this->assertEquals('a', $ms->readByte());
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ObjectDisposedException
+    */
+    public function WriteTo_ThrowsExceptionWhenCurrentIsClosed() {
+
+        # Arrange:
+        $ms = new MemoryStream();
+        $ms2 = new MemoryStream();
+        $ms->close();
+
+        # Act:
+        $ms->writeTo($ms2);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ObjectDisposedException
+    */
+    public function WriteTo_ThrowsExceptionWhenTargetIsClosed() {
+
+        # Arrange:
+        $ms = new MemoryStream(array("dotnetonphp"));
+        $ms2 = new MemoryStream();
+        $ms2->close();
+
+        # Act:
+        $ms->writeTo($ms2);
+    }
+
+    /**
+     * @test
+    */
+    public function WriteTo_CopyValuesToAnotherStream() {
+
+        # Arrange:
+        $ms = new MemoryStream(array("dotnetonphp"));
+        $ms2 = new MemoryStream();
+
+        # Act:
+        $ms->writeTo($ms2);
+
+        # Assert:
+        $ms2->seek(0);
+        $this->assertEquals('dotnetonphp', implode($ms2->read()));
+    }
 }

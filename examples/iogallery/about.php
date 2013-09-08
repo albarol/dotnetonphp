@@ -1,25 +1,3 @@
-<?php
-
-require_once('../Autoloader.php');
-
-use \System\IO\DirectoryInfo as DirectoryInfo;
-use \System\IO\FileInfo as FileInfo;
-
-$path = dirname(__FILE__).'/'. $_GET['path'];
-
-$folder = new DirectoryInfo($path);
-
-function renderLink($fsobject) {
-    if ($fsobject instanceof FileInfo) {
-        return $fsobject->name();
-    }
-    else {
-        return "<a href=/?path=".$_GET['path'].'/'.$fsobject->name().">".$fsobject->name()."</a>";
-    }
-}
-
-
-?>
 <!DOCTYPE html>
 <html lang="en">
   <head>

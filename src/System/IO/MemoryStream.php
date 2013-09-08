@@ -205,91 +205,154 @@ namespace System\IO {
          * @return int The unsigned byte cast to an Int32, or -1 if at the end of the stream.
          */
         public function readByte() {
-
             $this->assertOpened();
             return $this->memory[$this->position++];
         }
 
         /**
-         * When overridden in a derived class, sets the position within the current stream.
+         * Sets the position within the current stream to the specified value.
+         *
          * @access public
-         * @throws IOException|NotSupportedException|ObjectDisposedException
+         * @throws \System\IO\IOException Seeking is attempted before the beginning of the stream.
+         * @throws \System\ArgumentException There is an invalid SeekOrigin.
+         * @throws \System\ObjectDisposedException The current stream instance is closed.
          * @param float $offset A byte offset relative to the origin parameter.
          * @param int $origin A value of type SeekOrigin indicating the reference point used to obtain the new position.
          * @return float The new position within the current stream.
          */
-        public function seek($offset, $origin=SeekOrigin::Current) {
-            if(!$this->canSeek()) throw new ObjectDisposedException("Methods were called after the stream was closed.");
-            if($origin == SeekOrigin::Begin)
+        public function seek($offset, $origin=null) {
+            $this->assertOpened();
+
+            if ($offset > sizeof($this->memory) || $offset < 0) {
+                throw new IOException("Seeking is attempted before the beginning of the stream.");
+            }
+
+            if (is_null($origin)) {
+                $origin = SeekOrigin::begin();
+            }
+
+            if (!$origin instanceof SeekOrigin) {
+                throw new ArgumentException("There is an invalid SeekOrigin.");
+            }
+
+
+            if($origin == SeekOrigin::begin()) {
                 $this->position($offset);
-            else if($origin == SeekOrigin::Current)
+            }
+            else if($origin == SeekOrigin::current()) {
                 $this->position($offset + $this->position());
-            else
+            }
+            else {
                 $this->position($this->length() - $offset);
+            }
         }
 
         /**
-         * When overridden in a derived class, sets the length of the current stream.
+         * Sets the length of the current stream to the specified value.
+         *
          * @access public
-         * @throws IOException|NotSupportedException|ObjectDisposedException
+         * @throws \System\NotSupportedException The current stream is not resizable and value is larger than the current capacity. -or- The current stream does not support writing.
+         * @throws \System\ArgumentOutOfRangeException value is negative or is greater than the maximum length of the MemoryStream.
          * @param int $value The desired length of the current stream in bytes.
          * @return void
          */
         public function setLength($value) {
-            if($value < 0) throw new ArgumentOutOfRangeException("The current stream is not resizable and value is larger than the current capacity. -or- The current stream does not support writing.");
-            if(!$this->canWrite() || $value > $this->length()) throw new NotSupportedException("value is negative or is greater than the maximum length of the MemoryStream, where the maximum length is(MaxValue - origin), and origin is the index into the underlying buffer at which the stream starts.");
-            $current = $this->memory;
-            for($i = $value; $i < $this->length(); $i++)
-                unset($current[$i]);
-            $this->memory = array_values($current);
+
+            if($value < 0) {
+                throw new ArgumentOutOfRangeException("The current stream is not resizable and value is larger than the current capacity. -or- The current stream does not support writing.");
+            }
+
+            if(!$this->canWrite() || $value > $this->length()) {
+                throw new NotSupportedException("value is negative or is greater than the maximum length of the MemoryStream, where the maximum length is(MaxValue - origin), and origin is the index into the underlying buffer at which the stream starts.");
+            }
+
+            $this->memory = array_slice($this->memory, 0, $value);
+            $this->position(0);
         }
 
          /**
          * Writes the stream contents to a byte array, regardless of the Position property.
+         *
          * @access public
          * @return array A new byte array.
          */
         public function toArray() {
-            if(!$this->canRead()) return array();
-            $buffer = array();
-            $position = $this->position();
-            while(!$this->position() < sizeof($this->memory))
-                array_push($buffer, $this->readByte());
-            $this->position($position);
+            if(!$this->canRead()) {
+                return array();
+            }
+            return $this->memory;
         }
 
         /**
-         * When overridden in a derived class, writes a sequence of bytes to the current stream and advances the current position within this stream by the number of bytes written.
+         * Writes a block of bytes to the current stream using data read from buffer.
+         *
          * @access public
-         * @param array $array An array of bytes. This method copies count bytes from buffer to the current stream.
+         * @throws \System\ArgumentNullException buffer is null.
+         * @throws \System\NotSupportedException The stream does not support writing.
+         * @throws \System\ArgumentException offset subtracted from the buffer length is less than count.
+         * @throws \System\ArgumentOutOfRangeException offset or count are negative.
+         * @throws \System\IO\IOException An I/O error occurs.
+         * @throws \System\ObjectDisposedException The current stream instance is closed.
+         * @param array $buffer An array of bytes. This method copies count bytes from buffer to the current stream.
          * @param int $offset The zero-based byte offset in buffer at which to begin copying bytes to the current stream.
          * @param int $count The number of bytes to be written to the current stream.
          * @return void
          */
-        public function write($array, $offset, $count) {
-            $copyAreaSize = $offset + $count;
+        public function write($buffer, $offset=0, $count=null) {
 
-            if(is_null($array)) throw new ArgumentNullException("array is null.");
-            if($offset < 0 || $count < 0) throw new ArgumentOutOfRangeException("offset or count is negative.");
-            if(($copyAreaSize) > sizeof($array)) throw new ArgumentException("offset and count describe an invalid range in array.");
+            if(is_null($buffer)) {
+                throw new ArgumentNullException("buffer is null.");
+            }
 
-            while(($offset < $copyAreaSize) && $this->position() <= $this->length()) {
-                $this->writeByte($array[$offset]);
+            $count = is_null($count) ? sizeof($buffer) - $offset : $count;
+            $area = $offset + $count;
+
+            if ($area > sizeof($buffer)) {
+                throw new ArgumentException("offset subtracted from the buffer length is less than count.");
+            }
+
+            if ($offset < 0 || $count < 0) {
+                throw new ArgumentOutOfRangeException("offset or count are negative.");
+            }
+
+            while(($offset < $area) && $this->position() <= $this->length()) {
+                $this->writeByte($buffer[$offset]);
                 $offset++;
             }
         }
 
         /**
          * Writes a byte to the current position in the stream and advances the position within the stream by one byte.
+         *
          * @access public
-         * @throws IOException|NotSupportedException|ObjectDisposedException
+         * @throws \System\NotSupportedException The stream does not support writing.
+         * @throws \System\ObjectDisposedException The current stream instance is closed.
          * @param $value The byte to write to the stream.
          * @return void
          */
         public function writeByte($value) {
-            if(!isset($this->memory)) throw new ObjectDisposedException("The current stream is closed.");
-            if(!$this->canWrite()) throw new NotSupportedException("The stream does not support writing. For additional information see CanWrite.");
+            $this->assertOpened();
+            $this->assertWrite();
             $this->memory[$this->position++] = $value;
+        }
+
+
+        /**
+         * Writes the entire contents of this memory stream to another stream.
+         *
+         * @access public
+         * @throws \System\ObjectDisposedException The current or target stream is closed.
+         * @param \System\IO\Stream $stream The stream to write this memory stream to.
+         * @return void
+        */
+        public function writeTo(Stream $stream) {
+            $this->assertOpened();
+            $this->assertWrite();
+
+            $position = $this->position();
+            $this->seek(0);
+            $stream->write($this->read());
+            $this->seek($position);
         }
 
 
@@ -299,6 +362,12 @@ namespace System\IO {
         private function assertOpened() {
             if(!isset($this->memory)) {
                 throw new ObjectDisposedException("The current stream is closed.");
+            }
+        }
+
+        private function assertWrite() {
+            if(!$this->canWrite()) {
+                throw new NotSupportedException("The stream does not support writing.");
             }
         }
 
