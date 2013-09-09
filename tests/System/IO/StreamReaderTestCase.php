@@ -3,25 +3,27 @@
 use \System\IO\StreamReader as StreamReader;
 use \System\IO\TextReader as TextReader;
 
-class StreamReaderFixture extends PHPUnit_Framework_TestCase 
+class StreamReaderTestCase extends PHPUnit_Framework_TestCase
 {
     private function generateName()
     {
-        return '/tmp/'.md5(rand(1, 50).rand(51, 100)).'.txt';
+        return '/tmp/'.md5(rand(1, 20).rand(23, 55).rand(70, 98)).'.str';
     }
 
     private function generateFile()
     {
-        $file_name = $this->generateName();
-        touch($file_name);
-        return $file_name;    
+        $filename = $this->generateName();
+        $fd = fopen($filename, 'w');
+        fwrite($fd, 'dotnetonphp');
+        fclose($fd);
+        return $filename;
     }
 
     /**
      * @test
      * @expectedException \System\ArgumentNullException
     */
-    public function Constructor_ThrowsExceptionWhenArgumentIsNull() 
+    public function Constructor_ThrowsExceptionWhenArgumentIsNull()
     {
         # Arrange:
         # Act:
@@ -32,7 +34,7 @@ class StreamReaderFixture extends PHPUnit_Framework_TestCase
      * @test
      * @expectedException \System\ArgumentException
     */
-    public function Constructor_ThrowsExceptionWhenArgumentIsInvalid() 
+    public function Constructor_ThrowsExceptionWhenArgumentIsInvalid()
     {
         # Arrange:
         # Act:
@@ -43,7 +45,7 @@ class StreamReaderFixture extends PHPUnit_Framework_TestCase
      * @test
      * @expectedException \System\IO\FileNotFoundException
     */
-    public function Constructor_ThrowsExceptionWhenFileNotFound() 
+    public function Constructor_ThrowsExceptionWhenFileNotFound()
     {
         # Arrange:
         $name = $this->generateName();
@@ -55,53 +57,65 @@ class StreamReaderFixture extends PHPUnit_Framework_TestCase
     /**
      * @test
     */
-    public function Constructor_CanCreateObject() 
+    public function Constructor_CanCreateObject()
     {
         # Arrange:
         $name = $this->generateFile();
 
         # Act:
         $reader = new StreamReader($name);
-        
+
         # Assert:
         $this->assertNotNull($reader);
     }
 
-    // /**
-    //  * @test
-    // */
-    // public function Close_CanCloseStreamReader() {
-    //     $reader = new StreamReader($this->fileName);
-    //     $reader->close();
-    // }
+    /**
+     * @test
+     * @expectedException \System\ObjectDisposedException
+    */
+    public function EndOfStream_ThrowsExceptionWhenObjectWasDisposed() {
 
-    // /**
-    //  * @test
-    // */
-    // public function EndOfStream_ThrowsExceptionWhenObjectWasDisposed() {
-    //     $this->setExpectedException("\\System\\ObjectDisposedException");
-    //     $reader = new StreamReader($this->fileName);
-    //     $reader->dispose();
-    //     $reader->endOfStream();
-    // }
+        # Arrange:
+        $file = $this->generateFile();
+        $reader = new StreamReader($file);
+        $reader->close();
 
-    // /**
-    //  * @test
-    // */
-    // public function EndOfStream_ShouldReturnFalseAfterReadFistLine() {
-    //     $reader = new StreamReader($this->fileName);
-    //     $reader->readLine();
-    //     $this->assertFalse($reader->endOfStream());
-    // }
+        # Act:
+        $result = $reader->endOfStream();
+    }
 
-    // /**
-    //  * @test
-    // */
-    // public function EndOfStream_ShouldReturnTrueAfterReadToEnd(){
-    //     $reader = new StreamReader($this->fileName);
-    //     $reader->readToEnd();
-    //     $this->assertTrue($reader->endOfStream());
-    // }
+    /**
+     * @test
+    */
+    public function EndOfStream_ShouldReturnFalseAfterPeek() {
+
+        # Arrange:
+        $file = $this->generateFile();
+        $reader = new StreamReader($file);
+        $reader->peek();
+
+        # Act:
+        $result = $reader->endOfStream();
+
+        # Assert:
+        $this->assertFalse($result);
+    }
+
+    /**
+     * @test
+    */
+    public function EndOfStream_ShouldReturnTrueAfterReadToEnd(){
+
+        # Arrange:
+        $file = $this->generateFile();
+        $reader = new StreamReader($file);
+
+        # Act:
+        $reader->readToEnd();
+
+        # Assert:
+        $this->assertTrue($reader->endOfStream());
+    }
 
     // /**
     //  * @test
@@ -185,7 +199,7 @@ class StreamReaderFixture extends PHPUnit_Framework_TestCase
     //     $reader->close();
     //     $reader->peek();
     // }
-    
+
     // /**
     //  * @test
     // */

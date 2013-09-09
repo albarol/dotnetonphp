@@ -4,6 +4,8 @@ namespace System\IO {
 
     use \System\ArgumentNullException as ArgumentNullException;
 
+    use \System\IO\FileStream as FileStream;
+
     /**
      * Provides static methods for the creation, copying, deletion, moving, and opening of files, and aids in the creation of System.IO.FileStream objects.
      *
@@ -52,13 +54,13 @@ namespace System\IO {
          * @access public
          * @static
          * @throws \System\UnauthorizedAccessException The caller does not have the required permission.
-         * @throws \System\ArgumentException path is a zero-length string, contains only white space, or contains one or more invalid characters as defined by InvalidPathChars. 
-         * @throws \System\ArgumentNullException path is null. 
+         * @throws \System\ArgumentException path is a zero-length string, contains only white space, or contains one or more invalid characters as defined by InvalidPathChars.
+         * @throws \System\ArgumentNullException path is null.
          * @throws \System\IO\PathTooLongException The specified path, file name, or both exceed the system-defined maximum length.For example, on Windows-based platforms, paths must be less than 248 characters, and file names must be less than 260 characters.
-         * @throws \System\IO\DirectoryNotFoundException The specified path is invalid (for example, it is on an unmapped drive). 
-         * @throws \System\NotSupportedException path is in an invalid format. 
+         * @throws \System\IO\DirectoryNotFoundException The specified path is invalid (for example, it is on an unmapped drive).
+         * @throws \System\NotSupportedException path is in an invalid format.
          * @param string $path The path to the file to append to.
-         * @return \System\IO\StreamWriter A StreamWriter that appends UTF-8 encoded text to an existing file. 
+         * @return \System\IO\StreamWriter A StreamWriter that appends UTF-8 encoded text to an existing file.
          */
         public static function appendText($path) {
             return new StreamWriter($path, true);
@@ -70,7 +72,7 @@ namespace System\IO {
          * @access public
          * @static
          * @param string $path The name of the file.
-         * @param int $bufferSize The number of bytes buffered for reads and writes to the file. 
+         * @param int $bufferSize The number of bytes buffered for reads and writes to the file.
          * @param \System\IO\FileOptions $options One of the FileOptions values that describes how to create or overwrite the file.
          * @param \System\Security\AccessControl\FileSecurity $fileSecurity One of the FileSecurity values that determines the access control and audit security for the file.
          * @return void
@@ -85,7 +87,7 @@ namespace System\IO {
          * @access public
          * @static
          * @throws \System\UnauthorizedAccessException The caller does not have the required permission.
-         * @throws \System\ArgumentException sourceFileName or destFileName is a zero-length string, contains only white space, or contains one or more invalid characters as defined by InvalidPathChars. -or- sourceFileName or destFileName specifies a directory. 
+         * @throws \System\ArgumentException sourceFileName or destFileName is a zero-length string, contains only white space, or contains one or more invalid characters as defined by InvalidPathChars. -or- sourceFileName or destFileName specifies a directory.
          * @throws \System\IO\IOException destFileName is read-only, or destFileName exists and overwrite is false. -or- An I/O error has occurred.
          * @param string $sourceFileName The file to copy.
          * @param string $destFileName The name of the destination file. This cannot be a directory.
@@ -102,7 +104,7 @@ namespace System\IO {
          *
          * @access public
          * @static
-         * @throws \System\ArgumentException path is a zero-length string, contains only white space, or contains one or more invalid characters as defined by InvalidPathChars. 
+         * @throws \System\ArgumentException path is a zero-length string, contains only white space, or contains one or more invalid characters as defined by InvalidPathChars.
          * @throws \System\ArgumentNullException path is a null reference
          * @throws \System\IO\DirectoryNotFoundException The specified path is invalid, (for example, it is on an unmapped drive).
          * @throws \System\IO\IOException The specified file is in use.
@@ -135,12 +137,12 @@ namespace System\IO {
          *
          * @access public
          * @static
-         * @throws \System\UnauthorizedAccessException The caller does not have the required permission. 
-         * @throws \System\ArgumentException path is a zero-length string, contains only white space, or contains one or more invalid characters as defined by InvalidPathChars. 
+         * @throws \System\UnauthorizedAccessException The caller does not have the required permission.
+         * @throws \System\ArgumentException path is a zero-length string, contains only white space, or contains one or more invalid characters as defined by InvalidPathChars.
          * @throws \System\ArgumentNullException path is a null reference
-         * @throws \System\IO\PathTooLongException The specified path, file name, or both exceed the system-defined maximum length. For example, on Windows-based platforms, paths must be less than 248 characters, and file names must be less than 260 characters. 
-         * @throws \System\IO\IOException path was not found. 
-         * @throws \System\NotSupportedException path is in an invalid format. 
+         * @throws \System\IO\PathTooLongException The specified path, file name, or both exceed the system-defined maximum length. For example, on Windows-based platforms, paths must be less than 248 characters, and file names must be less than 260 characters.
+         * @throws \System\IO\IOException path was not found.
+         * @throws \System\NotSupportedException path is in an invalid format.
          * @param string $path The file or directory for which to obtain creation date and time information.
          * @return \System\DateTime A DateTime structure set to the creation date and time for the specified file or directory. This value is expressed in local time.
          */
@@ -154,12 +156,12 @@ namespace System\IO {
          *
          * @access public
          * @static
-         * @throws \System\UnauthorizedAccessException The caller does not have the required permission. 
-         * @throws \System\ArgumentException path is a zero-length string, contains only white space, or contains one or more invalid characters as defined by InvalidPathChars. 
+         * @throws \System\UnauthorizedAccessException The caller does not have the required permission.
+         * @throws \System\ArgumentException path is a zero-length string, contains only white space, or contains one or more invalid characters as defined by InvalidPathChars.
          * @throws \System\ArgumentNullException path is a null reference
-         * @throws \System\IO\PathTooLongException The specified path, file name, or both exceed the system-defined maximum length. For example, on Windows-based platforms, paths must be less than 248 characters, and file names must be less than 260 characters. 
-         * @throws \System\IO\IOException path was not found. 
-         * @throws \System\NotSupportedException path is in an invalid format. 
+         * @throws \System\IO\PathTooLongException The specified path, file name, or both exceed the system-defined maximum length. For example, on Windows-based platforms, paths must be less than 248 characters, and file names must be less than 260 characters.
+         * @throws \System\IO\IOException path was not found.
+         * @throws \System\NotSupportedException path is in an invalid format.
          * @param string $path The file or directory for which to obtain creation date and time information.
          * @return \System\DateTime A DateTime structure set to the date and time that the specified file or directory was last accessed. This value is expressed in local time.
          */
@@ -173,12 +175,12 @@ namespace System\IO {
          *
          * @access public
          * @static
-         * @throws \System\UnauthorizedAccessException The caller does not have the required permission. 
-         * @throws \System\ArgumentException path is a zero-length string, contains only white space, or contains one or more invalid characters as defined by InvalidPathChars. 
+         * @throws \System\UnauthorizedAccessException The caller does not have the required permission.
+         * @throws \System\ArgumentException path is a zero-length string, contains only white space, or contains one or more invalid characters as defined by InvalidPathChars.
          * @throws \System\ArgumentNullException path is a null reference
-         * @throws \System\IO\PathTooLongException The specified path, file name, or both exceed the system-defined maximum length. For example, on Windows-based platforms, paths must be less than 248 characters, and file names must be less than 260 characters. 
-         * @throws \System\IO\IOException path was not found. 
-         * @throws \System\NotSupportedException path is in an invalid format. 
+         * @throws \System\IO\PathTooLongException The specified path, file name, or both exceed the system-defined maximum length. For example, on Windows-based platforms, paths must be less than 248 characters, and file names must be less than 260 characters.
+         * @throws \System\IO\IOException path was not found.
+         * @throws \System\NotSupportedException path is in an invalid format.
          * @param string $path The file or directory for which to obtain creation date and time information.
          * @return DateTime A System.DateTime structure set to the date and time that the specified file or directory was last written to. This value is expressed in local time.
          */
@@ -194,15 +196,15 @@ namespace System\IO {
          * @static
          * @throws \System\IO\IOException The destination file already exists -or- sourceFileNameWasNotFound
          * @throws \System\ArgumentNullException sourceFileName or destFileName is null.
-         * @throws \System\ArgumentException sourceFileName or destFileName is a zero-length string, contains only white space, or contains invalid characters as defined in InvalidPathChars. 
-         * @throws \System\UnauthorizedAccessException The caller does not have the required permission. 
+         * @throws \System\ArgumentException sourceFileName or destFileName is a zero-length string, contains only white space, or contains invalid characters as defined in InvalidPathChars.
+         * @throws \System\UnauthorizedAccessException The caller does not have the required permission.
          * @param string $sourceFileName The name of the file to move.
          * @param string $destFileName The new path for the file.
          * @return void
          */
         public static function move($sourceFileName, $destFileName) {
             self::assertNullArgument($sourceFileName);
-            self::assertNullArgument($destFileName);  
+            self::assertNullArgument($destFileName);
             self::assertFileExists($sourceFileName);
             $fileInfo = new FileInfo($sourceFileName);
             $fileInfo->moveTo($destFileName);
@@ -210,52 +212,72 @@ namespace System\IO {
 
 
         /**
-         * Opens a System.IO.FileStream on the specified path, having the specified mode with read, write, or read/write access and the specified sharing option.
+         * Opens a \System\IO\FileStream on the specified path, having the specified mode with read, write, or read/write access and the specified sharing option.
+         *
          * @access public
          * @static
-         * @throws IOException|ArgumentNullException|ArgumentException|PathTooLongException
+         * @throws \System\IO\IOException An I/O error occurred while opening the file.
+         * @throws \System\ArgumentNullException path is null.
+         * @throws \System\IO\PathTooLongException The specified path, file name, or both exceed the system-defined maximum length.
+         * @throws \System\ArgumentException path is a zero-length string, contains only white space, or contains one or more invalid characters as defined by InvalidPathChars. -or- access specified Read and mode specified Create, CreateNew, Truncate, or Append.
+         * @throws \System\ArgumentOutOfRangeException mode or acces an invalid value.
+         * @throws \System\IO\FileNotFoundException The file specified in path was not found.
          * @param string $path The file to open.
          * @param string $mode A System.IO.FileMode value that specifies whether a file is created if one does not exist, and determines whether the contents of existing files are retained or overwritten.
          * @param int $access A System.IO.FileAccess value that specifies the operations that can be performed on the file.
-         * @return FileStream A System.IO.FileStream on the specified path, having the specified mode with read, write, or read/write access and the specified sharing option.
+         * @return \System\IO\FileStream A System.IO.FileStream on the specified path, having the specified mode with read, write, or read/write access and the specified sharing option.
          */
         public static function open($path, $mode=null, $access=null) {
-            if(is_null($mode)):
+
+            if(is_null($mode)) {
                 $mode = FileMode::open();
-            endif;
+            }
 
-            if(is_null($access)):
+            if(is_null($access)) {
                 $access = FileAccess::read();
-            endif;
+            }
 
-            self::validateOpen($path);
+            if (!($mode instanceof FileMode) || !($access instanceof FileAccess)) {
+                throw new ArgumentOutOfRangeException("mode or acces an invalid value.");
+            }
+
             return new FileStream($path, $mode, $access);
         }
 
-
         /**
          * Opens an existing file for reading.
+         *
          * @access public
          * @static
-         * @throws IOException|ArgumentNullException|ArgumentException|PathTooLongException
-         * @param $path
-         * @return FileStream
+         * @throws \System\IO\IOException An I/O error occurred while opening the file.
+         * @throws \System\ArgumentNullException path is null.
+         * @throws \System\IO\PathTooLongException The specified path, file name, or both exceed the system-defined maximum length.
+         * @throws \System\ArgumentException path is a zero-length string, contains only white space, or contains one or more invalid characters as defined by InvalidPathChars. -or- access specified Read and mode specified Create, CreateNew, Truncate, or Append.
+         * @throws \System\ArgumentOutOfRangeException mode or acces an invalid value.
+         * @throws \System\IO\FileNotFoundException The file specified in path was not found.
+         * @param string $path The file to open.
+         * @return \System\IO\FileStream A System.IO.FileStream on the specified path, having the specified mode with read, write, or read/write access and the specified sharing option.
          */
         public static function openRead($path) {
-            return self::open($path);
+            return self::open($path, FileMode::open(), FileAccess::read());
         }
 
         /**
          * Opens an existing UTF-8 encoded text file for reading.
+         *
          * @access public
          * @static
-         * @throws IOException|ArgumentNullException|ArgumentException|PathTooLongException
+         * @throws \System\IO\IOException An I/O error occurred while opening the file.
+         * @throws \System\ArgumentNullException path is null.
+         * @throws \System\IO\PathTooLongException The specified path, file name, or both exceed the system-defined maximum length.
+         * @throws \System\ArgumentException path is a zero-length string, contains only white space, or contains one or more invalid characters as defined by InvalidPathChars. -or- access specified Read and mode specified Create, CreateNew, Truncate, or Append.
+         * @throws \System\ArgumentOutOfRangeException mode or acces an invalid value.
+         * @throws \System\IO\FileNotFoundException The file specified in path was not found.
          * @param string $path The file to be opened for reading.
-         * @return StreamReader A System.IO.StreamReader on the specified path.
+         * @return \System\IO\StreamReader A System.IO.StreamReader on the specified path.
          */
         public static function openText($path) {
-            self::validateOpen($path);
-            return new StreamReader($path);
+            return new StreamReader(new FileStream($path));
         }
 
 
@@ -277,7 +299,7 @@ namespace System\IO {
          * @access public
          * @static
          * @throws ArgumentNullException|ArgumentException|PathTooLongException
-         * @param $path The file to open for reading. 
+         * @param $path The file to open for reading.
          * @return array A byte array containing the contents of the file.
          */
         public static function readAllBytes($path) {
@@ -302,12 +324,13 @@ namespace System\IO {
          * @return array A string array containing all lines of the file.
          */
         public static function readAllLines($path) {
-            $lines = array();
-            $reader = new StreamReader($path);
-            while(!$reader->endOfStream()) {
-                array_push($lines, $reader->readLine());
-            }
-            return $lines;
+            // $lines = array();
+            // $reader = new StreamReader($path);
+            // while(!$reader->endOfStream()) {
+            //     array_push($lines, $reader->readLine());
+            // }
+            // return $lines;
+            return array('');
         }
 
         private static function assertNullArgument($path) {

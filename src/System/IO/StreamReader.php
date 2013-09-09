@@ -1,13 +1,10 @@
 <?php
 
-namespace System\IO 
+namespace System\IO
 {
     use \System\ArgumentNullException as ArgumentNullException;
     use \System\ArgumentException as ArgumentException;
     use \System\ObjectDisposedException as ObjectDisposedException;
-
-    use \System\IO\FileMode as FileMode;
-    use \System\IO\TextReader as TextReader;
 
     /**
      * TODO: Implement currentEncoding()
@@ -21,37 +18,40 @@ namespace System\IO
      * @package System
      * @subpackage IO
      */
-    class StreamReader extends TextReader 
+    class StreamReader extends TextReader
     {
         /**
          * Initializes a new instance of the System.IO.StreamReader class for the specified file name.
+         *
          * @throws \System\ArgumentException path is an empty string.
          * @throws \System\ArgumentNullException path is null.
          * @throws \System\IO\FileNotFoundException The file cannot be found.
-         * @param string $path The complete file path to be read.
+         * @throws \System\NotSupportedException Resource not supported.
+         * @param object $resource The complete file path to be read. -or- Stream that from memory or file.
          */
-        public function __construct($path) 
+        public function __construct($resource)
         {
-            if(is_null($path))
-            {
+
+            if (is_null($resource)) {
                 throw new ArgumentNullException("path is null.");
             }
 
-            if(strlen($path) == 0) 
-            {
-                throw new ArgumentException('path is an empty string ("")');
+            if (is_string($resource)) {
+                $this->stream = new FileStream($resource);
             }
 
-            if(!file_exists($path)) 
-            {
-                throw new FileNotFoundException("The file cannot be found.");
+            if ($resource instanceof Stream) {
+                $this->stream = $stream;
             }
 
-            $this->resource = fopen($path, FileMode::open()->value());
+            if (is_null($this->stream)) {
+                throw new NotSupportedException("Resource not supported.");
+            }
         }
 
         /**
          * Gets the current character encoding that the current System.IO.StreamReader object is using.
+         *
          * @access public
          * @return \System\Text\Encoding The current character encoding used by the current reader. The value can be different after the first call to any Overload:System.IO.StreamReader.Read method of System.IO.StreamReader, since encoding autodetection is not done until the first call to a Overload:System.IO.StreamReader.Read method.
          */
@@ -59,17 +59,18 @@ namespace System\IO
 
         /**
          * Gets a value that indicates whether the current stream position is at the end of the stream.
+         *
          * @access public
          * @throws \System\ObjectDisposedException The underlying stream has been disposed.
          * @return bool true if the current stream position is at the end of the stream; otherwise false.
          */
-        public function endOfStream() 
+        public function endOfStream()
         {
-            if(!isset($this->resource)) 
+            if(!isset($this->stream))
             {
                 throw new ObjectDisposedException("The underlying stream has been disposed.");
             }
-            return feof($this->resource);
+            return $this->stream->position() == $this->stream->length();
         }
 
         /**
@@ -77,40 +78,39 @@ namespace System\IO
          * @access public
          * @return void
          */
-        function dispose() 
+        function dispose()
         {
             $this->close();
         }
 
         /**
          * Reads the next character without changing the state of the reader or the character source. Returns the next available character without actually reading it from the input stream.
+         *
          * @access public
-         * @return int An integer representing the next character to be read, or -1 if no more characters are available or the stream does not support seeking.
+         * @throws \System\IO\IOException An I/O error occurs.
+         * @return string Returns the next available character but does not consume it.
          */
         public function peek() {
-            try {
-                $position = ftell($this->resource);
+            try{
+                $position = $this->stream->position();
                 $value = $this->read();
-                fseek($this->resource, $position);
-                return $value;
-            } catch(\Exception $e) {
+                $this->stream->seek($position);
+                return implode($value);
+            }
+            catch (\Exception $e) {
                 throw new IOException("An I/O error occurs.");
             }
         }
 
         /**
          * Reads the next character from the input stream and advances the character position by one character.
+         *
          * @access public
-         * @throws ArgumentNullException|ArgumentException|ArgumentOutOfRangeException|ObjectDisposedException|IOException
-         * @param array $buffer When this method returns, contains the specified character array with the values between index and (index + count - 1) replaced by the characters read from the current source.
-         * @param int $index The place in buffer at which to begin writing.
-         * @param int $count The maximum number of characters to read. If the end of the stream is reached before count of characters is read into buffer, the current method returns.
-         * @return int The number of characters that have been read. The number will be less than or equal to count, depending on whether the data is available within the stream. This method returns zero if called when no more characters are left to read.
+         * @throws \System\IO\IOException An I/O error occurs.
+         * @return string The next character from the input stream.
          */
-        public function read($index=null, $count=null) {
-            if(is_null($index))
-                return $this->readOnlyCharacter();
-            return $this->readBlock($index, $count);
+        public function read() {
+            return $this->readBlock(0, 1);
         }
 
         /**
@@ -122,22 +122,8 @@ namespace System\IO
          * @param int $count The maximum number of characters to read. If the end of the stream is reached before count of characters is read into buffer, the current method returns.
          * @return int The position of the underlying stream is advanced by the number of characters that were read into buffer.
          */
-        public function readBlock($index=0, $count=0) {
-            $buffer = array();
-            $copy_area_size = $index + $count;
-            
-            if(!isset($this->resource)):
-                throw new IOException("An I/O error occurs, such as the stream is closed.");
-            endif;
-            
-            for($i = $index; $i < $copy_area_size; $i++):
-                array_push($buffer, fgetc($this->resource));
-            endfor;
-            
-            return array(
-                'buffer' => $buffer,
-                'count' => $count
-            );
+        public function readBlock($index=0, $count=null) {
+            return $this->stream->read($index, $count);
         }
 
         /**
@@ -147,19 +133,20 @@ namespace System\IO
          * @return string The next line from the input stream, or null if all characters have been read.
          */
         public function readLine() {
-            if(!isset($this->resource)) throw new IOException("An I/O error occurs.");
-            return stream_get_line($this->resource, 4096, "\r\n");
+            // if(!isset($this->resource)) throw new IOException("An I/O error occurs.");
+            // return stream_get_line($this->resource, 4096, "\r\n");
         }
 
         /**
          * Reads all characters from the current position to the end of the TextReader and returns them as one string.
+         *
          * @access public
-         * @throws IOException|ObjectDisposedException|OutOfMemoryException|ArgumentOutOfRangeException
+         * @throws \System\IO\IOException An I/O error occurs.
+         * @throws \System\OutOfMemoryException There is insufficient memory to allocate a buffer for the returned string.
          * @return string A string containing all characters from the current position to the end of the TextReader.
          */
         public function readToEnd() {
-            if(!isset($this->resource)) throw new IOException("An I/O error occurs.");
-            return stream_get_contents($this->resource, -1);
+            return $this->stream->read(0);
         }
 
         /**

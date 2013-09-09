@@ -2,21 +2,23 @@
 
 
 use \System\IO\Files as Files;
+use \System\IO\FileMode as FileMode;
+use \System\IO\FileAccess as FileAccess;
 use \System\IO\FileStream as FileStream;
 use \System\IO\StreamReader as StreamReader;
 
-class FilesFixture extends PHPUnit_Framework_TestCase {
+class FilesTestCase extends PHPUnit_Framework_TestCase {
 
     private function generateName()
     {
-        return '/tmp/'.md5(rand(1, 50).rand(51, 100)).'.txt';
+        return '/tmp/'.md5(rand(1, 20).rand(22, 45).rand(51, 100)).'.txt';
     }
 
     private function generateFile()
     {
         $file_name = $this->generateName();
         touch($file_name);
-        return $file_name;    
+        return $file_name;
     }
 
     /**
@@ -46,7 +48,7 @@ class FilesFixture extends PHPUnit_Framework_TestCase {
      * @test
     */
     public function AppendAllText_CanAppendText() {
-        
+
         # Arrange:
         $filename = $this->generateFile();
 
@@ -62,7 +64,7 @@ class FilesFixture extends PHPUnit_Framework_TestCase {
      * @test
     */
     public function AppendText_CanAppendTextInFile() {
-        
+
         # Arrange:
         $filename = $this->generateFile();
 
@@ -148,7 +150,7 @@ class FilesFixture extends PHPUnit_Framework_TestCase {
      * @test
     */
     public function Exists_ShouldReturnTrueIfFileExists() {
-        
+
         # Arrange:
         $tempfile = $this->generateFile();
 
@@ -263,7 +265,7 @@ class FilesFixture extends PHPUnit_Framework_TestCase {
      * @expectedException \System\IO\FileNotFoundException
     */
     public function Move_ThrowsExceptionWhenFileNotFound() {
-        
+
         # Arange:
         $fromFile = $this->generateName();
         $toFile = $this->generateName();
@@ -288,88 +290,140 @@ class FilesFixture extends PHPUnit_Framework_TestCase {
         $this->assertFileExists($toFile);
     }
 
-    // /**
-    //  * @test
-    // */
-    // public function Open_ThrowsExceptionWhenPathIsNull() {
-    //     $this->setExpectedException("\\System\\ArgumentNullException");
-    //     Files::open(null);
-    // }
+    /**
+     * @test
+     * @expectedException \System\ArgumentNullException
+    */
+    public function Open_ThrowsExceptionWhenPathIsNull() {
 
-    // /**
-    //  * @test
-    // */
-    // public function Open_ThrowsExceptionWhenPathIsLong() {
-    //     $this->setExpectedException("\\System\\IO\\PathTooLongException");
-    //     $path = "aokdfaoksdfoaksdfoaksodfkaodskfaosdkfoasdkfoaksdfoaksdofkaosdfkaosdfkaosdkfaosdfkoaksdfoaksdofkasodfkaoskdfoasdkfoaksdfoaksdfokasdofkasodfkaosdfkaosdfkaoksdfoaskdfoaksdfoaksdfoaksdfokasodfkaosdfkaosdfkoasdkfoasdkfoasdfkoasdkfoaskdfoaskdfoaksdfoaoskoasdfasdfadf";
-    //     Files::open($path);
-    // }
+        # Act:
+        Files::open(null);
+    }
 
-    // /**
-    //  * @test
-    // */
-    // public function Open_ThrowsExceptionWhenFileNotFound() {
-    //     $this->setExpectedException("\\System\\IO\\FileNotFoundException");
-    //     Files::open($this->files['toFile']);
-    // }
+    /**
+     * @test
+     * @expectedException \System\IO\PathTooLongException
+    */
+    public function Open_ThrowsExceptionWhenPathIsLong() {
 
-    // /**
-    //  * @test
-    // */
-    // public function Open_CanOpenFile() {
-    //     $file = Files::open($this->files['streamWriter']);
-    //     $this->assertTrue($file instanceof FileStream);
-    // }
+        # Arrange:
+        $path = str_repeat('dotnetonphp', 30);
 
-    // /**
-    //  * @test
-    // */
-    // public function OpenRead_ThrowsExceptionWhenPathIsNull() {
-    //     $this->setExpectedException("\\System\\ArgumentNullException");
-    //     Files::openRead(null);
-    // }
+        # Act:
+        Files::open($path);
+    }
 
-    // /**
-    //  * @test
-    // */
-    // public function OpenRead_ThrowsExceptionWhenPathIsLong() {
-    //     $this->setExpectedException("\\System\\IO\\PathTooLongException");
-    //     $path = "aokdfaoksdfoaksdfoaksodfkaodskfaosdkfoasdkfoaksdfoaksdofkaosdfkaosdfkaosdkfaosdfkoaksdfoaksdofkasodfkaoskdfoasdkfoaksdfoaksdfokasdofkasodfkaosdfkaosdfkaoksdfoaskdfoaksdfoaksdfoaksdfokasodfkaosdfkaosdfkoasdkfoasdkfoasdfkoasdkfoaskdfoaskdfoaksdfoaoskoasdfasdfadf";
-    //     Files::openRead($path);
-    // }
+    /**
+     * @test
+     * @expectedException \System\IO\FileNotFoundException
+    */
+    public function Open_ThrowsExceptionWhenFileNotFound() {
 
-    // /**
-    //  * @test
-    // */
-    // public function OpenRead_ThrowsExceptionWhenFileNotFound() {
-    //     $this->setExpectedException("\\System\\IO\\FileNotFoundException");
-    //     Files::openRead($this->files['toFile']);
-    // }
+        # Arrange:
+        # Act:
+        Files::open('/tmp/files.tmp');
+    }
 
-    // /**
-    //  * @test
-    // */
-    // public function OpenRead_CanOpenFileInReadMode() {
-    //     $file = Files::openRead($this->files['streamWriter']);
-    //     $this->assertFalse($file->canWrite());
-    // }
+    /**
+     * @test
+    */
+    public function Open_CanOpenFile() {
 
-    // /**
-    //  * @test
-    // */
-    // public function OpenText_ThrowsExceptionWhenPathIsNull() {
-    //     $this->setExpectedException("\\System\\ArgumentNullException");
-    //     Files::openText(null);
-    // }
+        # Arrange:
+        $file = $this->generateFile();
 
-    // /**
-    //  * @test
-    // */
-    // public function OpenText_ThrowsExceptionWhenPathIsLong() {
-    //     $this->setExpectedException("\\System\\IO\\PathTooLongException");
-    //     $path = "aokdfaoksdfoaksdfoaksodfkaodskfaosdkfoasdkfoaksdfoaksdofkaosdfkaosdfkaosdkfaosdfkoaksdfoaksdofkasodfkaoskdfoasdkfoaksdfoaksdfokasdofkasodfkaosdfkaosdfkaoksdfoaskdfoaksdfoaksdfoaksdfokasodfkaosdfkaosdfkoasdkfoasdkfoasdfkoasdkfoaskdfoaskdfoaksdfoaoskoasdfasdfadf";
-    //     Files::openText($path);
-    // }
+        # Act:
+        $fs = Files::open($file);
+
+        # Assert:
+        $this->assertTrue($fs instanceof FileStream);
+    }
+
+    /**
+     * @test
+    */
+    public function Open_CanOpenFileInWriteMode() {
+
+        # Arrange:
+        $file = $this->generateFile();
+
+        # Act:
+        $fs = Files::open($file, FileMode::openOrCreate(), FileAccess::write());
+
+        # Assert:
+        $this->assertTrue($fs->canWrite());
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentNullException
+    */
+    public function OpenRead_ThrowsExceptionWhenPathIsNull() {
+
+        # Act:
+        Files::openRead(null);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\IO\PathTooLongException
+    */
+    public function OpenRead_ThrowsExceptionWhenPathIsLong() {
+
+        # Arrange:
+        $path = str_repeat('dotnetonphp', 30);
+
+        # Act:
+        Files::openRead($path);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\IO\FileNotFoundException
+    */
+    public function OpenRead_ThrowsExceptionWhenFileNotFound() {
+
+        # Act:
+        Files::openRead('/tmp/file_not_found.txt');
+    }
+
+    /**
+     * @test
+    */
+    public function OpenRead_CanOpenFileInReadMode() {
+
+        # Arrange:
+        $file = $this->generateFile();
+
+        # Act:
+        $fs = Files::openRead($file);
+
+        # Assert:
+        $this->assertFalse($fs->canWrite());
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentNullException
+    */
+    public function OpenText_ThrowsExceptionWhenPathIsNull() {
+
+        # Act:
+        Files::openText(null);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\IO\PathTooLongException
+    */
+    public function OpenText_ThrowsExceptionWhenPathIsLong() {
+
+        # Arrange:
+        $path = str_repeat('dotnetonphp', 30);
+
+        # Act:
+        Files::openText($path);
+    }
 
     // /**
     //  * @test

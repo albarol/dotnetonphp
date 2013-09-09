@@ -2,7 +2,7 @@
 
 namespace System\Collections {
 
-    use \System\Xml\ArrayList as ArrayList;
+    // use \System\Xml\ArrayList as ArrayList;
 
     /**
      * Provides the abstract base class for a strongly typed collection.
@@ -73,8 +73,8 @@ namespace System\Collections {
          * @param int $index The zero-based index in array at which copying begins.
          * @return void
          */
-        public function copyTo(&$array, $index) {
-            $this->innerList->copyTo($array, $index);
+        public function copyTo($index=0) {
+            $this->innerList->copyTo($index);
         }
 
         /**
