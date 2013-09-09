@@ -41,7 +41,7 @@ namespace System\IO
             }
 
             if ($resource instanceof Stream) {
-                $this->stream = $stream;
+                $this->stream = $resource;
             }
 
             if (is_null($this->stream)) {
@@ -64,10 +64,8 @@ namespace System\IO
          * @throws \System\ObjectDisposedException The underlying stream has been disposed.
          * @return bool true if the current stream position is at the end of the stream; otherwise false.
          */
-        public function endOfStream()
-        {
-            if(!isset($this->stream))
-            {
+        public function endOfStream() {
+            if(!isset($this->stream)) {
                 throw new ObjectDisposedException("The underlying stream has been disposed.");
             }
             return $this->stream->position() == $this->stream->length();
@@ -88,12 +86,12 @@ namespace System\IO
          *
          * @access public
          * @throws \System\IO\IOException An I/O error occurs.
-         * @return string Returns the next available character but does not consume it.
+         * @return string returns the next available character but does not consume it.
          */
         public function peek() {
-            try{
+            try {
                 $position = $this->stream->position();
-                $value = $this->read();
+                $value = $this->readBlock($position, 1);
                 $this->stream->seek($position);
                 return implode($value);
             }
@@ -110,7 +108,12 @@ namespace System\IO
          * @return string The next character from the input stream.
          */
         public function read() {
-            return $this->readBlock(0, 1);
+            try {
+                return implode($this->readBlock($this->stream->position(), 1));
+            }
+            catch (\Exception $e) {
+                throw new IOException("An I/O error occurs.");
+            }
         }
 
         /**
@@ -146,7 +149,7 @@ namespace System\IO
          * @return string A string containing all characters from the current position to the end of the TextReader.
          */
         public function readToEnd() {
-            return $this->stream->read(0);
+            return $this->stream->read($this->stream->position());
         }
 
         /**
@@ -156,7 +159,7 @@ namespace System\IO
          */
         protected function readOnlyCharacter() {
             return array(
-                'buffer' => fgetc($this->resource),
+                'buffer' => fgetc($this->stream),
                 'count'  => 1
             );
         }

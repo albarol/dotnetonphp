@@ -111,19 +111,95 @@ class StreamReaderTestCase extends PHPUnit_Framework_TestCase
         $reader = new StreamReader($file);
 
         # Act:
+        # Assert:
         $reader->readToEnd();
+        $this->assertTrue($reader->endOfStream());
+    }
+
+    /**
+     * @test
+    */
+    public function Peek_ReturnEmptyWhenFileEndOfStream() {
+    
+        # Arrange:
+        $file = $this->generateFile();
+        $sr = new StreamReader($file);
+        $sr->readToEnd();
+    
+        # Act:
+        $content = $sr->peek();
+
+        # Arrange:
+        $this->assertEquals("", $content);
+    }
+
+    /**
+     * @test
+    */
+    public function Peek_ReadNextCharacter() {
+    
+        # Arrange:
+        $file = $this->generateFile();
+        $sr = new StreamReader($file);
+    
+        # Act:
+        $content = $sr->peek();
+    
+        # Assert:
+        $this->assertEquals('d', $content);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\IO\IOException
+    */
+    public function Read_ThrowsExceptionWhenStreamIsClosed() {
+
+        # Arrange:
+        $file = $this->generateFile();
+        $sr = new StreamReader($file);
+        $sr->close();
+
+        # Act:
+        $sr->read();
+    }
+
+    /**
+     * @test
+    */
+    public function Read_GetNextByteFromStream() {
+
+        # Arrange:
+        $file = $this->generateFile();
+        $sr = new StreamReader($file);
+
+        # Act:
+        $content = $sr->read();
 
         # Assert:
-        $this->assertTrue($reader->endOfStream());
+        $this->assertEquals('o', $sr->read());
     }
 
     // /**
     //  * @test
     // */
-    // public function ReadLine_ThrowsExceptionWhenFileIsClosed() {
-    //     $this->setExpectedException("\\System\\IO\\IOException");
+    // public function Read_CanReadNextCharacter() {
     //     $reader = new StreamReader($this->fileName);
+    //     $this->assertEquals("d", $reader->read());
+    // }
+
+    // /**
+    //  * @test
+    //  * @expectedException \System\IO\IOException
+    // */
+    // public function ReadLine_ThrowsExceptionWhenFileIsClosed() {
+
+    //     # Arrange:
+    //     $file = $this->generateFile();
+    //     $reader = new StreamReader($file);
     //     $reader->close();
+
+    //     # Act:
     //     $reader->readLine();
     // }
 
@@ -154,32 +230,7 @@ class StreamReaderTestCase extends PHPUnit_Framework_TestCase
     //     $this->assertEquals($expected, $reader->readToEnd());
     // }
 
-    // /**
-    //  * @test
-    // */
-    // public function Read_ThrowsExceptionWhenStreamIsClosed() {
-    //     $this->setExpectedException("\\System\\IO\\IOException");
-    //     $reader = new StreamReader($this->fileName);
-    //     $reader->close();
-    //     $reader->read(0, 1);
-    // }
-
-    // /**
-    //  * @test
-    // */
-    // public function Read_CanReadBuffer() {
-    //     $reader = new StreamReader($this->fileName);
-    //     $array = $reader->read(0, 4);
-    //     $this->assertEquals(4, sizeof($array));
-    // }
-
-    // /**
-    //  * @test
-    // */
-    // public function Read_CanReadNextCharacter() {
-    //     $reader = new StreamReader($this->fileName);
-    //     $this->assertEquals("d", $reader->read());
-    // }
+    
 
     // /**
     //  * @test
