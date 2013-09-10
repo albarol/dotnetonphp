@@ -38,7 +38,7 @@ class FilesTestCase extends PHPUnit_Framework_TestCase {
     public function AppendAllText_ThrowsExceptionWhenPathIsLong() {
 
         # Arrange:
-        $filename = "/tmp/faoksdfoaksdfoaksodfkaodskfaosdkfoasdkfoaksdfoaksdofkaosdfkaosdfkaosdkfaosdfkoaksdfoaksdofkasodfkaoskdfoasdkfoaksdfoaksdfokasdofkasodfkaosdfkaosdfkaoksdfoaskdfoaksdfoaksdfoaksdfokasodfkaosdfkaosdfkoasdkfoasdkfoasdfkoasdkfoaskdfoaskdfoaksdfoaoskoasdfasdfadf";
+        $filename = '/tmp/'.str_repeat('dotnetonphp', 30);
 
         # Act:
         Files::appendAllText($filename, "dotnetonphp");
@@ -57,7 +57,7 @@ class FilesTestCase extends PHPUnit_Framework_TestCase {
 
         # Assert:
         $content = Files::readAllLines($filename);
-        $this->assertEquals("dotnetonphp", implode($content));
+        $this->assertEquals("dotnetonphp", $content);
     }
 
     /**
@@ -75,7 +75,7 @@ class FilesTestCase extends PHPUnit_Framework_TestCase {
 
         # Assert:
         $content = Files::readAllLines($filename);
-        $this->assertEquals('dotnetonphp', implode($content));
+        $this->assertEquals('dotnetonphp', $content);
     }
 
     /**
@@ -425,21 +425,30 @@ class FilesTestCase extends PHPUnit_Framework_TestCase {
         Files::openText($path);
     }
 
-    // /**
-    //  * @test
-    // */
-    // public function OpenText_ThrowsExceptionWhenFileNotFound() {
-    //     $this->setExpectedException("\\System\\IO\\FileNotFoundException");
-    //     Files::openText($this->files['toFile']);
-    // }
+    /**
+     * @test
+     * @expectedException \System\IO\FileNotFoundException
+    */
+    public function OpenText_ThrowsExceptionWhenFileNotFound() {
 
-    // /**
-    //  * @test
-    // */
-    // public function OpenText_CanOpenFileInReadMode() {
-    //     $stream = Files::openText($this->files['streamWriter']);
-    //     $this->assertTrue($stream instanceof StreamReader);
-    // }
+        # Arrange:
+        $path = '/tmp/dotnetonphp.file';
+
+        # Act:
+        Files::openText($path);
+    }
+
+    /**
+     * @test
+    */
+    public function OpenText_CanOpenFileInReadMode() {
+
+        # Act:
+        $sr = Files::openText($this->generateFile());
+
+        # Assert:
+        $this->assertTrue($sr instanceof StreamReader);
+    }
 
     // /**
     //  * @test

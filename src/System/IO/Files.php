@@ -283,13 +283,20 @@ namespace System\IO {
 
         /**
          * Opens an existing file for writing.
+         *
          * @access public
          * @static
+         * @throws \System\UnauthorizedAccessException
+         * @throws \System\ArgumentException
+         * @throws \System\ArgumentNullException
+         * @throws \System\IO\PathTooLongException
+         * @throws \System\IO\FileNotFoundException
+         * @throws \System\NotSupportedException
          * @param $path The file to be opened for writing.
-         * @return FileStream An unshared System.IO.FileStream object on the specified path with System.IO.FileAccess.Write access.
+         * @return \System\IO\FileStream An unshared System.IO.FileStream object on the specified path with System.IO.FileAccess.Write access.
          */
         public static function openWrite($path) {
-            self::validateOpen($path);
+            self::assertFileExists($path);
             return new FileStream($path, FileMode::openOrCreate(), FileAccess::write());
         }
 
@@ -324,13 +331,12 @@ namespace System\IO {
          * @return array A string array containing all lines of the file.
          */
         public static function readAllLines($path) {
-            // $lines = array();
-            // $reader = new StreamReader($path);
-            // while(!$reader->endOfStream()) {
-            //     array_push($lines, $reader->readLine());
-            // }
-            // return $lines;
-            return array('');
+            $sr = new StreamReader($path);
+            return $sr->readToEnd();
+        }
+
+        public static function write($fileName) {
+            return new StreamWriter($fileName);
         }
 
         private static function assertNullArgument($path) {
@@ -351,8 +357,6 @@ namespace System\IO {
             }
         }
 
-        public static function write($fileName) {
-            return new StreamWriter($fileName);
-        }
+
     }
 }
