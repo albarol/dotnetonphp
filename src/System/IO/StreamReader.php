@@ -50,6 +50,16 @@ namespace System\IO
         }
 
         /**
+         * Returns the underlying stream.
+         *
+         * @access public
+         * @return \System\IO\Stream The underlying stream.
+        */
+        public function baseStream() {
+            return $this->stream;
+        }
+
+        /**
          * Gets the current character encoding that the current System.IO.StreamReader object is using.
          *
          * @access public
@@ -158,11 +168,12 @@ namespace System\IO
 
                 while($this->stream->position() < $length && !$founded) {
                     $item = $this->read();
+
                     if ($item == PHP_EOL) {
                         $founded = true;
                     }
                     else {
-                        array_push($buffer, $this->read());
+                        array_push($buffer, $item);
                     }
                 }
                 return implode($buffer);
@@ -181,7 +192,12 @@ namespace System\IO
          * @return string A string containing all characters from the current position to the end of the TextReader.
          */
         public function readToEnd() {
-            return $this->stream->read($this->stream->position());
+            try {
+                return implode($this->stream->read());
+            }
+            catch(\Exception $e) {
+                throw new IOException("An I/O error occurs.");
+            }
         }
 
         /**

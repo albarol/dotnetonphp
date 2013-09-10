@@ -23,7 +23,7 @@ class StreamReaderTestCase extends PHPUnit_Framework_TestCase
     {
         $filename = $this->generateName();
         $fd = fopen($filename, 'w');
-        fwrite($fd, str_repeat('dotnetonphp\n', 10));
+        fwrite($fd, str_repeat('dotnetonphp'.PHP_EOL, 10));
         fclose($fd);
         return $filename;
     }
@@ -290,51 +290,48 @@ class StreamReaderTestCase extends PHPUnit_Framework_TestCase
         $sr->readLine();
     }
 
-    // /**
-    //  * @test
-    // */
-    // public function ReadLine_CanReadLineFromFile() {
+    /**
+     * @test
+    */
+    public function ReadLine_CanReadLineFromFile() {
 
-    //     # Arrange:
-    //     $sr = new StreamReader($this->generateFileWithBreakLine());
+        # Arrange:
+        $sr = new StreamReader($this->generateFileWithBreakLine());
 
-    //     # Act:
-    //     $content = $sr->readLine();
+        # Act:
+        $content = $sr->readLine();
 
-    //     # Assert:
-    //     $this->assertEquals('dotnetonphp', $content);
-    // }
+        # Assert:
+        $this->assertEquals('dotnetonphp', $content);
+    }
 
-    // /**
-    //  * @test
-    // */
-    // public function ReadToEnd_ThrowsExceptionWhenFileIsClosed() {
-    //     $this->setExpectedException("\\System\\IO\\IOException");
-    //     $reader = new StreamReader($this->fileName);
-    //     $reader->close();
-    //     $reader->readToEnd();
-    // }
+    /**
+     * @test
+     * @expectedException \System\IO\IOException
+    */
+    public function ReadToEnd_ThrowsExceptionWhenFileIsClosed() {
 
-    // /**
-    //  * @test
-    // */
-    // public function ReadToEnd_CanReadToEndFromFile() {
-    //     $reader = new StreamReader($this->fileName);
-    //     $expected = "dot\r\nnet\r\non\r\nphp";
-    //     $this->assertEquals($expected, $reader->readToEnd());
-    // }
+        # Arrange:
+        $sr = new StreamReader($this->generateFile());
+        $sr->close();
 
+        # Act:
+        $sr->readToEnd();
+    }
 
+    /**
+     * @test
+    */
+    public function ReadToEnd_CanReadToEndFromFile() {
 
+        # Arrange:
+        $content = str_repeat('dotnetonphp'.PHP_EOL, 10);
+        $sr = new StreamReader($this->generateFileWithBreakLine());
 
+        # Act:
+        $result = $sr->readToEnd();
 
-
-    // /**
-    //  * @test
-    // */
-    // public function Synchronized_CanGetTextReader() {
-    //     $reader = new StreamReader($this->fileName);
-    //     $textReader = TextReader::synchronized($reader);
-    //     $this->assertTrue($textReader instanceof TextReader);
-    // }
+        # Assert:
+        $this->assertEquals($content, $result);
+    }
 }

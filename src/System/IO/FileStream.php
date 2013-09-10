@@ -78,7 +78,6 @@ namespace System\IO {
             $this->fileName = $path;
         }
 
-
         /**
          * Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
          *
@@ -254,7 +253,6 @@ namespace System\IO {
          * @return array Block of bytes from the stream
          */
         public function read($offset=0, $count=null) {
-            $count = is_null($count) ? $this->length() : $count;
 
             $this->assertOpened();
             $this->assertRead();
@@ -264,8 +262,14 @@ namespace System\IO {
             }
 
             try {
-                fseek($this->stream, $offset);
-                $content = fread($this->stream, $count);
+                if (!is_null($count)) {
+                    fseek($this->stream, $offset);
+                    $content = fread($this->stream, $count);
+                }
+                else {
+                    $content = stream_get_contents($this->stream, -1, $offset);
+                }
+
                 return str_split($content);
             } catch(\Exception $e) {
                 throw new IOException("An I/O error occurred.");
