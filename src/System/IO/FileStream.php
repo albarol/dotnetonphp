@@ -255,7 +255,6 @@ namespace System\IO {
          */
         public function read($offset=0, $count=null) {
             $count = is_null($count) ? $this->length() : $count;
-            $area = $offset + $count;
 
             $this->assertOpened();
             $this->assertRead();
@@ -266,7 +265,7 @@ namespace System\IO {
 
             try {
                 fseek($this->stream, $offset);
-                $content = fread($this->stream, $area);
+                $content = fread($this->stream, $count);
                 return str_split($content);
             } catch(\Exception $e) {
                 throw new IOException("An I/O error occurred.");

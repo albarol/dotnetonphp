@@ -19,6 +19,15 @@ class StreamReaderTestCase extends PHPUnit_Framework_TestCase
         return $filename;
     }
 
+    private function generateFileWithBreakLine()
+    {
+        $filename = $this->generateName();
+        $fd = fopen($filename, 'w');
+        fwrite($fd, str_repeat('dotnetonphp\n', 10));
+        fclose($fd);
+        return $filename;
+    }
+
     /**
      * @test
      * @expectedException \System\ArgumentNullException
@@ -118,14 +127,29 @@ class StreamReaderTestCase extends PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @expectedException \System\IO\IOException
+    */
+    public function Peek_ThrowExceptionWhenFileIsClosed() {
+
+        # Arrange:
+        $sr = new StreamReader($this->generateFile());
+        $sr->close();
+
+        # Act:
+        # Assert:
+        $sr->peek();
+    }
+
+    /**
+     * @test
     */
     public function Peek_ReturnEmptyWhenFileEndOfStream() {
-    
+
         # Arrange:
         $file = $this->generateFile();
         $sr = new StreamReader($file);
         $sr->readToEnd();
-    
+
         # Act:
         $content = $sr->peek();
 
@@ -137,16 +161,30 @@ class StreamReaderTestCase extends PHPUnit_Framework_TestCase
      * @test
     */
     public function Peek_ReadNextCharacter() {
-    
+
         # Arrange:
         $file = $this->generateFile();
         $sr = new StreamReader($file);
-    
+
         # Act:
         $content = $sr->peek();
-    
+
         # Assert:
         $this->assertEquals('d', $content);
+    }
+
+    /**
+     * @test
+    */
+    public function Peek_CanPeekManyTimes() {
+
+        # Arrange:
+        $sr = new StreamReader($this->generateFile());
+
+        # Act:
+        # Assert:
+        $this->assertEquals("d", $sr->peek());
+        $this->assertEquals("d", $sr->peek());
     }
 
     /**
@@ -170,8 +208,7 @@ class StreamReaderTestCase extends PHPUnit_Framework_TestCase
     public function Read_GetNextByteFromStream() {
 
         # Arrange:
-        $file = $this->generateFile();
-        $sr = new StreamReader($file);
+        $sr = new StreamReader($this->generateFile());
 
         # Act:
         $content = $sr->read();
@@ -180,35 +217,92 @@ class StreamReaderTestCase extends PHPUnit_Framework_TestCase
         $this->assertEquals('o', $sr->read());
     }
 
-    // /**
-    //  * @test
-    // */
-    // public function Read_CanReadNextCharacter() {
-    //     $reader = new StreamReader($this->fileName);
-    //     $this->assertEquals("d", $reader->read());
-    // }
+    /**
+     * @test
+     * @expectedException \System\ArgumentOutOfRangeException
+    */
+    public function ReadBlock_ThrowsExceptionWhenIndexIsNegative() {
 
-    // /**
-    //  * @test
-    //  * @expectedException \System\IO\IOException
-    // */
-    // public function ReadLine_ThrowsExceptionWhenFileIsClosed() {
+        # Arrange:
+        $sr = new StreamReader($this->generateFile());
 
-    //     # Arrange:
-    //     $file = $this->generateFile();
-    //     $reader = new StreamReader($file);
-    //     $reader->close();
+        # Act:
+        # Assert:
+        $sr->readBlock(-1);
+    }
 
-    //     # Act:
-    //     $reader->readLine();
-    // }
+    /**
+     * @test
+     * @expectedException \System\ArgumentOutOfRangeException
+    */
+    public function ReadBlock_ThrowsExceptionWhenCountIsNegative() {
+
+        # Arrange:
+        $sr = new StreamReader($this->generateFile());
+
+        # Act:
+        # Assert:
+        $sr->readBlock(0, -1);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ObjectDisposedException
+    */
+    public function ReadBlock_ThrowsExceptionWhenReaderIsClosed() {
+
+        # Arrange:
+        $sr = new StreamReader($this->generateFile());
+        $sr->close();
+
+        # Act:
+        # Assert:
+        $sr->readBlock(0, -1);
+    }
+
+    /**
+     * @test
+    */
+    public function ReadBlock_ReadInfoFromStream() {
+
+        # Arrange:
+        $sr = new StreamReader($this->generateFile());
+
+        # Act:
+        $block = $sr->readBlock(0, 6);
+
+        # Assert:
+        $this->assertEquals('dotnet', implode($block));
+    }
+
+
+    /**
+     * @test
+     * @expectedException \System\IO\IOException
+    */
+    public function ReadLine_ThrowsExceptionWhenFileIsClosed() {
+
+        # Arrange:
+        $sr = new StreamReader($this->generateFile());
+        $sr->close();
+
+        # Act:
+        $sr->readLine();
+    }
 
     // /**
     //  * @test
     // */
     // public function ReadLine_CanReadLineFromFile() {
-    //     $reader = new StreamReader($this->fileName);
-    //     $this->assertEquals("dot", $reader->readLine());
+
+    //     # Arrange:
+    //     $sr = new StreamReader($this->generateFileWithBreakLine());
+
+    //     # Act:
+    //     $content = $sr->readLine();
+
+    //     # Assert:
+    //     $this->assertEquals('dotnetonphp', $content);
     // }
 
     // /**
@@ -230,35 +324,10 @@ class StreamReaderTestCase extends PHPUnit_Framework_TestCase
     //     $this->assertEquals($expected, $reader->readToEnd());
     // }
 
-    
 
-    // /**
-    //  * @test
-    // */
-    // public function ReadBlock_CanReadBuffer() {
-    //     $reader = new StreamReader($this->fileName);
-    //     $array = $reader->read(0, 5);
-    //     $this->assertEquals(5, sizeof($array));
-    // }
 
-    // /**
-    //  * @test
-    // */
-    // public function Peek_ThrowExceptionWhenFileIsClosed() {
-    //     $this->setExpectedException("\\System\\IO\\IOException");
-    //     $reader = new StreamReader($this->fileName);
-    //     $reader->close();
-    //     $reader->peek();
-    // }
 
-    // /**
-    //  * @test
-    // */
-    // public function Peek_CanPeekInformation() {
-    //     $reader = new StreamReader($this->fileName);
-    //     $this->assertEquals("d", $reader->peek());
-    //     $this->assertEquals("d", $reader->peek());
-    // }
+
 
     // /**
     //  * @test

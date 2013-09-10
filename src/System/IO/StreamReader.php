@@ -118,26 +118,58 @@ namespace System\IO
 
         /**
          * Reads a maximum of count characters from the current stream, and writes the data to buffer, beginning at index.
+         *
          * @access public
-         * @throws ArgumentNullException|ArgumentException|ArgumentOutOfRangeException|ObjectDisposedException|IOException
-         * @param array $buffer When this method returns, contains the specified character array with the values between index and (index + count - 1) replaced by the characters read from the current source.
+         * @throws \System\ArgumentOutOfRangeException index or count is negative.
+         * @throws \System\ObjectDisposedException The stream is closed.
+         * @throws \System\IO\IOException An I/O error occurs.
          * @param int $index The place in buffer at which to begin writing.
          * @param int $count The maximum number of characters to read. If the end of the stream is reached before count of characters is read into buffer, the current method returns.
-         * @return int The position of the underlying stream is advanced by the number of characters that were read into buffer.
+         * @return array Block of bytes from the stream
          */
         public function readBlock($index=0, $count=null) {
-            return $this->stream->read($index, $count);
+
+            $this->assertOpened();
+
+            try {
+                return $this->stream->read($index, $count);
+            }
+            catch(\System\ArgumentOutOfRangeException $e) {
+                throw $e;
+            }
+            catch(\Exception $e) {
+                throw new IOException("An I/O error occurs.");
+            }
         }
 
         /**
          * Reads a line of characters from the current stream and returns the data as a string.
+         *
          * @access public
-         * @throws IOException|OutOfMemoryException|ObjectDisposedException|ArgumentOutOfRangeException
+         * @throws \System\IO\IOException An I/O error occurs.
+         * @throws \System\OutOfMemoryException There is insufficient memory to allocate a buffer for the returned string.
          * @return string The next line from the input stream, or null if all characters have been read.
          */
         public function readLine() {
-            // if(!isset($this->resource)) throw new IOException("An I/O error occurs.");
-            // return stream_get_line($this->resource, 4096, "\r\n");
+            try {
+                $buffer = array();
+                $length = $this->stream->length();
+                $founded = false;
+
+                while($this->stream->position() < $length && !$founded) {
+                    $item = $this->read();
+                    if ($item == PHP_EOL) {
+                        $founded = true;
+                    }
+                    else {
+                        array_push($buffer, $this->read());
+                    }
+                }
+                return implode($buffer);
+            }
+            catch(\Exception $e) {
+                throw new IOException("An I/O error occurs.");
+            }
         }
 
         /**
@@ -163,5 +195,15 @@ namespace System\IO
                 'count'  => 1
             );
         }
+
+        /***********************
+            ASSERT METHODS
+        ***********************/
+        private function assertOpened() {
+            if(!isset($this->stream)) {
+                throw new ObjectDisposedException("The stream is closed.");
+            }
+        }
+
     }
 }
