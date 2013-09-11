@@ -44,7 +44,7 @@ namespace System\IO {
             }
 
             if(strlen($path) == 0) {
-                throw new ArgumentException('path is an empty string (""), contains only white space, or contains one or more invalid characters.');
+                throw new ArgumentException("path is an empty string (\"\"), contains only white space, or contains one or more invalid characters.");
             }
 
             if (strlen($path) > 258) { // Max PATH size
@@ -125,7 +125,6 @@ namespace System\IO {
          */
         public function canWrite() {
             return ($this->access != FileAccess::read()) &&
-                   ($this->mode != FileMode::open()) &&
                    isset($this->stream);
         }
 

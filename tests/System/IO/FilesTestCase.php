@@ -7,6 +7,9 @@ use \System\IO\FileAccess as FileAccess;
 use \System\IO\FileStream as FileStream;
 use \System\IO\StreamReader as StreamReader;
 
+/**
+ * group io
+**/
 class FilesTestCase extends PHPUnit_Framework_TestCase {
 
     private function generateName()
@@ -16,9 +19,20 @@ class FilesTestCase extends PHPUnit_Framework_TestCase {
 
     private function generateFile()
     {
-        $file_name = $this->generateName();
-        touch($file_name);
-        return $file_name;
+        $filename = $this->generateName();
+        $fd = fopen($filename, 'w');
+        fwrite($fd, 'dotnetonphp');
+        fclose($fd);
+        return $filename;
+    }
+
+    private function generateFileWithBreakLine()
+    {
+        $filename = $this->generateName();
+        $fd = fopen($filename, 'w');
+        fwrite($fd, str_repeat('dotnetonphp'.PHP_EOL, 10));
+        fclose($fd);
+        return $filename;
     }
 
     /**
@@ -57,7 +71,7 @@ class FilesTestCase extends PHPUnit_Framework_TestCase {
 
         # Assert:
         $content = Files::readAllLines($filename);
-        $this->assertEquals("dotnetonphp", $content);
+        $this->assertEquals("dotnetonphp", implode($content));
     }
 
     /**
@@ -70,12 +84,12 @@ class FilesTestCase extends PHPUnit_Framework_TestCase {
 
         # Act:
         $sw = Files::appendText($filename);
-        $sw->write("dotnetonphp");
+        $sw->write("--");
         $sw->dispose();
 
         # Assert:
         $content = Files::readAllLines($filename);
-        $this->assertEquals('dotnetonphp', $content);
+        $this->assertEquals('dotnetonphp--', implode($content));
     }
 
     /**
@@ -450,102 +464,260 @@ class FilesTestCase extends PHPUnit_Framework_TestCase {
         $this->assertTrue($sr instanceof StreamReader);
     }
 
-    // /**
-    //  * @test
-    // */
-    // public function OpenWrite_ThrowsExceptionWhenPathIsNull() {
-    //     $this->setExpectedException("\\System\\ArgumentNullException");
-    //     Files::openWrite(null);
-    // }
+    /**
+     * @test
+     * @expectedException \System\ArgumentNullException
+    */
+    public function OpenWrite_ThrowsExceptionWhenPathIsNull() {
 
-    // /**
-    //  * @test
-    // */
-    // public function OpenWrite_ThrowsExceptionWhenPathIsLong() {
-    //     $this->setExpectedException("\\System\\IO\\PathTooLongException");
-    //     $path = "aokdfaoksdfoaksdfoaksodfkaodskfaosdkfoasdkfoaksdfoaksdofkaosdfkaosdfkaosdkfaosdfkoaksdfoaksdofkasodfkaoskdfoasdkfoaksdfoaksdfokasdofkasodfkaosdfkaosdfkaoksdfoaskdfoaksdfoaksdfoaksdfokasodfkaosdfkaosdfkoasdkfoasdkfoasdfkoasdkfoaskdfoaskdfoaksdfoaoskoasdfasdfadf";
-    //     Files::openWrite($path);
-    // }
+        # Arrange:
+        Files::openWrite(null);
+    }
 
-    // /**
-    //  * @test
-    // */
-    // public function OpenWrite_ThrowsExceptionWhenFileNotFound() {
-    //     $this->setExpectedException("\\System\\IO\\FileNotFoundException");
-    //     Files::openWrite($this->files['toFile']);
-    // }
+    /**
+     * @test
+     * @expectedException \System\IO\PathTooLongException
+    */
+    public function OpenWrite_ThrowsExceptionWhenPathIsLong() {
 
-    // /**
-    //  * @test
-    // */
-    // public function OpenWrite_CanOpenFileInWriteMode() {
-    //     $file = Files::openWrite($this->files['streamWriter']);
-    //     $this->assertTrue($file->canWrite());
-    // }
+        # Arrange:
+        $path = str_repeat('dotnetonphp', 30);
 
-    // /**
-    //  * @test
-    // */
-    // public function ReadAllBytes_ThrowsExceptionWhenPathIsNull() {
-    //     $this->setExpectedException("\\System\\ArgumentNullException");
-    //     Files::readAllBytes(null);
-    // }
+        # Act:
+        Files::openWrite($path);
+    }
 
-    // /**
-    //  * @test
-    // */
-    // public function ReadAllBytes_ThrowsExceptionPathIsLong() {
-    //     $this->setExpectedException("\\System\\IO\\PathTooLongException");
-    //     $path = "aokdfaoksdfoaksdfoaksodasdfadffkaodskfaosdkfoasdkfoaksdfoaksdofkaosdfkaosdfkaosdkfaosdfkoaksdfoaksdofkasodfkaoskdfoasdkfoaksdfoaksdfokasdofkasodfkaosdfkaosdfkaoksdfoaskdfoaksdfoaksdfoaksdfokasodfkaosdfkaosdfkoasdkfoasdkfoasdfkoasdkfoaskdfoaskdfoaksdfoaoskoasdfasdfadf";
-    //     Files::readAllBytes($path);
-    // }
+    /**
+     * @test
+     * @expectedException \System\IO\FileNotFoundException
+    */
+    public function OpenWrite_ThrowsExceptionWhenFileNotFound() {
 
-    // /**
-    //  * @test
-    // */
-    // public function ReadAllBytes_ThrowsExceptionWhenFileNotFound() {
-    //     $this->setExpectedException("\\System\\IO\\FileNotFoundException");
-    //     Files::readAllBytes($this->files['toFile']);
-    // }
+        # Arrange:
+        # Act:
+        Files::openWrite('/tmp/file_not_found.ow');
+    }
 
-    // /**
-    //  * @test
-    // */
-    // public function ReadAllBytes_CanReadFile() {
-    //     $bytes = Files::readAllBytes($this->files['streamWriter']);
-    //     $this->assertGreaterThan(0, sizeof($bytes));
-    // }
+    /**
+     * @test
+     * @expectedException \System\ArgumentException
+    */
+    public function OpenWrite_ThrowsExceptionWhenPathIsEmpty() {
 
-    // /**
-    //  * @test
-    // */
-    // public function ReadAllLines_ThrowsExceptionWhenPathIsNull() {
-    //     $this->setExpectedException("\\System\\ArgumentNullException");
-    //     Files::readAllLines(null);
-    // }
+        # Arrange:
+        # Act:
+        Files::openWrite("");
+    }
 
-    // /**
-    //  * @test
-    // */
-    // public function ReadAllLines_ThrowsExceptionPathIsLong() {
-    //     $this->setExpectedException("\\System\\IO\\PathTooLongException");
-    //     $path = "aokdfaoksdfoaksdfoaksodasdfadffkaodskfaosdkfoasdkfoaksdfoaksdofkaosdfkaosdfkaosdkfaosdfkoaksdfoaksdofkasodfkaoskdfoasdkfoaksdfoaksdfokasdofkasodfkaosdfkaosdfkaoksdfoaskdfoaksdfoaksdfoaksdfokasodfkaosdfkaosdfkoasdkfoasdkfoasdfkoasdkfoaskdfoaskdfoaksdfoaoskoasdfasdfadf";
-    //     Files::readAllLines($path);
-    // }
+    /**
+     * @test
+    */
+    public function OpenWrite_CanOpenFileInWriteMode() {
 
-    // /**
-    //  * @test
-    // */
-    // public function ReadAllLines_ThrowsExceptionWhenFileNotFound() {
-    //     $this->setExpectedException("\\System\\IO\\FileNotFoundException");
-    //     Files::readAllLines($this->files['toFile']);
-    // }
+        # Arrange:
+        $file = $this->generateFile();
 
-    // /**
-    //  * @test
-    // */
-    // public function ReadAllLines_CanReadFile() {
-    //     $lines = Files::readAllLines($this->files['streamWriter']);
-    //     $this->assertGreaterThan(0, sizeof($lines));
-    // }
+        # Act:
+        $fs = Files::openWrite($file);
+
+        # Assert:
+        $this->assertTrue($fs->canWrite());
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentNullException
+    */
+    public function ReadAllBytes_ThrowsExceptionWhenPathIsNull() {
+
+        # Arrange:
+        # Act:
+        Files::readAllBytes(null);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\IO\PathTooLongException
+    */
+    public function ReadAllBytes_ThrowsExceptionPathIsLong() {
+
+        # Arrange:
+        $path = str_repeat('dotnetonphp', 30);
+
+        # Act:
+        Files::readAllBytes($path);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\IO\FileNotFoundException
+    */
+    public function ReadAllBytes_ThrowsExceptionWhenFileNotFound() {
+
+        # Arrange:
+        # Act:
+        Files::readAllBytes('/tmp/file_not_found.tmp');
+    }
+
+    /**
+     * @test
+    */
+    public function ReadAllBytes_CanReadFile() {
+
+        # Arrange:
+        $file = $this->generateFile();
+
+        # Act:
+        $content = Files::readAllBytes($file);
+
+        # Assert:
+        $this->assertEquals('dotnetonphp', implode($content));
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentNullException
+    */
+    public function ReadAllLines_ThrowsExceptionWhenPathIsNull() {
+
+        # Arrange:
+        # Act:
+        Files::readAllLines(null);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\IO\PathTooLongException
+    */
+    public function ReadAllLines_ThrowsExceptionPathIsLong() {
+
+        # Arrange:
+        $path = str_repeat('dotnetonphp', 30);
+
+        # Act:
+        Files::readAllLines($path);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\IO\FileNotFoundException
+    */
+    public function ReadAllLines_ThrowsExceptionWhenFileNotFound() {
+
+        # Arrange:
+        # Act:
+        Files::readAllLines('/tmp/file_not_found.tmp');
+    }
+
+    /**
+     * @test
+    */
+    public function ReadAllLines_CanReadFile() {
+
+        # Arrange:
+        $file = $this->generateFileWithBreakLine();
+
+        # Act:
+        $content = Files::readAllLines($file);
+
+        # Assert:
+        $this->assertEquals(10, sizeof($content));
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentNullException
+    */
+    public function ReadAllText_ThrowsExceptionWhenPathIsNull() {
+
+        # Arrange:
+        # Act:
+        Files::readAllText(null);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\IO\PathTooLongException
+    */
+    public function ReadAllText_ThrowsExceptionPathIsLong() {
+
+        # Arrange:
+        $path = str_repeat('dotnetonphp', 30);
+
+        # Act:
+        Files::readAllText($path);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\IO\FileNotFoundException
+    */
+    public function ReadAllText_ThrowsExceptionWhenFileNotFound() {
+
+        # Arrange:
+        # Act:
+        Files::readAllText('/tmp/file_not_found.tmp');
+    }
+
+    /**
+     * @test
+    */
+    public function ReadAllText_CanReadFile() {
+
+        # Arrange:
+        $file = $this->generateFile();
+
+        # Act:
+        $content = Files::readAllText($file);
+
+        # Assert:
+        $this->assertEquals('dotnetonphp', $content);
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentNullException
+    */
+    public function Replace_ThrowsExceptionWhenDestinationIsNull() {
+
+        # Arrange:
+        $source = $this->generateFile();
+
+        # Act:
+        Files::replace($source, null, '/tmp/file.a');
+    }
+
+    /**
+     * @test
+     * @expectedException \System\IO\FileNotFoundException
+    */
+    public function Replace_ThrowsExceptionWhenSourceNotFound() {
+
+        # Arrange:
+        $source = $this->generateName();
+
+        # Act:
+        Files::replace($source, '/tmp/file.ab', '/tmp/file.a');
+    }
+
+    /**
+     * @test
+    */
+    public function Replace_CanReplaceAndGenerateBackup() {
+
+        # Arrange:
+        $source = $this->generateFile();
+        $destination = $this->generateFile();
+        $backup = $this->generateName();
+
+        # Act:
+        Files::replace($source, $destination, $backup);
+
+        # Assert:
+        $this->assertFileNotExists($source);
+        $this->assertFileExists($destination);
+        $this->assertFileExists($backup);
+    }
+
+
 }

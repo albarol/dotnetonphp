@@ -286,53 +286,107 @@ namespace System\IO {
          *
          * @access public
          * @static
-         * @throws \System\UnauthorizedAccessException
-         * @throws \System\ArgumentException
-         * @throws \System\ArgumentNullException
-         * @throws \System\IO\PathTooLongException
-         * @throws \System\IO\FileNotFoundException
-         * @throws \System\NotSupportedException
-         * @param $path The file to be opened for writing.
+         * @throws \System\UnauthorizedAccessException The caller does not have the required permission.
+         * @throws \System\ArgumentException path is a zero-length string, contains only white space, or contains one or more invalid characters as defined by InvalidPathChars.
+         * @throws \System\ArgumentNullException path is null.
+         * @throws \System\IO\PathTooLongException The specified path, file name, or both exceed the system-defined maximum length.
+         * @throws \System\IO\FileNotFoundException The file specified in path was not found.
+         * @param string $path The file to be opened for writing.
          * @return \System\IO\FileStream An unshared System.IO.FileStream object on the specified path with System.IO.FileAccess.Write access.
          */
         public static function openWrite($path) {
-            self::assertFileExists($path);
-            return new FileStream($path, FileMode::openOrCreate(), FileAccess::write());
+            return new FileStream($path, FileMode::open(), FileAccess::write());
         }
 
 
         /**
          * Opens a binary file, reads the contents of the file into a byte array, and then closes the file.
+         *
          * @access public
          * @static
-         * @throws ArgumentNullException|ArgumentException|PathTooLongException
-         * @param $path The file to open for reading.
+         * @throws \System\UnauthorizedAccessException The caller does not have the required permission.
+         * @throws \System\ArgumentException path is a zero-length string, contains only white space, or contains one or more invalid characters as defined by InvalidPathChars.
+         * @throws \System\ArgumentNullException path is null.
+         * @throws \System\IO\PathTooLongException The specified path, file name, or both exceed the system-defined maximum length.
+         * @throws \System\IO\FileNotFoundException The file specified in path was not found.
+         * @param string $path The file to open for reading.
          * @return array A byte array containing the contents of the file.
          */
         public static function readAllBytes($path) {
-            self::validateOpen($path);
-            $byteArray = array();
-            $handle = fopen($path, FileMode::open());
-            while (!feof($handle)) {
-                $byte = fread($handle, 1);
-                array_push($byteArray, $byte);
-            }
-            fclose($handle);
-            return $byteArray;
+            $sr = new StreamReader($path);
+            return $sr->readBlock();
         }
 
 
         /**
          * Opens a text file, reads all lines of the file, and then closes the file.
+         *
          * @access public
          * @static
-         * @throws ArgumentNullException|ArgumentException|PathTooLongException
+         * @throws \System\UnauthorizedAccessException The caller does not have the required permission.
+         * @throws \System\ArgumentException path is a zero-length string, contains only white space, or contains one or more invalid characters as defined by InvalidPathChars.
+         * @throws \System\ArgumentNullException path is null.
+         * @throws \System\IO\PathTooLongException The specified path, file name, or both exceed the system-defined maximum length.
+         * @throws \System\IO\FileNotFoundException The file specified in path was not found.
          * @param $path The file to open for reading.
          * @return array A string array containing all lines of the file.
          */
         public static function readAllLines($path) {
             $sr = new StreamReader($path);
+            $lines = array();
+
+            while(!$sr->endOfStream()) {
+                array_push($lines, $sr->readLine());
+            }
+            return $lines;
+        }
+
+        /**
+         * Opens a text file, reads all lines of the file into a string, and then closes the file.
+         *
+         * @access public
+         * @static
+         * @throws \System\UnauthorizedAccessException The caller does not have the required permission.
+         * @throws \System\ArgumentException path is a zero-length string, contains only white space, or contains one or more invalid characters as defined by InvalidPathChars.
+         * @throws \System\ArgumentNullException path is null.
+         * @throws \System\IO\PathTooLongException The specified path, file name, or both exceed the system-defined maximum length.
+         * @throws \System\IO\FileNotFoundException The file specified in path was not found.
+         * @param string $path The file to open for reading.
+         * @param \System\Text\Encoding The encoding applied to the contents of the file.
+         * @return array A string array containing all lines of the file.
+         */
+        public static function readAllText($path, $encoding=null) {
+            $sr = new StreamReader($path);
             return $sr->readToEnd();
+        }
+
+        /**
+         * Replaces the contents of a specified file with the contents of another file, deleting the original file, and creating a backup of the replaced file.
+         *
+         * @access public
+         * @static
+         * @throws \System\ArgumentNullException The destinationFileName parameter is null.
+         * @throws \System\IO\FileNotFoundException The file specified in path was not found.
+         * @throws \System\IO\IOException An I/O error occured while opening then file.
+         * @throws \System\UnauthorizedAccessException The caller does not have the required permission.
+         * @throws \System\IO\PathTooLongException The specified path, file name, or both exceed the system-defined maximum length.
+         * @param string $sourceFileName The name of a file that replaces the file specified by destinationFileName.
+         * @param string $destinationFileName The name of the file being replaced.
+         * @param string $destionationBackupFileName The name of the backup file.
+         * @return void
+        */
+        public static function replace($sourceFileName, $destinationFileName, $destinationBackupFileName) {
+            self::assertFileExists($sourceFileName);
+
+            $source = new FileInfo($sourceFileName);
+            $destination = new FileInfo($destinationFileName);
+
+            try {
+                $destination->moveTo($destinationBackupFileName);
+                $source->moveTo($destinationFileName);
+            } catch(\Exception $e) {
+                throw new IOException("An I/O error occured while opening the file.");
+            }
         }
 
         public static function write($fileName) {
