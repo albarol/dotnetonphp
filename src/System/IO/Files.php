@@ -2,6 +2,7 @@
 
 namespace System\IO {
 
+    use \System\ArgumentException as ArgumentException;
     use \System\ArgumentNullException as ArgumentNullException;
 
     use \System\IO\FileStream as FileStream;
@@ -389,6 +390,98 @@ namespace System\IO {
             }
         }
 
+        /**
+         * Applies access control list (ACL) entries described by a FileSecurity object to the specified file.
+         *
+         * @access public
+         * @static
+         * @throws \System\IO\IOException An I/O error occurred while opening the file.
+         * @throws \System\SystemException  The file could not be found.
+         * @throws \System\UnauthorizedAccessException The path parameter specified a file that is read-only. -or- The caller does not have the required permission.
+         * @param string A file to add or remove access control list (ACL) entries from.
+         * @param \System\Security\AccessControl\FileSecurity A FileSecurity object that describes an ACL entry to apply to the file described by the path parameter.
+         * @return void
+        */
+        public static function setAccessControl($path, \System\Security\AccessControl\FileSecurity $fileSecurity) { }
+
+        /**
+         * Sets the specified FileAttributes of the file on the specified path.
+         *
+         * @access public
+         * @static
+         * @throws \System\ArgumentException
+         * @throws \System\IO\PathTooLongException
+         * @throws \System\IO\FileNotFoundException
+         * @throws \System\UnauthorizedAccessException
+         * @param string $path The path to file.
+         * @param \System\IO\FileAttributes The desired FileAttributes, such as Hidden, ReadOnly, Normal and Archive.
+         * @return void
+        */
+        public static function setAttributes($path, \System\IO\FileAttributes $FileAttributes) {}
+
+        /**
+         * Sets the date and time the specified file was last accessed.
+         *
+         * @access public
+         * @static
+         * @throws \System\IO\FileNotFoundException The specified path was not found.
+         * @throws \System\ArgumentException path is a zero-length string, contains only white space.
+         * @throws \System\ArgumentNullException path is null.
+         * @throws \System\IO\PathTooLongException The specified path, file name, or both exceed the system-defined maximum length.
+         * @throws \System\IO\IOException An I/O error occurred while performing the operation.
+         * @throws \System\UnauthorizedAccessException The caller does not have the required permission.
+         * @param string $path The file for which to set the creation date and time information.
+         * @param \System\DateTime $lastAccessTime A DateTime containing the value to set for the last access date and time of path. This value is expressed in local time.
+         * @return void
+        */
+        public static function setLastAccessTime($path, \System\DateTime $lastAccessTime) {
+            self::assertNullArgument($path);
+            self::assertEmpty($path);
+            self::assertPathName($path);
+            self::assertFileExists($path);
+
+
+            try {
+                $file = new FileInfo($path);
+                $file->lastAccessTime($lastAccessTime);
+            }
+            catch (\Exception $e) {
+                throw new IOException("An I/O error ocurred while performing the operation.");
+            }
+        }
+
+        /**
+         * Sets the date and time, in coordinated universal time (UTC), that the file was viewed.
+         *
+         * @access public
+         * @static
+         * @throws \System\IO\FileNotFoundException The specified path was not found.
+         * @throws \System\ArgumentException path is a zero-length string, contains only white space.
+         * @throws \System\ArgumentNullException path is null.
+         * @throws \System\IO\PathTooLongException The specified path, file name, or both exceed the system-defined maximum length.
+         * @throws \System\IO\IOException An I/O error occurred while performing the operation.
+         * @throws \System\UnauthorizedAccessException The caller does not have the required permission.
+         * @param string $path The file for which to set the creation date and time information.
+         * @param \System\DateTime $creationTime A DateTime containing the value to set for the creation date and time of path. This value is expressed in (UTC) time.
+         * @return void
+        */
+        // public static function setLastAccessTimeUtc($path, \System\DateTime $lastAccessTime) {
+        //     self::assertNullArgument($path);
+        //     self::assertEmpty($path);
+        //     self::assertPathName($path);
+        //     self::assertFileExists($path);
+
+        //     try {
+        //         $file = new FileInfo($path);
+        //         $file->creationTime($lastAccessTime->);
+        //     }
+        //     catch (\Exception $e) {
+        //         throw new IOException("An I/O error ocurred while performing the operation.");
+        //     }
+        // }
+
+
+
         public static function write($fileName) {
             return new StreamWriter($fileName);
         }
@@ -396,6 +489,12 @@ namespace System\IO {
         private static function assertNullArgument($path) {
             if(is_null($path)) {
                 throw new ArgumentNullException("path is null.");
+            }
+        }
+
+        private static function assertEmpty($path) {
+            if (empty($path)) {
+                throw new ArgumentException("path is a zero-length string, contains only white space.");
             }
         }
 

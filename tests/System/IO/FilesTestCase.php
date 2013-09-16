@@ -1,6 +1,7 @@
 <?php
 
 
+use \System\DateTime as DateTime;
 use \System\IO\Files as Files;
 use \System\IO\FileMode as FileMode;
 use \System\IO\FileAccess as FileAccess;
@@ -720,4 +721,73 @@ class FilesTestCase extends PHPUnit_Framework_TestCase {
     }
 
 
+    /**
+     * @test
+     * @expectedException \System\IO\FileNotFoundException
+    */
+    public function SetLastAccessTime_ThrowsExceptionWhenFileNotFound() {
+
+        # Arrange:
+        $path = $this->generateName();
+
+        # Act:
+        Files::setLastAccessTime($path, DateTime::now());
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentException
+    */
+    public function SetLastAccessTime_ThrowsExceptionWhenPathIsEmpty() {
+
+        # Arrange:
+        $path = "";
+
+        # Act:
+        Files::setLastAccessTime($path, DateTime::now());
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentNullException
+    */
+    public function SetLastAccessTime_ThrowsExceptionWhenPathIsNull() {
+
+        # Arrange:
+        $path = null;
+
+        # Act:
+        Files::setLastAccessTime($path, DateTime::now());
+    }
+
+    /**
+     * @test
+     * @expectedException \System\IO\PathTooLongException
+    */
+    public function SetLastAccessTime_ThrowsExceptionWhenPathTooLong() {
+
+        # Arrange:
+        $path = str_repeat('dotnetonphp', 25);
+
+        # Act:
+        Files::setLastAccessTime($path, DateTime::now());
+    }
+
+    /**
+     * @test
+    */
+    public function SetLastAccessTime_CanModifyLastAccessTime() {
+
+        # Arrange:
+        $file = $this->generateFile();
+        $dateTime = DateTime::now(2000, 10, 10, 1, 0, 0);
+
+        # Act:
+        Files::setLastAccessTime($file, $dateTime);
+
+
+        # Assert:
+        $stat = stat($file);
+        $this->assertEquals($stat['atime'], $dateTime->toBinary());
+    }
 }
