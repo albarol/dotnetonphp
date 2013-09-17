@@ -461,7 +461,7 @@ namespace System\IO {
          * @throws \System\IO\IOException An I/O error occurred while performing the operation.
          * @throws \System\UnauthorizedAccessException The caller does not have the required permission.
          * @param string $path The file for which to set the creation date and time information.
-         * @param \System\DateTime $lastAccessTime A DateTime containing the value to set for the creation date and time of path. This value is expressed in (UTC) time.
+         * @param \System\DateTime $lastAccessTime A DateTime containing the value to set for the last access date and time of path. This value is expressed in (UTC) time.
          * @return void
         */
         public static function setLastAccessTimeUtc($path, \System\DateTime $lastAccessTime) {
@@ -492,7 +492,7 @@ namespace System\IO {
          * @throws \System\IO\IOException An I/O error occurred while performing the operation.
          * @throws \System\UnauthorizedAccessException The caller does not have the required permission.
          * @param string $path The file for which to set the creation date and time information.
-         * @param \System\DateTime $lastWriteTime A DateTime containing the value to set for the last access date and time of path. This value is expressed in local time.
+         * @param \System\DateTime $lastWriteTime A DateTime containing the value to set for the last write date and time of path. This value is expressed in local time.
          * @return void
         */
         public static function setLastWriteTime($path, \System\DateTime $lastWriteTime) {
@@ -522,7 +522,7 @@ namespace System\IO {
          * @throws \System\IO\IOException An I/O error occurred while performing the operation.
          * @throws \System\UnauthorizedAccessException The caller does not have the required permission.
          * @param string $path The file for which to set the creation date and time information.
-         * @param \System\DateTime $lastWriteTime A DateTime containing the value to set for the creation date and time of path. This value is expressed in (UTC) time.
+         * @param \System\DateTime $lastWriteTime A DateTime containing the value to set for the last write date and time of path. This value is expressed in (UTC) time.
          * @return void
         */
         public static function setLastWriteTimeUtc($path, \System\DateTime $lastWriteTime) {
@@ -537,6 +537,37 @@ namespace System\IO {
             }
             catch (\Exception $e) {
                 throw new IOException("An I/O error ocurred while performing the operation.");
+            }
+        }
+
+
+        /**
+         * Creates a new file, writes the specified byte array to the file, and then closes the file. If the target file already exists, it is overwritten.
+         *
+         * @access public
+         * @static
+         * @throws \System\ArgumentException path is a zero-length string, contains only white space, or contains one or more invalid characters as defined by InvalidPathChars.
+         * @throws \System\ArgumentNullException path is null or the byte array is empty.
+         * @throws \System\IO\PathTooLongException The specified path, file name, or both exceed the system-defined maximum length.
+         * @throws \System\IO\IOException  An I/O error occurred while opening the file.
+         * @throws \System\IO\FileNotFoundException The file specified in path was not found.
+         * @throws \System\UnauthorizedAccessException path specified a file that is read-only. -or- path specified a directory.
+         * @param string $path The file to write to.
+         * @param array $bytes The bytes to write to the file.
+        */
+        public static function writeAllBytes($path, $bytes=array()) {
+            self::assertNullArgument($path);
+            self::assertEmpty($path);
+            self::assertPathName($path);
+            self::assertFileExists($path);
+
+            try {
+                $fs = new FileStream($path, FileMode::truncate(), FileAccess::write());
+                $fs->write($bytes);
+                $fs->close();
+            }
+            catch(\Exception $e) {
+                throw new IOException("An I/O error ocurred while writing in file.");
             }
         }
 
