@@ -18,7 +18,8 @@ namespace System\IO
     {
         protected $dates = array('createdTime' => NULL, 'modifiedTime' => NULL, 'accessTime' => NULL);
         protected $attributes = NULL;
-        protected $infos = array('exists' => false, 'extension' => NULL);
+        protected $infos = array('exists' => false, 'extension' => NULL, 'name' => NULL,
+                                 'directoryName' => NULL, 'fullName' => NULL);
 
         /**
          * Gets or sets the attributes for the current file or directory.
@@ -164,8 +165,7 @@ namespace System\IO
          * Provides information for files and directories.
          * @param string $fileSystem
          */
-        protected function setPropertiesToFile($fileSystem)
-        {
+        protected function setPropertiesToFile($fileSystem) {
             $info = pathinfo($fileSystem);
             $this->infos["directoryName"] = realpath($info["dirname"]);
             $this->infos["name"] = $info["filename"];

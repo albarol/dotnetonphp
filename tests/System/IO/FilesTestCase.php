@@ -790,4 +790,74 @@ class FilesTestCase extends PHPUnit_Framework_TestCase {
         $stat = stat($file);
         $this->assertEquals($stat['atime'], $dateTime->toBinary());
     }
+
+    /**
+     * @test
+     * @expectedException \System\IO\FileNotFoundException
+    */
+    public function SetLastWriteTime_ThrowsExceptionWhenFileNotFound() {
+
+        # Arrange:
+        $path = $this->generateName();
+
+        # Act:
+        Files::setLastWriteTime($path, DateTime::now());
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentException
+    */
+    public function SetLastWriteTime_ThrowsExceptionWhenPathIsEmpty() {
+
+        # Arrange:
+        $path = "";
+
+        # Act:
+        Files::setLastWriteTime($path, DateTime::now());
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentNullException
+    */
+    public function SetLastWriteTime_ThrowsExceptionWhenPathIsNull() {
+
+        # Arrange:
+        $path = null;
+
+        # Act:
+        Files::setLastWriteTime($path, DateTime::now());
+    }
+
+    /**
+     * @test
+     * @expectedException \System\IO\PathTooLongException
+    */
+    public function SetLastWriteTime_ThrowsExceptionWhenPathTooLong() {
+
+        # Arrange:
+        $path = str_repeat('dotnetonphp', 25);
+
+        # Act:
+        Files::setLastWriteTime($path, DateTime::now());
+    }
+
+    /**
+     * @test
+    */
+    public function SetLastWriteTime_CanModifyLastWriteTime() {
+
+        # Arrange:
+        $file = $this->generateFile();
+        $dateTime = DateTime::now(2000, 10, 10, 1, 0, 0);
+
+        # Act:
+        Files::setLastWriteTime($file, $dateTime);
+
+
+        # Assert:
+        $stat = stat($file);
+        $this->assertEquals($stat['mtime'], $dateTime->toBinary());
+    }
 }

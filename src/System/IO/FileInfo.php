@@ -261,7 +261,7 @@ namespace System\IO {
         }
 
         public function name() {
-            return $this->info["name"].".".$this->extension();
+            return $this->infos["name"].".".$this->extension();
         }
 
 

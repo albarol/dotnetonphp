@@ -440,7 +440,6 @@ namespace System\IO {
             self::assertPathName($path);
             self::assertFileExists($path);
 
-
             try {
                 $file = new FileInfo($path);
                 $file->lastAccessTime($lastAccessTime);
@@ -462,23 +461,84 @@ namespace System\IO {
          * @throws \System\IO\IOException An I/O error occurred while performing the operation.
          * @throws \System\UnauthorizedAccessException The caller does not have the required permission.
          * @param string $path The file for which to set the creation date and time information.
-         * @param \System\DateTime $creationTime A DateTime containing the value to set for the creation date and time of path. This value is expressed in (UTC) time.
+         * @param \System\DateTime $lastAccessTime A DateTime containing the value to set for the creation date and time of path. This value is expressed in (UTC) time.
          * @return void
         */
-        // public static function setLastAccessTimeUtc($path, \System\DateTime $lastAccessTime) {
-        //     self::assertNullArgument($path);
-        //     self::assertEmpty($path);
-        //     self::assertPathName($path);
-        //     self::assertFileExists($path);
+        public static function setLastAccessTimeUtc($path, \System\DateTime $lastAccessTime) {
+            self::assertNullArgument($path);
+            self::assertEmpty($path);
+            self::assertPathName($path);
+            self::assertFileExists($path);
 
-        //     try {
-        //         $file = new FileInfo($path);
-        //         $file->creationTime($lastAccessTime->);
-        //     }
-        //     catch (\Exception $e) {
-        //         throw new IOException("An I/O error ocurred while performing the operation.");
-        //     }
-        // }
+
+            try {
+                $file = new FileInfo($path);
+                $file->lastAccessTime($lastAccessTime->utcNow());
+            }
+            catch (\Exception $e) {
+                throw new IOException("An I/O error ocurred while performing the operation.");
+            }
+        }
+
+        /**
+         * Sets the date and time that the specified file was last written to.
+         *
+         * @access public
+         * @static
+         * @throws \System\IO\FileNotFoundException The specified path was not found.
+         * @throws \System\ArgumentException path is a zero-length string, contains only white space.
+         * @throws \System\ArgumentNullException path is null.
+         * @throws \System\IO\PathTooLongException The specified path, file name, or both exceed the system-defined maximum length.
+         * @throws \System\IO\IOException An I/O error occurred while performing the operation.
+         * @throws \System\UnauthorizedAccessException The caller does not have the required permission.
+         * @param string $path The file for which to set the creation date and time information.
+         * @param \System\DateTime $lastWriteTime A DateTime containing the value to set for the last access date and time of path. This value is expressed in local time.
+         * @return void
+        */
+        public static function setLastWriteTime($path, \System\DateTime $lastWriteTime) {
+            self::assertNullArgument($path);
+            self::assertEmpty($path);
+            self::assertPathName($path);
+            self::assertFileExists($path);
+
+            try {
+                $file = new FileInfo($path);
+                $file->lastWriteTime($lastWriteTime);
+            }
+            catch (\Exception $e) {
+                throw new IOException("An I/O error ocurred while performing the operation.");
+            }
+        }
+
+        /**
+         * Sets the date and time, in coordinated universal time (UTC), that the file was viewed.
+         *
+         * @access public
+         * @static
+         * @throws \System\IO\FileNotFoundException The specified path was not found.
+         * @throws \System\ArgumentException path is a zero-length string, contains only white space.
+         * @throws \System\ArgumentNullException path is null.
+         * @throws \System\IO\PathTooLongException The specified path, file name, or both exceed the system-defined maximum length.
+         * @throws \System\IO\IOException An I/O error occurred while performing the operation.
+         * @throws \System\UnauthorizedAccessException The caller does not have the required permission.
+         * @param string $path The file for which to set the creation date and time information.
+         * @param \System\DateTime $lastWriteTime A DateTime containing the value to set for the creation date and time of path. This value is expressed in (UTC) time.
+         * @return void
+        */
+        public static function setLastWriteTimeUtc($path, \System\DateTime $lastWriteTime) {
+            self::assertNullArgument($path);
+            self::assertEmpty($path);
+            self::assertPathName($path);
+            self::assertFileExists($path);
+
+            try {
+                $file = new FileInfo($path);
+                $file->lastWriteTime($lastWriteTime->utcNow());
+            }
+            catch (\Exception $e) {
+                throw new IOException("An I/O error ocurred while performing the operation.");
+            }
+        }
 
 
 
