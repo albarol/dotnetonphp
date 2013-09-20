@@ -7,10 +7,9 @@ namespace System\IO {
     use \System\IDisposable as IDisposable;
     use \System\ObjectDisposedException as ObjectDisposedException;
 
-    use \System\IO\IOException as IOException;
-
     /**
      * Represents a reader that can read a sequential series of characters.
+     *
      * @access public
      * @abstract
      * @name TextReader
@@ -19,7 +18,7 @@ namespace System\IO {
      */
     abstract class TextReader implements IDisposable {
 
-        protected $resource;
+        protected $stream;
 
         protected function __construct() { }
 
@@ -29,7 +28,7 @@ namespace System\IO {
          * @return void
          */
         public function close() {
-            unset($this->resource);
+            unset($this->stream);
         }
 
         /**
@@ -42,13 +41,16 @@ namespace System\IO {
 
         /**
          * Reads the next character from the input stream and advances the character position by one character.
+         *
          * @access public
-         * @throws ArgumentNullException|ArgumentException|ArgumentOutOfRangeException|ObjectDisposedException|IOException
+         * @abstract
+         * @throws \System\ObjectDisposedException The TextReader is closed.
+         * @throws \System\IO\IOException An I/O error occurs.
          * @param int $index The place in buffer at which to begin writing.
          * @param int $count The maximum number of characters to read. If the end of the stream is reached before count of characters is read into buffer, the current method returns.
          * @return array When this method returns, contains the specified character array with the values between index and (index + count - 1) replaced by the characters read from the current source. -and- The number of characters that have been read. The number will be less than or equal to count, depending on whether the data is available within the stream. This method returns zero if called when no more characters are left to read.
          */
-        public abstract function read($index=null, $count=null);
+        public abstract function read();
 
 
         /**
@@ -91,7 +93,7 @@ namespace System\IO {
          * Creates a thread-safe wrapper around the specified TextReader.
          * @static
          * @throws ArgumentNullException
-         * @param TextReader $reader The TextReader to synchronize. 
+         * @param TextReader $reader The TextReader to synchronize.
          * @return TextReader A thread-safe System.IO.TextReader.
          */
         public static function synchronized(TextReader $reader) {

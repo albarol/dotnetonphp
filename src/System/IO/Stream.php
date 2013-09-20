@@ -2,10 +2,8 @@
 
 namespace System\IO {
 
-    use \System\IO\SeekOrigin as SeekOrigin;
     use \System\IDisposable as IDisposable;
     use \System\InvalidOperationException as InvalidOperationException;
-
 
     /**
      * Provides a generic view of a sequence of bytes.
@@ -74,7 +72,7 @@ namespace System\IO {
          *
          * @abstract
          * @access public
-         * @throws \System\IOException An I/O error occurs. 
+         * @throws \System\IOException An I/O error occurs.
          * @return void
          */
         public abstract function flush();
@@ -102,10 +100,10 @@ namespace System\IO {
          *
          * @abstract
          * @access public
-         * @throws \System\ArgumentOutOfRangeException offset or count is negative. 
+         * @throws \System\ArgumentOutOfRangeException offset or count is negative.
          * @throws \System\IO\IOException An I/O error occurred.
-         * @throws \System\NotSupportedException The stream does not support reading. 
-         * @throws \System\ObjectDisposedException Methods were called after the stream was closed. 
+         * @throws \System\NotSupportedException The stream does not support reading.
+         * @throws \System\ObjectDisposedException Methods were called after the stream was closed.
          * @param int $offset The zero-based byte offset in buffer at which to begin storing the data read from the current stream.
          * @param int $count The maximum number of bytes to be read from the current stream.
          * @return array Block of bytes from the stream
@@ -132,15 +130,15 @@ namespace System\IO {
          * @return int Get a value, in miliseconds, that determines how long the stream will attempt to read before timing out.
          */
         public function readTimeout($value=null) {
-            
-            if(!$this->canTimeout()) { 
+
+            if(!$this->canTimeout()) {
                 throw new InvalidOperationException("The stream does not support timing out");
             }
-            
+
             if($value != null) {
                 $this->readTimeout = $value;
             }
-                
+
             return $this->readTimeout;
         }
 
@@ -149,9 +147,9 @@ namespace System\IO {
          *
          * @abstract
          * @access public
-         * @throws \System\IOException An I/O error occurs. 
-         * @throws \System\NotSupportedException The stream does not support seeking, such as if the FileStream is constructed from a pipe or console output. 
-         * @throws \SystemObjectDisposedException Methods were called after the stream was closed. 
+         * @throws \System\IOException An I/O error occurs.
+         * @throws \System\NotSupportedException The stream does not support seeking, such as if the FileStream is constructed from a pipe or console output.
+         * @throws \SystemObjectDisposedException Methods were called after the stream was closed.
          * @param int $offset A byte offset relative to the origin parameter.
          * @param int $origin A value of type SeekOrigin indicating the reference point used to obtain the new position.
          * @return float The new position within the current stream.
@@ -163,8 +161,8 @@ namespace System\IO {
          *
          * @abstract
          * @access public
-         * @throws \System\IOException An I/O error has occurred. 
-         * @throws \System\NotSupportedException The stream does not support both writing and seeking. 
+         * @throws \System\IOException An I/O error has occurred.
+         * @throws \System\NotSupportedException The stream does not support both writing and seeking.
          * @throws \System\ArgumentOutOfRangeException Attempted to set the value parameter to less than 0.
          * @param int $value The desired length of the current stream in bytes.
          * @return void
@@ -175,10 +173,10 @@ namespace System\IO {
         /**
          * When overridden in a derived class, writes a sequence of bytes to the current stream and advances the current position within this stream by the number of bytes written.
          * @abstract
-         * @access public 
+         * @access public
          * @param array $array An array of bytes. This method copies count bytes from buffer to the current stream.
          * @param int $offset The zero-based byte offset in buffer at which to begin copying bytes to the current stream.
-         * @param int $count The number of bytes to be written to the current stream. 
+         * @param int $count The number of bytes to be written to the current stream.
          * @return void
          */
         public abstract function write($array, $offset, $count);

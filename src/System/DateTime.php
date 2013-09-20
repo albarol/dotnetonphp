@@ -333,6 +333,10 @@ namespace System
         */
         public static function fromBinary($dateData)
         {
+            if ($dateData === FALSE) {
+                throw new ArgumentOutOfRangeException("dateData is less than MinValue or greater than MaxValue.");
+            }
+
             $date = getdate($dateData);
             return new DateTime(
                 $date["year"],

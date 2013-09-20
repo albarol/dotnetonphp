@@ -8,14 +8,6 @@ namespace System\IO {
     use \System\NotSupportedException as NotSupportedException;
     use \System\ObjectDisposedException as ObjectDisposedException;
 
-    use \System\IO\FileAccess as FileAccess;
-    use \System\IO\FileNotFoundException as FileNotFoundException;
-    use \System\IO\FileMode as FileMode;
-    use \System\IO\IOException as IOException;
-    use \System\IO\SeekOrigin as SeekOrigin;
-    use \System\IO\Stream as Stream;
-
-
     /**
      * Exposes a Stream around a file, supporting both synchronous and asynchronous read and write operations.
      *
@@ -35,22 +27,28 @@ namespace System\IO {
          * Initializes a new instance of the FileStream class with the specified path, creation mode, and read/write permission.
          *
          * @access public
-         * @throws \System\ArgumentNullException
-         * @throws \System\ArgumentException
-         * @throws \System\IO\FileNotFoundException
-         * @throws \System\IO\IOException
-         * @throws \System\Security\SecurityException
+         * @throws \System\ArgumentNullException path is null.
+         * @throws \System\ArgumentException path is an empty string (""), contains only white space, or contains one or more invalid characters.
+         * @throws \System\IO\FileNotFoundException The file cannot be found, such as when mode is FileMode.Truncate or FileMode.Open, and the file specified by path does not exist.The file must already exist in these modes.
+         * @throws \System\IO\PathTooLongException The specified path, file name, or both exceed the system-defined maximum length.
+         * @throws \System\IO\IOException An I/O error occurs, such as specifying FileMode.CreateNew and the file specified by path already exists. -or- The stream has been closed.
+         * @throws \System\Security\SecurityException The caller does not have the required permission.
          * @param string $path A relative or absolute path for the file that the current FileStream object will encapsulate.
          * @param string $mode A constant that determines how to open or create the file.
          * @param int $access A constant that determines how the file can be accessed by the FileStream object. This gets the CanRead and CanWrite properties of the FileStream object.
          */
         public function __construct($path, $mode=null, $access=null) {
+
             if(is_null($path)) {
                 throw new ArgumentNullException("path is null.");
             }
 
             if(strlen($path) == 0) {
-                throw new ArgumentException('path is an empty string (""), contains only white space, or contains one or more invalid characters.');
+                throw new ArgumentException("path is an empty string (\"\"), contains only white space, or contains one or more invalid characters.");
+            }
+
+            if (strlen($path) > 258) { // Max PATH size
+                throw new PathTooLongException("The specified path, file name, or both exceed the system-defined maximum length.");
             }
 
             if(is_null($mode)) {
@@ -80,7 +78,6 @@ namespace System\IO {
             $this->fileName = $path;
         }
 
-
         /**
          * Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
          *
@@ -91,7 +88,7 @@ namespace System\IO {
         }
 
         /**
-         * When overridden in a derived class, gets a value indicating whether the current stream supports reading.
+         * Gets a value that determines whether the current stream can supports reading.
          *
          * @access public
          * @return bool true if the stream supports reading; otherwise, false.
@@ -101,7 +98,8 @@ namespace System\IO {
         }
 
         /**
-         * When overridden in a derived class, gets a value indicating whether the current stream supports seeking.
+         * Gets a value that determines whether the current stream can supports seeking.
+         *
          * @access public
          * @return bool true if the stream supports seeking; otherwise, false.
          */
@@ -111,6 +109,7 @@ namespace System\IO {
 
         /**
          * Gets a value that determines whether the current stream can time out.
+         *
          * @access public
          * @return bool A value that determines whether the current stream can time out.
          */
@@ -119,13 +118,13 @@ namespace System\IO {
         }
 
         /**
-         * When overridden in a derived class, gets a value indicating whether the current stream supports writing.
+         * Gets a value that determines whether the current stream can supports writing.
+         *
          * @access public
          * @return bool true if the stream supports writing; otherwise, false.
          */
         public function canWrite() {
             return ($this->access != FileAccess::read()) &&
-                   ($this->mode != FileMode::open()) &&
                    isset($this->stream);
         }
 
@@ -253,8 +252,6 @@ namespace System\IO {
          * @return array Block of bytes from the stream
          */
         public function read($offset=0, $count=null) {
-            $count = is_null($count) ? $this->length() : $count;
-            $copySize = $offset + $count;
 
             $this->assertOpened();
             $this->assertRead();
@@ -264,8 +261,14 @@ namespace System\IO {
             }
 
             try {
-                fseek($this->stream, $offset);
-                $content = fread($this->stream, $copySize);
+                if (!is_null($count)) {
+                    fseek($this->stream, $offset);
+                    $content = fread($this->stream, $count);
+                }
+                else {
+                    $content = stream_get_contents($this->stream, -1, $offset);
+                }
+
                 return str_split($content);
             } catch(\Exception $e) {
                 throw new IOException("An I/O error occurred.");

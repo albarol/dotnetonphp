@@ -9,7 +9,7 @@ use \System\IO\StreamReader as StreamReader;
 /**
  * @group io
 */
-class FileInfoTestCase extends PHPUnit_Framework_TestCase 
+class FileInfoTestCase extends PHPUnit_Framework_TestCase
 {
 
     private function generateName()
@@ -21,18 +21,18 @@ class FileInfoTestCase extends PHPUnit_Framework_TestCase
     {
         $file_name = $this->generateName();
         touch($file_name);
-        return $file_name;    
+        return $file_name;
     }
 
     /**
      * @test
      * @expectedException \System\ArgumentNullException
     */
-    public function Constructor_ThrowsExceptionWhenFileNameIsNull() 
+    public function Constructor_ThrowsExceptionWhenFileNameIsNull()
     {
         # Arrange:
         $file_name = null;
-        
+
         # Act:
         new FileInfo($file_name);
     }
@@ -41,11 +41,11 @@ class FileInfoTestCase extends PHPUnit_Framework_TestCase
      * @test
      * @expectedException \System\ArgumentException
     */
-    public function Constructor_ThrowsExceptionWhenArgumentIsInvalid() 
+    public function Constructor_ThrowsExceptionWhenArgumentIsInvalid()
     {
         # Arrange:
         $file_name = "";
-        
+
         # Act:
         new FileInfo($file_name);
     }
@@ -54,11 +54,11 @@ class FileInfoTestCase extends PHPUnit_Framework_TestCase
      * @test
      * @expectedException \System\IO\PathTooLongException
     */
-    public function Constructor_ThrowsExceptionWhenPathIsTooLong() 
+    public function Constructor_ThrowsExceptionWhenPathIsTooLong()
     {
         # Arrange:
         $file_name = str_pad('a', 249);
-        
+
         # Act:
         new FileInfo($file_name);
     }
@@ -67,7 +67,7 @@ class FileInfoTestCase extends PHPUnit_Framework_TestCase
     /**
      * @test
     */
-    public function Constructor_CanCreateFileInfoFromAnyFile() 
+    public function Constructor_CanCreateFileInfoFromAnyFile()
     {
          # Arrange:
         $name = $this->generateName();
@@ -82,7 +82,7 @@ class FileInfoTestCase extends PHPUnit_Framework_TestCase
     /**
      * @test
     */
-    public function AppendText_ShouldCreateStreamWriter() 
+    public function AppendText_ShouldCreateStreamWriter()
     {
         # Arrange:
         $name = $this->generateName();
@@ -99,7 +99,7 @@ class FileInfoTestCase extends PHPUnit_Framework_TestCase
     /**
      * @test
     */
-    public function Attributes_CanGetAttributesFromFile() 
+    public function Attributes_CanGetAttributesFromFile()
     {
         # Arrange:
         $name = $this->generateName();
@@ -114,15 +114,15 @@ class FileInfoTestCase extends PHPUnit_Framework_TestCase
     /**
      * @test
     */
-    public function Create_ShouldCreateFile() 
+    public function Create_ShouldCreateFile()
     {
         # Arrange:
         $name = $this->generateName();
         $info = new FileInfo($name);
-    
+
         # Act:
         $stream = $info->create();
-    
+
         # Assert:
         $this->assertTrue(file_exists($info->fullName()));
 
@@ -133,7 +133,7 @@ class FileInfoTestCase extends PHPUnit_Framework_TestCase
     /**
      * @test
     */
-    public function CreationTime_GetWhenFileWasCreated() 
+    public function CreationTime_GetWhenFileWasCreated()
     {
         # Arrange:
         $name = $this->generateName();
@@ -149,7 +149,7 @@ class FileInfoTestCase extends PHPUnit_Framework_TestCase
     /**
      * @test
     */
-    public function CreationTimeUtc_GetWhenFileWasCreateInUtc() 
+    public function CreationTimeUtc_GetWhenFileWasCreateInUtc()
     {
         # Arrange:
         $name = $this->generateName();
@@ -165,7 +165,7 @@ class FileInfoTestCase extends PHPUnit_Framework_TestCase
     /**
      * @test
     */
-    public function Exists_ShouldBeFalseWhenFileNotExists() 
+    public function Exists_ShouldBeFalseWhenFileNotExists()
     {
         # Arrange:
         $name = $this->generateName();
@@ -180,7 +180,7 @@ class FileInfoTestCase extends PHPUnit_Framework_TestCase
     /**
      * @test
     */
-    public function Exists_ShouldBeTrueWhenFileExists() 
+    public function Exists_ShouldBeTrueWhenFileExists()
     {
          # Arrange:
         $name = $this->generateFile();
@@ -198,7 +198,7 @@ class FileInfoTestCase extends PHPUnit_Framework_TestCase
     /**
      * @test
     */
-    public function Extension_CanGetExtension() 
+    public function Extension_CanGetExtension()
     {
         # Arrange:
         $name = $this->generateName();
@@ -213,7 +213,7 @@ class FileInfoTestCase extends PHPUnit_Framework_TestCase
     /**
      * @test
     */
-    public function FullName_CanGetFullName() 
+    public function FullName_CanGetFullName()
     {
         # Arrange:
         $name = $this->generateName();
@@ -228,7 +228,7 @@ class FileInfoTestCase extends PHPUnit_Framework_TestCase
     /**
      * @test
     */
-    public function LastAccess_CanGetLastAccess() 
+    public function LastAccess_CanGetLastAccess()
     {
         # Arrange:
         $name = $this->generateName();
@@ -244,7 +244,7 @@ class FileInfoTestCase extends PHPUnit_Framework_TestCase
     /**
      * @test
     */
-    public function LastAccessUtc_CanGetLastAccessInUtcFormat() 
+    public function LastAccessUtc_CanGetLastAccessInUtcFormat()
     {
         # Arrange:
         $name = $this->generateName();
@@ -260,7 +260,7 @@ class FileInfoTestCase extends PHPUnit_Framework_TestCase
     /**
      * @test
     */
-    public function LastWrite_CanGetLastWrite() 
+    public function LastWrite_CanGetLastWrite()
     {
         # Arrange:
         $name = $this->generateName();
@@ -276,7 +276,7 @@ class FileInfoTestCase extends PHPUnit_Framework_TestCase
     /**
      * @test
     */
-    public function LastWriteUtc_CanGetLastWriteInUtcFormat() 
+    public function LastWriteUtc_CanGetLastWriteInUtcFormat()
     {
         # Arrange:
         $name = $this->generateName();
@@ -292,7 +292,7 @@ class FileInfoTestCase extends PHPUnit_Framework_TestCase
     /**
      * @test
     */
-    public function Name_CanGetNameOfFile() 
+    public function Name_CanGetNameOfFile()
     {
         # Arrange:
         $name = $this->generateName();
@@ -309,7 +309,7 @@ class FileInfoTestCase extends PHPUnit_Framework_TestCase
     /**
      * @test
     */
-    public function Directory_CanGetDirectoryInfo() 
+    public function Directory_CanGetDirectoryInfo()
     {
         # Arrange:
         $name = $this->generateName();
@@ -325,7 +325,7 @@ class FileInfoTestCase extends PHPUnit_Framework_TestCase
     /**
      * @test
     */
-    public function DirectoryName_CanGetNameOfParentDirectory() 
+    public function DirectoryName_CanGetNameOfParentDirectory()
     {
         # Arrange:
         $name = $this->generateName();
@@ -341,7 +341,7 @@ class FileInfoTestCase extends PHPUnit_Framework_TestCase
     // /**
     //  * @test
     // */
-    // public function IsReadOnly_CanGetInformationIfFileIsReadOnly() 
+    // public function IsReadOnly_CanGetInformationIfFileIsReadOnly()
     // {
     //     $fileInfo = new FileInfo($this->fileInfo);
     //     $this->assertFalse($fileInfo->isReadOnly());
