@@ -927,4 +927,136 @@ class FilesTestCase extends PHPUnit_Framework_TestCase {
         # Assert:
         $this->assertEquals('.NetOnPhp', implode(Files::readAllBytes($path)));
     }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentException
+    */
+    public function WriteAllLines_ThrowsExceptionWhenFileIsEmpty() {
+
+        # Arrange:
+        $path = "";
+
+        # Act:
+        Files::writeAllLines($path, array('dotnetonphp'));
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentNullException
+    */
+    public function WriteAllLines_ThrowsExceptionWhenFileIsNull() {
+
+        # Arrange:
+        # Act:
+        Files::writeAllLines(null, array('dotnetonphp'));
+    }
+
+    /**
+     * @test
+     * @expectedException \System\IO\PathTooLongException
+    */
+    public function WriteAllLines_ThrowsExceptionWhenFileHasLongName() {
+
+        # Arrange:
+        $path = str_repeat('dotnetonphp', 25);
+
+        # Act:
+        Files::writeAllLines($path, array('dotnetonphp'));
+    }
+
+    /**
+     * @test
+     * @expectedException \System\IO\FileNotFoundException
+    */
+    public function WriteAllLines_ThrowsExceptionWhenFileNotFound() {
+
+        # Arrange:
+        $path = '/tmp/file_not_found.w';
+
+        # Act:
+        Files::writeAllLines($path, array('dotnetonphp'));
+    }
+
+
+    /**
+     * @test
+    */
+    public function WriteAllLines_CanWriteAllLinesInFile() {
+
+        # Arrange:
+        $path = $this->generateFile();
+
+        # Act:
+        Files::writeAllLines($path, array('.NetOnPhp'));
+
+        # Assert:
+        $this->assertEquals('.NetOnPhp', implode(Files::readAllBytes($path)));
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentException
+    */
+    public function WriteAllText_ThrowsExceptionWhenFileIsEmpty() {
+
+        # Arrange:
+        $path = "";
+
+        # Act:
+        Files::writeAllText($path, array('dotnetonphp'));
+    }
+
+    /**
+     * @test
+     * @expectedException \System\ArgumentNullException
+    */
+    public function WriteAllText_ThrowsExceptionWhenFileIsNull() {
+
+        # Arrange:
+        # Act:
+        Files::writeAllText(null, array('dotnetonphp'));
+    }
+
+    /**
+     * @test
+     * @expectedException \System\IO\PathTooLongException
+    */
+    public function WriteAllText_ThrowsExceptionWhenFileHasLongName() {
+
+        # Arrange:
+        $path = str_repeat('dotnetonphp', 25);
+
+        # Act:
+        Files::writeAllText($path, array('dotnetonphp'));
+    }
+
+    /**
+     * @test
+     * @expectedException \System\IO\FileNotFoundException
+    */
+    public function WriteAllText_ThrowsExceptionWhenFileNotFound() {
+
+        # Arrange:
+        $path = '/tmp/file_not_found.w';
+
+        # Act:
+        Files::writeAllText($path, array('dotnetonphp'));
+    }
+
+
+    /**
+     * @test
+    */
+    public function WriteAllText_CanWriteTextInFile() {
+
+        # Arrange:
+        $path = $this->generateFile();
+
+        # Act:
+        Files::writeAllText($path, array('.NetOnPhp'));
+
+        # Assert:
+        $this->assertEquals('.NetOnPhp', implode(Files::readAllBytes($path)));
+    }
 }

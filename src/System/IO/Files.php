@@ -1,5 +1,13 @@
 <?php
 
+/*
+* This file is part of the .NetOnPhp.
+*
+* (c) Alexandre Barbieri <fakeezz@gmail.com>
+*
+* For the full copyright and license information, please view the LICENSE
+* file that was distributed with this source code.
+*/
 namespace System\IO {
 
     use \System\ArgumentException as ArgumentException;
@@ -8,12 +16,13 @@ namespace System\IO {
     use \System\IO\FileStream as FileStream;
 
     /**
-     * Provides static methods for the creation, copying, deletion, moving, and opening of files, and aids in the creation of System.IO.FileStream objects.
+     * Provides static methods for the creation, copying, deletion, moving,
+     * and opening of files, and aids in the creation of \System\IO\FileStream objects.
      *
      * @access public
      * @name File
-     * @package System
-     * @subpackage IO
+     * @package System\IO
+     * @author Alexandre Barbieri <fakeezz@gmail.com>
      */
     final class Files {
 
@@ -63,7 +72,8 @@ namespace System\IO {
          * @param string $path The path to the file to append to.
          * @return \System\IO\StreamWriter A StreamWriter that appends UTF-8 encoded text to an existing file.
          */
-        public static function appendText($path) {
+        public static function appendText($path)
+        {
             return new StreamWriter($path, true);
         }
 
@@ -571,36 +581,85 @@ namespace System\IO {
             }
         }
 
+        /**
+         * Creates a new file, writes the specified string to the file, and then closes the file. If the target file already exists, it is overwritten.
+         *
+         * @access public
+         * @static
+         * @throws \System\ArgumentException path is a zero-length string, contains only white space, or contains one or more invalid characters as defined by InvalidPathChars.
+         * @throws \System\ArgumentNullException path is null or the byte array is empty.
+         * @throws \System\IO\PathTooLongException The specified path, file name, or both exceed the system-defined maximum length.
+         * @throws \System\IO\IOException  An I/O error occurred while opening the file.
+         * @throws \System\IO\FileNotFoundException The file specified in path was not found.
+         * @throws \System\UnauthorizedAccessException path specified a file that is read-only. -or- path specified a directory.
+         * @param string $path The file to write to.
+         * @param array $lines The lines to write file.
+        */
+        public static function writeAllLines($path, $lines=array()) {
+            self::writeAllBytes($path, $lines);
+        }
 
+        /**
+         * Creates a new file, writes the specified string to the file, and then closes the file. If the target file already exists, it is overwritten.
+         *
+         * @access public
+         * @static
+         * @throws \System\ArgumentException path is a zero-length string, contains only white space, or contains one or more invalid characters as defined by InvalidPathChars.
+         * @throws \System\ArgumentNullException path is null or the byte array is empty.
+         * @throws \System\IO\PathTooLongException The specified path, file name, or both exceed the system-defined maximum length.
+         * @throws \System\IO\IOException  An I/O error occurred while opening the file.
+         * @throws \System\IO\FileNotFoundException The file specified in path was not found.
+         * @throws \System\UnauthorizedAccessException path specified a file that is read-only. -or- path specified a directory.
+         * @param string $path The file to write to.
+         * @param string $contents The lines to write file.
+        */
+        public static function writeAllText($path, $contents) {
+            self::assertNullArgument($path);
+            self::assertEmpty($path);
+            self::assertPathName($path);
+            self::assertFileExists($path);
 
-        public static function write($fileName) {
+            try {
+                $fs = new FileStream($path, FileMode::truncate(), FileAccess::write());
+                $fs->write($contents);
+                $fs->close();
+            }
+            catch(\Exception $e) {
+                throw new IOException("An I/O error ocurred while writing in file.");
+            }
+        }
+
+        public static function write($fileName)
+        {
             return new StreamWriter($fileName);
         }
 
-        private static function assertNullArgument($path) {
+        private static function assertNullArgument($path)
+        {
             if(is_null($path)) {
                 throw new ArgumentNullException("path is null.");
             }
         }
 
-        private static function assertEmpty($path) {
+        private static function assertEmpty($path)
+        {
             if (empty($path)) {
                 throw new ArgumentException("path is a zero-length string, contains only white space.");
             }
         }
 
-        private static function assertPathName($path) {
+        private static function assertPathName($path)
+        {
             if(strlen($path) > self::MAX_LENGTH) {
                 throw new PathTooLongException("The specified path, file name, or both exceed the system-defined maximum length. For example, on Windows-based platforms, paths must be less than 248 characters, and file names must be less than 260 characters.");
             }
         }
 
-        private static function assertFileExists($path) {
+        private static function assertFileExists($path)
+        {
             if(!file_exists($path)) {
                 throw new FileNotFoundException("The file specified in path was not found.");
             }
         }
-
-
     }
 }
